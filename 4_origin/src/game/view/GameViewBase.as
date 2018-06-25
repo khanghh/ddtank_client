@@ -79,6 +79,7 @@ package game.view
    import gameCommon.model.TurnedLiving;
    import gameCommon.view.AthleticsHelpView;
    import gameCommon.view.DamageView;
+   import gameCommon.view.DreamLandDamageLogView;
    import gameCommon.view.DungeonHelpView;
    import gameCommon.view.DungeonInfoView;
    import gameCommon.view.FightAchievBar;
@@ -170,7 +171,9 @@ package game.view
       
       protected var _gameCountDownView:GameCountDownView;
       
-      private var _damageView:DamageView;
+      protected var _damageView:DamageView;
+      
+      protected var _combatGainsView:DreamLandDamageLogView;
       
       private var _rescueRoomItemView:RescueRoomItemView;
       
@@ -265,11 +268,11 @@ package game.view
          }
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         super.enter(param1,param2);
+         var pstr:* = null;
+         var getD:* = null;
+         super.enter(prev,data);
          BloodNumberCreater.setup();
          _bitmapMgr = BitmapManager.getBitmapMgr("GameView");
          SharedManager.Instance.propTransparent = false;
@@ -281,12 +284,12 @@ package game.view
          GameControl.Instance.Current.selfGamePlayer.petSkillEnabled = true;
          var _loc10_:int = 0;
          var _loc9_:* = _gameInfo.livings;
-         for each(var _loc5_ in _gameInfo.livings)
+         for each(var player in _gameInfo.livings)
          {
-            if(_loc5_ is Player)
+            if(player is Player)
             {
-               Player(_loc5_).isUpGrade = false;
-               Player(_loc5_).LockState = false;
+               Player(player).isUpGrade = false;
+               Player(player).LockState = false;
             }
          }
          _map = newMap();
@@ -296,8 +299,8 @@ package game.view
          _map.x = _loc10_;
          addChild(_map);
          _map.smallMap.x = StageReferance.stageWidth - _map.smallMap.width - 1;
-         var _loc8_:Boolean = GameControl.EXIT_ROOM_TYPE_ARRAY.indexOf(_gameInfo.roomType) == -1 && GameControl.EXTI_GAME_MODE_ARRAY.indexOf(_gameInfo.gameMode) == -1;
-         _map.smallMap.enableExit = !!BombKingManager.instance.Recording?false:Boolean(_loc8_);
+         var exitBool:Boolean = GameControl.EXIT_ROOM_TYPE_ARRAY.indexOf(_gameInfo.roomType) == -1 && GameControl.EXTI_GAME_MODE_ARRAY.indexOf(_gameInfo.gameMode) == -1;
+         _map.smallMap.enableExit = !!BombKingManager.instance.Recording?false:Boolean(exitBool);
          creatWeatherView();
          _smallMapBorderBg = addSmallMapBg();
          if(_smallMapBorderBg)
@@ -350,17 +353,17 @@ package game.view
          _players = new Dictionary();
          SharedManager.Instance.addEventListener("change",__soundChange);
          __soundChange(null);
-         var _loc7_:LocalPlayer = _gameInfo.selfGamePlayer;
-         if(!BombKingManager.instance.Recording && !RoomManager.Instance.current.selfRoomPlayer.isViewer && _loc7_.isLiving)
+         var self:LocalPlayer = _gameInfo.selfGamePlayer;
+         if(!BombKingManager.instance.Recording && !RoomManager.Instance.current.selfRoomPlayer.isViewer && self.isLiving)
          {
             _cs = _fightControlBar.setState(0);
             GameDecorateManager.Instance.createBitmapUI(_cs,"asset.gameDecorate.pow");
          }
          setupGameData();
          _playerThumbnailLController = new PlayerThumbnailController(_gameInfo);
-         var _loc4_:Point = ComponentFactory.Instance.creatCustomObject("asset.game.ThumbnailLPos");
-         _playerThumbnailLController.x = _loc4_.x;
-         _playerThumbnailLController.y = _loc4_.y;
+         var thumbnailPos:Point = ComponentFactory.Instance.creatCustomObject("asset.game.ThumbnailLPos");
+         _playerThumbnailLController.x = thumbnailPos.x;
+         _playerThumbnailLController.y = thumbnailPos.y;
          addChildAt(_playerThumbnailLController,getChildIndex(_map.smallMap));
          if(RoomManager.Instance.current.type == 121)
          {
@@ -394,13 +397,13 @@ package game.view
          {
             buffIcon = ComponentFactory.Instance.creatComponentByStylename("game.buffTips.icon");
             addChild(buffIcon);
-            _loc6_ = "00:00";
+            pstr = "00:00";
             if(PvePowerBuffManager.instance.getBuffCount > 0 && PvePowerBuffManager.instance.getBuffDate != null)
             {
-               _loc3_ = new Date(PvePowerBuffManager.instance.getBuffDate.getTime() + 60000 * 30);
-               _loc6_ = _loc3_.getMonth() + 1 + " - " + _loc3_.getDate() + " " + _loc3_.getHours() + " : " + _loc3_.getMinutes();
+               getD = new Date(PvePowerBuffManager.instance.getBuffDate.getTime() + 60000 * 30);
+               pstr = getD.getMonth() + 1 + " - " + getD.getDate() + " " + getD.getHours() + " : " + getD.getMinutes();
             }
-            buffIcon.tipData = LanguageMgr.GetTranslation("ddt.game.signBuff.tips",PlayerManager.Instance.Self.experience_Rate,PlayerManager.Instance.Self.offer_Rate) + "\n" + LanguageMgr.GetTranslation("ddt.pvePowerBuff.buff.timelimit.text",_loc6_);
+            buffIcon.tipData = LanguageMgr.GetTranslation("ddt.game.signBuff.tips",PlayerManager.Instance.Self.experience_Rate,PlayerManager.Instance.Self.offer_Rate) + "\n" + LanguageMgr.GetTranslation("ddt.pvePowerBuff.buff.timelimit.text",pstr);
             buffTxt = ComponentFactory.Instance.creatComponentByStylename("game.buffTips.levelTxt");
             addChild(buffTxt);
             buffTxt.text = String(Math.ceil(PlayerManager.Instance.Self.experience_Rate));
@@ -425,22 +428,36 @@ package game.view
             SocketManager.Instance.addEventListener("RescueItemInfo",__updateRescueItemInfo);
             SocketManager.Instance.addEventListener("addScore",__addRescueScore);
          }
+         else if(RoomManager.Instance.current.type == 70)
+         {
+            _combatGainsView = new DreamLandDamageLogView();
+            addChild(_combatGainsView);
+            PositionUtils.setPos(_combatGainsView,"asset.game.damageViewPos");
+         }
+      }
+      
+      public function updateCombatGainsView(hurts:Array) : void
+      {
+         if(_combatGainsView)
+         {
+            _combatGainsView.updateView(hurts);
+         }
       }
       
       private function addSmallMapBg() : Bitmap
       {
-         var _loc1_:Bitmap = GameDecorateManager.Instance.createBitmapUI(this,"asset.gameDecorate.smallMapBorder");
-         if(_loc1_)
+         var smallMapBorder:Bitmap = GameDecorateManager.Instance.createBitmapUI(this,"asset.gameDecorate.smallMapBorder");
+         if(smallMapBorder)
          {
-            _loc1_.x = _map.smallMap.x - 36;
-            _loc1_.y = _map.smallMap.y + (_map.smallMap.height - _loc1_.height) + 7;
+            smallMapBorder.x = _map.smallMap.x - 36;
+            smallMapBorder.y = _map.smallMap.y + (_map.smallMap.height - smallMapBorder.height) + 7;
             if(GameDecorateManager.Instance.isGameBattle)
             {
-               _loc1_.x = _loc1_.x - 2;
-               _loc1_.y = _loc1_.y - 6;
+               smallMapBorder.x = smallMapBorder.x - 2;
+               smallMapBorder.y = smallMapBorder.y - 6;
             }
          }
-         return _loc1_;
+         return smallMapBorder;
       }
       
       protected function creatWeatherView() : void
@@ -453,20 +470,20 @@ package game.view
          }
       }
       
-      protected function __addRescueScore(param1:CrazyTankSocketEvent) : void
+      protected function __addRescueScore(event:CrazyTankSocketEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc4_.readInt();
-         var _loc5_:int = _loc4_.readInt();
-         var _loc3_:int = _loc4_.readInt();
+         var pkg:PackageIn = event.pkg;
+         var npcX:int = pkg.readInt();
+         var npcY:int = pkg.readInt();
+         var value:int = pkg.readInt();
          if(!_rescueScoreView)
          {
             _rescueScoreView = new RescueScoreAlertView();
             _map.addChild(_rescueScoreView);
          }
-         _rescueScoreView.x = _loc2_;
-         _rescueScoreView.y = _loc5_ - 50;
-         _rescueScoreView.setData(_loc3_);
+         _rescueScoreView.x = npcX;
+         _rescueScoreView.y = npcY - 50;
+         _rescueScoreView.setData(value);
          _rescueScoreView.visible = true;
       }
       
@@ -475,28 +492,28 @@ package game.view
          _rescueScoreView.visible = false;
       }
       
-      protected function __updateRescueItemInfo(param1:CrazyTankSocketEvent) : void
+      protected function __updateRescueItemInfo(event:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc4_:RescueRoomInfo = new RescueRoomInfo();
-         _loc4_.sceneId = _loc3_.readInt();
-         _loc4_.score = _loc3_.readInt();
-         _loc4_.defaultArrow = _loc3_.readInt();
-         _loc4_.arrow = _loc3_.readInt();
-         _loc4_.bloodBag = _loc3_.readInt();
-         _loc4_.kingBless = _loc3_.readInt();
+         var pkg:PackageIn = event.pkg;
+         var info:RescueRoomInfo = new RescueRoomInfo();
+         info.sceneId = pkg.readInt();
+         info.score = pkg.readInt();
+         info.defaultArrow = pkg.readInt();
+         info.arrow = pkg.readInt();
+         info.bloodBag = pkg.readInt();
+         info.kingBless = pkg.readInt();
          if(_rescueRoomItemView)
          {
-            _rescueRoomItemView.update(_loc4_);
+            _rescueRoomItemView.update(info);
          }
          if(_barrier)
          {
-            _barrier.setRescueArrow(_loc4_.defaultArrow + _loc4_.arrow);
+            _barrier.setRescueArrow(info.defaultArrow + info.arrow);
          }
-         var _loc2_:LiveState = _cs as LiveState;
-         if(_loc2_)
+         var ls:LiveState = _cs as LiveState;
+         if(ls)
          {
-            _loc2_.rescuePropBar.setKingBlessCount(_loc4_.kingBless);
+            ls.rescuePropBar.setKingBlessCount(info.kingBless);
          }
       }
       
@@ -510,7 +527,7 @@ package game.view
          }
       }
       
-      protected function __onMessageClick(param1:MouseEvent) : void
+      protected function __onMessageClick(event:MouseEvent) : void
       {
          _messageBtn.visible = false;
          if(explorersLiving)
@@ -521,12 +538,12 @@ package game.view
       
       private function initGameCountDownView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = RoomManager.Instance.current.type;
-         if(_loc1_ == 19)
+         var totalTime:int = 0;
+         var roomType:int = RoomManager.Instance.current.type;
+         if(roomType == 19)
          {
-            _loc2_ = 300 - int((TimeManager.Instance.Now().getTime() - GameControl.Instance.Current.startTime.getTime()) / 1000);
-            _gameCountDownView = new GameCountDownView(_loc2_);
+            totalTime = 300 - int((TimeManager.Instance.Now().getTime() - GameControl.Instance.Current.startTime.getTime()) / 1000);
+            _gameCountDownView = new GameCountDownView(totalTime);
             _gameCountDownView.x = _map.smallMap.x - _gameCountDownView.width - 1;
             _gameCountDownView.y = 2;
             addChild(_gameCountDownView);
@@ -535,11 +552,11 @@ package game.view
       
       private function isShowTrusteeship() : Boolean
       {
-         var _loc2_:int = GameControl.Instance.Current.roomType;
-         var _loc1_:int = GameControl.Instance.Current.gameMode;
-         if(_loc2_ == 4 || _loc2_ == 12 || _loc2_ == 13 || _loc2_ == 12 || _loc2_ == 25 || _loc2_ == 0 || _loc2_ == 1 || _loc2_ == 11 || _loc2_ == 123 || _loc2_ == 58)
+         var gameType:int = GameControl.Instance.Current.roomType;
+         var gameMode:int = GameControl.Instance.Current.gameMode;
+         if(gameType == 4 || gameType == 12 || gameType == 13 || gameType == 12 || gameType == 25 || gameType == 0 || gameType == 1 || gameType == 11 || gameType == 123 || gameType == 58)
          {
-            if(_loc1_ == 56 || _loc1_ == 57)
+            if(gameMode == 56 || gameMode == 57)
             {
                return false;
             }
@@ -558,11 +575,11 @@ package game.view
       
       protected function kingBlessIconInit() : void
       {
-         var _loc1_:int = 0;
+         var roomType:int = 0;
          if(KingBlessManager.instance.openType > 0)
          {
-            _loc1_ = RoomManager.Instance.current.type;
-            if(_loc1_ == 4 || _loc1_ == 11 || _loc1_ == 15 || _loc1_ == 123)
+            roomType = RoomManager.Instance.current.type;
+            if(roomType == 4 || roomType == 11 || roomType == 15 || roomType == 123)
             {
                _kingblessIcon = ComponentFactory.Instance.creatComponentByStylename("game.kingbless.addPropertyBuffIcon");
                _kingblessIcon.tipData = KingBlessManager.instance.getOneBuffData(1);
@@ -573,8 +590,8 @@ package game.view
       
       private function trialBuffIconInit() : void
       {
-         var _loc1_:int = RoomManager.Instance.current.type;
-         if(_loc1_ == 120)
+         var roomType:int = RoomManager.Instance.current.type;
+         if(roomType == 120)
          {
             _trialBuffIcon = ComponentFactory.Instance.creatComponentByStylename("game.trial.addTrialBuffIcon");
             _trialBuffIcon.tipData = ServerConfigManager.instance.trialBuffTipPropertyValue;
@@ -584,28 +601,32 @@ package game.view
       
       private function addRingSkillIcon() : void
       {
-         if(_self.ringFlag && _self.loveBuffLevel > 0)
+         var roomType:int = RoomManager.Instance.current.type;
+         if(roomType != 70)
          {
-            _ringSkillIcon = ComponentFactory.Instance.creatComponentByStylename("game.ringSkill.BuffIcon");
-            setSkillTipData(_ringSkillIcon);
-            _buffIconBox.addChild(_ringSkillIcon);
-            _buffIconBox.arrange();
+            if(_self.ringFlag && _self.loveBuffLevel > 0)
+            {
+               _ringSkillIcon = ComponentFactory.Instance.creatComponentByStylename("game.ringSkill.BuffIcon");
+               setSkillTipData(_ringSkillIcon);
+               _buffIconBox.addChild(_ringSkillIcon);
+               _buffIconBox.arrange();
+            }
          }
       }
       
       protected function updateGuardCoreIcon() : void
       {
-         var _loc1_:* = null;
+         var list:* = null;
          if(GameControl.Instance.Current.guardCoreEnable)
          {
-            _loc1_ = GameControl.Instance.Current.getGuardCoreBuffList();
-            if(_loc1_.length > 0)
+            list = GameControl.Instance.Current.getGuardCoreBuffList();
+            if(list.length > 0)
             {
                if(_guardCoreIcon == null)
                {
                   _guardCoreIcon = ComponentFactory.Instance.creatComponentByStylename("game.guardCore.tipsIcon");
                }
-               _guardCoreIcon.tipData = _loc1_;
+               _guardCoreIcon.tipData = list;
                _buffIconBox.addChild(_guardCoreIcon);
                _buffIconBox.arrange();
             }
@@ -617,37 +638,37 @@ package game.view
          }
       }
       
-      private function setSkillTipData(param1:Image) : void
+      private function setSkillTipData($target:Image) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc2_:int = BagAndInfoManager.Instance.getCurrentRingData().Level / 10;
-         if(_loc2_ > 0)
+         var level:* = null;
+         var obj:* = null;
+         var nextLevel:* = null;
+         var skillLevel:int = BagAndInfoManager.Instance.getCurrentRingData().Level / 10;
+         if(skillLevel > 0)
          {
-            _loc3_ = ConsortionModelManager.Instance.model.getskillInfoWithTypeAndLevel(0,_loc2_)[0];
-            _loc5_ = {};
-            _loc5_["name"] = _loc3_.name + "Lv" + _loc2_;
-            _loc5_["content"] = _loc3_.descript.replace("{0}",_loc3_.value);
-            if(_loc2_ < RingSystemData.TotalLevel * 0.1)
+            level = ConsortionModelManager.Instance.model.getskillInfoWithTypeAndLevel(0,skillLevel)[0];
+            obj = {};
+            obj["name"] = level.name + "Lv" + skillLevel;
+            obj["content"] = level.descript.replace("{0}",level.value);
+            if(skillLevel < RingSystemData.TotalLevel * 0.1)
             {
-               _loc4_ = ConsortionModelManager.Instance.model.getskillInfoWithTypeAndLevel(0,_loc2_ + 1)[0];
-               _loc5_["nextLevel"] = LanguageMgr.GetTranslation("tank.bagAndInfo.ringSkill.nextLevel",_loc4_.name,_loc2_ + 1,_loc4_.descript.replace("{0}",_loc4_.value));
-               _loc5_["limitLevel"] = LanguageMgr.GetTranslation("tank.bagAndInfo.ringSkill.nextUnLock",(_loc2_ + 1) * 10);
+               nextLevel = ConsortionModelManager.Instance.model.getskillInfoWithTypeAndLevel(0,skillLevel + 1)[0];
+               obj["nextLevel"] = LanguageMgr.GetTranslation("tank.bagAndInfo.ringSkill.nextLevel",nextLevel.name,skillLevel + 1,nextLevel.descript.replace("{0}",nextLevel.value));
+               obj["limitLevel"] = LanguageMgr.GetTranslation("tank.bagAndInfo.ringSkill.nextUnLock",(skillLevel + 1) * 10);
             }
             else
             {
-               _loc5_["nextLevel"] = "";
-               _loc5_["limitLevel"] = "";
+               obj["nextLevel"] = "";
+               obj["limitLevel"] = "";
             }
-            param1.tipData = _loc5_;
-            Helpers.colorful(param1);
-            param1.mouseEnabled = true;
+            $target.tipData = obj;
+            Helpers.colorful($target);
+            $target.mouseEnabled = true;
          }
          else
          {
-            Helpers.grey(param1);
-            param1.mouseEnabled = false;
+            Helpers.grey($target);
+            $target.mouseEnabled = false;
          }
       }
       
@@ -655,33 +676,33 @@ package game.view
       {
          var _loc3_:int = 0;
          var _loc2_:* = _players;
-         for each(var _loc1_ in _players)
+         for each(var p in _players)
          {
-            if(_loc1_.info.character)
+            if(p.info.character)
             {
-               _loc1_.info.character.resetShowBitmapBig();
-               _loc1_.info.character.showWing = true;
-               _loc1_.info.character.show();
+               p.info.character.resetShowBitmapBig();
+               p.info.character.showWing = true;
+               p.info.character.show();
             }
          }
       }
       
-      protected function __wishClick(param1:Event) : void
+      protected function __wishClick(pEvent:Event) : void
       {
          _selfUsedProp.info.addState(0);
       }
       
-      protected function __selfDie(param1:LivingEvent) : void
+      protected function __selfDie(event:LivingEvent) : void
       {
-         var _loc2_:Living = param1.currentTarget as Living;
-         var _loc3_:DictionaryData = _gameInfo.findTeam(_loc2_.team);
+         var self:Living = event.currentTarget as Living;
+         var team:DictionaryData = _gameInfo.findTeam(self.team);
          var _loc6_:int = 0;
-         var _loc5_:* = _loc3_;
-         for each(var _loc4_ in _loc3_)
+         var _loc5_:* = team;
+         for each(var living in team)
          {
-            if(_loc4_.isLiving)
+            if(living.isLiving)
             {
-               _fightControlBar.setState(1);
+               _cs = _fightControlBar.setState(1);
                return;
             }
          }
@@ -732,34 +753,34 @@ package game.view
          _missionHelp.open();
       }
       
-      public function testHelpClose(param1:Rectangle) : void
+      public function testHelpClose(to:Rectangle) : void
       {
-         _missionHelp.close(param1);
+         _missionHelp.close(to);
       }
       
-      protected function __updateSmallMapView(param1:GameEvent) : void
+      protected function __updateSmallMapView(event:GameEvent) : void
       {
-         var _loc2_:MissionInfo = GameControl.Instance.Current.missionInfo;
-         if(_loc2_.currentValue1 != -1 && _loc2_.totalValue1 > 0)
+         var mission:MissionInfo = GameControl.Instance.Current.missionInfo;
+         if(mission.currentValue1 != -1 && mission.totalValue1 > 0)
          {
-            _map.smallMap.setBarrier(_loc2_.currentValue1,_loc2_.totalValue1);
+            _map.smallMap.setBarrier(mission.currentValue1,mission.totalValue1);
          }
       }
       
-      protected function __dungeonHelpChanged(param1:GameEvent) : void
+      protected function __dungeonHelpChanged(event:GameEvent) : void
       {
-         var _loc2_:* = null;
+         var bounds:* = null;
          if(_missionHelp)
          {
-            if(param1.data)
+            if(event.data)
             {
                if(_missionHelp.opened)
                {
-                  _loc2_ = _barrier.getBounds(this);
+                  bounds = _barrier.getBounds(this);
                   var _loc3_:int = 1;
-                  _loc2_.height = _loc3_;
-                  _loc2_.width = _loc3_;
-                  _missionHelp.close(_loc2_);
+                  bounds.height = _loc3_;
+                  bounds.width = _loc3_;
+                  _missionHelp.close(bounds);
                }
                else
                {
@@ -768,13 +789,13 @@ package game.view
             }
             else if(_missionHelp.opened)
             {
-               _loc2_ = _map.smallMap.titleBar.turnButton.getBounds(this);
-               _missionHelp.close(_loc2_);
+               bounds = _map.smallMap.titleBar.turnButton.getBounds(this);
+               _missionHelp.close(bounds);
             }
          }
       }
       
-      protected function __dungeonVisibleChanged(param1:DungeonInfoEvent) : void
+      protected function __dungeonVisibleChanged(evt:DungeonInfoEvent) : void
       {
          if(_gameInfo.gameMode == 56 || _gameInfo.gameMode == 57)
          {
@@ -796,7 +817,7 @@ package game.view
          }
       }
       
-      private function __onMissonHelpClick(param1:MouseEvent) : void
+      private function __onMissonHelpClick(event:MouseEvent) : void
       {
          StageReferance.stage.focus = _map;
       }
@@ -809,35 +830,35 @@ package game.view
          _selfBuffBar.addEventListener(SelfBuffBar.UPDATECELL,__selfBuffBarUpdateCellHandler);
       }
       
-      private function __selfBuffBarUpdateCellHandler(param1:CEvent) : void
+      private function __selfBuffBarUpdateCellHandler(event:CEvent) : void
       {
          updateBuffIconBoxPos();
       }
       
-      private function addPlayerHander(param1:DictionaryEvent) : void
+      private function addPlayerHander(e:DictionaryEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc5_:* = param1.data;
-         if(_loc5_ is Player && (_loc5_ as Player).typeLiving != 18)
+         var movie:* = null;
+         var character:* = null;
+         var player:* = null;
+         var info:* = e.data;
+         if(info is Player && (info as Player).typeLiving != 18)
          {
-            if(!_loc5_.movie)
+            if(!info.movie)
             {
-               _loc3_ = CharactoryFactory.createCharacter(_loc5_.playerInfo,"game");
-               _loc3_.show();
-               _loc5_.movie = GameCharacter(_loc3_);
+               movie = CharactoryFactory.createCharacter(info.playerInfo,"game");
+               movie.show();
+               info.movie = GameCharacter(movie);
             }
-            if(!_loc5_.character)
+            if(!info.character)
             {
-               _loc4_ = CharactoryFactory.createCharacter(_loc5_.playerInfo,"show");
-               ShowCharacter(_loc4_).show();
-               _loc5_.character = ShowCharacter(_loc4_);
+               character = CharactoryFactory.createCharacter(info.playerInfo,"show");
+               ShowCharacter(character).show();
+               info.character = ShowCharacter(character);
             }
-            _loc2_ = new GamePlayer(_loc5_,_loc5_.character,GameCharacter(_loc3_));
-            _map.addPhysical(_loc2_);
-            _players[_loc5_] = _loc2_;
-            _playerThumbnailLController.addNewLiving(_loc5_);
+            player = new GamePlayer(info,info.character,GameCharacter(movie));
+            _map.addPhysical(player);
+            _players[info] = player;
+            _playerThumbnailLController.addNewLiving(info);
          }
       }
       
@@ -856,10 +877,10 @@ package game.view
          return true;
       }
       
-      private function propOpenShow(param1:String) : void
+      private function propOpenShow(mcStr:String) : void
       {
-         var _loc2_:MovieClipWrapper = new MovieClipWrapper(ClassUtils.CreatInstance(param1),true,true);
-         LayerManager.Instance.addToLayer(_loc2_.movie,4,false);
+         var mc:MovieClipWrapper = new MovieClipWrapper(ClassUtils.CreatInstance(mcStr),true,true);
+         LayerManager.Instance.addToLayer(mc.movie,4,false);
       }
       
       protected function newMap() : MapView
@@ -871,18 +892,18 @@ package game.view
          return new MapView(_gameInfo,_gameInfo.loaderMap);
       }
       
-      private function __soundChange(param1:Event) : void
+      private function __soundChange(evt:Event) : void
       {
-         var _loc2_:SoundTransform = new SoundTransform();
+         var mapSound:SoundTransform = new SoundTransform();
          if(SharedManager.Instance.allowSound)
          {
-            _loc2_.volume = SharedManager.Instance.soundVolumn / 100;
-            this.soundTransform = _loc2_;
+            mapSound.volume = SharedManager.Instance.soundVolumn / 100;
+            this.soundTransform = mapSound;
          }
          else
          {
-            _loc2_.volume = 0;
-            this.soundTransform = _loc2_;
+            mapSound.volume = 0;
+            this.soundTransform = mapSound;
          }
       }
       
@@ -971,6 +992,8 @@ package game.view
             _damageView.dispose();
             _damageView = null;
          }
+         ObjectUtils.disposeObject(_combatGainsView);
+         _combatGainsView = null;
          ObjectUtils.disposeObject(_rescueRoomItemView);
          _rescueRoomItemView = null;
          ObjectUtils.disposeObject(_rescueScoreView);
@@ -992,9 +1015,9 @@ package game.view
          BallManager.clearSceneEffectMovie();
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
-         super.leaving(param1);
+         super.leaving(next);
          dispose();
          BloodNumberCreater.dispose();
       }
@@ -1061,59 +1084,59 @@ package game.view
       
       protected function setupGameData() : void
       {
-         var _loc6_:* = null;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc3_:* = null;
-         var _loc8_:* = null;
-         var _loc4_:Array = [];
-         var _loc7_:Boolean = false;
+         var view:* = null;
+         var p:* = null;
+         var rp:* = null;
+         var movie:* = null;
+         var character:* = null;
+         var list:Array = [];
+         var ringFlag:Boolean = false;
          var _loc13_:int = 0;
          var _loc12_:* = _gameInfo.livings;
-         for each(var _loc9_ in _gameInfo.livings)
+         for each(var info in _gameInfo.livings)
          {
-            if(_loc9_ is Player)
+            if(info is Player)
             {
-               _loc2_ = _loc9_ as Player;
-               _loc1_ = RoomManager.Instance.current.findPlayerByID(_loc2_.playerInfo.ID);
-               if(!_loc2_.movie)
+               p = info as Player;
+               rp = RoomManager.Instance.current.findPlayerByID(p.playerInfo.ID);
+               if(!p.movie)
                {
-                  _loc3_ = CharactoryFactory.createCharacter(_loc2_.playerInfo,"game");
-                  _loc3_.show();
-                  _loc2_.movie = GameCharacter(_loc3_);
+                  movie = CharactoryFactory.createCharacter(p.playerInfo,"game");
+                  movie.show();
+                  p.movie = GameCharacter(movie);
                }
-               if(!_loc2_.character)
+               if(!p.character)
                {
-                  _loc8_ = CharactoryFactory.createCharacter(_loc2_.playerInfo,"show");
-                  ShowCharacter(_loc8_).show();
-                  _loc2_.character = ShowCharacter(_loc8_);
+                  character = CharactoryFactory.createCharacter(p.playerInfo,"show");
+                  ShowCharacter(character).show();
+                  p.character = ShowCharacter(character);
                }
-               if(_loc2_.isSelf)
+               if(p.isSelf)
                {
-                  _loc6_ = new GameLocalPlayer(_gameInfo.selfGamePlayer,_loc2_.character as ShowCharacter,_loc2_.movie as GameCharacter,_loc2_.templeId);
-                  _selfGamePlayer = _loc6_ as GameLocalPlayer;
+                  view = new GameLocalPlayer(_gameInfo.selfGamePlayer,p.character as ShowCharacter,p.movie as GameCharacter,p.templeId);
+                  _selfGamePlayer = view as GameLocalPlayer;
                }
                else
                {
-                  _loc6_ = new GamePlayer(_loc2_,_loc2_.character as ShowCharacter,_loc2_.movie as GameCharacter,_loc2_.templeId);
+                  view = new GamePlayer(p,p.character as ShowCharacter,p.movie as GameCharacter,p.templeId);
                }
-               if(_loc2_.movie)
+               if(p.movie)
                {
-                  _loc2_.movie.setDefaultAction(_loc2_.movie.standAction);
-                  _loc2_.movie.doAction(_loc2_.movie.standAction);
+                  p.movie.setDefaultAction(p.movie.standAction);
+                  p.movie.doAction(p.movie.standAction);
                }
                var _loc11_:int = 0;
-               var _loc10_:* = _loc2_.outProperty;
-               for(var _loc5_ in _loc2_.outProperty)
+               var _loc10_:* = p.outProperty;
+               for(var KEY in p.outProperty)
                {
-                  setProperty(_loc6_,_loc5_,_loc2_.outProperty[_loc5_]);
+                  setProperty(view,KEY,p.outProperty[KEY]);
                }
-               _loc4_.push(_loc6_);
-               _map.addPhysical(_loc6_);
-               _players[_loc9_] = _loc6_;
-               if(!_loc7_)
+               list.push(view);
+               _map.addPhysical(view);
+               _players[info] = view;
+               if(!ringFlag)
                {
-                  _loc7_ = _loc2_.ringFlag;
+                  ringFlag = p.ringFlag;
                }
             }
          }
@@ -1121,28 +1144,31 @@ package game.view
          _map.currentTurn = 1;
          _vane.initialize();
          _vane.update(_map.wind);
-         _map.act(new ViewEachPlayerAction(_map,_loc4_,!!_loc7_?2000:Number(1500)));
+         if(RoomManager.Instance.current.type != 70)
+         {
+            _map.act(new ViewEachPlayerAction(_map,list,!!ringFlag?2000:Number(1500)));
+         }
       }
       
-      protected function __onAddRingAnimation(param1:GameEvent) : void
+      protected function __onAddRingAnimation(event:GameEvent) : void
       {
-         var _loc2_:GamePlayer = param1.data as GamePlayer;
-         _loc2_.playRingSkill();
+         var player:GamePlayer = event.data as GamePlayer;
+         player.playRingSkill();
       }
       
-      protected function __onAddGuardCoreAnimation(param1:GameEvent) : void
+      protected function __onAddGuardCoreAnimation(e:GameEvent) : void
       {
-         var _loc2_:GamePlayer = param1.data as GamePlayer;
-         _loc2_.playGuardCoreEffect();
+         var player:GamePlayer = e.data as GamePlayer;
+         player.playGuardCoreEffect();
       }
       
-      protected function setProperty(param1:GameLiving, param2:String, param3:String) : void
+      protected function setProperty(obj:GameLiving, property:String, value:String) : void
       {
-         var _loc4_:int = 0;
-         var _loc5_:Boolean = false;
-         var _loc6_:* = null;
-         var _loc7_:StringObject = new StringObject(param3);
-         var _loc8_:* = param2;
+         var LockType:int = 0;
+         var lockState:Boolean = false;
+         var info:* = null;
+         var vo:StringObject = new StringObject(value);
+         var _loc8_:* = property;
          if("system" !== _loc8_)
          {
             if("systemII" !== _loc8_)
@@ -1165,145 +1191,145 @@ package game.view
                                     {
                                        if("energy2" !== _loc8_)
                                        {
-                                          param1.setProperty(param2,param3);
+                                          obj.setProperty(property,value);
                                        }
-                                       else if(param1)
+                                       else if(obj)
                                        {
-                                          param1.info.energy = _loc7_.getNumber();
+                                          obj.info.energy = vo.getNumber();
                                        }
                                     }
-                                    else if(param1)
+                                    else if(obj)
                                     {
-                                       param1.info.maxEnergy = _loc7_.getNumber();
-                                       param1.info.energy = _loc7_.getNumber();
+                                       obj.info.maxEnergy = vo.getNumber();
+                                       obj.info.energy = vo.getNumber();
                                     }
                                  }
-                                 else if(param1)
+                                 else if(obj)
                                  {
                                     _playerThumbnailLController.removeThumbnailContainer();
                                  }
                               }
                               else
                               {
-                                 _loc4_ = 1;
-                                 _loc5_ = _loc7_.getBoolean();
-                                 _loc6_ = param1.info;
-                                 if(_loc5_)
+                                 LockType = 1;
+                                 lockState = vo.getBoolean();
+                                 info = obj.info;
+                                 if(lockState)
                                  {
-                                    _loc6_.addBuff(BuffManager.creatBuff(1000));
+                                    info.addBuff(BuffManager.creatBuff(1000));
                                  }
                                  else
                                  {
-                                    _loc6_.removeBuff(1000);
+                                    info.removeBuff(1000);
                                  }
-                                 if(param1.info.isSelf)
+                                 if(obj.info.isSelf)
                                  {
-                                    GameControl.Instance.Current.selfGamePlayer.lockDeputyWeapon = _loc5_;
-                                    GameControl.Instance.Current.selfGamePlayer.lockFly = _loc5_;
-                                    GameControl.Instance.Current.selfGamePlayer.lockRightProp = _loc5_;
+                                    GameControl.Instance.Current.selfGamePlayer.lockDeputyWeapon = lockState;
+                                    GameControl.Instance.Current.selfGamePlayer.lockFly = lockState;
+                                    GameControl.Instance.Current.selfGamePlayer.lockRightProp = lockState;
                                  }
                               }
                            }
                            else
                            {
-                              _loc4_ = 4;
-                              _loc5_ = _loc7_.getBoolean();
-                              _loc6_ = param1.info;
-                              _loc6_.LockType = _loc4_;
-                              if(param1.info.isSelf)
+                              LockType = 4;
+                              lockState = vo.getBoolean();
+                              info = obj.info;
+                              info.LockType = LockType;
+                              if(obj.info.isSelf)
                               {
-                                 GameControl.Instance.Current.selfGamePlayer.lockFly = _loc5_;
+                                 GameControl.Instance.Current.selfGamePlayer.lockFly = lockState;
                               }
                            }
                         }
-                        else if(param1)
+                        else if(obj)
                         {
-                           _loc4_ = 1;
-                           _loc5_ = _loc7_.getBoolean();
-                           _loc6_ = param1.info;
-                           _loc6_.LockType = _loc4_;
-                           _loc6_.LockState = _loc5_;
-                           if(param1.info.isSelf)
+                           LockType = 1;
+                           lockState = vo.getBoolean();
+                           info = obj.info;
+                           info.LockType = LockType;
+                           info.LockState = lockState;
+                           if(obj.info.isSelf)
                            {
-                              GameControl.Instance.Current.selfGamePlayer.rightPropEnabled = !_loc5_;
-                              GameControl.Instance.Current.selfGamePlayer.customPropEnabled = !_loc5_;
-                              GameControl.Instance.Current.selfGamePlayer.lockDeputyWeapon = _loc5_;
+                              GameControl.Instance.Current.selfGamePlayer.rightPropEnabled = !lockState;
+                              GameControl.Instance.Current.selfGamePlayer.customPropEnabled = !lockState;
+                              GameControl.Instance.Current.selfGamePlayer.lockDeputyWeapon = lockState;
                            }
                         }
                      }
-                     else if(param1)
+                     else if(obj)
                      {
-                        _loc4_ = 3;
-                        _loc5_ = _loc7_.getBoolean();
-                        _loc6_ = param1.info;
-                        _loc6_.LockType = _loc4_;
-                        _loc6_.LockState = _loc5_;
-                        if(param1.info.isSelf)
+                        LockType = 3;
+                        lockState = vo.getBoolean();
+                        info = obj.info;
+                        info.LockType = LockType;
+                        info.LockState = lockState;
+                        if(obj.info.isSelf)
                         {
                            if(RoomManager.Instance.current.type != 21)
                            {
-                              GameControl.Instance.Current.selfGamePlayer.lockFly = _loc5_;
+                              GameControl.Instance.Current.selfGamePlayer.lockFly = lockState;
                            }
-                           GameControl.Instance.Current.selfGamePlayer.lockDeputyWeapon = _loc5_;
-                           GameControl.Instance.Current.selfGamePlayer.lockSpellKill = _loc5_;
-                           GameControl.Instance.Current.selfGamePlayer.rightPropEnabled = !_loc5_;
-                           GameControl.Instance.Current.selfGamePlayer.customPropEnabled = !_loc5_;
+                           GameControl.Instance.Current.selfGamePlayer.lockDeputyWeapon = lockState;
+                           GameControl.Instance.Current.selfGamePlayer.lockSpellKill = lockState;
+                           GameControl.Instance.Current.selfGamePlayer.rightPropEnabled = !lockState;
+                           GameControl.Instance.Current.selfGamePlayer.customPropEnabled = !lockState;
                         }
                      }
                   }
-                  else if(param1)
+                  else if(obj)
                   {
-                     _loc4_ = 0;
-                     _loc5_ = _loc7_.getBoolean();
-                     _loc6_ = param1.info;
-                     _loc6_.LockType = _loc4_;
-                     if(param1.info.isSelf)
+                     LockType = 0;
+                     lockState = vo.getBoolean();
+                     info = obj.info;
+                     info.LockType = LockType;
+                     if(obj.info.isSelf)
                      {
-                        GameControl.Instance.Current.selfGamePlayer.customPropEnabled = _loc5_;
+                        GameControl.Instance.Current.selfGamePlayer.customPropEnabled = lockState;
                      }
                   }
                }
-               else if(param1)
+               else if(obj)
                {
-                  _loc4_ = 3;
-                  _loc5_ = _loc7_.getBoolean();
-                  _loc6_ = param1.info;
-                  _loc6_.LockType = _loc4_;
-                  _loc6_.LockState = _loc5_;
-                  if(param1.info.isSelf)
+                  LockType = 3;
+                  lockState = vo.getBoolean();
+                  info = obj.info;
+                  info.LockType = LockType;
+                  info.LockState = lockState;
+                  if(obj.info.isSelf)
                   {
-                     GameControl.Instance.Current.selfGamePlayer.customPropEnabled = _loc5_;
+                     GameControl.Instance.Current.selfGamePlayer.customPropEnabled = lockState;
                   }
                }
             }
-            else if(param1)
+            else if(obj)
             {
-               _loc4_ = 0;
-               _loc5_ = _loc7_.getBoolean();
-               _loc6_ = param1.info;
-               if(param1.info.isSelf)
+               LockType = 0;
+               lockState = vo.getBoolean();
+               info = obj.info;
+               if(obj.info.isSelf)
                {
-                  GameControl.Instance.Current.selfGamePlayer.lockFly = _loc5_;
-                  GameControl.Instance.Current.selfGamePlayer.lockDeputyWeapon = _loc5_;
-                  GameControl.Instance.Current.selfGamePlayer.petSkillEnabled = !_loc5_;
+                  GameControl.Instance.Current.selfGamePlayer.lockFly = lockState;
+                  GameControl.Instance.Current.selfGamePlayer.lockDeputyWeapon = lockState;
+                  GameControl.Instance.Current.selfGamePlayer.petSkillEnabled = !lockState;
                }
             }
          }
-         else if(param1)
+         else if(obj)
          {
-            _loc4_ = 0;
-            _loc5_ = _loc7_.getBoolean();
-            _loc6_ = param1.info;
-            _loc6_.LockType = _loc4_;
-            _loc6_.LockState = _loc5_;
-            if(param1.info.isSelf)
+            LockType = 0;
+            lockState = vo.getBoolean();
+            info = obj.info;
+            info.LockType = LockType;
+            info.LockState = lockState;
+            if(obj.info.isSelf)
             {
-               GameControl.Instance.Current.selfGamePlayer.lockDeputyWeapon = _loc5_;
-               GameControl.Instance.Current.selfGamePlayer.lockFly = _loc5_;
-               GameControl.Instance.Current.selfGamePlayer.lockSpellKill = _loc5_;
-               GameControl.Instance.Current.selfGamePlayer.rightPropEnabled = !_loc5_;
-               GameControl.Instance.Current.selfGamePlayer.customPropEnabled = !_loc5_;
-               GameControl.Instance.Current.selfGamePlayer.petSkillEnabled = !_loc5_;
+               GameControl.Instance.Current.selfGamePlayer.lockDeputyWeapon = lockState;
+               GameControl.Instance.Current.selfGamePlayer.lockFly = lockState;
+               GameControl.Instance.Current.selfGamePlayer.lockSpellKill = lockState;
+               GameControl.Instance.Current.selfGamePlayer.rightPropEnabled = !lockState;
+               GameControl.Instance.Current.selfGamePlayer.customPropEnabled = !lockState;
+               GameControl.Instance.Current.selfGamePlayer.petSkillEnabled = !lockState;
             }
          }
       }
@@ -1312,12 +1338,12 @@ package game.view
       {
          var _loc3_:int = 0;
          var _loc2_:* = _gameInfo.livings;
-         for each(var _loc1_ in _gameInfo.livings)
+         for each(var info in _gameInfo.livings)
          {
-            if(_loc1_.blood <= 0)
+            if(info.blood <= 0)
             {
-               _loc1_.reset();
-               _loc1_.die(true);
+               info.reset();
+               info.die(true);
                if(_gameTrusteeshipView)
                {
                   _gameTrusteeshipView.visible = false;
@@ -1330,10 +1356,10 @@ package game.view
       {
          var _loc3_:int = 0;
          var _loc2_:* = _players;
-         for each(var _loc1_ in _players)
+         for each(var view in _players)
          {
-            _loc1_.dispose();
-            delete _players[_loc1_.info];
+            view.dispose();
+            delete _players[view.info];
          }
          _players = null;
          _selfGamePlayer = null;
@@ -1341,11 +1367,11 @@ package game.view
          _barrierVisible = true;
       }
       
-      public function addLiving(param1:Living) : void
+      public function addLiving($living:Living) : void
       {
       }
       
-      private function updatePlayerState(param1:Living) : void
+      private function updatePlayerState(info:Living) : void
       {
          if(_selfUsedProp == null)
          {
@@ -1357,22 +1383,22 @@ package game.view
          {
             _selfUsedProp.disposeAllChildren();
          }
-         var _loc2_:int = 0;
+         var len:int = 0;
          if(_selfUsedProp)
          {
             if(_selfBuffBar && _selfBuffBar.visible)
             {
-               _loc2_ = _loc2_ + _selfBuffBar.right;
+               len = len + _selfBuffBar.right;
             }
             if(_buffIconBox && _buffIconBox.visible)
             {
-               _loc2_ = _loc2_ + _buffIconBox.width;
+               len = len + _buffIconBox.width;
             }
-            _selfUsedProp.x = _loc2_;
+            _selfUsedProp.x = len;
          }
-         if(param1 is TurnedLiving)
+         if(info is TurnedLiving)
          {
-            _selfUsedProp.info = TurnedLiving(param1);
+            _selfUsedProp.info = TurnedLiving(info);
          }
          if(GameControl.Instance.Current.selfGamePlayer.isAutoGuide && GameControl.Instance.Current.currentLiving.LivingID == GameControl.Instance.Current.selfGamePlayer.LivingID)
          {
@@ -1380,9 +1406,9 @@ package game.view
          }
       }
       
-      public function setCurrentPlayer(param1:Living) : void
+      public function setCurrentPlayer(info:Living) : void
       {
-         if(param1 && param1.isSelf && param1.isLiving)
+         if(info && info.isSelf && info.isLiving)
          {
             if(_buffIconBox)
             {
@@ -1405,41 +1431,41 @@ package game.view
                _selfBuffBar.propertyWaterBuffBarVisible = false;
             }
          }
-         if(!BombKingManager.instance.Recording && !RoomManager.Instance.current.selfRoomPlayer.isViewer && param1 && _selfBuffBar)
+         if(!BombKingManager.instance.Recording && !RoomManager.Instance.current.selfRoomPlayer.isViewer && info && _selfBuffBar)
          {
-            _selfBuffBar.drawBuff(param1);
+            _selfBuffBar.drawBuff(info);
          }
          updateBuffIconBoxPos();
          if(_leftPlayerView)
          {
-            _leftPlayerView.info = param1;
+            _leftPlayerView.info = info;
          }
-         _map.bringToFront(param1);
-         if(_map.currentPlayer && !(param1 is TurnedLiving))
+         _map.bringToFront(info);
+         if(_map.currentPlayer && !(info is TurnedLiving))
          {
             _map.currentPlayer.isAttacking = false;
             _map.currentPlayer = null;
          }
          else
          {
-            _map.currentPlayer = param1 as TurnedLiving;
+            _map.currentPlayer = info as TurnedLiving;
          }
-         updatePlayerState(param1);
+         updatePlayerState(info);
          if(_leftPlayerView)
          {
             addChildAt(_leftPlayerView,this.numChildren - 3);
          }
-         var _loc2_:LocalPlayer = GameControl.Instance.Current.selfGamePlayer;
+         var self:LocalPlayer = GameControl.Instance.Current.selfGamePlayer;
          if(_map.currentPlayer)
          {
-            if(_loc2_)
+            if(self)
             {
-               _loc2_.soulPropEnabled = !_loc2_.isLiving && _map.currentPlayer.team == _loc2_.team;
+               self.soulPropEnabled = !self.isLiving && _map.currentPlayer.team == self.team;
             }
          }
-         else if(_loc2_)
+         else if(self)
          {
-            _loc2_.soulPropEnabled = false;
+            self.soulPropEnabled = false;
          }
       }
       
@@ -1458,7 +1484,7 @@ package game.view
          }
       }
       
-      public function updateControlBarState(param1:Living) : void
+      public function updateControlBarState(info:Living) : void
       {
          if(GameControl.Instance.Current == null)
          {
@@ -1469,15 +1495,15 @@ package game.view
             setPropBarClickEnable(false,true);
             return;
          }
-         if(param1 is TurnedLiving && param1.isLiving && GameControl.Instance.Current.selfGamePlayer.canUseProp(param1 as TurnedLiving))
+         if(info is TurnedLiving && info.isLiving && GameControl.Instance.Current.selfGamePlayer.canUseProp(info as TurnedLiving))
          {
             setPropBarClickEnable(true,false);
          }
-         else if(param1)
+         else if(info)
          {
-            if(!(!GameControl.Instance.Current.selfGamePlayer.isLiving && param1.isSelf))
+            if(!(!GameControl.Instance.Current.selfGamePlayer.isLiving && info.isSelf))
             {
-               if(!(!GameControl.Instance.Current.selfGamePlayer.isLiving && GameControl.Instance.Current.selfGamePlayer.team != param1.team))
+               if(!(!GameControl.Instance.Current.selfGamePlayer.isLiving && GameControl.Instance.Current.selfGamePlayer.team != info.team))
                {
                   setPropBarClickEnable(true,false);
                }
@@ -1489,12 +1515,12 @@ package game.view
          }
       }
       
-      protected function setPropBarClickEnable(param1:Boolean, param2:Boolean) : void
+      protected function setPropBarClickEnable(clickAble:Boolean, isGray:Boolean) : void
       {
-         GameControl.Instance.Current.selfGamePlayer.rightPropEnabled = param1;
+         GameControl.Instance.Current.selfGamePlayer.rightPropEnabled = clickAble;
          if(RoomManager.Instance.current.type != 24)
          {
-            GameControl.Instance.Current.selfGamePlayer.customPropEnabled = param1;
+            GameControl.Instance.Current.selfGamePlayer.customPropEnabled = clickAble;
          }
       }
       
@@ -1523,15 +1549,15 @@ package game.view
          }
       }
       
-      protected function set barrierInfo(param1:CrazyTankSocketEvent) : void
+      protected function set barrierInfo(evt:CrazyTankSocketEvent) : void
       {
          if(_barrier)
          {
-            _barrier.barrierInfoHandler(param1);
+            _barrier.barrierInfoHandler(evt);
          }
       }
       
-      protected function set arrowHammerEnable(param1:Boolean) : void
+      protected function set arrowHammerEnable(b:Boolean) : void
       {
       }
       
@@ -1547,27 +1573,27 @@ package game.view
       {
       }
       
-      protected function setBarrierVisible(param1:Boolean) : void
+      protected function setBarrierVisible(v:Boolean) : void
       {
-         _barrierVisible = param1;
+         _barrierVisible = v;
       }
       
-      protected function setVaneVisible(param1:Boolean) : void
+      protected function setVaneVisible(v:Boolean) : void
       {
-         _vane.visible = param1;
+         _vane.visible = v;
       }
       
-      protected function setPlayerThumbVisible(param1:Boolean) : void
+      protected function setPlayerThumbVisible(v:Boolean) : void
       {
-         _playerThumbnailLController.visible = param1;
+         _playerThumbnailLController.visible = v;
       }
       
-      protected function setEnergyVisible(param1:Boolean) : void
+      protected function setEnergyVisible(v:Boolean) : void
       {
-         var _loc2_:LiveState = _cs as LiveState;
-         if(_loc2_)
+         var ls:LiveState = _cs as LiveState;
+         if(ls)
          {
-            _loc2_.setEnergyVisible(param1);
+            ls.setEnergyVisible(v);
          }
       }
       
@@ -1580,9 +1606,9 @@ package game.view
          return _map;
       }
       
-      protected function set mapWind(param1:Number) : void
+      protected function set mapWind(value:Number) : void
       {
-         _mapWind = param1;
+         _mapWind = value;
          if(_useAble)
          {
             showShoot();
@@ -1594,9 +1620,9 @@ package game.view
          return _currentLivID;
       }
       
-      public function set currentLivID(param1:int) : void
+      public function set currentLivID(value:int) : void
       {
-         _currentLivID = param1;
+         _currentLivID = value;
          showFightPower();
          drawRouteLine(_currentLivID);
          if(_map)
@@ -1607,12 +1633,12 @@ package game.view
       
       private function showFightPower() : void
       {
-         var _loc1_:* = null;
+         var targetLiving:* = null;
          if(_currentLivID != -1 && _allLivings[_currentLivID])
          {
-            _loc1_ = _allLivings[_currentLivID] as Living;
-            _selfGameLiving.setFightPower(_loc1_.fightPower);
-            _self.fightPower = _loc1_.fightPower;
+            targetLiving = _allLivings[_currentLivID] as Living;
+            _selfGameLiving.setFightPower(targetLiving.fightPower);
+            _self.fightPower = targetLiving.fightPower;
          }
       }
       
@@ -1654,72 +1680,71 @@ package game.view
          SocketManager.Instance.removeEventListener("RescueKingBless",__useRescueKingBless);
       }
       
-      private function __useRescueKingBless(param1:CrazyTankSocketEvent) : void
+      private function __useRescueKingBless(event:CrazyTankSocketEvent) : void
       {
-         var _loc6_:Number = NaN;
-         var _loc3_:int = 0;
-         var _loc4_:Number = NaN;
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc2_:Boolean = _loc5_.readBoolean();
-         if(_loc2_)
+         var pwind:Number = NaN;
+         var weatherLevel:int = 0;
+         var weatherRate:Number = NaN;
+         var pkg:PackageIn = event.pkg;
+         var isShoot:Boolean = pkg.readBoolean();
+         if(isShoot)
          {
-            _loc6_ = _loc5_.readInt();
-            _loc3_ = _loc5_.readInt();
-            _loc4_ = _loc5_.readInt() / 100;
-            _mapWind = _loc6_ * _loc4_ / 10 * _windFactor;
+            pwind = pkg.readInt();
+            weatherLevel = pkg.readInt();
+            weatherRate = pkg.readInt() / 100;
+            _mapWind = pwind * weatherRate / 10 * _windFactor;
             _useAble = true;
             showShoot();
          }
       }
       
-      protected function __KeyDown(param1:KeyboardEvent) : void
+      protected function __KeyDown(event:KeyboardEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:Array = [];
-         if(param1.keyCode == KeyStroke.VK_V.getCode())
+         var i:int = 0;
+         var tmpArr:Array = [];
+         if(event.keyCode == KeyStroke.VK_V.getCode())
          {
             var _loc6_:int = 0;
             var _loc5_:* = _allLivings;
-            for each(var _loc3_ in _allLivings)
+            for each(var liv in _allLivings)
             {
-               if(!(_loc3_.isHidden || _loc3_.team == GameControl.Instance.Current.selfGamePlayer.team || !_loc3_.isLiving || _loc3_.LivingID == _self.LivingID))
+               if(!(liv.isHidden || liv.team == GameControl.Instance.Current.selfGamePlayer.team || !liv.isLiving || liv.LivingID == _self.LivingID))
                {
-                  _loc2_.push(_loc3_);
+                  tmpArr.push(liv);
                }
             }
-            _loc4_ = 0;
-            while(_loc4_ <= _loc2_.length - 1)
+            for(i = 0; i <= tmpArr.length - 1; )
             {
-               if((_loc2_[_loc4_] as Living).LivingID == currentLivID)
+               if((tmpArr[i] as Living).LivingID == currentLivID)
                {
-                  if(_loc4_ >= _loc2_.length - 1)
+                  if(i >= tmpArr.length - 1)
                   {
-                     _loc4_ = 0;
+                     i = 0;
                   }
                   else
                   {
-                     _loc4_++;
+                     i++;
                   }
                   break;
                }
-               _loc4_++;
+               i++;
             }
-            if(_loc4_ <= _loc2_.length - 1)
+            if(i <= tmpArr.length - 1)
             {
-               currentLivID = _loc2_[_loc4_].LivingID;
+               currentLivID = tmpArr[i].LivingID;
             }
          }
       }
       
       protected function showShoot() : void
       {
-         var _loc7_:* = null;
-         var _loc1_:* = null;
-         var _loc2_:Number = NaN;
-         var _loc4_:Boolean = false;
-         var _loc5_:Boolean = false;
-         var _loc3_:Point = _selfGameLiving.body.localToGlobal(new Point(30,-20));
-         _loc3_ = _map.globalToLocal(_loc3_);
+         var enemyPos:* = null;
+         var player:* = null;
+         var power:Number = NaN;
+         var xS_Lef_E:Boolean = false;
+         var yS_Up_E:Boolean = false;
+         var shootpos:Point = _selfGameLiving.body.localToGlobal(new Point(30,-20));
+         shootpos = _map.globalToLocal(shootpos);
          _shootAngle = _self.calcBombAngle();
          _arf = _map.airResistance;
          _gf = _map.gravity * _mass * _gravityFactor;
@@ -1727,37 +1752,37 @@ package game.view
          _wa = _mapWind / _mass;
          var _loc9_:int = 0;
          var _loc8_:* = _allLivings;
-         for each(var _loc6_ in _allLivings)
+         for each(var liv in _allLivings)
          {
-            _loc6_.route = null;
-            if(!(_loc6_.isHidden || _loc6_.team == GameControl.Instance.Current.selfGamePlayer.team || !_loc6_.isLiving || _loc6_.LivingID == _self.LivingID))
+            liv.route = null;
+            if(!(liv.isHidden || liv.team == GameControl.Instance.Current.selfGamePlayer.team || !liv.isLiving || liv.LivingID == _self.LivingID))
             {
-               _loc7_ = _loc6_.pos;
+               enemyPos = liv.pos;
                if(_self.isLiving && _self.isAttacking)
                {
-                  _loc6_.route = null;
-                  _loc4_ = true;
-                  _loc5_ = true;
-                  if(_loc3_.x > _loc7_.x)
+                  liv.route = null;
+                  xS_Lef_E = true;
+                  yS_Up_E = true;
+                  if(shootpos.x > enemyPos.x)
                   {
-                     _loc4_ = false;
+                     xS_Lef_E = false;
                   }
-                  if(_loc3_.y > _loc7_.y)
+                  if(shootpos.y > enemyPos.y)
                   {
-                     _loc5_ = false;
+                     yS_Up_E = false;
                   }
-                  if(judgeMaxPower(_loc3_,_loc7_,_shootAngle,_loc4_,_loc5_))
+                  if(judgeMaxPower(shootpos,enemyPos,_shootAngle,xS_Lef_E,yS_Up_E))
                   {
-                     _loc2_ = getPower(0,2000,_loc3_,_loc7_,_shootAngle,_loc4_,_loc5_);
+                     power = getPower(0,2000,shootpos,enemyPos,_shootAngle,xS_Lef_E,yS_Up_E);
                   }
                   else
                   {
-                     _loc2_ = 2100;
+                     power = 2100;
                   }
                   _stateFlag = 0;
-                  if(_loc2_ > 2000)
+                  if(power > 2000)
                   {
-                     if(_loc6_.state)
+                     if(liv.state)
                      {
                         _stateFlag = 1;
                      }
@@ -1765,11 +1790,11 @@ package game.view
                      {
                         _stateFlag = 2;
                      }
-                     _loc6_.state = false;
+                     liv.state = false;
                   }
                   else
                   {
-                     if(_loc6_.state)
+                     if(liv.state)
                      {
                         _stateFlag = 3;
                      }
@@ -1777,18 +1802,18 @@ package game.view
                      {
                         _stateFlag = 4;
                      }
-                     _loc6_.state = true;
+                     liv.state = true;
                   }
-                  _gameLiving = _map.getPhysical(_loc6_.LivingID) as GameLiving;
+                  _gameLiving = _map.getPhysical(liv.LivingID) as GameLiving;
                   if(_stateFlag == 1 || _stateFlag == 2)
                   {
-                     _loc6_.route = null;
+                     liv.route = null;
                   }
                   else
                   {
-                     _loc6_.route = getRouteData(_loc2_,_shootAngle,_loc3_,_loc7_);
+                     liv.route = getRouteData(power,_shootAngle,shootpos,enemyPos);
                   }
-                  _loc6_.fightPower = Number((_loc2_ * 100 / 2000).toFixed(1));
+                  liv.fightPower = Number((power * 100 / 2000).toFixed(1));
                }
             }
          }
@@ -1802,76 +1827,76 @@ package game.view
          }
       }
       
-      protected function judgeMaxPower(param1:Point, param2:Point, param3:Number, param4:Boolean, param5:Boolean) : Boolean
+      protected function judgeMaxPower(shootPos:Point, enemyPos:Point, shootAngle:Number, xS_Lef_E:Boolean, yS_Up_E:Boolean) : Boolean
       {
-         var _loc10_:* = null;
-         var _loc8_:* = null;
-         var _loc7_:int = 0;
-         var _loc6_:int = 0;
-         _loc7_ = 2000 * Math.cos(param3 / 180 * 3.14159265358979);
-         _loc10_ = new EulerVector(param1.x,_loc7_,_wa);
-         _loc6_ = 2000 * Math.sin(param3 / 180 * 3.14159265358979);
-         _loc8_ = new EulerVector(param1.y,_loc6_,_ga);
-         var _loc9_:Boolean = false;
+         var Ex:* = null;
+         var Ey:* = null;
+         var vx:int = 0;
+         var vy:int = 0;
+         vx = 2000 * Math.cos(shootAngle / 180 * 3.14159265358979);
+         Ex = new EulerVector(shootPos.x,vx,_wa);
+         vy = 2000 * Math.sin(shootAngle / 180 * 3.14159265358979);
+         Ey = new EulerVector(shootPos.y,vy,_ga);
+         var timeTemp:Boolean = false;
          while(true)
          {
-            if(param4)
+            if(xS_Lef_E)
             {
-               if(_loc10_.x0 > _map.bound.width)
+               if(Ex.x0 > _map.bound.width)
                {
                   return true;
                }
-               if(_loc10_.x0 < _map.bound.x || _loc8_.x0 > _map.bound.height)
+               if(Ex.x0 < _map.bound.x || Ey.x0 > _map.bound.height)
                {
                   return false;
                }
             }
             else
             {
-               if(_loc10_.x0 < _map.bound.x)
+               if(Ex.x0 < _map.bound.x)
                {
                   break;
                }
-               if(_loc10_.x0 > _map.bound.width || _loc8_.x0 > _map.bound.height)
+               if(Ex.x0 > _map.bound.width || Ey.x0 > _map.bound.height)
                {
                   return false;
                }
             }
-            if(ifHit(_loc10_.x0,_loc8_.x0,param2))
+            if(ifHit(Ex.x0,Ey.x0,enemyPos))
             {
                return true;
             }
-            _loc10_.ComputeOneEulerStep(_mass,_arf,_mapWind,_dt);
-            _loc8_.ComputeOneEulerStep(_mass,_arf,_gf,_dt);
-            if(param4 && param5)
+            Ex.ComputeOneEulerStep(_mass,_arf,_mapWind,_dt);
+            Ey.ComputeOneEulerStep(_mass,_arf,_gf,_dt);
+            if(xS_Lef_E && yS_Up_E)
             {
-               if(_loc8_.x0 > param2.y)
+               if(Ey.x0 > enemyPos.y)
                {
-                  if(_loc10_.x0 < param2.x)
+                  if(Ex.x0 < enemyPos.x)
                   {
                      return false;
                   }
                   return true;
                }
             }
-            else if(param4 && !param5)
+            else if(xS_Lef_E && !yS_Up_E)
             {
-               if(!_loc9_)
+               if(!timeTemp)
                {
-                  if(_loc10_.x0 > param2.x)
+                  if(Ex.x0 > enemyPos.x)
                   {
                      return false;
                   }
-                  if(_loc8_.x0 < param2.y)
+                  if(Ey.x0 < enemyPos.y)
                   {
-                     _loc9_ = true;
+                     timeTemp = true;
                   }
                }
-               else if(_loc9_)
+               else if(timeTemp)
                {
-                  if(_loc8_.x0 > param2.y)
+                  if(Ey.x0 > enemyPos.y)
                   {
-                     if(_loc10_.x0 < param2.x)
+                     if(Ex.x0 < enemyPos.x)
                      {
                         return false;
                      }
@@ -1879,24 +1904,24 @@ package game.view
                   }
                }
             }
-            else if(!param4 && !param5)
+            else if(!xS_Lef_E && !yS_Up_E)
             {
-               if(!_loc9_)
+               if(!timeTemp)
                {
-                  if(_loc10_.x0 < param2.x)
+                  if(Ex.x0 < enemyPos.x)
                   {
                      return false;
                   }
-                  if(_loc8_.x0 < param2.y)
+                  if(Ey.x0 < enemyPos.y)
                   {
-                     _loc9_ = true;
+                     timeTemp = true;
                   }
                }
-               else if(_loc9_)
+               else if(timeTemp)
                {
-                  if(_loc8_.x0 > param2.y)
+                  if(Ey.x0 > enemyPos.y)
                   {
-                     if(_loc10_.x0 < param2.x)
+                     if(Ex.x0 < enemyPos.x)
                      {
                         return true;
                      }
@@ -1904,11 +1929,11 @@ package game.view
                   }
                }
             }
-            else if(!param4 && param5)
+            else if(!xS_Lef_E && yS_Up_E)
             {
-               if(_loc8_.x0 > param2.y)
+               if(Ey.x0 > enemyPos.y)
                {
-                  if(_loc10_.x0 < param2.x)
+                  if(Ex.x0 < enemyPos.x)
                   {
                      return true;
                   }
@@ -1919,312 +1944,311 @@ package game.view
          return true;
       }
       
-      protected function getPower(param1:Number, param2:Number, param3:Point, param4:Point, param5:Number, param6:Boolean, param7:Boolean) : Number
+      protected function getPower(min:Number, max:Number, shootPos:Point, enemyPos:Point, shootAngle:Number, xS_Lef_E:Boolean, yS_Up_E:Boolean) : Number
       {
-         var _loc9_:* = null;
-         var _loc8_:* = null;
-         var _loc11_:int = 0;
-         var _loc10_:int = 0;
-         var _loc12_:int = (param1 + param2) / 2;
-         if(_loc12_ <= param1 || _loc12_ >= param2)
+         var Ex:* = null;
+         var Ey:* = null;
+         var vx:int = 0;
+         var vy:int = 0;
+         var power:int = (min + max) / 2;
+         if(power <= min || power >= max)
          {
-            return _loc12_;
+            return power;
          }
-         _loc11_ = _loc12_ * Math.cos(param5 / 180 * 3.14159265358979);
-         _loc9_ = new EulerVector(param3.x,_loc11_,_wa);
-         _loc10_ = _loc12_ * Math.sin(param5 / 180 * 3.14159265358979);
-         _loc8_ = new EulerVector(param3.y,_loc10_,_ga);
-         var _loc13_:Boolean = false;
+         vx = power * Math.cos(shootAngle / 180 * 3.14159265358979);
+         Ex = new EulerVector(shootPos.x,vx,_wa);
+         vy = power * Math.sin(shootAngle / 180 * 3.14159265358979);
+         Ey = new EulerVector(shootPos.y,vy,_ga);
+         var timeTemp:Boolean = false;
          while(true)
          {
-            if(param6)
+            if(xS_Lef_E)
             {
-               if(_loc9_.x0 > _map.bound.width)
+               if(Ex.x0 > _map.bound.width)
                {
-                  _loc12_ = getPower(param1,_loc12_,param3,param4,param5,param6,param7);
+                  power = getPower(min,power,shootPos,enemyPos,shootAngle,xS_Lef_E,yS_Up_E);
                   break;
                }
-               if(_loc8_.x0 > _map.bound.height)
+               if(Ey.x0 > _map.bound.height)
                {
-                  _loc12_ = getPower(_loc12_,param2,param3,param4,param5,param6,param7);
+                  power = getPower(power,max,shootPos,enemyPos,shootAngle,xS_Lef_E,yS_Up_E);
                   break;
                }
-               if(_loc9_.x0 < _map.bound.x)
+               if(Ex.x0 < _map.bound.x)
                {
-                  _loc12_ = 2100;
+                  power = 2100;
                   return 2100;
                }
             }
             else
             {
-               if(_loc9_.x0 < _map.bound.x)
+               if(Ex.x0 < _map.bound.x)
                {
-                  _loc12_ = getPower(param1,_loc12_,param3,param4,param5,param6,param7);
+                  power = getPower(min,power,shootPos,enemyPos,shootAngle,xS_Lef_E,yS_Up_E);
                   break;
                }
-               if(_loc8_.x0 > _map.bound.height)
+               if(Ey.x0 > _map.bound.height)
                {
-                  _loc12_ = getPower(_loc12_,param2,param3,param4,param5,param6,param7);
+                  power = getPower(power,max,shootPos,enemyPos,shootAngle,xS_Lef_E,yS_Up_E);
                   break;
                }
-               if(_loc9_.x0 > _map.bound.width)
+               if(Ex.x0 > _map.bound.width)
                {
-                  _loc12_ = 2100;
+                  power = 2100;
                   return 2100;
                }
             }
-            if(ifHit(_loc9_.x0,_loc8_.x0,param4))
+            if(ifHit(Ex.x0,Ey.x0,enemyPos))
             {
-               return _loc12_;
+               return power;
             }
-            _loc9_.ComputeOneEulerStep(_mass,_arf,_mapWind,_dt);
-            _loc8_.ComputeOneEulerStep(_mass,_arf,_gf,_dt);
-            if(param6 && param7)
+            Ex.ComputeOneEulerStep(_mass,_arf,_mapWind,_dt);
+            Ey.ComputeOneEulerStep(_mass,_arf,_gf,_dt);
+            if(xS_Lef_E && yS_Up_E)
             {
-               if(_loc8_.x0 > param4.y)
+               if(Ey.x0 > enemyPos.y)
                {
-                  if(_loc9_.x0 < param4.x)
+                  if(Ex.x0 < enemyPos.x)
                   {
-                     _loc12_ = getPower(_loc12_,param2,param3,param4,param5,param6,param7);
+                     power = getPower(power,max,shootPos,enemyPos,shootAngle,xS_Lef_E,yS_Up_E);
                   }
                   else
                   {
-                     _loc12_ = getPower(param1,_loc12_,param3,param4,param5,param6,param7);
+                     power = getPower(min,power,shootPos,enemyPos,shootAngle,xS_Lef_E,yS_Up_E);
                   }
                   break;
                }
             }
-            else if(param6 && !param7)
+            else if(xS_Lef_E && !yS_Up_E)
             {
-               if(!_loc13_)
+               if(!timeTemp)
                {
-                  if(_loc9_.x0 > param4.x)
+                  if(Ex.x0 > enemyPos.x)
                   {
-                     _loc12_ = getPower(_loc12_,param2,param3,param4,param5,param6,param7);
+                     power = getPower(power,max,shootPos,enemyPos,shootAngle,xS_Lef_E,yS_Up_E);
                      break;
                   }
-                  if(_loc8_.x0 < param4.y)
+                  if(Ey.x0 < enemyPos.y)
                   {
-                     _loc13_ = true;
+                     timeTemp = true;
                   }
                }
-               else if(_loc13_)
+               else if(timeTemp)
                {
-                  if(_loc8_.x0 > param4.y)
+                  if(Ey.x0 > enemyPos.y)
                   {
-                     if(_loc9_.x0 < param4.x)
+                     if(Ex.x0 < enemyPos.x)
                      {
-                        _loc12_ = getPower(_loc12_,param2,param3,param4,param5,param6,param7);
+                        power = getPower(power,max,shootPos,enemyPos,shootAngle,xS_Lef_E,yS_Up_E);
                      }
                      else
                      {
-                        _loc12_ = getPower(param1,_loc12_,param3,param4,param5,param6,param7);
+                        power = getPower(min,power,shootPos,enemyPos,shootAngle,xS_Lef_E,yS_Up_E);
                      }
                      break;
                   }
                }
             }
-            else if(!param6 && !param7)
+            else if(!xS_Lef_E && !yS_Up_E)
             {
-               if(!_loc13_)
+               if(!timeTemp)
                {
-                  if(_loc9_.x0 < param4.x)
+                  if(Ex.x0 < enemyPos.x)
                   {
-                     _loc12_ = getPower(_loc12_,param2,param3,param4,param5,param6,param7);
+                     power = getPower(power,max,shootPos,enemyPos,shootAngle,xS_Lef_E,yS_Up_E);
                      break;
                   }
-                  if(_loc8_.x0 < param4.y)
+                  if(Ey.x0 < enemyPos.y)
                   {
-                     _loc13_ = true;
+                     timeTemp = true;
                   }
                }
-               else if(_loc13_)
+               else if(timeTemp)
                {
-                  if(_loc8_.x0 > param4.y)
+                  if(Ey.x0 > enemyPos.y)
                   {
-                     if(_loc9_.x0 > param4.x)
+                     if(Ex.x0 > enemyPos.x)
                      {
-                        _loc12_ = getPower(_loc12_,param2,param3,param4,param5,param6,param7);
+                        power = getPower(power,max,shootPos,enemyPos,shootAngle,xS_Lef_E,yS_Up_E);
                      }
                      else
                      {
-                        _loc12_ = getPower(param1,_loc12_,param3,param4,param5,param6,param7);
+                        power = getPower(min,power,shootPos,enemyPos,shootAngle,xS_Lef_E,yS_Up_E);
                      }
                      break;
                   }
                }
             }
-            else if(!param6 && param7)
+            else if(!xS_Lef_E && yS_Up_E)
             {
-               if(_loc8_.x0 > param4.y)
+               if(Ey.x0 > enemyPos.y)
                {
-                  if(_loc9_.x0 > param4.x)
+                  if(Ex.x0 > enemyPos.x)
                   {
-                     _loc12_ = getPower(_loc12_,param2,param3,param4,param5,param6,param7);
+                     power = getPower(power,max,shootPos,enemyPos,shootAngle,xS_Lef_E,yS_Up_E);
                   }
                   else
                   {
-                     _loc12_ = getPower(param1,_loc12_,param3,param4,param5,param6,param7);
+                     power = getPower(min,power,shootPos,enemyPos,shootAngle,xS_Lef_E,yS_Up_E);
                   }
                   break;
                }
             }
          }
-         return _loc12_;
+         return power;
       }
       
-      protected function ifHit(param1:Number, param2:Number, param3:Point) : Boolean
+      protected function ifHit(bulletX:Number, bulletY:Number, enemyPos:Point) : Boolean
       {
-         if(param1 > param3.x - 15 && param1 < param3.x + 20 && param2 > param3.y - 20 && param2 < param3.y + 30)
+         if(bulletX > enemyPos.x - 15 && bulletX < enemyPos.x + 20 && bulletY > enemyPos.y - 20 && bulletY < enemyPos.y + 30)
          {
             return true;
          }
          return false;
       }
       
-      private function isOutOfMap(param1:EulerVector, param2:EulerVector) : Boolean
+      private function isOutOfMap(ex:EulerVector, ey:EulerVector) : Boolean
       {
-         if(param1.x0 < _map.bound.x || param1.x0 > _map.bound.width || param2.x0 > _map.bound.height)
+         if(ex.x0 < _map.bound.x || ex.x0 > _map.bound.width || ey.x0 > _map.bound.height)
          {
             return true;
          }
          return false;
       }
       
-      private function drawRouteLine(param1:int) : void
+      private function drawRouteLine(id:int) : void
       {
-         var _loc6_:int = 0;
+         var i:int = 0;
          _drawRoute.graphics.clear();
          var _loc8_:int = 0;
          var _loc7_:* = _allLivings;
-         for each(var _loc5_ in _allLivings)
+         for each(var liv in _allLivings)
          {
-            _loc5_.currentSelectId = param1;
+            liv.currentSelectId = id;
          }
-         if(param1 < 0)
-         {
-            return;
-         }
-         var _loc4_:Living = _allLivings[param1];
-         if(!_loc4_)
+         if(id < 0)
          {
             return;
          }
-         var _loc3_:Vector.<Point> = _loc4_.route;
-         if(!_loc3_ || _loc3_.length == 0)
+         var living:Living = _allLivings[id];
+         if(!living)
          {
             return;
          }
-         _collideRect.x = _loc4_.pos.x - 50;
-         _collideRect.y = _loc4_.pos.y - 50;
+         var data:Vector.<Point> = living.route;
+         if(!data || data.length == 0)
+         {
+            return;
+         }
+         _collideRect.x = living.pos.x - 50;
+         _collideRect.y = living.pos.y - 50;
          _drawRoute.graphics.lineStyle(2,16711680,0.5);
-         var _loc2_:int = _loc3_.length;
-         _loc6_ = 0;
-         while(_loc6_ < _loc2_ - 1)
+         var length:int = data.length;
+         for(i = 0; i < length - 1; )
          {
-            drawDashed(_drawRoute.graphics,_loc3_[_loc6_],_loc3_[_loc6_ + 1],8,5);
-            _loc6_++;
+            drawDashed(_drawRoute.graphics,data[i],data[i + 1],8,5);
+            i++;
          }
       }
       
-      private function getRouteData(param1:Number, param2:Number, param3:Point, param4:Point) : Vector.<Point>
+      private function getRouteData(power:Number, shootAngle:Number, shootPos:Point, enemyPos:Point) : Vector.<Point>
       {
-         var _loc9_:* = null;
-         var _loc7_:* = null;
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         if(param1 > 2000)
+         var Ex:* = null;
+         var Ey:* = null;
+         var vx:int = 0;
+         var vy:int = 0;
+         if(power > 2000)
          {
             return null;
          }
-         _loc6_ = param1 * Math.cos(param2 / 180 * 3.14159265358979);
-         _loc9_ = new EulerVector(param3.x,_loc6_,_wa);
-         _loc5_ = param1 * Math.sin(param2 / 180 * 3.14159265358979);
-         _loc7_ = new EulerVector(param3.y,_loc5_,_ga);
-         var _loc8_:Vector.<Point> = new Vector.<Point>();
-         _loc8_.push(new Point(param3.x,param3.y));
-         while(!isOutOfMap(_loc9_,_loc7_))
+         vx = power * Math.cos(shootAngle / 180 * 3.14159265358979);
+         Ex = new EulerVector(shootPos.x,vx,_wa);
+         vy = power * Math.sin(shootAngle / 180 * 3.14159265358979);
+         Ey = new EulerVector(shootPos.y,vy,_ga);
+         var ary:Vector.<Point> = new Vector.<Point>();
+         ary.push(new Point(shootPos.x,shootPos.y));
+         while(!isOutOfMap(Ex,Ey))
          {
-            if(ifHit(_loc9_.x0,_loc7_.x0,param4))
+            if(ifHit(Ex.x0,Ey.x0,enemyPos))
             {
-               return _loc8_;
+               return ary;
             }
-            _loc9_.ComputeOneEulerStep(_mass,_arf,_mapWind,_dt);
-            _loc7_.ComputeOneEulerStep(_mass,_arf,_gf,_dt);
-            _loc8_.push(new Point(_loc9_.x0,_loc7_.x0));
+            Ex.ComputeOneEulerStep(_mass,_arf,_mapWind,_dt);
+            Ey.ComputeOneEulerStep(_mass,_arf,_gf,_dt);
+            ary.push(new Point(Ex.x0,Ey.x0));
          }
-         return _loc8_;
+         return ary;
       }
       
-      public function drawDashed(param1:Graphics, param2:Point, param3:Point, param4:Number, param5:Number) : void
+      public function drawDashed(graphics:Graphics, beginPoint:Point, endPoint:Point, width:Number, grap:Number) : void
       {
-         var _loc9_:Number = NaN;
-         var _loc11_:Number = NaN;
-         if(!param1 || !param2 || !param3 || param4 <= 0 || param5 <= 0)
+         var y:Number = NaN;
+         var x:Number = NaN;
+         if(!graphics || !beginPoint || !endPoint || width <= 0 || grap <= 0)
          {
             return;
          }
-         var _loc8_:Number = param2.x;
-         var _loc10_:Number = param2.y;
-         var _loc12_:Number = Math.atan2(param3.y - _loc10_,param3.x - _loc8_);
-         var _loc7_:Number = Point.distance(param2,param3);
-         trace("big map :" + _loc7_);
-         var _loc6_:* = 0;
-         while(_loc6_ <= _loc7_)
+         var Ox:Number = beginPoint.x;
+         var Oy:Number = beginPoint.y;
+         var radian:Number = Math.atan2(endPoint.y - Oy,endPoint.x - Ox);
+         var totalLen:Number = Point.distance(beginPoint,endPoint);
+         trace("big map :" + totalLen);
+         var currLen:* = 0;
+         while(currLen <= totalLen)
          {
-            if(_collideRect.contains(_loc11_,_loc9_))
+            if(_collideRect.contains(x,y))
             {
                return;
             }
-            _loc11_ = _loc8_ + Math.cos(_loc12_) * _loc6_;
-            _loc9_ = _loc10_ + Math.sin(_loc12_) * _loc6_;
-            param1.moveTo(_loc11_,_loc9_);
-            _loc6_ = Number(_loc6_ + param4);
-            if(_loc6_ > _loc7_)
+            x = Ox + Math.cos(radian) * currLen;
+            y = Oy + Math.sin(radian) * currLen;
+            graphics.moveTo(x,y);
+            currLen = Number(currLen + width);
+            if(currLen > totalLen)
             {
-               _loc6_ = _loc7_;
+               currLen = totalLen;
             }
-            _loc11_ = _loc8_ + Math.cos(_loc12_) * _loc6_;
-            _loc9_ = _loc10_ + Math.sin(_loc12_) * _loc6_;
-            param1.lineTo(_loc11_,_loc9_);
-            _loc6_ = Number(_loc6_ + param5);
+            x = Ox + Math.cos(radian) * currLen;
+            y = Oy + Math.sin(radian) * currLen;
+            graphics.lineTo(x,y);
+            currLen = Number(currLen + grap);
          }
       }
       
-      private function drawArrow(param1:Graphics, param2:Point, param3:Point, param4:Number, param5:int) : void
+      private function drawArrow(graphics:Graphics, start:Point, end:Point, angle:Number, length:int) : void
       {
-         var _loc6_:Number = NaN;
-         var _loc7_:Number = NaN;
-         if(!param2 || !param3 || !param4 || param5 <= 0)
+         var y:Number = NaN;
+         var x:Number = NaN;
+         if(!start || !end || !angle || length <= 0)
          {
             return;
          }
-         var _loc8_:Number = Math.atan2(param3.y - param2.y,param3.x - param2.x);
-         param4 = param4 * 3.14159265358979 / 180;
-         param1.moveTo(param3.x,param3.y);
-         _loc7_ = param3.x + Math.cos(_loc8_ + param4) * param5;
-         _loc6_ = param3.y + Math.sin(_loc8_ + param4) * param5;
-         param1.lineTo(_loc7_,_loc6_);
-         param1.moveTo(param3.x,param3.y);
-         _loc7_ = param3.x + Math.cos(_loc8_ - param4) * param5;
-         _loc6_ = param3.y + Math.sin(_loc8_ - param4) * param5;
-         param1.lineTo(_loc7_,_loc6_);
+         var radian:Number = Math.atan2(end.y - start.y,end.x - start.x);
+         angle = angle * 3.14159265358979 / 180;
+         graphics.moveTo(end.x,end.y);
+         x = end.x + Math.cos(radian + angle) * length;
+         y = end.y + Math.sin(radian + angle) * length;
+         graphics.lineTo(x,y);
+         graphics.moveTo(end.x,end.y);
+         x = end.x + Math.cos(radian - angle) * length;
+         y = end.y + Math.sin(radian - angle) * length;
+         graphics.lineTo(x,y);
       }
       
-      protected function __playerChange(param1:CrazyTankSocketEvent) : void
+      protected function __playerChange(event:CrazyTankSocketEvent) : void
       {
          _drawRoute.graphics.clear();
          _useAble = false;
          currentLivID = -1;
          var _loc4_:int = 0;
          var _loc3_:* = _allLivings;
-         for each(var _loc2_ in _allLivings)
+         for each(var liv in _allLivings)
          {
-            _loc2_.state = false;
+            liv.state = false;
          }
       }
       
-      private function __playerExit(param1:Event) : void
+      private function __playerExit(e:Event) : void
       {
          if(_useAble)
          {
@@ -2232,7 +2256,7 @@ package game.view
          }
       }
       
-      protected function __changeAngle(param1:LivingEvent) : void
+      protected function __changeAngle(event:LivingEvent) : void
       {
          if(_useAble)
          {
@@ -2240,69 +2264,69 @@ package game.view
          }
       }
       
-      protected function __wishofdd(param1:CrazyTankSocketEvent) : void
+      protected function __wishofdd(event:CrazyTankSocketEvent) : void
       {
-         var _loc6_:Number = NaN;
-         var _loc2_:int = 0;
-         var _loc4_:Number = NaN;
-         var _loc5_:Number = NaN;
-         var _loc3_:Boolean = param1.pkg.readBoolean();
-         if(_loc3_)
+         var pwind:Number = NaN;
+         var weatherLevel:int = 0;
+         var weatherRate:Number = NaN;
+         var pwind2:Number = NaN;
+         var shoot:Boolean = event.pkg.readBoolean();
+         if(shoot)
          {
-            _loc6_ = param1.pkg.readInt();
-            _loc2_ = param1.pkg.readInt();
-            _loc4_ = param1.pkg.readInt() / 100;
-            _mapWind = _loc6_ * _loc4_ / 10 * _windFactor;
+            pwind = event.pkg.readInt();
+            weatherLevel = event.pkg.readInt();
+            weatherRate = event.pkg.readInt() / 100;
+            _mapWind = pwind * weatherRate / 10 * _windFactor;
             _useAble = true;
             showShoot();
          }
          else
          {
-            _loc5_ = param1.pkg.readInt();
+            pwind2 = event.pkg.readInt();
             _useAble = false;
          }
       }
       
-      private function __thumbnailControlHandle(param1:GameEvent) : void
+      private function __thumbnailControlHandle(e:GameEvent) : void
       {
-         currentLivID = param1.data as int;
+         currentLivID = e.data as int;
       }
       
       private function calculateRecent() : int
       {
-         var _loc3_:* = undefined;
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:* = 2147483647;
-         var _loc1_:int = -1;
+         var livRoute:* = undefined;
+         var length:int = 0;
+         var distance:int = 0;
+         var min:* = 2147483647;
+         var ret:int = -1;
          var _loc8_:int = 0;
          var _loc7_:* = _allLivings;
-         for each(var _loc6_ in _allLivings)
+         for each(var liv in _allLivings)
          {
-            if(_loc6_.route)
+            if(liv.route)
             {
-               if(RoomManager.Instance.current.type == 29 || !(_loc6_ is SmallEnemy))
+               if(RoomManager.Instance.current.type == 29 || !(liv is SmallEnemy))
                {
-                  _loc3_ = _loc6_.route;
-                  _loc5_ = _loc3_.length;
-                  if(_loc5_ >= 2)
+                  livRoute = liv.route;
+                  length = livRoute.length;
+                  if(length >= 2)
                   {
-                     _loc4_ = getDistance(_loc3_[0],_loc3_[_loc5_ - 1]);
-                     if(_loc4_ < _loc2_)
+                     distance = getDistance(livRoute[0],livRoute[length - 1]);
+                     if(distance < min)
                      {
-                        _loc2_ = _loc4_;
-                        _loc1_ = _loc6_.LivingID;
+                        min = distance;
+                        ret = liv.LivingID;
                      }
                   }
                }
             }
          }
-         return _loc1_;
+         return ret;
       }
       
-      private function getDistance(param1:Point, param2:Point) : int
+      private function getDistance(start:Point, end:Point) : int
       {
-         return (param2.x - param1.x) * (param2.x - param1.x) + (param2.y - param1.y) * (param2.y - param1.y);
+         return (end.x - start.x) * (end.x - start.x) + (end.y - start.y) * (end.y - start.y);
       }
       
       public function get barrier() : DungeonInfoView

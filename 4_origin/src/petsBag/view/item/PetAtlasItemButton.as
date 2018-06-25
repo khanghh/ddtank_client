@@ -20,28 +20,28 @@ package petsBag.view.item
       
       private var _atlasInfo:PetAtlasInfo;
       
-      public function PetAtlasItemButton(param1:PetInfo = null)
+      public function PetAtlasItemButton(info:PetInfo = null)
       {
-         super(param1);
+         super(info);
          tipStyle = "petsBag.view.item.PetAtlasTips";
          tipDirctions = "2,7,5,1,6,4";
       }
       
-      public function setAtlasInfo(param1:PetAtlasInfo, param2:PetInfo = null) : void
+      public function setAtlasInfo(value:PetAtlasInfo, petInfo:PetInfo = null) : void
       {
-         if(param1 != null)
+         if(value != null)
          {
             setButtonStyleName(null);
          }
-         _atlasInfo = param1;
+         _atlasInfo = value;
          if(_atlasInfo)
          {
-            if(param2 != null)
+            if(petInfo != null)
             {
-               _star.starNum(param2.StarLevel,"assets.petsBag.starSmall");
+               _star.starNum(petInfo.StarLevel,"assets.petsBag.starSmall");
                _atlasInfo.isActivate = true;
-               _atlasInfo.level = param2.Level;
-               .super.superInfo = param2;
+               _atlasInfo.level = petInfo.Level;
+               .super.superInfo = petInfo;
             }
             else
             {
@@ -61,16 +61,16 @@ package petsBag.view.item
       
       private function loadPetImage() : void
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(petImagePath(),0);
-         _loc1_.addEventListener("complete",__onComplete);
-         LoadResourceManager.Instance.startLoad(_loc1_,true);
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(petImagePath(),0);
+         loader.addEventListener("complete",__onComplete);
+         LoadResourceManager.Instance.startLoad(loader,true);
       }
       
-      private function __onComplete(param1:LoaderEvent) : void
+      private function __onComplete(e:LoaderEvent) : void
       {
-         var _loc2_:BitmapLoader = param1.loader as BitmapLoader;
-         _loc2_.removeEventListener("complete",__onComplete);
-         if(_loc2_.content)
+         var loader:BitmapLoader = e.loader as BitmapLoader;
+         loader.removeEventListener("complete",__onComplete);
+         if(loader.content)
          {
             if(_image)
             {
@@ -78,7 +78,7 @@ package petsBag.view.item
             }
             if(_bg != null)
             {
-               _image = new Bitmap(_loc2_.bitmapData);
+               _image = new Bitmap(loader.bitmapData);
                _image.filters = ComponentFactory.Instance.creatFilters("grayFilter");
                _image.x = (_bg.width - _image.width) / 2 + _bg.x;
                _image.y = (_bg.height - _image.height) / 2 + _bg.y;

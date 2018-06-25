@@ -47,9 +47,9 @@ package magicStone.components
          super();
       }
       
-      public function init2(param1:int) : void
+      public function init2(type:int) : void
       {
-         this.type = param1;
+         this.type = type;
          initView();
          initEvents();
       }
@@ -101,45 +101,45 @@ package magicStone.components
          _cancelBtn.addEventListener("click",__cancelBtnClick);
       }
       
-      protected function __selectedItemChange(param1:Event) : void
+      protected function __selectedItemChange(event:Event) : void
       {
          updateTotalCost();
       }
       
       public function updateTotalCost() : void
       {
-         var _loc1_:int = 0;
+         var tmpNeedMoney:int = 0;
          switch(int(type))
          {
             case 0:
-               _loc1_ = MagicStoneControl.instance.infoView.getNeedMoney() * int(_numberSelecter.currentValue);
+               tmpNeedMoney = MagicStoneControl.instance.infoView.getNeedMoney() * int(_numberSelecter.currentValue);
                break;
             case 1:
-               _loc1_ = _shopItemInfo.AValue1 * int(_numberSelecter.currentValue);
+               tmpNeedMoney = _shopItemInfo.AValue1 * int(_numberSelecter.currentValue);
          }
          if(_selectedItem.isBind)
          {
-            _totalText.text = _loc1_ + " " + Price.DDTMONEYTOSTRING;
+            _totalText.text = tmpNeedMoney + " " + Price.DDTMONEYTOSTRING;
          }
          else
          {
-            _totalText.text = _loc1_ + " " + Price.MONEYTOSTRING;
+            _totalText.text = tmpNeedMoney + " " + Price.MONEYTOSTRING;
          }
       }
       
-      protected function __okBtnClick(param1:MouseEvent) : void
+      protected function __okBtnClick(event:MouseEvent) : void
       {
-         var _loc2_:int = 0;
+         var tmpNeedMoney:int = 0;
          SoundManager.instance.play("008");
          switch(int(type))
          {
             case 0:
-               _loc2_ = MagicStoneControl.instance.infoView.getNeedMoney() * int(_numberSelecter.currentValue);
+               tmpNeedMoney = MagicStoneControl.instance.infoView.getNeedMoney() * int(_numberSelecter.currentValue);
                break;
             case 1:
-               _loc2_ = _shopItemInfo.AValue1 * int(_numberSelecter.currentValue);
+               tmpNeedMoney = _shopItemInfo.AValue1 * int(_numberSelecter.currentValue);
          }
-         CheckMoneyUtils.instance.checkMoney(_selectedItem.isBind,_loc2_,onCheckComplete);
+         CheckMoneyUtils.instance.checkMoney(_selectedItem.isBind,tmpNeedMoney,onCheckComplete);
       }
       
       protected function onCheckComplete() : void
@@ -155,21 +155,21 @@ package magicStone.components
          dispose();
       }
       
-      protected function __cancelBtnClick(param1:MouseEvent) : void
+      protected function __cancelBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();
       }
       
-      private function __seleterChange(param1:Event) : void
+      private function __seleterChange(event:Event) : void
       {
          SoundManager.instance.play("008");
          updateTotalCost();
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -212,15 +212,15 @@ package magicStone.components
          _cancelBtn = null;
       }
       
-      public function set shopItemInfo(param1:ShopItemInfo) : void
+      public function set shopItemInfo(value:ShopItemInfo) : void
       {
-         _shopItemInfo = param1;
+         _shopItemInfo = value;
          updateTotalCost();
       }
       
-      public function setNumMax(param1:int) : void
+      public function setNumMax(max:int) : void
       {
-         _numberSelecter.valueLimit = "1," + param1;
+         _numberSelecter.valueLimit = "1," + max;
          switch(int(type))
          {
             case 0:

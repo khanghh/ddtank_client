@@ -31,8 +31,8 @@ package loginDevice
       
       private function _initView() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var _cell:* = null;
          _bg = ComponentFactory.Instance.creatBitmap("loginDevice.mainView.rewardDetailsbg");
          addChild(_bg);
          _getRewardBtn = ComponentFactory.Instance.creatComponentByStylename("loginDevice.downView.getRewardBtn");
@@ -41,17 +41,16 @@ package loginDevice
          {
             _getRewardBtn.enable = false;
          }
-         var _loc2_:Array = LoginDeviceManager.instance().dailyRewardInfoList;
-         if(_loc2_)
+         var rewards:Array = LoginDeviceManager.instance().dailyRewardInfoList;
+         if(rewards)
          {
             _rewardsHBox = ComponentFactory.Instance.creatComponentByStylename("loginDevice.dailyView.rewardsHBox");
             addChild(_rewardsHBox);
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_.length)
+            for(i = 0; i < rewards.length; )
             {
-               _loc1_ = LoginDeviceManager.instance().createCell(_loc2_[_loc3_]);
-               _rewardsHBox.addChild(_loc1_);
-               _loc3_++;
+               _cell = LoginDeviceManager.instance().createCell(rewards[i]);
+               _rewardsHBox.addChild(_cell);
+               i++;
             }
          }
       }
@@ -66,7 +65,7 @@ package loginDevice
          _getRewardBtn.removeEventListener("click",__getRewardHandler);
       }
       
-      private function __getRewardHandler(param1:MouseEvent) : void
+      private function __getRewardHandler(e:MouseEvent) : void
       {
          if(LoginDeviceManager.instance().loginTypeUnCheck == "3")
          {

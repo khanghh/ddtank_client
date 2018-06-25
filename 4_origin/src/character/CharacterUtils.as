@@ -11,53 +11,47 @@ package character
          super();
       }
       
-      public static function creatFrames(param1:String) : Vector.<int>
+      public static function creatFrames(frames:String) : Vector.<int>
       {
-         var _loc5_:String = null;
-         var _loc6_:int = 0;
-         var _loc7_:int = 0;
-         var _loc8_:int = 0;
-         var _loc2_:Vector.<int> = new Vector.<int>();
-         var _loc3_:Array = param1.split(",");
-         var _loc4_:int = 0;
-         while(_loc4_ < _loc3_.length)
+         var n:String = null;
+         var start:int = 0;
+         var end:int = 0;
+         var j:int = 0;
+         var result:Vector.<int> = new Vector.<int>();
+         var fs:Array = frames.split(",");
+         for(var i:int = 0; i < fs.length; i++)
          {
-            _loc5_ = _loc3_[_loc4_];
-            if(_loc5_.indexOf("-") > -1)
+            n = fs[i];
+            if(n.indexOf("-") > -1)
             {
-               _loc6_ = _loc5_.split("-")[0];
-               _loc7_ = _loc5_.split("-")[1];
-               _loc8_ = _loc6_;
-               while(_loc8_ <= _loc7_)
+               start = n.split("-")[0];
+               end = n.split("-")[1];
+               for(j = start; j <= end; j++)
                {
-                  _loc2_.push(_loc8_);
-                  _loc8_++;
+                  result.push(j);
                }
             }
             else
             {
-               _loc2_.push(int(_loc5_));
+               result.push(int(n));
             }
-            _loc4_++;
          }
-         return _loc2_;
+         return result;
       }
       
-      public static function creatPoints(param1:String) : Vector.<Point>
+      public static function creatPoints(points:String) : Vector.<Point>
       {
-         var _loc5_:String = null;
-         var _loc6_:Point = null;
-         var _loc2_:Vector.<Point> = new Vector.<Point>();
-         var _loc3_:Array = param1.split("|");
-         var _loc4_:int = 0;
-         while(_loc4_ < _loc3_.length)
+         var n:String = null;
+         var p:Point = null;
+         var result:Vector.<Point> = new Vector.<Point>();
+         var ps:Array = points.split("|");
+         for(var i:int = 0; i < ps.length; i++)
          {
-            _loc5_ = _loc3_[_loc4_];
-            _loc6_ = new Point(Number(_loc5_.split(",")[0]),Number(_loc5_.split(",")[1]));
-            _loc2_.push(_loc6_);
-            _loc4_++;
+            n = ps[i];
+            p = new Point(Number(n.split(",")[0]),Number(n.split(",")[1]));
+            result.push(p);
          }
-         return _loc2_;
+         return result;
       }
    }
 }

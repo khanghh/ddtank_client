@@ -34,10 +34,10 @@ package wantstrong.view
       
       private var _currentContentView:WantStrongContentView;
       
-      public function WantStrongFrame(param1:WantStrongModel)
+      public function WantStrongFrame(model:WantStrongModel)
       {
          super();
-         _model = param1;
+         _model = model;
          initView();
          addEvent();
       }
@@ -68,10 +68,10 @@ package wantstrong.view
          addEventListener("response",_responseHandle);
       }
       
-      protected function _responseHandle(param1:FrameEvent) : void
+      protected function _responseHandle(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
                WantStrongControl.Instance.close();
@@ -93,18 +93,18 @@ package wantstrong.view
          }
       }
       
-      public function setInfo(param1:* = null, param2:Boolean = false) : void
+      public function setInfo(data:* = null, stateChange:Boolean = false) : void
       {
-         if(_state != param1 || param2)
+         if(_state != data || stateChange)
          {
-            _state = param1;
+            _state = data;
             ObjectUtils.disposeObject(_currentContentView);
             _currentContentView = null;
             _currentContentView = ComponentFactory.Instance.creatCustomObject("wantstrong.WantStrongContentView");
             addToContent(_currentContentView as DisplayObject);
             if(_currentContentView)
             {
-               _currentContentView.setData(param1);
+               _currentContentView.setData(data);
             }
          }
       }

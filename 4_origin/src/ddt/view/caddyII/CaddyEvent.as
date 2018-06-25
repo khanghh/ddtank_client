@@ -25,9 +25,9 @@ package ddt.view.caddyII
       
       public var dataList:Vector.<Object>;
       
-      public function CaddyEvent(param1:String, param2:Boolean = false, param3:Boolean = false)
+      public function CaddyEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param2,param3);
+         super(type,bubbles,cancelable);
       }
    }
 }

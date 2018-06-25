@@ -8,37 +8,36 @@ package totem.data
       
       private var _dataList:Array;
       
-      public function HonorUpDataAnalyz(param1:Function)
+      public function HonorUpDataAnalyz(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:XML = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var xml:XML = new XML(data);
          _dataList = [];
-         if(_loc2_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc3_ = _loc2_..item;
-            _loc5_ = 0;
-            while(_loc5_ < _loc3_.length())
+            xmllist = xml..item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc4_ = new HonorUpDataVo();
-               _loc4_.index = _loc3_[_loc5_].@ID;
-               _loc4_.honor = _loc3_[_loc5_].@AddHonor;
-               _loc4_.money = _loc3_[_loc5_].@NeedMoney;
-               _dataList.push(_loc4_);
-               _loc5_++;
+               info = new HonorUpDataVo();
+               info.index = xmllist[i].@ID;
+               info.honor = xmllist[i].@AddHonor;
+               info.money = xmllist[i].@NeedMoney;
+               _dataList.push(info);
+               i++;
             }
             _dataList.sortOn("index",16);
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc2_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeError();
          }

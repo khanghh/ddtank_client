@@ -80,22 +80,22 @@ package magicHouse.magicCollection
          this.addEventListener("enterFrame",__startFrame);
       }
       
-      private function __startFrame(param1:Event) : void
+      private function __startFrame(e:Event) : void
       {
          _currentFrame = Number(_currentFrame) + 1;
          setMask(_currentFrame);
-         var _loc2_:int = 0;
+         var frameNum:int = 0;
          if(_taskFrames.hasOwnProperty(0))
          {
-            _loc2_ = _taskFrames[0];
+            frameNum = _taskFrames[0];
          }
-         if(_loc2_ == 0 && _taskFrames.hasOwnProperty(1))
+         if(frameNum == 0 && _taskFrames.hasOwnProperty(1))
          {
-            _loc2_ = _taskFrames[1];
+            frameNum = _taskFrames[1];
          }
-         if(_currentFrame >= _loc2_)
+         if(_currentFrame >= frameNum)
          {
-            if(_loc2_ >= _total)
+            if(frameNum >= _total)
             {
                _currentFrame = 0;
                _taskFrames[0] = 0;
@@ -105,7 +105,7 @@ package magicHouse.magicCollection
                _taskFrames[1] = 0;
                this.removeEventListener("enterFrame",__startFrame);
                setStarVisible(false);
-               param1.stopImmediatePropagation();
+               e.stopImmediatePropagation();
             }
          }
       }
@@ -123,27 +123,27 @@ package magicHouse.magicCollection
          _taskFrames = new Dictionary();
       }
       
-      public function setMask(param1:Number) : void
+      public function setMask(value:Number) : void
       {
-         var _loc2_:Number = param1 * _scaleValue;
-         if(isNaN(_loc2_) || _loc2_ == 0)
+         var tempWidth:Number = value * _scaleValue;
+         if(isNaN(tempWidth) || tempWidth == 0)
          {
             _progressBarMask.width = 0;
          }
          else
          {
-            if(_loc2_ >= _graphics_thuck.width)
+            if(tempWidth >= _graphics_thuck.width)
             {
-               _loc2_ = _loc2_ % _graphics_thuck.width;
+               tempWidth = tempWidth % _graphics_thuck.width;
             }
-            _progressBarMask.width = _loc2_;
+            _progressBarMask.width = tempWidth;
          }
          _star.x = _progressBarMask.x + _progressBarMask.width;
       }
       
-      private function setStarVisible(param1:Boolean) : void
+      private function setStarVisible(value:Boolean) : void
       {
-         _star.visible = param1;
+         _star.visible = value;
       }
       
       public function getStarVisible() : Boolean
@@ -151,13 +151,13 @@ package magicHouse.magicCollection
          return _star.visible;
       }
       
-      public function initProgress(param1:int, param2:int) : void
+      public function initProgress($lv:int, $exp:int) : void
       {
-         var _loc3_:Number = NaN;
-         var _loc4_:int = 0;
+         var rate:Number = NaN;
+         var tempFrame:int = 0;
          _currentFrame = 0;
-         _exp = param2;
-         _level = param1;
+         _exp = $exp;
+         _level = $lv;
          if(_level != 5)
          {
             _max = MagicHouseModel.instance.levelUpNumber[_level];
@@ -168,13 +168,13 @@ package magicHouse.magicCollection
          }
          if(_max > 0 && _exp < _max)
          {
-            _loc3_ = _exp / _max;
-            _loc4_ = Math.floor(_loc3_ * _total);
-            if(_loc4_ < 1 && _loc3_ > 0)
+            rate = _exp / _max;
+            tempFrame = Math.floor(rate * _total);
+            if(tempFrame < 1 && rate > 0)
             {
-               _loc4_ = 1;
+               tempFrame = 1;
             }
-            _currentFrame = _loc4_;
+            _currentFrame = tempFrame;
          }
          setMask(_currentFrame);
          setExpPercent();
@@ -186,14 +186,14 @@ package magicHouse.magicCollection
          setStarVisible(false);
       }
       
-      public function setProgress(param1:int, param2:int) : void
+      public function setProgress($lv:int, $exp:int) : void
       {
-         if(_level != param1)
+         if(_level != $lv)
          {
             _taskFrames[0] = _total;
-            _level = param1;
+            _level = $lv;
          }
-         _exp = param2;
+         _exp = $exp;
          if(_level != 5)
          {
             _max = MagicHouseModel.instance.levelUpNumber[_level];
@@ -202,25 +202,25 @@ package magicHouse.magicCollection
          {
             _max = 0;
          }
-         var _loc3_:Number = _exp / _max;
-         var _loc4_:int = Math.floor(_loc3_ * _total);
-         if(_loc4_ < 1 && _loc3_ > 0)
+         var rate:Number = _exp / _max;
+         var tempFrame:int = Math.floor(rate * _total);
+         if(tempFrame < 1 && rate > 0)
          {
-            _loc4_ = 1;
+            tempFrame = 1;
          }
-         if(_currentFrame == _loc4_)
+         if(_currentFrame == tempFrame)
          {
             if(_taskFrames[0] && int(_taskFrames[0]) != 0)
             {
                setStarVisible(true);
-               _taskFrames[1] = _loc4_;
+               _taskFrames[1] = tempFrame;
                startProgress();
             }
          }
          else
          {
             setStarVisible(true);
-            _taskFrames[1] = _loc4_;
+            _taskFrames[1] = tempFrame;
             startProgress();
          }
          setExpPercent();

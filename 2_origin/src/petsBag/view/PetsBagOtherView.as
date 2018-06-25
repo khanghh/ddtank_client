@@ -36,18 +36,18 @@ package petsBag.view
             disableAllObj();
             _petExpProgress.noPet();
          }
-         var _loc1_:PetInfo = _currentPet;
-         _petName.text = !!_loc1_?_loc1_.Name:"";
-         _petExpProgress.setProgress(!!_loc1_?_loc1_.GP:0,!!_loc1_?_loc1_.MaxGP:0);
+         var currentPet:PetInfo = _currentPet;
+         _petName.text = !!currentPet?currentPet.Name:"";
+         _petExpProgress.setProgress(!!currentPet?currentPet.GP:0,!!currentPet?currentPet.MaxGP:0);
          updatePetsPropByEvolution();
-         _happyBarPet.info = _loc1_;
+         _happyBarPet.info = currentPet;
          updateSkill();
          updateProperByPetStatus();
          updatePetSatiation();
-         _showPet.update2(_loc1_);
+         _showPet.update2(currentPet);
       }
       
-      override protected function __onChange(param1:Event) : void
+      override protected function __onChange(event:Event) : void
       {
          _currentPet = PetsBagManager.instance().petModel.currentPetInfo;
          if(_currentPet)
@@ -59,19 +59,19 @@ package petsBag.view
       
       override public function updatePetsPropByEvolution() : void
       {
-         var _loc1_:PetInfo = _currentPet;
+         var currentPet:PetInfo = _currentPet;
          var _loc4_:int = 0;
          var _loc3_:* = PetsAdvancedManager.Instance.evolutionDataList;
-         for each(var _loc2_ in PetsAdvancedManager.Instance.evolutionDataList)
+         for each(var info in PetsAdvancedManager.Instance.evolutionDataList)
          {
             if(_infoPlayer.evolutionGrade == 0)
             {
                _currentGradeInfo = new PetFightPropertyData();
                break;
             }
-            if(_loc2_.ID == _infoPlayer.evolutionGrade)
+            if(info.ID == _infoPlayer.evolutionGrade)
             {
-               _currentGradeInfo = _loc2_;
+               _currentGradeInfo = info;
                break;
             }
          }
@@ -79,32 +79,32 @@ package petsBag.view
          {
             _currentGradeInfo = new PetFightPropertyData();
          }
-         if(_loc1_)
+         if(currentPet)
          {
-            _attackPbtn.propValue = _loc1_.Attack + _currentGradeInfo.Attack + getValueByType("attack") + getPetsEatValueByType("attack");
-            _defencePbtn.propValue = _loc1_.Defence + _currentGradeInfo.Defence + getValueByType("defence") + getPetsEatValueByType("defence");
-            _HPPbtn.propValue = _loc1_.Blood + _currentGradeInfo.Blood + getValueByType("hp") + getPetsEatValueByType("hp");
-            _agilityPbtn.propValue = _loc1_.Agility + _currentGradeInfo.Agility + getValueByType("agility") + getPetsEatValueByType("agility");
-            _luckPbtn.propValue = _loc1_.Luck + _currentGradeInfo.Lucky + getValueByType("luck") + getPetsEatValueByType("luck");
+            _attackPbtn.propValue = currentPet.Attack + _currentGradeInfo.Attack + getValueByType("attack") + getPetsEatValueByType("attack");
+            _defencePbtn.propValue = currentPet.Defence + _currentGradeInfo.Defence + getValueByType("defence") + getPetsEatValueByType("defence");
+            _HPPbtn.propValue = currentPet.Blood + _currentGradeInfo.Blood + getValueByType("hp") + getPetsEatValueByType("hp");
+            _agilityPbtn.propValue = currentPet.Agility + _currentGradeInfo.Agility + getValueByType("agility") + getPetsEatValueByType("agility");
+            _luckPbtn.propValue = currentPet.Luck + _currentGradeInfo.Lucky + getValueByType("luck") + getPetsEatValueByType("luck");
          }
       }
       
       override protected function updatePetSatiation() : void
       {
-         var _loc1_:int = 0;
+         var petHappyStar:int = 0;
          if(PetsBagManager.instance().petModel && _currentPet)
          {
-            _loc1_ = _currentPet.PetHappyStar;
-            if(_currentPetHappyStar != _loc1_)
+            petHappyStar = _currentPet.PetHappyStar;
+            if(_currentPetHappyStar != petHappyStar)
             {
                if(_downArowText)
                {
                   ObjectUtils.disposeObject(_downArowText);
                }
                _downArowText = null;
-               if(_loc1_ == 1 || _loc1_ == 2)
+               if(petHappyStar == 1 || petHappyStar == 2)
                {
-                  _downArowText = ComponentFactory.Instance.creatBitmap("assets.petsBag.downArowText" + _downArowTextData[_loc1_]);
+                  _downArowText = ComponentFactory.Instance.creatBitmap("assets.petsBag.downArowText" + _downArowTextData[petHappyStar]);
                   _downArowText.x = _downArowImg.x + (_downArowImg.width - _downArowText.width) / 2;
                   _downArowText.y = _downArowImg.y + _downArowImg.height;
                   addChild(_downArowText);
@@ -114,7 +114,7 @@ package petsBag.view
                {
                   setDownArowVisible(false);
                }
-               _currentPetHappyStar = _loc1_;
+               _currentPetHappyStar = petHappyStar;
             }
          }
          else
@@ -125,23 +125,23 @@ package petsBag.view
       
       override protected function updateSkill() : void
       {
-         var _loc2_:PetInfo = _currentPet;
-         var _loc1_:Array = !!_loc2_?_loc2_.skills:[];
+         var currentPet:PetInfo = _currentPet;
+         var petSkillAll:Array = !!currentPet?currentPet.skills:[];
          if(_petSkillPnl)
          {
-            _petSkillPnl.itemInfo = _loc1_;
+            _petSkillPnl.itemInfo = petSkillAll;
          }
       }
       
-      override protected function updateProperByPetStatus(param1:Boolean = true) : void
+      override protected function updateProperByPetStatus(isNomal:Boolean = true) : void
       {
-         var _loc2_:Number = NaN;
-         var _loc3_:* = null;
+         var currentPercent:Number = NaN;
+         var addTipDesc:* = null;
          updatePropertyTip();
          if(_currentPet)
          {
-            _loc2_ = _currentPet.Hunger / 10000;
-            _loc3_ = "";
+            currentPercent = _currentPet.Hunger / 10000;
+            addTipDesc = "";
             _attackPbtn.detail = LanguageMgr.GetTranslation("ddt.pets.attactDetail");
             _defencePbtn.detail = LanguageMgr.GetTranslation("ddt.pets.defenseDetail");
             _agilityPbtn.detail = LanguageMgr.GetTranslation("ddt.pets.agilityDetail");
@@ -157,15 +157,15 @@ package petsBag.view
             _luckPbtn.valueFilterString = 1;
             _HPPbtn.valueFilterString = 1;
             _defencePbtn.valueFilterString = 1;
-            if(_loc2_ < 0.8)
+            if(currentPercent < 0.8)
             {
-               _loc3_ = _currentPet.PetHappyStar > 0?LanguageMgr.GetTranslation("ddt.pets.petHappyDesc",PetHappyBar.petPercentArray[_currentPet.PetHappyStar]):LanguageMgr.GetTranslation("ddt.pets.petUnFight");
+               addTipDesc = _currentPet.PetHappyStar > 0?LanguageMgr.GetTranslation("ddt.pets.petHappyDesc",PetHappyBar.petPercentArray[_currentPet.PetHappyStar]):LanguageMgr.GetTranslation("ddt.pets.petUnFight");
             }
-            _attackPbtn.detail = LanguageMgr.GetTranslation("ddt.pets.attactDetail") + _loc3_;
-            _defencePbtn.detail = LanguageMgr.GetTranslation("ddt.pets.defenseDetail") + _loc3_;
-            _agilityPbtn.detail = LanguageMgr.GetTranslation("ddt.pets.agilityDetail") + _loc3_;
-            _luckPbtn.detail = LanguageMgr.GetTranslation("ddt.pets.luckDetail") + _loc3_;
-            _HPPbtn.detail = LanguageMgr.GetTranslation("ddt.pets.hpDetail") + _loc3_;
+            _attackPbtn.detail = LanguageMgr.GetTranslation("ddt.pets.attactDetail") + addTipDesc;
+            _defencePbtn.detail = LanguageMgr.GetTranslation("ddt.pets.defenseDetail") + addTipDesc;
+            _agilityPbtn.detail = LanguageMgr.GetTranslation("ddt.pets.agilityDetail") + addTipDesc;
+            _luckPbtn.detail = LanguageMgr.GetTranslation("ddt.pets.luckDetail") + addTipDesc;
+            _HPPbtn.detail = LanguageMgr.GetTranslation("ddt.pets.hpDetail") + addTipDesc;
          }
       }
       

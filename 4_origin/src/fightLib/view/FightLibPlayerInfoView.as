@@ -141,17 +141,17 @@ package fightLib.view
          _iconContainer = null;
       }
       
-      public function set info(param1:PlayerInfo) : void
+      public function set info(val:PlayerInfo) : void
       {
          if(_info != null)
          {
-            if(_info.ID == param1.ID)
+            if(_info.ID == val.ID)
             {
                return;
             }
             _info.removeEventListener("propertychange",__propertyChanged);
          }
-         _info = param1;
+         _info = val;
          _info.addEventListener("propertychange",__propertyChanged);
          update();
       }
@@ -203,9 +203,9 @@ package fightLib.view
          }
       }
       
-      private function __propertyChanged(param1:PlayerPropertyEvent) : void
+      private function __propertyChanged(evt:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Effectiveness"] || param1.changedProperties["DutyLevel"] || param1.changedProperties["ConsortiaName"] || param1.changedProperties["SpouseName"] || param1.changedProperties["Grade"] || param1.changedProperties["Repute"])
+         if(evt.changedProperties["Effectiveness"] || evt.changedProperties["DutyLevel"] || evt.changedProperties["ConsortiaName"] || evt.changedProperties["SpouseName"] || evt.changedProperties["Grade"] || evt.changedProperties["Repute"])
          {
             update();
          }

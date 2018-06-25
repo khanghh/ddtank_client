@@ -16,10 +16,10 @@ package gameCommon.view.experience
       
       private var _color:uint;
       
-      public function ExpTotalCountingTxt(param1:String, param2:String, param3:uint)
+      public function ExpTotalCountingTxt(textStyle:String, textFormatString:String, color:uint)
       {
-         _color = param3;
-         super(param1,param2);
+         _color = color;
+         super(textStyle,textFormatString);
       }
       
       override protected function init() : void

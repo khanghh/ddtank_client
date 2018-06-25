@@ -13,70 +13,70 @@ package explorerManual.data
       
       override public function get materialCondition() : ManualUpgradeInfo
       {
-         var _loc2_:* = null;
-         var _loc1_:int = 0;
+         var info:* = null;
+         var i:int = 0;
          if(_conditions == null)
          {
             return null;
          }
-         _loc1_ = 0;
-         while(_loc1_ < _conditions.length)
+         i = 0;
+         while(i < _conditions.length)
          {
-            if(_conditions[_loc1_].ConditionType == 1)
+            if(_conditions[i].ConditionType == 1)
             {
-               _loc2_ = _conditions[_loc1_];
+               info = _conditions[i];
                break;
             }
-            _loc1_++;
+            i++;
          }
-         return _loc2_;
+         return info;
       }
       
       override public function get upgradeCondition() : ManualUpgradeInfo
       {
-         var _loc2_:* = null;
-         var _loc1_:int = 0;
+         var info:* = null;
+         var i:int = 0;
          if(_conditions == null)
          {
             return null;
          }
-         _loc1_ = 0;
-         while(_loc1_ < _conditions.length)
+         i = 0;
+         while(i < _conditions.length)
          {
-            if(_conditions[_loc1_].ConditionType != 1)
+            if(_conditions[i].ConditionType != 1)
             {
-               _loc2_ = _conditions[_loc1_];
+               info = _conditions[i];
                break;
             }
-            _loc1_++;
+            i++;
          }
-         return _loc2_;
+         return info;
       }
       
       override public function get targetCount() : int
       {
-         var _loc1_:int = 0;
-         var _loc2_:ManualUpgradeInfo = upgradeCondition;
-         if(_loc2_ == null)
+         var target:int = 0;
+         var info:ManualUpgradeInfo = upgradeCondition;
+         if(info == null)
          {
             return 0;
          }
-         switch(int(_loc2_.ConditionType) - 2)
+         switch(int(info.ConditionType) - 2)
          {
             case 0:
-               _loc1_ = _loc2_.Parameter1;
+               target = info.Parameter1;
                break;
             case 1:
-               _loc1_ = _loc2_.Parameter2;
+               target = info.Parameter2;
                break;
             case 2:
             case 3:
             case 4:
             case 5:
             case 6:
-               _loc1_ = 1;
+               target = 1;
          }
-         return _loc1_;
+         return target;
       }
    }
 }

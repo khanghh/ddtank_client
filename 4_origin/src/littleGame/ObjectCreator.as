@@ -15,29 +15,29 @@ package littleGame
          super();
       }
       
-      public static function CreatObject(param1:String, param2:PackageIn = null) : ILittleObject
+      public static function CreatObject(type:String, pkg:PackageIn = null) : ILittleObject
       {
-         var _loc3_:* = null;
-         var _loc4_:* = param1;
+         var object:* = null;
+         var _loc4_:* = type;
          if("normalbogu" !== _loc4_)
          {
             if("bigbogu" !== _loc4_)
             {
                if("bogugiveup" === _loc4_)
                {
-                  _loc3_ = new BoguGiveUp();
+                  object = new BoguGiveUp();
                }
             }
             else
             {
-               _loc3_ = new BigBoguInhaled();
+               object = new BigBoguInhaled();
             }
          }
          else
          {
-            _loc3_ = new NormalBoguInhaled();
+            object = new NormalBoguInhaled();
          }
-         return _loc3_;
+         return object;
       }
    }
 }

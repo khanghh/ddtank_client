@@ -11,13 +11,13 @@ package drgnBoat.views
       
       private var _itemMc:MovieClip;
       
-      public function DrgnBoatGameItem(param1:int, param2:int, param3:int)
+      public function DrgnBoatGameItem(index:int, type:int, posX:int)
       {
          super();
-         this.x = 280 + param3;
-         var _loc4_:int = param1 >= 2?param1 + 1:param1;
-         this.y = 195 + 75 * _loc4_;
-         _itemMc = ComponentFactory.Instance.creat("drgnBoat.itemMc" + param2);
+         this.x = 280 + posX;
+         var t:int = index >= 2?index + 1:index;
+         this.y = 195 + 75 * t;
+         _itemMc = ComponentFactory.Instance.creat("drgnBoat.itemMc" + type);
          _itemMc.gotoAndStop(1);
          addChild(_itemMc);
       }

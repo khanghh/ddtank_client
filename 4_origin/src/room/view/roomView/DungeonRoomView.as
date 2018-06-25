@@ -77,9 +77,9 @@ package room.view.roomView
       
       private var _singleAlsert:BaseAlerFrame;
       
-      public function DungeonRoomView(param1:RoomInfo)
+      public function DungeonRoomView(info:RoomInfo)
       {
-         super(param1);
+         super(info);
       }
       
       override protected function initView() : void
@@ -124,18 +124,18 @@ package room.view.roomView
          __onMapChangedHandler(null);
       }
       
-      private function __onMapChangedHandler(param1:Event) : void
+      private function __onMapChangedHandler(evt:Event) : void
       {
-         var _loc2_:int = -1;
+         var proType:int = -1;
          if(RoomManager.Instance.current.type == 123)
          {
-            _loc2_ = 1;
+            proType = 1;
          }
          else
          {
-            _loc2_ = 2;
+            proType = 2;
          }
-         __switchProViewHandler(_loc2_);
+         __switchProViewHandler(proType);
       }
       
       private function clearRoomProView() : void
@@ -158,15 +158,15 @@ package room.view.roomView
          PositionUtils.setPos(_viewerItems[1],"asset.ddtchallengeroom.ViewerItemPos_1");
       }
       
-      private function __switchProViewHandler(param1:int) : void
+      private function __switchProViewHandler(proType:int) : void
       {
-         var _loc2_:Boolean = false;
-         _loc2_ = param1 == _curSelectType?false:true;
-         if(!_loc2_)
+         var isSwitch:Boolean = false;
+         isSwitch = proType == _curSelectType?false:true;
+         if(!isSwitch)
          {
             return;
          }
-         _curSelectType = param1;
+         _curSelectType = proType;
          if(_curSelectType == 1 && !(_roomPropView is PVEBattleRoomRightPropView))
          {
             clearRoomProView();
@@ -185,9 +185,9 @@ package room.view.roomView
          }
       }
       
-      override protected function __prepareClick(param1:MouseEvent) : void
+      override protected function __prepareClick(evt:MouseEvent) : void
       {
-         super.__prepareClick(param1);
+         super.__prepareClick(evt);
          if(PlayerManager.Instance.Self.dungeonFlag[_info.mapId] && PlayerManager.Instance.Self.dungeonFlag[_info.mapId] == 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.room.RoomIIController.reduceGains"));
@@ -206,9 +206,9 @@ package room.view.roomView
          SocketManager.Instance.removeEventListener("gameEnergyNotEnough",notEnoughEnergyBuy);
       }
       
-      private function __loadWeakGuild(param1:Event) : void
+      private function __loadWeakGuild(evt:Event) : void
       {
-         var _loc2_:* = null;
+         var vane:* = null;
          removeEventListener("addedToStage",__loadWeakGuild);
          if(!WeakGuildManager.Instance.switchUserGuide)
          {
@@ -216,30 +216,29 @@ package room.view.roomView
          }
          if(!PlayerManager.Instance.Self.IsWeakGuildFinish(39) && PlayerManager.Instance.Self.IsWeakGuildFinish(9))
          {
-            _loc2_ = ComponentFactory.Instance.creat("trainer.vane.mainFrame");
-            _loc2_.show();
+            vane = ComponentFactory.Instance.creat("trainer.vane.mainFrame");
+            vane.show();
          }
       }
       
       override protected function initTileList() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          super.initTileList();
          _playerItemContainer = new SimpleTileList(2);
-         var _loc3_:Point = ComponentFactory.Instance.creatCustomObject("asset.ddtroom.matchRoom.listSpace");
-         _playerItemContainer.hSpace = _loc3_.x;
-         _playerItemContainer.vSpace = _loc3_.y;
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("asset.ddtroom.playerListPos");
-         _playerItemContainer.x = _rightBg.x + _loc2_.x;
-         _playerItemContainer.y = _rightBg.y + _loc2_.y;
-         _loc4_ = 0;
-         while(_loc4_ < 4)
+         var space:Point = ComponentFactory.Instance.creatCustomObject("asset.ddtroom.matchRoom.listSpace");
+         _playerItemContainer.hSpace = space.x;
+         _playerItemContainer.vSpace = space.y;
+         var p:Point = ComponentFactory.Instance.creatCustomObject("asset.ddtroom.playerListPos");
+         _playerItemContainer.x = _rightBg.x + p.x;
+         _playerItemContainer.y = _rightBg.y + p.y;
+         for(i = 0; i < 4; )
          {
-            _loc1_ = new RoomPlayerItem(_loc4_);
-            _playerItemContainer.addChild(_loc1_);
-            _playerItems.push(_loc1_);
-            _loc4_++;
+            item = new RoomPlayerItem(i);
+            _playerItemContainer.addChild(item);
+            _playerItems.push(item);
+            i++;
          }
          addChild(_playerItemContainer);
          if(isViewerRoom)
@@ -253,10 +252,10 @@ package room.view.roomView
       
       override protected function checkCanStartGame() : Boolean
       {
-         var _loc6_:Number = NaN;
-         var _loc5_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:DungeonInfo = MapManager.getDungeonInfo(_info.mapId);
+         var nowTime:Number = NaN;
+         var obj:* = null;
+         var obj2:* = null;
+         var dungeon:DungeonInfo = MapManager.getDungeonInfo(_info.mapId);
          if(super.checkCanStartGame())
          {
             if(_info.type == 10 || _info.type == 28)
@@ -267,9 +266,9 @@ package room.view.roomView
             {
                var _loc8_:int = 0;
                var _loc7_:* = _info.players;
-               for each(var _loc1_ in _info.players)
+               for each(var player in _info.players)
                {
-                  if(_loc1_.playerInfo.Grade < 18)
+                  if(player.playerInfo.Grade < 18)
                   {
                      MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.room.RoomIIView2.playerGradeNotEnough",18));
                      return false;
@@ -280,20 +279,20 @@ package room.view.roomView
             {
                var _loc10_:int = 0;
                var _loc9_:* = _info.players;
-               for each(var _loc3_ in _info.players)
+               for each(var players in _info.players)
                {
-                  if(_loc3_.playerInfo.Grade < 45)
+                  if(players.playerInfo.Grade < 45)
                   {
                      MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.room.RoomIIView2.playerGradeNotEnough",45));
                      return false;
                   }
                }
             }
-            _loc6_ = TimeManager.Instance.Now().time;
+            nowTime = TimeManager.Instance.Now().time;
             if(MapManager.Instance.activeDoubleIds.indexOf(_info.mapId) != -1)
             {
-               _loc5_ = MapManager.Instance.activeDoubleDic[_info.mapId];
-               if(_loc5_ == null || _loc6_ < _loc5_.startDate.time || _loc6_ >= _loc5_.endDate.time)
+               obj = MapManager.Instance.activeDoubleDic[_info.mapId];
+               if(obj == null || nowTime < obj.startDate.time || nowTime >= obj.endDate.time)
                {
                   showDungeonChooseMapFrame();
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.room.dungeonRoomView.dungeonEndMsg"));
@@ -302,8 +301,8 @@ package room.view.roomView
             }
             else if(MapManager.Instance.singleDoubleIds.indexOf(_info.mapId) != -1)
             {
-               _loc2_ = MapManager.Instance.singleDoubleDic[_info.mapId];
-               if(_loc2_ == null || _loc6_ < _loc2_.startDate.time || _loc6_ >= _loc2_.endDate.time)
+               obj2 = MapManager.Instance.singleDoubleDic[_info.mapId];
+               if(obj2 == null || nowTime < obj2.startDate.time || nowTime >= obj2.endDate.time)
                {
                   showDungeonChooseMapFrame();
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.room.dungeonRoomView.dungeonEndMsg"));
@@ -315,7 +314,7 @@ package room.view.roomView
                showDungeonChooseMapFrame();
                return false;
             }
-            if(MapManager.Instance.singleDoubleIds.indexOf(_info.mapId) == -1 && !RoomManager.Instance.showSingleAlert && RoomManager.Instance.current.players.length - RoomManager.Instance.current.currentViewerCnt == 1 && (_loc4_.Type != 6 || _info.mapId == 1405))
+            if(MapManager.Instance.singleDoubleIds.indexOf(_info.mapId) == -1 && !RoomManager.Instance.showSingleAlert && RoomManager.Instance.current.players.length - RoomManager.Instance.current.currentViewerCnt == 1 && (dungeon.Type != 6 || _info.mapId == 1405))
             {
                _singleAlsert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.clewContent"),"",LanguageMgr.GetTranslation("cancel"),true,true,true,1);
                _singleAlsert.moveEnable = false;
@@ -329,7 +328,7 @@ package room.view.roomView
                }
                return false;
             }
-            if(_loc4_.Type == 6 && !super.academyDungeonAllow())
+            if(dungeon.Type == 6 && !super.academyDungeonAllow())
             {
                return false;
             }
@@ -340,19 +339,19 @@ package room.view.roomView
       
       private function showDungeonChooseMapFrame() : void
       {
-         var _loc1_:DungeonChooseMapFrame = new DungeonChooseMapFrame();
-         _loc1_.show();
+         var mapChooser:DungeonChooseMapFrame = new DungeonChooseMapFrame();
+         mapChooser.show();
          dispatchEvent(new RoomEvent("openDungeonChooser"));
       }
       
-      protected function __onSelectCheckClick(param1:MouseEvent) : void
+      protected function __onSelectCheckClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
             trace(RoomManager.Instance.current.type);
             RoomManager.Instance.showSingleAlert = _singleAlsert.selectedCheckButton.selected;
@@ -416,14 +415,14 @@ package room.view.roomView
          _btnSwitchTeam = null;
       }
       
-      override protected function __startClick(param1:MouseEvent) : void
+      override protected function __startClick(evt:MouseEvent) : void
       {
          if(!_info.isAllReady())
          {
             return;
          }
          SoundManager.instance.play("008");
-         CheckWeaponManager.instance.setFunction(this,__startClick,[param1]);
+         CheckWeaponManager.instance.setFunction(this,__startClick,[evt]);
          if(checkCanStartGame())
          {
             checkSendCheckEnergy();
@@ -474,11 +473,11 @@ package room.view.roomView
          }
       }
       
-      protected function notEnoughEnergyBuy(param1:CrazyTankSocketEvent) : void
+      protected function notEnoughEnergyBuy(e:CrazyTankSocketEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:Boolean = param1.pkg.readBoolean();
-         if(!_loc2_)
+         var alertAsk:* = null;
+         var isAlert:Boolean = e.pkg.readBoolean();
+         if(!isAlert)
          {
             doSendStartOrPreGame();
          }
@@ -488,58 +487,58 @@ package room.view.roomView
          }
          else
          {
-            _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.view.energy.takeCardOutBuyPromptTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"RoomNotEnoughEnergyAlert",60,false,1);
-            _loc3_.moveEnable = false;
-            _loc3_.addEventListener("response",__alertBuyEnergy);
+            alertAsk = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("tank.view.energy.takeCardOutBuyPromptTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"RoomNotEnoughEnergyAlert",60,false,1);
+            alertAsk.moveEnable = false;
+            alertAsk.addEventListener("response",__alertBuyEnergy);
          }
       }
       
-      protected function __alertBuyEnergy(param1:FrameEvent) : void
+      protected function __alertBuyEnergy(event:FrameEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
+         var energyData:* = null;
+         var confirmFrame2:* = null;
          SoundManager.instance.play("008");
-         var _loc2_:RoomNotEnoughEnergyAlert = param1.currentTarget as RoomNotEnoughEnergyAlert;
-         _loc2_.removeEventListener("response",__alertBuyEnergy);
-         RoomManager.Instance.isNotAlertEnergyNotEnough = _loc2_.isNoPrompt;
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var frame:RoomNotEnoughEnergyAlert = event.currentTarget as RoomNotEnoughEnergyAlert;
+         frame.removeEventListener("response",__alertBuyEnergy);
+         RoomManager.Instance.isNotAlertEnergyNotEnough = frame.isNoPrompt;
+         if(event.responseCode == 3 || event.responseCode == 2)
          {
             if(PlayerManager.Instance.Self.bagLocked)
             {
                BaglockedManager.Instance.show();
-               ObjectUtils.disposeObject(_loc2_);
+               ObjectUtils.disposeObject(frame);
                return;
             }
-            _loc4_ = PlayerManager.Instance.energyData[PlayerManager.Instance.Self.buyEnergyCount + 1];
-            if(!_loc4_)
+            energyData = PlayerManager.Instance.energyData[PlayerManager.Instance.Self.buyEnergyCount + 1];
+            if(!energyData)
             {
-               ObjectUtils.disposeObject(_loc2_);
+               ObjectUtils.disposeObject(frame);
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.energy.cannotbuyEnergy"));
                return;
             }
-            if(_loc2_.isBand && PlayerManager.Instance.Self.BandMoney < _loc4_.Money)
+            if(frame.isBand && PlayerManager.Instance.Self.BandMoney < energyData.Money)
             {
-               _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.energy.changeMoneyCostTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-               _loc3_.moveEnable = false;
-               _loc3_.addEventListener("response",__changeMoneyBuyConfirm,false,0,true);
+               confirmFrame2 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.energy.changeMoneyCostTxt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+               confirmFrame2.moveEnable = false;
+               confirmFrame2.addEventListener("response",__changeMoneyBuyConfirm,false,0,true);
             }
-            else if(!_loc2_.isBand && PlayerManager.Instance.Self.Money < _loc4_.Money)
+            else if(!frame.isBand && PlayerManager.Instance.Self.Money < energyData.Money)
             {
                LeavePageManager.showFillFrame();
             }
             else
             {
-               SocketManager.Instance.out.sendBuyEnergy(_loc2_.isBand);
+               SocketManager.Instance.out.sendBuyEnergy(frame.isBand);
             }
          }
-         else if(param1.responseCode == 4 || param1.responseCode == 0 || param1.responseCode == 1)
+         else if(event.responseCode == 4 || event.responseCode == 0 || event.responseCode == 1)
          {
             if(isPreOrGame())
             {
                doSendStartOrPreGame();
             }
          }
-         ObjectUtils.disposeObject(_loc2_);
+         ObjectUtils.disposeObject(frame);
       }
       
       protected function isPreOrGame() : Boolean
@@ -551,16 +550,16 @@ package room.view.roomView
          return true;
       }
       
-      protected function __changeMoneyBuyConfirm(param1:FrameEvent) : void
+      protected function __changeMoneyBuyConfirm(evt:FrameEvent) : void
       {
-         var _loc2_:* = null;
+         var energyData:* = null;
          SoundManager.instance.play("008");
-         var _loc3_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc3_.removeEventListener("response",__changeMoneyBuyConfirm);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",__changeMoneyBuyConfirm);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            _loc2_ = PlayerManager.Instance.energyData[PlayerManager.Instance.Self.buyEnergyCount + 1];
-            if(PlayerManager.Instance.Self.Money < _loc2_.Money)
+            energyData = PlayerManager.Instance.energyData[PlayerManager.Instance.Self.buyEnergyCount + 1];
+            if(PlayerManager.Instance.Self.Money < energyData.Money)
             {
                LeavePageManager.showFillFrame();
                return;
@@ -571,12 +570,12 @@ package room.view.roomView
       
       private function _showBoGuTip() : void
       {
-         var _loc1_:* = null;
+         var boGu:* = null;
          if(PlayerManager.Instance.Self._isDupSimpleTip)
          {
             PlayerManager.Instance.Self._isDupSimpleTip = false;
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("room.RoomDupSimpleTipFram");
-            _loc1_.show();
+            boGu = ComponentFactory.Instance.creatComponentByStylename("room.RoomDupSimpleTipFram");
+            boGu.show();
          }
       }
    }

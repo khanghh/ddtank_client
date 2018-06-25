@@ -14,15 +14,15 @@ package church.view.invite
       
       private var _currentList:Array;
       
-      public function ChurchInviteModel(param1:IEventDispatcher = null)
+      public function ChurchInviteModel(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
-      public function setList(param1:int, param2:Array) : void
+      public function setList(type:int, data:Array) : void
       {
-         _type = param1;
-         _currentList = param2;
+         _type = type;
+         _currentList = data;
          dispatchEvent(new Event("listupdate"));
       }
       

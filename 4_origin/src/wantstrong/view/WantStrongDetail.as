@@ -70,41 +70,39 @@ package wantstrong.view
       
       private var _cell:BagCell;
       
-      public function WantStrongDetail(param1:WantStrongMenuData)
+      public function WantStrongDetail(item:WantStrongMenuData)
       {
          super();
-         _item = param1;
+         _item = item;
          initView();
       }
       
       private function initView() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var lightStar:* = null;
+         var j:int = 0;
+         var grayStar:* = null;
          _bg = ComponentFactory.Instance.creat("wantstrong.right.cellbg");
          addChild(_bg);
          _titleFrameText = ComponentFactory.Instance.creatComponentByStylename("wantstrong.view.mainFrame.rightTitle.Text");
          _titleFrameText.text = _item.title;
          addChild(_titleFrameText);
-         _loc4_ = 0;
-         while(_loc4_ < _item.starNum)
+         for(i = 0; i < _item.starNum; )
          {
-            _loc3_ = ComponentFactory.Instance.creatBitmap("wantstrong.right.xing");
-            _loc3_.x = 135 + 21 * _loc4_;
-            _loc3_.y = 6;
-            addChild(_loc3_);
-            _loc4_++;
+            lightStar = ComponentFactory.Instance.creatBitmap("wantstrong.right.xing");
+            lightStar.x = 135 + 21 * i;
+            lightStar.y = 6;
+            addChild(lightStar);
+            i++;
          }
-         _loc1_ = _item.starNum;
-         while(_loc1_ < 5)
+         for(j = _item.starNum; j < 5; )
          {
-            _loc2_ = ComponentFactory.Instance.creatBitmap("wantstrong.right.grayxing");
-            _loc2_.x = 135 + 21 * _loc1_;
-            _loc2_.y = 6;
-            addChild(_loc2_);
-            _loc1_++;
+            grayStar = ComponentFactory.Instance.creatBitmap("wantstrong.right.grayxing");
+            grayStar.x = 135 + 21 * j;
+            grayStar.y = 6;
+            addChild(grayStar);
+            j++;
          }
          if(_item.type != 5)
          {
@@ -128,18 +126,7 @@ package wantstrong.view
             {
                _freeHonorFrameText.x = _freeHonorFrameText.x + 8;
             }
-            if(_item.awardType == 1)
-            {
-               _freeHonorFrameText.text = LanguageMgr.GetTranslation("ddt.wantStrong.view.honor");
-            }
-            else if(_item.awardType == 2)
-            {
-               _freeHonorFrameText.text = LanguageMgr.GetTranslation("ddt.wantStrong.view.prestige");
-            }
-            else
-            {
-               _freeHonorFrameText.text = LanguageMgr.GetTranslation("ddt.wantStrong.view.token");
-            }
+            _freeHonorFrameText.text = LanguageMgr.GetTranslation("ddt.wantStrong.view.priceValue" + _item.awardType);
             addChild(_freeHonorFrameText);
             _allBackContentFrameText = ComponentFactory.Instance.creatComponentByStylename("wantstrong.view.mainFrame.allBackRightContent.Text");
             _allBackContentFrameText.text = LanguageMgr.GetTranslation("ddt.wantStrong.view.allFindBack");
@@ -152,18 +139,7 @@ package wantstrong.view
             {
                _allHonorFrameText.x = _allHonorFrameText.x + 8;
             }
-            if(_item.awardType == 1)
-            {
-               _allHonorFrameText.text = LanguageMgr.GetTranslation("ddt.wantStrong.view.honor");
-            }
-            else if(_item.awardType == 2)
-            {
-               _allHonorFrameText.text = LanguageMgr.GetTranslation("ddt.wantStrong.view.prestige");
-            }
-            else
-            {
-               _allHonorFrameText.text = LanguageMgr.GetTranslation("ddt.wantStrong.view.token");
-            }
+            _allHonorFrameText.text = LanguageMgr.GetTranslation("ddt.wantStrong.view.priceValue" + _item.awardType);
             addChild(_allHonorFrameText);
             _freeBackBtn = ComponentFactory.Instance.creatComponentByStylename("wantstrong.freeback");
             _freeBackBtn.addEventListener("click",freeBackBtnHandler);
@@ -180,53 +156,53 @@ package wantstrong.view
          addChild(_icon);
       }
       
-      private function freeBackBtnHandler(param1:MouseEvent) : void
+      private function freeBackBtnHandler(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.wantStrong.view.freeFindBackAlert"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
-         _loc2_.addEventListener("response",__alertFreeBack);
+         var alertAsk:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.wantStrong.view.freeFindBackAlert"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+         alertAsk.addEventListener("response",__alertFreeBack);
       }
       
-      private function __alertFreeBack(param1:FrameEvent) : void
+      private function __alertFreeBack(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
                SocketManager.Instance.out.sendWantStrongBack(_item.bossType,false);
          }
-         param1.currentTarget.removeEventListener("response",__alertFreeBack);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         event.currentTarget.removeEventListener("response",__alertFreeBack);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
-      private function allBackBtnHandler(param1:MouseEvent) : void
+      private function allBackBtnHandler(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.wantStrong.view.allFindBackAlert",_item.moneyNum),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false,0);
-         _loc2_.addEventListener("response",__alertAllBack);
+         var alertAsk:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.wantStrong.view.allFindBackAlert",_item.moneyNum),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false,0);
+         alertAsk.addEventListener("response",__alertAllBack);
       }
       
-      private function __alertAllBack(param1:FrameEvent) : void
+      private function __alertAllBack(event:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc3_.removeEventListener("response",__alertAllBack);
+         var alertFrame:* = null;
+         var frame:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__alertAllBack);
          SoundManager.instance.playButtonSound();
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
                if(PlayerManager.Instance.Self.bagLocked)
                {
                   BaglockedManager.Instance.show();
-                  param1.currentTarget.removeEventListener("response",__alertAllBack);
-                  ObjectUtils.disposeObject(param1.currentTarget);
+                  event.currentTarget.removeEventListener("response",__alertAllBack);
+                  ObjectUtils.disposeObject(event.currentTarget);
                   return;
                }
-               CheckMoneyUtils.instance.checkMoney(_loc3_.isBand,_item.moneyNum,onCheckComplete);
+               CheckMoneyUtils.instance.checkMoney(frame.isBand,_item.moneyNum,onCheckComplete);
                break;
          }
-         _loc3_.dispose();
+         frame.dispose();
       }
       
       protected function onCheckComplete() : void
@@ -234,12 +210,12 @@ package wantstrong.view
          SocketManager.Instance.out.sendWantStrongBack(_item.bossType,true,CheckMoneyUtils.instance.isBind);
       }
       
-      private function goBtnHandler(param1:MouseEvent) : void
+      private function goBtnHandler(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:WantStrongDetail = param1.target.parent as WantStrongDetail;
+         var target:WantStrongDetail = event.target.parent as WantStrongDetail;
          _bagInfoItems = PlayerManager.Instance.Self.PropBag.items;
-         var _loc3_:* = _loc2_._item.id;
+         var _loc3_:* = target._item.id;
          if(101 !== _loc3_)
          {
             if(102 !== _loc3_)

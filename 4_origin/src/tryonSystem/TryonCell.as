@@ -18,9 +18,9 @@ package tryonSystem
       
       private var _background:ScaleBitmapImage;
       
-      public function TryonCell(param1:DisplayObject, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:Boolean = true)
+      public function TryonCell(bg:DisplayObject, $info:ItemTemplateInfo = null, showLoading:Boolean = true, showTip:Boolean = true)
       {
-         super(param1,param2,param3,param4);
+         super(bg,$info,showLoading,showTip);
       }
       
       override protected function init() : void
@@ -31,27 +31,27 @@ package tryonSystem
          overBg = ComponentFactory.Instance.creatComponentByStylename("asset.core.tryon.cellLight");
       }
       
-      override protected function onMouseOut(param1:MouseEvent) : void
+      override protected function onMouseOut(evt:MouseEvent) : void
       {
       }
       
-      override protected function onMouseOver(param1:MouseEvent) : void
+      override protected function onMouseOver(evt:MouseEvent) : void
       {
       }
       
-      override protected function updateSize(param1:Sprite) : void
+      override protected function updateSize(sp:Sprite) : void
       {
-         super.updateSize(param1);
-         PositionUtils.setPos(param1,"ddt.tryoncell.pos");
+         super.updateSize(sp);
+         PositionUtils.setPos(sp,"ddt.tryoncell.pos");
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         if(!overBg.visible && param1)
+         if(!overBg.visible && value)
          {
             SoundManager.instance.play("008");
          }
-         overBg.visible = param1;
+         overBg.visible = value;
          TaskManager.itemAwardSelected = this.info.TemplateID;
       }
       

@@ -32,31 +32,31 @@ package ddt.view.caddyII.items
          super();
       }
       
-      public function initView(param1:String, param2:String, param3:String, param4:int) : void
+      public function initView(userName:String, goodsName:String, url:String, number:int) : void
       {
-         var _loc5_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.corel.formLineBig");
-         _loc5_.x = 118;
-         _loc5_.y = 1;
-         var _loc6_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.corel.formLineBig");
-         _loc6_.x = 283;
-         _loc6_.y = 1;
+         var line1:Bitmap = ComponentFactory.Instance.creatBitmap("asset.corel.formLineBig");
+         line1.x = 118;
+         line1.y = 1;
+         var line2:Bitmap = ComponentFactory.Instance.creatBitmap("asset.corel.formLineBig");
+         line2.x = 283;
+         line2.y = 1;
          _bg = ComponentFactory.Instance.creat("caddy.badLuck.paihangItemBG");
-         _bg.setFrame(param4 % 2 + 1);
+         _bg.setFrame(number % 2 + 1);
          _bg.width = 580;
          _bg.height = 31;
          addChild(_bg);
-         if(param4 > 3)
+         if(number > 3)
          {
             _bitMapTxt = ComponentFactory.Instance.creatComponentByStylename("caddy.badLuck.numbTxt");
             _bitMapTxt.x = 47;
             _bitMapTxt.y = 6;
-            _bitMapTxt.text = param4 + "th";
+            _bitMapTxt.text = number + "th";
             addChild(_bitMapTxt);
             _bitMapTxt.visible = false;
          }
          else
          {
-            _bitMap = ComponentFactory.Instance.creatBitmap("asset.awardSystem.th" + param4);
+            _bitMap = ComponentFactory.Instance.creatBitmap("asset.awardSystem.th" + number);
             _bitMap.x = 37;
             _bitMap.y = 2;
             addChild(_bitMap);
@@ -65,29 +65,29 @@ package ddt.view.caddyII.items
          _userNameTxt = ComponentFactory.Instance.creatComponentByStylename("caddy.badLuck.userNameTxt");
          _userNameTxt.x = 163;
          _userNameTxt.y = 5;
-         _userNameTxt.text = param1;
+         _userNameTxt.text = userName;
          addChild(_userNameTxt);
          _userNameTxt.visible = false;
          _goodsNameTxt = ComponentFactory.Instance.creatComponentByStylename("caddy.badLuck.goodsNametxt");
-         _goodsNameTxt.text = param2;
+         _goodsNameTxt.text = goodsName;
          _goodsNameTxt.x = 290;
          _goodsNameTxt.y = 5;
          addChild(_goodsNameTxt);
          _goodsNameTxt.visible = false;
-         addChild(_loc5_);
-         addChild(_loc6_);
+         addChild(line1);
+         addChild(line2);
       }
       
-      public function upDataUserName(param1:Object) : void
+      public function upDataUserName(obj:Object) : void
       {
-         var _loc9_:* = null;
-         var _loc2_:* = null;
-         var _loc8_:* = null;
-         var _loc5_:* = null;
-         var _loc6_:* = null;
-         var _loc7_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
+         var info:* = null;
+         var text:* = null;
+         var tempList:* = null;
+         var info1:* = null;
+         var textList:* = null;
+         var i:int = 0;
+         var cell:* = null;
+         var count:* = null;
          if(_userNameTxt)
          {
             if(_bitMapTxt)
@@ -100,79 +100,78 @@ package ddt.view.caddyII.items
             }
             _userNameTxt.visible = true;
             _goodsNameTxt.visible = true;
-            if(param1["Nickname"])
+            if(obj["Nickname"])
             {
-               _userNameTxt.text = param1["Nickname"];
+               _userNameTxt.text = obj["Nickname"];
             }
-            _loc9_ = getItemInfoById(param1["TemplateID"]);
-            if(_loc9_)
+            info = getItemInfoById(obj["TemplateID"]);
+            if(info)
             {
-               _loc9_.IsUsed = false;
-               _loc8_ = [];
-               if(param1["TemplateID1"])
+               info.IsUsed = false;
+               tempList = [];
+               if(obj["TemplateID1"])
                {
-                  _loc5_ = getItemInfoById(param1["TemplateID1"]);
+                  info1 = getItemInfoById(obj["TemplateID1"]);
                }
-               _loc8_.push(_loc9_);
-               if(_loc5_)
+               tempList.push(info);
+               if(info1)
                {
-                  _loc5_.IsUsed = false;
-                  if(_loc5_.CategoryID == 24)
+                  info1.IsUsed = false;
+                  if(info1.CategoryID == 24)
                   {
-                     _loc8_.unshift(_loc5_);
+                     tempList.unshift(info1);
                   }
                   else
                   {
-                     _loc8_.push(_loc5_);
+                     tempList.push(info1);
                   }
                }
-               _loc6_ = [];
-               _loc7_ = 0;
-               while(_loc7_ < _loc8_.length)
+               textList = [];
+               for(i = 0; i < tempList.length; )
                {
-                  _loc4_ = new PersonalInfoCell();
-                  _loc4_.info = _loc8_[_loc7_];
-                  _loc4_.x = 508 + _loc7_ * 25;
-                  _loc4_.y = 5;
-                  _loc4_.tipGapH = -10;
-                  _loc4_.tipGapV = -40;
+                  cell = new PersonalInfoCell();
+                  cell.info = tempList[i];
+                  cell.x = 508 + i * 25;
+                  cell.y = 5;
+                  cell.tipGapH = -10;
+                  cell.tipGapV = -40;
                   var _loc10_:* = 0.5;
-                  _loc4_.scaleY = _loc10_;
-                  _loc4_.scaleX = _loc10_;
-                  if(_loc4_.info.CategoryID == 24)
+                  cell.scaleY = _loc10_;
+                  cell.scaleX = _loc10_;
+                  if(cell.info.CategoryID == 24)
                   {
-                     _loc6_.push(_loc4_.info.Name);
+                     textList.push(cell.info.Name);
                   }
                   else
                   {
-                     if(int(param1["count"]) > 1)
+                     if(int(obj["count"]) > 1)
                      {
-                        _loc3_ = "x" + param1["count"];
+                        count = "x" + obj["count"];
                      }
                      else
                      {
-                        _loc3_ = "";
+                        count = "";
                      }
-                     _loc6_.push(_loc4_.info.Name + _loc3_);
+                     textList.push(cell.info.Name + count);
                   }
-                  addChild(_loc4_);
-                  _loc7_++;
+                  addChild(cell);
+                  i++;
                }
-               _loc2_ = _loc6_.join(",");
-               _goodsNameTxt.text = _loc2_;
+               text = textList.join(",");
+               _goodsNameTxt.text = text;
             }
          }
       }
       
-      private function getItemInfoById(param1:int) : InventoryItemInfo
+      private function getItemInfoById(id:int) : InventoryItemInfo
       {
          var _loc4_:int = 0;
          var _loc3_:* = RouletteManager.instance.goodList;
-         for each(var _loc2_ in RouletteManager.instance.goodList)
+         for each(var item in RouletteManager.instance.goodList)
          {
-            if(_loc2_.TemplateID == param1)
+            if(item.TemplateID == id)
             {
-               return _loc2_;
+               return item;
             }
          }
          return null;

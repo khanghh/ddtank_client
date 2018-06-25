@@ -24,91 +24,90 @@ package ddt.view.tips
       
       private var _place:int = -1;
       
-      public function MarkPropsTip(param1:int)
+      public function MarkPropsTip(place:int)
       {
          super();
-         _place = param1;
+         _place = place;
          _tipbackgound = ComponentFactory.Instance.creat("core.GoodsTipBg");
          addChild(_tipbackgound);
-         var _loc2_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("core.mark.Props");
-         _loc2_.text = LanguageMgr.GetTranslation("mark.propsTipTile");
-         addChild(_loc2_);
+         var tipTile:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("core.mark.Props");
+         tipTile.text = LanguageMgr.GetTranslation("mark.propsTipTile");
+         addChild(tipTile);
          _propCnt = ComponentFactory.Instance.creatComponentByStylename("core.mark.PropsCnt");
          addChild(_propCnt);
-         _propCnt.x = _loc2_.x + _loc2_.textWidth + 5;
-         var _loc3_:Image = ComponentFactory.Instance.creatComponentByStylename("HRuleAsset");
-         PositionUtils.setPos(_loc3_,"markTip.linePos");
-         addChild(_loc3_);
+         _propCnt.x = tipTile.x + tipTile.textWidth + 5;
+         var line1:Image = ComponentFactory.Instance.creatComponentByStylename("HRuleAsset");
+         PositionUtils.setPos(line1,"markTip.linePos");
+         addChild(line1);
       }
       
-      public function set data(param1:PlayerInfo) : void
+      public function set data(info:PlayerInfo) : void
       {
-         var _loc2_:int = 0;
-         var _loc6_:* = null;
-         var _loc8_:* = null;
-         var _loc10_:* = null;
-         var _loc5_:* = null;
-         _propCnt.text = LanguageMgr.GetTranslation("mark.propCnt",param1.getMarkChipCntByPlace(_place));
-         var _loc4_:int = 39;
-         var _loc11_:Dictionary = param1.getMarkChipPropsByPlace(_place);
-         var _loc12_:Array = MarkMgr.inst.sortedProps(_loc11_);
-         var _loc7_:MarkProData = null;
-         _loc2_ = 0;
-         while(_loc2_ < _loc12_.length)
+         var idx:int = 0;
+         var name:* = null;
+         var value:* = null;
+         var name1:* = null;
+         var value1:* = null;
+         _propCnt.text = LanguageMgr.GetTranslation("mark.propCnt",info.getMarkChipCntByPlace(_place));
+         var offsetY:int = 39;
+         var props:Dictionary = info.getMarkChipPropsByPlace(_place);
+         var sortedProps:Array = MarkMgr.inst.sortedProps(props);
+         var pro:MarkProData = null;
+         for(idx = 0; idx < sortedProps.length; )
          {
-            _loc7_ = _loc12_[_loc2_] as MarkProData;
-            if(_loc7_ != null)
+            pro = sortedProps[idx] as MarkProData;
+            if(pro != null)
             {
-               _loc6_ = ComponentFactory.Instance.creatComponentByStylename("core.mark.PropTxtName");
-               _loc6_.text = LanguageMgr.GetTranslation("mark.propertyName",LanguageMgr.GetTranslation("mark.pro" + _loc7_.type));
-               _loc8_ = ComponentFactory.Instance.creatComponentByStylename("core.mark.PropTxtValue");
-               _loc8_.htmlText = LanguageMgr.GetTranslation("mark.propertyValue",_loc7_.value + _loc7_.attachValue);
-               PositionUtils.setPos(_loc6_,{
+               name = ComponentFactory.Instance.creatComponentByStylename("core.mark.PropTxtName");
+               name.text = LanguageMgr.GetTranslation("mark.propertyName",LanguageMgr.GetTranslation("mark.pro" + pro.type));
+               value = ComponentFactory.Instance.creatComponentByStylename("core.mark.PropTxtValue");
+               value.htmlText = LanguageMgr.GetTranslation("mark.propertyValue",pro.value + pro.attachValue);
+               PositionUtils.setPos(name,{
                   "x":7,
-                  "y":_loc4_
+                  "y":offsetY
                });
-               PositionUtils.setPos(_loc8_,{
-                  "x":_loc6_.x + _loc6_.textWidth + 3,
-                  "y":_loc4_
+               PositionUtils.setPos(value,{
+                  "x":name.x + name.textWidth + 3,
+                  "y":offsetY
                });
-               addChild(_loc6_);
-               addChild(_loc8_);
-               _loc4_ = _loc4_ + (_loc8_.textHeight + 4);
+               addChild(name);
+               addChild(value);
+               offsetY = offsetY + (value.textHeight + 4);
             }
-            _loc2_++;
+            idx++;
          }
-         var _loc13_:Image = ComponentFactory.Instance.creatComponentByStylename("HRuleAsset");
-         PositionUtils.setPos(_loc13_,{
+         var line2:Image = ComponentFactory.Instance.creatComponentByStylename("HRuleAsset");
+         PositionUtils.setPos(line2,{
             "x":5,
-            "y":_loc4_
+            "y":offsetY
          });
-         addChild(_loc13_);
-         _loc4_ = _loc4_ + 7;
-         var _loc9_:Array = param1.getSuitListByPlace(_place);
+         addChild(line2);
+         offsetY = offsetY + 7;
+         var suits:Array = info.getSuitListByPlace(_place);
          var _loc15_:int = 0;
          var _loc14_:* = MarkMgr.inst.model.cfgSuit;
-         for each(var _loc3_ in MarkMgr.inst.model.cfgSuit)
+         for each(var it in MarkMgr.inst.model.cfgSuit)
          {
-            if(_loc9_.indexOf(_loc3_.Id) > -1)
+            if(suits.indexOf(it.Id) > -1)
             {
-               _loc10_ = ComponentFactory.Instance.creatComponentByStylename("core.mark.PropTxtName");
-               _loc10_.text = _loc3_.Name + "：";
-               _loc5_ = ComponentFactory.Instance.creatComponentByStylename("core.mark.PropTxtValue");
-               _loc5_.htmlText = _loc3_.Explain;
-               PositionUtils.setPos(_loc10_,{
+               name1 = ComponentFactory.Instance.creatComponentByStylename("core.mark.PropTxtName");
+               name1.text = it.Name + "：";
+               value1 = ComponentFactory.Instance.creatComponentByStylename("core.mark.PropTxtValue");
+               value1.htmlText = it.Explain;
+               PositionUtils.setPos(name1,{
                   "x":7,
-                  "y":_loc4_
+                  "y":offsetY
                });
-               PositionUtils.setPos(_loc5_,{
-                  "x":_loc10_.x + _loc10_.textWidth + 3,
-                  "y":_loc4_
+               PositionUtils.setPos(value1,{
+                  "x":name1.x + name1.textWidth + 3,
+                  "y":offsetY
                });
-               addChild(_loc10_);
-               addChild(_loc5_);
-               _loc4_ = _loc4_ + (_loc5_.textHeight + 4);
+               addChild(name1);
+               addChild(value1);
+               offsetY = offsetY + (value1.textHeight + 4);
             }
          }
-         _tipbackgound.height = _loc4_ + 8;
+         _tipbackgound.height = offsetY + 8;
          _tipbackgound.width = 205;
       }
       

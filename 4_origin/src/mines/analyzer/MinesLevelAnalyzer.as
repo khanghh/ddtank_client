@@ -10,53 +10,53 @@ package mines.analyzer
       
       public var equipList:Vector.<EquipmentInfo>;
       
-      public function MinesLevelAnalyzer(param1:Function)
+      public function MinesLevelAnalyzer(onCompleteCall:Function)
       {
          toolList = new Vector.<ToolLevelInfo>();
          equipList = new Vector.<EquipmentInfo>();
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc5_:* = null;
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:XML = new XML(param1);
-         if(_loc4_.@value == "true")
+         var xmllist:* = null;
+         var info:* = null;
+         var info1:* = null;
+         var xml:XML = new XML(data);
+         if(xml.@value == "true")
          {
-            _loc5_ = _loc4_..Item;
+            xmllist = xml..Item;
             var _loc8_:int = 0;
-            var _loc7_:* = _loc5_;
-            for each(var _loc2_ in _loc5_)
+            var _loc7_:* = xmllist;
+            for each(var item in xmllist)
             {
-               _loc6_ = new ToolLevelInfo();
-               _loc3_ = new EquipmentInfo();
-               if(_loc2_.@LevelCount == 1 || _loc2_.@PickAxeExp != 0)
+               info = new ToolLevelInfo();
+               info1 = new EquipmentInfo();
+               if(item.@LevelCount == 1 || item.@PickAxeExp != 0)
                {
-                  _loc6_.level = _loc2_.@LevelCount;
-                  _loc6_.exp = _loc2_.@PickAxeExp;
-                  toolList.push(_loc6_);
+                  info.level = item.@LevelCount;
+                  info.exp = item.@PickAxeExp;
+                  toolList.push(info);
                }
-               if(_loc2_.@LevelCount == 1 || _loc2_.@HeadExp != 0)
+               if(item.@LevelCount == 1 || item.@HeadExp != 0)
                {
-                  _loc3_.level = _loc2_.@LevelCount;
-                  _loc3_.headExp = _loc2_.@HeadExp;
-                  _loc3_.clothExp = _loc2_.@ClothExp;
-                  _loc3_.swordExp = _loc2_.@SwordExp;
-                  _loc3_.shieldExp = _loc2_.@ShieldExp;
-                  _loc3_.attack = _loc2_.@Attack;
-                  _loc3_.defence = _loc2_.@Defence;
-                  _loc3_.agility = _loc2_.@Agility;
-                  _loc3_.lucky = _loc2_.@Lucky;
-                  equipList.push(_loc3_);
+                  info1.level = item.@LevelCount;
+                  info1.headExp = item.@HeadExp;
+                  info1.clothExp = item.@ClothExp;
+                  info1.swordExp = item.@SwordExp;
+                  info1.shieldExp = item.@ShieldExp;
+                  info1.attack = item.@Attack;
+                  info1.defence = item.@Defence;
+                  info1.agility = item.@Agility;
+                  info1.lucky = item.@Lucky;
+                  equipList.push(info1);
                }
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc4_.@message;
+            message = xml.@message;
             onAnalyzeError();
          }
       }

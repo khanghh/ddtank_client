@@ -52,9 +52,9 @@ package ddt.view
          _mc.gotoAndStop(1);
       }
       
-      public function setCrFrame(param1:String) : void
+      public function setCrFrame(str:String) : void
       {
-         cFrame = param1;
+         cFrame = str;
       }
       
       private function mcover() : void

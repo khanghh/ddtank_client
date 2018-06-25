@@ -20,7 +20,7 @@ package ddt.manager
          return instance;
       }
       
-      public function recordClick(param1:int) : void
+      public function recordClick(entryID:int) : void
       {
       }
    }

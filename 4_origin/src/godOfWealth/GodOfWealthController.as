@@ -16,7 +16,7 @@ package godOfWealth
       
       private var _godOfWealthView:GodOfWealthMainView;
       
-      public function GodOfWealthController(param1:inner)
+      public function GodOfWealthController(single:inner)
       {
          super();
       }
@@ -37,14 +37,14 @@ package godOfWealth
          GodOfWealthManager.getInstance().addEventListener("gow_result_suc",onResultSuc);
       }
       
-      private function onOpenView(param1:CEvent) : void
+      private function onOpenView(e:CEvent) : void
       {
          GameInSocketOut.sendGodOfWealthInfo();
          _godOfWealthView = new GodOfWealthMainView();
          LayerManager.Instance.addToLayer(_godOfWealthView,3,true,1);
       }
       
-      private function onUpdate(param1:CEvent) : void
+      private function onUpdate(e:CEvent) : void
       {
          if(_godOfWealthView && _godOfWealthView.parent)
          {
@@ -52,10 +52,10 @@ package godOfWealth
          }
       }
       
-      private function onResultSuc(param1:CEvent) : void
+      private function onResultSuc(e:CEvent) : void
       {
-         var _loc2_:String = LanguageMgr.GetTranslation("godOfWealth.detail.rewardAlert",GodOfWealthManager.getInstance().reward);
-         MessageTipManager.getInstance().show(_loc2_,0,false,1);
+         var msg:String = LanguageMgr.GetTranslation("godOfWealth.detail.rewardAlert",GodOfWealthManager.getInstance().reward);
+         MessageTipManager.getInstance().show(msg,0,false,1);
       }
    }
 }

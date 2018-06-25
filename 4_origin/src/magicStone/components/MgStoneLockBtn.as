@@ -32,7 +32,7 @@ package magicStone.components
          this.removeEventListener("click",clickthis);
       }
       
-      private function clickthis(param1:MouseEvent) : void
+      private function clickthis(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          this.dragStart(stage.mouseX,stage.mouseY);
@@ -43,7 +43,7 @@ package magicStone.components
          return this;
       }
       
-      public function dragStop(param1:DragEffect) : void
+      public function dragStop(effect:DragEffect) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -51,9 +51,9 @@ package magicStone.components
             BaglockedManager.Instance.show();
             return;
          }
-         if(param1.target is MgStoneCell)
+         if(effect.target is MgStoneCell)
          {
-            (param1.target as MgStoneCell).lockMgStone();
+            (effect.target as MgStoneCell).lockMgStone();
             setTimeout(continueDrag,75);
          }
       }
@@ -66,10 +66,10 @@ package magicStone.components
          }
       }
       
-      public function dragStart(param1:Number, param2:Number) : void
+      public function dragStart(stageX:Number, stageY:Number) : void
       {
-         var _loc3_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.beadSystem.beadInset.lockIcon");
-         DragManager.startDrag(this,this,_loc3_,param1,param2,"move",false);
+         var dragAsset:Bitmap = ComponentFactory.Instance.creatBitmap("asset.beadSystem.beadInset.lockIcon");
+         DragManager.startDrag(this,this,dragAsset,stageX,stageY,"move",false);
       }
       
       override public function get width() : Number

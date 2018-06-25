@@ -10,24 +10,24 @@ package rescue.analyzer
       
       public var list:Array;
       
-      public function RescueRewardAnalyzer(param1:Function)
+      public function RescueRewardAnalyzer(onCompleteCall:Function)
       {
          list = [];
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc2_:* = null;
-         var _loc5_:XML = XML(param1);
-         var _loc3_:XMLList = _loc5_.Item;
+         var rewardInfo:* = null;
+         var xml:XML = XML(data);
+         var items:XMLList = xml.Item;
          var _loc7_:int = 0;
-         var _loc6_:* = _loc3_;
-         for each(var _loc4_ in _loc3_)
+         var _loc6_:* = items;
+         for each(var item in items)
          {
-            _loc2_ = new RescueRewardInfo();
-            ObjectUtils.copyPorpertiesByXML(_loc2_,_loc4_);
-            list.push(_loc2_);
+            rewardInfo = new RescueRewardInfo();
+            ObjectUtils.copyPorpertiesByXML(rewardInfo,item);
+            list.push(rewardInfo);
          }
          onAnalyzeComplete();
       }

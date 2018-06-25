@@ -28,11 +28,11 @@ package ddt.view.tips
       
       protected var dx:int;
       
-      public function Repute(param1:int = 0, param2:int = 0)
+      public function Repute(re:int = 0, level:int = 0)
       {
          super();
-         _repute = param1;
-         _level = param2;
+         _repute = re;
+         _level = level;
          _reputeBg = ComponentFactory.Instance.creat("asset.core.leveltip.ReputeBg");
          _reputeTxt = ComponentFactory.Instance.creat("core.ReputeTxt");
          dx = _reputeTxt.x;
@@ -41,15 +41,15 @@ package ddt.view.tips
          setRepute(_repute);
       }
       
-      public function set level(param1:int) : void
+      public function set level($level:int) : void
       {
-         this._level = param1;
+         this._level = $level;
       }
       
-      public function setRepute(param1:int) : void
+      public function setRepute(re:int) : void
       {
-         _repute = param1;
-         _reputeTxt.text = _level <= 3 || param1 > 9999999 || param1 == 0?LanguageMgr.GetTranslation("tank.room.RoomIIPlayerItem.new"):String(param1);
+         _repute = re;
+         _reputeTxt.text = _level <= 3 || re > 9999999 || re == 0?LanguageMgr.GetTranslation("tank.room.RoomIIPlayerItem.new"):String(re);
          _reputeTxt.width = _reputeTxt.textWidth + 3;
          if(_align == "left")
          {
@@ -63,10 +63,10 @@ package ddt.view.tips
          }
       }
       
-      public function set align(param1:String) : void
+      public function set align($align:String) : void
       {
-         _align = param1;
-         if(param1 == "left")
+         _align = $align;
+         if($align == "left")
          {
             _reputeBg.x = 0;
             _reputeTxt.x = _reputeBg.x + dx;

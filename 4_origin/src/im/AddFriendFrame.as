@@ -48,8 +48,8 @@ package im
          _alertInfo.escEnable = true;
          _alertInfo.submitEnabled = false;
          info = _alertInfo;
-         var _loc1_:Scale9CornerImage = ComponentFactory.Instance.creatComponentByStylename("im.addFriendInputBG");
-         addToContent(_loc1_);
+         var bg:Scale9CornerImage = ComponentFactory.Instance.creatComponentByStylename("im.addFriendInputBG");
+         addToContent(bg);
          _inputText = ComponentFactory.Instance.creat("textinput");
          _inputText.maxChars = 14;
          addToContent(_inputText);
@@ -71,7 +71,7 @@ package im
          ChatManager.Instance.output.contentField.addEventListener("nicknameClickToOutside",__onNameClick);
       }
       
-      private function __inputTextChange(param1:Event = null) : void
+      private function __inputTextChange(evt:Event = null) : void
       {
          if(_inputText.text != "")
          {
@@ -84,15 +84,15 @@ package im
          _name = _inputText.text;
       }
       
-      private function __onNameClick(param1:ChatEvent) : void
+      private function __onNameClick(e:ChatEvent) : void
       {
-         _inputText.text = String(param1.data);
+         _inputText.text = String(e.data);
          __inputTextChange(null);
       }
       
-      protected function __fieldKeyDown(param1:KeyboardEvent) : void
+      protected function __fieldKeyDown(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(event.keyCode == 13)
          {
             if(_name == "" || _name == null)
             {
@@ -101,18 +101,18 @@ package im
             submit();
             SoundManager.instance.play("008");
          }
-         else if(param1.keyCode == 27)
+         else if(event.keyCode == 27)
          {
             hide();
             SoundManager.instance.play("008");
          }
-         param1.stopImmediatePropagation();
-         param1.stopPropagation();
+         event.stopImmediatePropagation();
+         event.stopPropagation();
       }
       
-      private function __frameEvent(param1:FrameEvent) : void
+      private function __frameEvent(evt:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
                hide();
@@ -146,7 +146,7 @@ package im
          dispose();
       }
       
-      private function __setFocus(param1:Event) : void
+      private function __setFocus(evt:Event) : void
       {
          IMManager.IS_SHOW_SUB = true;
          _inputText.setFocus();

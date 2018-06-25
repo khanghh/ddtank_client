@@ -43,11 +43,11 @@ package ddt.view.chat
       override protected function init() : void
       {
          super.init();
-         var _loc1_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("chat.BugleInputFrameTitleString"));
-         _loc1_.moveEnable = false;
-         _loc1_.submitLabel = LanguageMgr.GetTranslation("chat.BugleInputFrame.ok.text");
-         _loc1_.customPos = ComponentFactory.Instance.creatCustomObject("chat.BugleInputFrame.ok.textPos");
-         info = _loc1_;
+         var alertInfo:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("chat.BugleInputFrameTitleString"));
+         alertInfo.moveEnable = false;
+         alertInfo.submitLabel = LanguageMgr.GetTranslation("chat.BugleInputFrame.ok.text");
+         alertInfo.customPos = ComponentFactory.Instance.creatCustomObject("chat.BugleInputFrame.ok.textPos");
+         info = alertInfo;
          _bg = ComponentFactory.Instance.creatComponentByStylename("chat.BugleInputFrameBg");
          _textBg = ComponentFactory.Instance.creatComponentByStylename("chat.BugleInputFrameTextBg");
          _textTitle = ComponentFactory.Instance.creatComponentByStylename("chat.BugleInputTitleBitmap.text");
@@ -71,17 +71,17 @@ package ddt.view.chat
          addEventListener("response",__onResponse);
       }
       
-      private function __setFocus(param1:Event) : void
+      private function __setFocus(e:Event) : void
       {
          setTimeout(_inputTxt.setFocus,100);
          initEvents();
       }
       
-      protected function __onResponse(param1:FrameEvent) : void
+      protected function __onResponse(e:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         switch(int(param1.responseCode))
+         var str:* = null;
+         var reg:* = null;
+         switch(int(e.responseCode))
          {
             case 0:
             case 1:
@@ -111,10 +111,10 @@ package ddt.view.chat
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("chat.BugleInputNull"));
                   return;
                }
-               _loc2_ = FilterWordManager.filterWrod(_inputTxt.text);
-               _loc3_ = /\r/gm;
-               _loc2_ = _loc2_.replace(_loc3_,"");
-               SocketManager.Instance.out.sendBBugle(_loc2_,templateID);
+               str = FilterWordManager.filterWrod(_inputTxt.text);
+               reg = /\r/gm;
+               str = str.replace(reg,"");
+               SocketManager.Instance.out.sendBBugle(str,templateID);
                _inputTxt.text = "";
                _remainTxt.text = _remainStr + _inputTxt.maxChars.toString();
                if(parent)
@@ -125,7 +125,7 @@ package ddt.view.chat
          }
       }
       
-      private function __upDateRemainTxt(param1:Event) : void
+      private function __upDateRemainTxt(e:Event) : void
       {
          _remainTxt.text = _remainStr + (String(_inputTxt.maxChars - _inputTxt.text.length));
       }

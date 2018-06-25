@@ -46,12 +46,12 @@ package quest
       
       public var questType:int;
       
-      public function QuestCateView(param1:int = -1, param2:ScrollPanel = null)
+      public function QuestCateView(cateID:int = -1, scrollPanel:ScrollPanel = null)
       {
          super();
          _itemArr = [];
-         questType = param1;
-         _scrollPanel = param2;
+         questType = cateID;
+         _scrollPanel = scrollPanel;
          initView();
          initEvent();
          collapse();
@@ -68,16 +68,16 @@ package quest
       
       public function get contentHeight() : int
       {
-         var _loc1_:int = _titleView.height;
+         var titleHeight:int = _titleView.height;
          if(!_isExpanded)
          {
-            return _loc1_;
+            return titleHeight;
          }
          if(_data.list.length <= QuestCateListView.MAX_LIST_LENGTH)
          {
-            return _loc1_ + QuestCateListView.MAX_LIST_LENGTH * 38;
+            return titleHeight + QuestCateListView.MAX_LIST_LENGTH * 38;
          }
-         return _loc1_ + _listView.height;
+         return titleHeight + _listView.height;
       }
       
       public function get length() : int
@@ -110,21 +110,20 @@ package quest
          updateData();
       }
       
-      public function set taskStyle(param1:int) : void
+      public function set taskStyle(style:int) : void
       {
-         var _loc2_:int = 0;
-         _titleView.taskStyle = param1;
-         _loc2_ = 0;
-         while(_loc2_ < _itemArr.length)
+         var i:int = 0;
+         _titleView.taskStyle = style;
+         for(i = 0; i < _itemArr.length; )
          {
-            (_itemArr[_loc2_] as TaskPannelStripView).taskStyle = param1;
-            _loc2_++;
+            (_itemArr[i] as TaskPannelStripView).taskStyle = style;
+            i++;
          }
       }
       
-      override public function set y(param1:Number) : void
+      override public function set y(value:Number) : void
       {
-         .super.y = param1;
+         .super.y = value;
       }
       
       private function initEvent() : void
@@ -159,7 +158,7 @@ package quest
          return true;
       }
       
-      private function __onQuestData(param1:TaskEvent) : void
+      private function __onQuestData(e:TaskEvent) : void
       {
          if(!TaskControl.instance.MainFrame)
          {
@@ -172,7 +171,7 @@ package quest
          }
       }
       
-      private function __onTitleClicked(param1:MouseEvent) : void
+      private function __onTitleClicked(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          TaskControl.instance.MainFrame.currentNewCateView = null;
@@ -182,12 +181,12 @@ package quest
          }
       }
       
-      private function __onListChange(param1:Event) : void
+      private function __onListChange(e:Event) : void
       {
          updateView();
       }
       
-      public function set dataProvider(param1:Array) : void
+      public function set dataProvider(value:Array) : void
       {
       }
       
@@ -228,17 +227,17 @@ package quest
          addChild(_listView);
          var _loc3_:int = 0;
          var _loc2_:* = _itemArr;
-         for each(var _loc1_ in _itemArr)
+         for each(var item in _itemArr)
          {
-            _loc1_.onShow();
+            item.onShow();
          }
          updateTitleView();
          dispatchEvent(new Event(EXPANDED));
       }
       
-      private function set enable(param1:Boolean) : void
+      private function set enable(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             _titleView.enable = true;
          }
@@ -248,18 +247,18 @@ package quest
             _titleView.enable = false;
             collapse();
          }
-         if(visible != param1)
+         if(visible != value)
          {
-            visible = param1;
+            visible = value;
             dispatchEvent(new Event("enableChange"));
          }
       }
       
       private function updateData() : void
       {
-         var _loc4_:Boolean = false;
-         var _loc5_:* = 0;
-         var _loc3_:* = null;
+         var needScrollBar:Boolean = false;
+         var i:* = 0;
+         var questItem:* = null;
          _data = TaskManager.instance.getAvailableQuests(questType);
          if(_data.list.length == 0 || questType == 4)
          {
@@ -274,61 +273,59 @@ package quest
          }
          if(_data.list.length > QuestCateListView.MAX_LIST_LENGTH)
          {
-            _loc4_ = true;
+            needScrollBar = true;
          }
          var _loc7_:int = 0;
          var _loc6_:* = _itemArr;
-         for each(var _loc2_ in _itemArr)
+         for each(var item in _itemArr)
          {
-            _loc2_.dispose();
+            item.dispose();
          }
          _itemList.disposeAllChildren();
          _itemArr = [];
-         var _loc1_:Boolean = false;
-         _loc5_ = uint(0);
-         while(_loc5_ < _data.list.length)
+         var actived:Boolean = false;
+         for(i = uint(0); i < _data.list.length; )
          {
-            _loc3_ = new TaskPannelStripView(_data.list[_loc5_]);
-            _loc3_.addEventListener("changed",__onItemActived);
-            if(_loc4_)
+            questItem = new TaskPannelStripView(_data.list[i]);
+            questItem.addEventListener("changed",__onItemActived);
+            if(needScrollBar)
             {
-               _loc3_.x = 3;
+               questItem.x = 3;
             }
             else
             {
-               _loc3_.x = 10;
+               questItem.x = 10;
             }
             if(TaskManager.instance.selectedQuest)
             {
-               if(_loc3_.info.id == 363 || _loc3_.info.id == TaskManager.instance.selectedQuest.id)
+               if(questItem.info.id == 363 || questItem.info.id == TaskManager.instance.selectedQuest.id)
                {
-                  _loc3_.active();
-                  _loc1_ = true;
+                  questItem.active();
+                  actived = true;
                }
             }
-            _itemArr.push(_loc3_);
-            _itemList.addChild(_loc3_);
-            _loc5_++;
+            _itemArr.push(questItem);
+            _itemList.addChild(questItem);
+            i++;
          }
-         if(!_loc1_)
+         if(!actived)
          {
             (_itemArr[0] as TaskPannelStripView).active();
          }
          _listView.invalidateViewport();
       }
       
-      private function __onItemActived(param1:TaskEvent) : void
+      private function __onItemActived(e:TaskEvent) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _itemList.numChildren)
+         var i:int = 0;
+         for(i = 0; i < _itemList.numChildren; )
          {
-            if((_itemList.getChildAt(_loc2_) as TaskPannelStripView).info != param1.info)
+            if((_itemList.getChildAt(i) as TaskPannelStripView).info != e.info)
             {
-               (_itemList.getChildAt(_loc2_) as TaskPannelStripView).status = "normal";
+               (_itemList.getChildAt(i) as TaskPannelStripView).status = "normal";
             }
-            (_itemList.getChildAt(_loc2_) as TaskPannelStripView).update();
-            _loc2_++;
+            (_itemList.getChildAt(i) as TaskPannelStripView).update();
+            i++;
          }
       }
       
@@ -362,7 +359,7 @@ package quest
       
       public function dispose() : void
       {
-         var _loc1_:* = null;
+         var item:* = null;
          removeEvent();
          _data = null;
          if(_titleView)
@@ -383,17 +380,17 @@ package quest
          _listView = null;
          while(true)
          {
-            _loc1_ = _itemArr.pop();
+            item = _itemArr.pop();
             if(!_itemArr.pop())
             {
                break;
             }
-            if(_loc1_)
+            if(item)
             {
-               _loc1_.removeEventListener("changed",__onItemActived);
-               _loc1_.dispose();
+               item.removeEventListener("changed",__onItemActived);
+               item.dispose();
             }
-            _loc1_ = null;
+            item = null;
          }
          _itemArr = null;
          if(this.parent)

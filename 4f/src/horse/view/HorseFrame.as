@@ -1,47 +1,13 @@
-package horse.view
-{
-   import com.pickgliss.events.FrameEvent;
-   import com.pickgliss.ui.ComponentFactory;
-   import com.pickgliss.ui.LayerManager;
-   import com.pickgliss.ui.controls.Frame;
-   import com.pickgliss.ui.controls.SimpleBitmapButton;
-   import ddt.manager.LanguageMgr;
-   import ddt.manager.PlayerManager;
-   import ddt.manager.SoundManager;
-   import ddt.utils.HelpFrameUtils;
-   import ddt.utils.PositionUtils;
-   import flash.display.Bitmap;
-   import flash.geom.Point;
-   import trainer.view.NewHandContainer;
-   
-   public class HorseFrame extends Frame
-   {
-       
-      
-      private var _bg:Bitmap;
-      
-      private var _leftTopView:HorseFrameLeftTopView;
-      
-      private var _rightTopView:HorseFrameRightTopView;
-      
-      private var _leftBottomView:HorseFrameLeftBottomView;
-      
-      private var _rightBottomView:HorseFrameRightBottomView;
-      
-      private var _helpBtn:SimpleBitmapButton;
-      
-      public function HorseFrame(){super();}
-      
-      private function initView() : void{}
-      
-      private function initEvent() : void{}
-      
-      private function __responseHandler(param1:FrameEvent) : void{}
-      
-      private function removeEvent() : void{}
-      
-      private function checkAmuetGuide() : void{}
-      
-      override public function dispose() : void{}
-   }
-}
+package horse.view{   import com.pickgliss.events.FrameEvent;   import com.pickgliss.ui.ComponentFactory;   import com.pickgliss.ui.LayerManager;   import com.pickgliss.ui.controls.Frame;   import com.pickgliss.ui.controls.SelectedButton;   import com.pickgliss.ui.controls.SelectedButtonGroup;   import com.pickgliss.ui.controls.SimpleBitmapButton;   import com.pickgliss.utils.ObjectUtils;   import ddt.manager.LanguageMgr;   import ddt.manager.PlayerManager;   import ddt.manager.SoundManager;   import ddt.utils.HelpFrameUtils;   import ddt.view.tips.OneLineTip;   import flash.display.Sprite;   import flash.events.Event;   import flash.events.MouseEvent;   import flash.geom.Point;   import horse.amulet.HorseAmuletMainView;   import horse.horsePicCherish.HorsePicCherishFrame;   import trainer.view.NewHandContainer;      public class HorseFrame extends Frame   {            private static const HorseLevel:int = 0;            private static const HorseSkill:int = 1;            private static const HorseImage:int = 2;            private static const HorseFuwen:int = 3;                   private var _helpBtn:SimpleBitmapButton;            private var _selectedBtnsHBox:Sprite;            private var _btnGroup:SelectedButtonGroup;            private var _houseUpdateBtn:SelectedButton;            private var _houseSkillBtn:SelectedButton;            private var _houseImageBtn:SelectedButton;            private var _houseRuneBtn:SelectedButton;            private var _levelView:HouseLevelUpView;            private var _imageView:HorsePicCherishFrame;            private var _skillView:HorseSkillFrame;            private var _horseAmuletMainView:HorseAmuletMainView;            private var _fuwenSprite:Sprite;            private var _runeTip:OneLineTip;            private var _type:int = 0;            private var helpArr:Array;            public function HorseFrame() { super(); }
+            private function initView() : void { }
+            private function __avatarCollBtnOverHandler(event:MouseEvent) : void { }
+            private function __avatarCollBtnOutHandler(event:MouseEvent) : void { }
+            private function __helpClick(e:MouseEvent) : void { }
+            private function __changeTab(e:Event) : void { }
+            public function setImagePage(index:int) : void { }
+            private function SetViewVisible() : void { }
+            private function initEvent() : void { }
+            private function __responseHandler(evt:FrameEvent) : void { }
+            private function removeEvent() : void { }
+            override public function dispose() : void { }
+   }}

@@ -45,17 +45,17 @@ package lanternriddles.view
          return _checkBtn.selected;
       }
       
-      protected function __noAlertTip(param1:Event) : void
+      protected function __noAlertTip(event:Event) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:LanternEvent = new LanternEvent("lanternSelect");
-         _loc2_.flag = _checkBtn.selected;
-         dispatchEvent(_loc2_);
+         var evt:LanternEvent = new LanternEvent("lanternSelect");
+         evt.flag = _checkBtn.selected;
+         dispatchEvent(evt);
       }
       
-      public function set text(param1:String) : void
+      public function set text(text:String) : void
       {
-         _tipInfo.text = param1;
+         _tipInfo.text = text;
       }
       
       private function removeEvent() : void

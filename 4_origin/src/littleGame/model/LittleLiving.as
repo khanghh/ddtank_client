@@ -74,13 +74,13 @@ package littleGame.model
       
       public var servPath:Array;
       
-      public function LittleLiving(param1:int, param2:int, param3:int, param4:int, param5:String = null)
+      public function LittleLiving(id:int, x:int, y:int, type:int, modelID:String = null)
       {
          _pos = new Point(400,400);
-         _id = param1;
-         _pos = new Point(param2,param3);
-         _modelID = param5;
-         _type = param4;
+         _id = id;
+         _pos = new Point(x,y);
+         _modelID = modelID;
+         _type = type;
          _actionMgr = new LittleActionManager();
          super();
       }
@@ -105,9 +105,9 @@ package littleGame.model
          _actionMgr.execute();
       }
       
-      public function act(param1:LittleAction) : void
+      public function act(action:LittleAction) : void
       {
-         _actionMgr.act(param1);
+         _actionMgr.act(action);
       }
       
       public function get currentAction() : *
@@ -115,12 +115,12 @@ package littleGame.model
          return _currentAction;
       }
       
-      public function doAction(param1:*) : void
+      public function doAction(action:*) : void
       {
-         if(_currentAction != param1)
+         if(_currentAction != action)
          {
-            _currentAction = param1;
-            dispatchEvent(new LittleLivingEvent("doAction",param1));
+            _currentAction = action;
+            dispatchEvent(new LittleLivingEvent("doAction",action));
          }
       }
       
@@ -128,11 +128,11 @@ package littleGame.model
       {
          var _loc3_:int = 0;
          var _loc2_:* = _actionMgr._queue;
-         for each(var _loc1_ in _actionMgr._queue)
+         for each(var action in _actionMgr._queue)
          {
-            if(_loc1_ is LittleLivingMoveAction)
+            if(action is LittleLivingMoveAction)
             {
-               LittleLivingMoveAction(_loc1_).cancel();
+               LittleLivingMoveAction(action).cancel();
             }
          }
       }
@@ -142,11 +142,11 @@ package littleGame.model
          return _pos;
       }
       
-      public function set pos(param1:Point) : void
+      public function set pos(val:Point) : void
       {
-         var _loc2_:Point = _pos;
-         _pos = param1;
-         dispatchEvent(new LittleLivingEvent("posChanged",_loc2_));
+         var old:Point = _pos;
+         _pos = val;
+         dispatchEvent(new LittleLivingEvent("posChanged",old));
       }
       
       public function get isPlayer() : Boolean
@@ -159,11 +159,11 @@ package littleGame.model
          return false;
       }
       
-      public function set direction(param1:String) : void
+      public function set direction(val:String) : void
       {
-         if(_direction != param1)
+         if(_direction != val)
          {
-            _direction = param1;
+            _direction = val;
             dispatchEvent(new LittleLivingEvent("directionChanged"));
          }
       }
@@ -183,33 +183,33 @@ package littleGame.model
          return _direction == "leftDown" || _direction == "leftUp";
       }
       
-      ddt_internal function setNextDirection(param1:Point) : void
+      ddt_internal function setNextDirection(next:Point) : void
       {
-         if(param1.x > pos.x && param1.y >= pos.y)
+         if(next.x > pos.x && next.y >= pos.y)
          {
             direction = "rightDown";
             doAction("walk");
          }
-         else if(param1.x > pos.x && param1.y < pos.y)
+         else if(next.x > pos.x && next.y < pos.y)
          {
             direction = "rightUp";
             doAction("backWalk");
          }
-         else if(param1.x < pos.x && param1.y >= pos.y)
+         else if(next.x < pos.x && next.y >= pos.y)
          {
             direction = "leftDown";
             doAction("walk");
          }
-         else if(param1.x < pos.x && param1.y < pos.y)
+         else if(next.x < pos.x && next.y < pos.y)
          {
             direction = "leftUp";
             doAction("backWalk");
          }
-         else if(param1.y > pos.y)
+         else if(next.y > pos.y)
          {
             doAction("walk");
          }
-         else if(param1.y < pos.y)
+         else if(next.y < pos.y)
          {
             doAction("backWalk");
          }
@@ -228,16 +228,15 @@ package littleGame.model
          return "LittleLiving_" + _id;
       }
       
-      public function readServPaht(param1:PackageIn) : void
+      public function readServPaht(pkg:PackageIn) : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          servPath = [];
-         var _loc2_:int = param1.readInt();
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            servPath.push(new Node(param1.readInt(),param1.readInt()));
-            _loc3_++;
+            servPath.push(new Node(pkg.readInt(),pkg.readInt()));
+            i++;
          }
       }
    }

@@ -64,24 +64,24 @@ package com.pickgliss.ui.controls.list
          _items = new Vector.<IDropListCell>();
       }
       
-      public function set container(param1:BoxContainer) : void
+      public function set container(value:BoxContainer) : void
       {
          if(_container)
          {
             ObjectUtils.disposeObject(_container);
             _container = null;
          }
-         _container = param1;
+         _container = value;
          onPropertiesChanged("container");
       }
       
-      public function set containerStyle(param1:String) : void
+      public function set containerStyle(value:String) : void
       {
-         if(_containerStyle == param1)
+         if(_containerStyle == value)
          {
             return;
          }
-         _containerStyle = param1;
+         _containerStyle = value;
          if(_container)
          {
             ObjectUtils.disposeObject(_container);
@@ -90,19 +90,19 @@ package com.pickgliss.ui.controls.list
          container = ComponentFactory.Instance.creat(_containerStyle);
       }
       
-      public function set cellStyle(param1:String) : void
+      public function set cellStyle(value:String) : void
       {
-         if(_cellStyle == param1)
+         if(_cellStyle == value)
          {
             return;
          }
-         _cellStyle = param1;
+         _cellStyle = value;
       }
       
-      public function set dataList(param1:Array) : void
+      public function set dataList(value:Array) : void
       {
-         var _loc3_:* = 0;
-         if(!param1)
+         var i:* = 0;
+         if(!value)
          {
             if(parent)
             {
@@ -114,35 +114,33 @@ package com.pickgliss.ui.controls.list
          {
             _targetDisplay.parent.addChild(this);
          }
-         _dataList = param1;
-         var _loc2_:int = Math.min(_dataList.length,_showLength);
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         _dataList = value;
+         var len:int = Math.min(_dataList.length,_showLength);
+         for(i = 0; i < len; )
          {
-            _items[_loc3_].setCellValue(_dataList[_loc3_]);
-            if(!_container.contains(_items[_loc3_].asDisplayObject()))
+            _items[i].setCellValue(_dataList[i]);
+            if(!_container.contains(_items[i].asDisplayObject()))
             {
-               _container.addChild(_items[_loc3_].asDisplayObject());
+               _container.addChild(_items[i].asDisplayObject());
             }
-            _loc3_++;
+            i++;
          }
-         if(_loc2_ == 0)
+         if(len == 0)
          {
             _items[0].setCellValue(null);
-            if(!_container.contains(_items[_loc3_].asDisplayObject()))
+            if(!_container.contains(_items[i].asDisplayObject()))
             {
-               _container.addChild(_items[_loc3_].asDisplayObject());
+               _container.addChild(_items[i].asDisplayObject());
             }
-            _loc2_ = 1;
+            len = 1;
          }
-         _loc3_ = _loc2_;
-         while(_loc3_ < _showLength)
+         for(i = len; i < _showLength; )
          {
-            if(_container.contains(_items[_loc3_].asDisplayObject()))
+            if(_container.contains(_items[i].asDisplayObject()))
             {
-               _container.removeChild(_items[_loc3_].asDisplayObject());
+               _container.removeChild(_items[i].asDisplayObject());
             }
-            _loc3_++;
+            i++;
          }
          updateBg();
          unSelectedAllItems();
@@ -169,78 +167,75 @@ package com.pickgliss.ui.controls.list
       
       private function getHightLightItemIdx() : int
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _showLength)
+         var i:int = 0;
+         for(i = 0; i < _showLength; )
          {
-            if(_items[_loc1_].selected)
+            if(_items[i].selected)
             {
-               return _loc1_;
+               return i;
             }
-            _loc1_++;
+            i++;
          }
          return 0;
       }
       
       private function unSelectedAllItems() : int
       {
-         var _loc1_:* = 0;
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _showLength)
+         var idx:* = 0;
+         var i:int = 0;
+         for(i = 0; i < _showLength; )
          {
-            if(_items[_loc2_].selected)
+            if(_items[i].selected)
             {
-               _loc1_ = _loc2_;
+               idx = i;
             }
-            _items[_loc2_].selected = false;
-            _loc2_++;
+            _items[i].selected = false;
+            i++;
          }
-         return _loc1_;
+         return idx;
       }
       
-      private function updateItemValue(param1:Boolean = false) : void
+      private function updateItemValue(isUpWard:Boolean = false) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _showLength)
+         var i:int = 0;
+         for(i = 0; i < _showLength; )
          {
-            _items[_loc2_].setCellValue(_dataList[_currentSelectedIndex - getHightLightItemIdx() + _loc2_]);
-            _loc2_++;
+            _items[i].setCellValue(_dataList[_currentSelectedIndex - getHightLightItemIdx() + i]);
+            i++;
          }
       }
       
-      private function setHightLightItem(param1:Boolean = false) : void
+      private function setHightLightItem(isUpWard:Boolean = false) : void
       {
-         var _loc2_:int = 0;
+         var idx:int = 0;
          if(_dataList.length > 0)
          {
-            _loc2_ = getHightLightItemIdx();
-            if(!param1)
+            idx = getHightLightItemIdx();
+            if(!isUpWard)
             {
-               if(_loc2_ < _showLength - 1)
+               if(idx < _showLength - 1)
                {
                   unSelectedAllItems();
-                  _loc2_++;
+                  idx++;
                }
-               else if(_loc2_ >= _showLength - 1)
+               else if(idx >= _showLength - 1)
                {
                   updateItemValue();
                }
             }
-            if(param1)
+            if(isUpWard)
             {
-               if(_loc2_ > 0)
+               if(idx > 0)
                {
                   unSelectedAllItems();
-                  _loc2_--;
+                  idx--;
                }
-               else if(_loc2_ == 0)
+               else if(idx == 0)
                {
                   updateItemValue(true);
                }
             }
-            _items[_loc2_].selected = true;
+            _items[idx].selected = true;
          }
          else
          {
@@ -262,18 +257,18 @@ package com.pickgliss.ui.controls.list
          }
       }
       
-      public function set targetDisplay(param1:IDropListTarget) : void
+      public function set targetDisplay(target:IDropListTarget) : void
       {
-         if(param1 == _targetDisplay)
+         if(target == _targetDisplay)
          {
             return;
          }
-         _targetDisplay = param1;
+         _targetDisplay = target;
          _targetDisplay.addEventListener("keyDown",__onKeyDown);
          _targetDisplay.addEventListener("removedFromStage",__onRemoveFromStage);
       }
       
-      private function __onRemoveFromStage(param1:Event) : void
+      private function __onRemoveFromStage(event:Event) : void
       {
          if(parent)
          {
@@ -281,14 +276,14 @@ package com.pickgliss.ui.controls.list
          }
       }
       
-      public function set showLength(param1:int) : void
+      public function set showLength(value:int) : void
       {
-         var _loc2_:* = undefined;
-         if(_showLength == param1)
+         var cell:* = undefined;
+         if(_showLength == value)
          {
             return;
          }
-         _showLength = param1;
+         _showLength = value;
          while(_container.numChildren > _showLength)
          {
             _container.removeChild(_items.pop() as DisplayObject);
@@ -301,19 +296,19 @@ package com.pickgliss.ui.controls.list
             }
             else
             {
-               _loc2_ = ComponentFactory.Instance.creat(_cellStyle);
-               _loc2_.addEventListener("mouseOver",__onCellMouseOver);
-               _loc2_.addEventListener("click",__onCellMouseClick);
-               _items.push(_loc2_);
-               _container.addChild(_loc2_);
+               cell = ComponentFactory.Instance.creat(_cellStyle);
+               cell.addEventListener("mouseOver",__onCellMouseOver);
+               cell.addEventListener("click",__onCellMouseClick);
+               _items.push(cell);
+               _container.addChild(cell);
             }
          }
-         _cellHeight = _loc2_.height;
-         _cellWidth = _loc2_.width;
+         _cellHeight = cell.height;
+         _cellWidth = cell.width;
          updateBg();
       }
       
-      private function __onCellMouseClick(param1:MouseEvent) : void
+      private function __onCellMouseClick(event:MouseEvent) : void
       {
          ComponentSetting.PLAY_SOUND_FUNC("008");
          setTargetValue();
@@ -324,12 +319,12 @@ package com.pickgliss.ui.controls.list
          dispatchEvent(new Event("selected"));
       }
       
-      private function __onCellMouseOver(param1:MouseEvent) : void
+      private function __onCellMouseOver(event:MouseEvent) : void
       {
-         var _loc3_:int = unSelectedAllItems();
-         var _loc2_:int = _items.indexOf(param1.currentTarget as IDropListCell);
-         _currentSelectedIndex = _currentSelectedIndex + (_loc2_ - _loc3_);
-         param1.currentTarget.selected = true;
+         var preIdx:int = unSelectedAllItems();
+         var newIdx:int = _items.indexOf(event.currentTarget as IDropListCell);
+         _currentSelectedIndex = _currentSelectedIndex + (newIdx - preIdx);
+         event.currentTarget.selected = true;
       }
       
       override protected function onProppertiesUpdate() : void
@@ -341,20 +336,20 @@ package com.pickgliss.ui.controls.list
          }
       }
       
-      private function __onKeyDown(param1:KeyboardEvent) : void
+      private function __onKeyDown(event:KeyboardEvent) : void
       {
          if(_dataList == null)
          {
             return;
          }
-         param1.stopImmediatePropagation();
-         param1.stopPropagation();
-         if(!_isListening && param1.keyCode == 13)
+         event.stopImmediatePropagation();
+         event.stopPropagation();
+         if(!_isListening && event.keyCode == 13)
          {
             _isListening = true;
             StageReferance.stage.addEventListener("enterFrame",__setSelection);
          }
-         var _loc2_:* = param1.keyCode;
+         var _loc2_:* = event.keyCode;
          if(38 !== _loc2_)
          {
             if(40 !== _loc2_)
@@ -397,9 +392,9 @@ package com.pickgliss.ui.controls.list
          }
       }
       
-      public function set canUseEnter(param1:Boolean) : void
+      public function set canUseEnter(boo:Boolean) : void
       {
-         _canUseEnter = param1;
+         _canUseEnter = boo;
       }
       
       public function get canUseEnter() : Boolean
@@ -407,7 +402,7 @@ package com.pickgliss.ui.controls.list
          return _canUseEnter;
       }
       
-      public function set currentSelectedIndex(param1:int) : void
+      public function set currentSelectedIndex(idx:int) : void
       {
          if(_dataList == null)
          {
@@ -418,7 +413,7 @@ package com.pickgliss.ui.controls.list
          {
             return;
          }
-         _currentSelectedIndex = _currentSelectedIndex + param1;
+         _currentSelectedIndex = _currentSelectedIndex + idx;
          setHightLightItem();
       }
       
@@ -434,7 +429,7 @@ package com.pickgliss.ui.controls.list
          }
       }
       
-      private function __setSelection(param1:Event) : void
+      private function __setSelection(event:Event) : void
       {
          if(_targetDisplay.caretIndex == _targetDisplay.getValueLength())
          {
@@ -447,24 +442,24 @@ package com.pickgliss.ui.controls.list
          }
       }
       
-      public function set backStyle(param1:String) : void
+      public function set backStyle(stylename:String) : void
       {
-         if(_backStyle == param1)
+         if(_backStyle == stylename)
          {
             return;
          }
-         _backStyle = param1;
+         _backStyle = stylename;
          backgound = ComponentFactory.Instance.creat(_backStyle);
       }
       
-      public function set backgound(param1:DisplayObject) : void
+      public function set backgound(image:DisplayObject) : void
       {
-         if(_backGround == param1)
+         if(_backGround == image)
          {
             return;
          }
          ObjectUtils.disposeObject(_backGround);
-         _backGround = param1;
+         _backGround = image;
          if(_backGround is InteractiveObject)
          {
             InteractiveObject(_backGround).mouseEnabled = true;
@@ -474,7 +469,7 @@ package com.pickgliss.ui.controls.list
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(parent)
          {
             parent.removeChild(this);
@@ -497,15 +492,14 @@ package com.pickgliss.ui.controls.list
             ObjectUtils.disposeObject(_targetDisplay);
          }
          _targetDisplay = null;
-         _loc1_ = 0;
-         while(_loc1_ < _items.length)
+         for(i = 0; i < _items.length; )
          {
-            if(_items[_loc1_])
+            if(_items[i])
             {
-               ObjectUtils.disposeObject(_items[_loc1_]);
+               ObjectUtils.disposeObject(_items[i]);
             }
-            _items[_loc1_] = null;
-            _loc1_++;
+            _items[i] = null;
+            i++;
          }
          _dataList = null;
          super.dispose();

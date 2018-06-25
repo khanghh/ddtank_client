@@ -76,10 +76,10 @@ package auctionHouse.view
          upSee();
       }
       
-      public function show(param1:int = 5, param2:int = 1) : void
+      public function show(max:int = 5, min:int = 1) : void
       {
-         _maxNum = param1;
-         _minNum = param2;
+         _maxNum = max;
+         _minNum = min;
          _nowNum = _maxNum;
          LayerManager.Instance.addToLayer(this,2,true,1);
          upSee();
@@ -111,7 +111,7 @@ package auctionHouse.view
          _btn2.removeEventListener("click",click_btn2);
       }
       
-      private function _changeInput(param1:Event) : void
+      private function _changeInput(e:Event) : void
       {
          if(int(_inputText.text) == 0)
          {
@@ -128,14 +128,14 @@ package auctionHouse.view
          upSee();
       }
       
-      private function click_btn1(param1:MouseEvent) : void
+      private function click_btn1(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _nowNum = _nowNum + 1;
          upSee();
       }
       
-      private function click_btn2(param1:MouseEvent) : void
+      private function click_btn2(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _nowNum = _nowNum - 1;
@@ -156,10 +156,10 @@ package auctionHouse.view
          }
       }
       
-      private function onFrameResponse(param1:FrameEvent) : void
+      private function onFrameResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:

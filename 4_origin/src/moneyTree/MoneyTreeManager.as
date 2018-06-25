@@ -55,7 +55,7 @@ package moneyTree
       
       private var _TempShowAgain:Boolean = true;
       
-      public function MoneyTreeManager(param1:inner)
+      public function MoneyTreeManager(single:inner)
       {
          super();
          _model = new MoneyTreeModel();
@@ -88,47 +88,46 @@ package moneyTree
             return;
          }
          _isListening = true;
-         var _loc2_:int = 296;
-         var _loc1_:int = 1;
-         SocketManager.Instance.addEventListener(PkgEvent.format(_loc2_,_loc1_),onPkgUpdateInfo);
-         var _loc3_:int = 3;
-         SocketManager.Instance.addEventListener(PkgEvent.format(_loc2_,_loc3_),onPkgSendRedPkg);
-         var _loc4_:int = 2;
-         SocketManager.Instance.addEventListener(PkgEvent.format(_loc2_,_loc4_),onPkgSpeedUp);
+         var lv1:int = 296;
+         var lv21:int = 1;
+         SocketManager.Instance.addEventListener(PkgEvent.format(lv1,lv21),onPkgUpdateInfo);
+         var lv22:int = 3;
+         SocketManager.Instance.addEventListener(PkgEvent.format(lv1,lv22),onPkgSendRedPkg);
+         var lv23:int = 2;
+         SocketManager.Instance.addEventListener(PkgEvent.format(lv1,lv23),onPkgSpeedUp);
          _model.addEventListener("mt_timer",onTimer);
       }
       
-      protected function onTimer(param1:Event) : void
+      protected function onTimer(e:Event) : void
       {
          dispatchEvent(new CEvent("mt_update_timer"));
       }
       
-      public function onPkgUpdateInfo(param1:PkgEvent) : void
+      public function onPkgUpdateInfo(e:PkgEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:PackageIn = param1.pkg;
-         _model.setNumRedPkgRemain(_loc2_.readInt());
+         var i:int = 0;
+         var pkg:PackageIn = e.pkg;
+         _model.setNumRedPkgRemain(pkg.readInt());
          _model.resetWillSendNum();
-         _loc3_ = 0;
-         while(_loc3_ < 4)
+         for(i = 0; i < 4; )
          {
-            _model.setInfoAt(_loc3_,_loc2_.readDate(),_loc2_.readInt());
-            _loc3_++;
+            _model.setInfoAt(i,pkg.readDate(),pkg.readInt());
+            i++;
          }
          dispatchEvent(new CEvent("mt_update_info"));
          dispatchEvent(new CEvent("mt_reset_friends_list"));
       }
       
-      public function onPkgSendRedPkg(param1:PkgEvent) : void
+      public function onPkgSendRedPkg(e:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _model.setNumRedPkgRemain(_loc2_.readInt());
+         var pkg:PackageIn = e.pkg;
+         _model.setNumRedPkgRemain(pkg.readInt());
          _model.resetWillSendNum();
          dispatchEvent(new CEvent("mt_update_remain"));
          dispatchEvent(new CEvent("mt_reset_friends_list"));
       }
       
-      public function onPkgSpeedUp(param1:PkgEvent) : void
+      public function onPkgSpeedUp(e:PkgEvent) : void
       {
          dispatchEvent(new CEvent("mt_speedup_suc"));
       }
@@ -164,36 +163,36 @@ package moneyTree
          showMainFrame();
       }
       
-      public function inviteBtnClicked(param1:int, param2:String) : void
+      public function inviteBtnClicked($id:int, type:String) : void
       {
-         var _loc3_:* = param2;
+         var _loc3_:* = type;
          if("invite" !== _loc3_)
          {
             if("unInvite" === _loc3_)
             {
-               _model.reduceFriendsToSend(param1);
+               _model.reduceFriendsToSend($id);
             }
          }
          else
          {
-            _model.addFriendsToSend(param1);
+            _model.addFriendsToSend($id);
          }
          dispatchEvent(new CEvent("mt_set_focus"));
       }
       
       public function sendRedPkgBtnClicked() : void
       {
-         var _loc2_:* = null;
+         var msg:* = null;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc1_:Array = _model.getFriendsToSendList();
-         if(_loc1_.length == 0)
+         var list:Array = _model.getFriendsToSendList();
+         if(list.length == 0)
          {
-            _loc2_ = LanguageMgr.GetTranslation("moneytree.noneFriendSelected");
-            MessageTipManager.getInstance().show(_loc2_,0,false,1);
+            msg = LanguageMgr.GetTranslation("moneytree.noneFriendSelected");
+            MessageTipManager.getInstance().show(msg,0,false,1);
          }
          else
          {
@@ -204,9 +203,9 @@ package moneyTree
          dispatchEvent(new CEvent("mt_set_focus"));
       }
       
-      public function pick(param1:int) : void
+      public function pick($index:int) : void
       {
-         requirePick(param1);
+         requirePick($index);
       }
       
       public function becomeMature() : void
@@ -219,34 +218,34 @@ package moneyTree
          return _model.getCurSlctTimesSpeedUpToMature(_positon);
       }
       
-      public function onSpeedUpClick(param1:int) : void
+      public function onSpeedUpClick(index:int) : void
       {
-         var _loc3_:* = NaN;
+         var moneyNeeded:* = NaN;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         _positon = param1;
+         _positon = index;
          if(!_showAgain)
          {
-            _loc3_ = 0;
+            moneyNeeded = 0;
             _TempShowAgain = _showAgain;
             _showAgain = true;
             if(_type == 0)
             {
-               _loc3_ = Number(_model.getPriceSpeedUp(_positon));
+               moneyNeeded = Number(_model.getPriceSpeedUp(_positon));
             }
             else
             {
-               _loc3_ = Number(_model.getPriceSpeedUp(_positon) * _model.getTimesToGrown(_positon));
+               moneyNeeded = Number(_model.getPriceSpeedUp(_positon) * _model.getTimesToGrown(_positon));
             }
-            CheckMoneyUtils.instance.checkMoney(_isBind,_loc3_,onCheckComplete);
+            CheckMoneyUtils.instance.checkMoney(_isBind,moneyNeeded,onCheckComplete);
             return;
          }
-         var _loc4_:String = getCurSpeedUpOnce();
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),_loc4_,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"moneyTree.confirmView",60,false,0);
-         _loc2_.addEventListener("response",confirmResponse);
+         var msg:String = getCurSpeedUpOnce();
+         var frame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),msg,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"moneyTree.confirmView",60,false,0);
+         frame.addEventListener("response",confirmResponse);
       }
       
       public function get positon() : int
@@ -254,27 +253,27 @@ package moneyTree
          return _positon;
       }
       
-      private function confirmResponse(param1:FrameEvent) : void
+      private function confirmResponse(e:FrameEvent) : void
       {
-         var _loc3_:* = NaN;
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",confirmResponse);
-         _type = _loc2_["type"];
-         _TempShowAgain = !_loc2_["isNoPrompt"];
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var moneyNeeded:* = NaN;
+         var frame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",confirmResponse);
+         _type = frame["type"];
+         _TempShowAgain = !frame["isNoPrompt"];
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
-            _loc3_ = 0;
+            moneyNeeded = 0;
             if(_type == 0)
             {
-               _loc3_ = Number(_model.getPriceSpeedUp(_positon));
+               moneyNeeded = Number(_model.getPriceSpeedUp(_positon));
             }
             else
             {
-               _loc3_ = Number(_model.getPriceSpeedUp(_positon) * _model.getTimesToGrown(_positon));
+               moneyNeeded = Number(_model.getPriceSpeedUp(_positon) * _model.getTimesToGrown(_positon));
             }
-            CheckMoneyUtils.instance.checkMoney(_isBind,_loc3_,onCheckComplete);
+            CheckMoneyUtils.instance.checkMoney(_isBind,moneyNeeded,onCheckComplete);
          }
-         _loc2_.dispose();
+         frame.dispose();
          dispatchEvent(new CEvent("mt_set_focus"));
       }
       
@@ -288,39 +287,39 @@ package moneyTree
       public function dispose() : void
       {
          _isListening = false;
-         var _loc2_:int = 296;
-         var _loc1_:int = 1;
-         SocketManager.Instance.removeEventListener(PkgEvent.format(_loc2_,_loc1_),onPkgUpdateInfo);
-         var _loc3_:int = 3;
-         SocketManager.Instance.removeEventListener(PkgEvent.format(_loc2_,_loc3_),onPkgSendRedPkg);
-         var _loc4_:int = 2;
-         SocketManager.Instance.removeEventListener(PkgEvent.format(_loc2_,_loc4_),onPkgSpeedUp);
+         var lv1:int = 296;
+         var lv21:int = 1;
+         SocketManager.Instance.removeEventListener(PkgEvent.format(lv1,lv21),onPkgUpdateInfo);
+         var lv22:int = 3;
+         SocketManager.Instance.removeEventListener(PkgEvent.format(lv1,lv22),onPkgSendRedPkg);
+         var lv23:int = 2;
+         SocketManager.Instance.removeEventListener(PkgEvent.format(lv1,lv23),onPkgSpeedUp);
       }
       
-      private function requireSpeedUp(param1:int, param2:int, param3:Boolean) : void
+      private function requireSpeedUp(position:int, type:int, bind:Boolean) : void
       {
-         var _loc4_:int = 0;
-         if(param2 == 0)
+         var __times:int = 0;
+         if(type == 0)
          {
-            _loc4_ = 1;
+            __times = 1;
          }
          else
          {
-            _loc4_ = _model.getTimesToGrown(_positon);
+            __times = _model.getTimesToGrown(_positon);
          }
-         GameInSocketOut.sendMoneyTreeSpeedUp(param1,_loc4_,param3);
+         GameInSocketOut.sendMoneyTreeSpeedUp(position,__times,bind);
       }
       
-      public function requirePick(param1:int) : void
+      public function requirePick(_index:int) : void
       {
          if(model == null)
          {
             return;
          }
-         if(model.getInfoAt(param1).isGrown)
+         if(model.getInfoAt(_index).isGrown)
          {
-            dispatchEvent(new CEvent("mt_pick_movie",param1));
-            GameInSocketOut.sendMoneyTreePick(param1);
+            dispatchEvent(new CEvent("mt_pick_movie",_index));
+            GameInSocketOut.sendMoneyTreePick(_index);
          }
       }
       
@@ -329,11 +328,11 @@ package moneyTree
          GameInSocketOut.sendMoneyTreeRequireInfo();
       }
       
-      private function requireSendRedPkg(param1:Array) : void
+      private function requireSendRedPkg(sendList:Array) : void
       {
-         if(param1.length != 0)
+         if(sendList.length != 0)
          {
-            GameInSocketOut.sendMoneyTreeSendRedPackage(param1);
+            GameInSocketOut.sendMoneyTreeSendRedPackage(sendList);
          }
       }
       

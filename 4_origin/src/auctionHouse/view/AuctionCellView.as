@@ -8,6 +8,7 @@ package auctionHouse.view
    import com.pickgliss.ui.ComponentFactory;
    import com.pickgliss.utils.ObjectUtils;
    import ddt.data.goods.InventoryItemInfo;
+   import ddt.data.goods.ItemTemplateInfo;
    import ddt.manager.DragManager;
    import ddt.manager.LanguageMgr;
    import ddt.manager.MessageTipManager;
@@ -40,9 +41,9 @@ package auctionHouse.view
       public function AuctionCellView()
       {
          _goodsCount = 1;
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.addChild(ComponentFactory.Instance.creatBitmap("asset.auctionHouse.CellBgIIAsset"));
-         super(_loc1_);
+         var bg:Sprite = new Sprite();
+         bg.addChild(ComponentFactory.Instance.creatBitmap("asset.auctionHouse.CellBgIIAsset"));
+         super(bg);
          tipDirctions = "7";
          (_bg as Sprite).graphics.beginFill(0,0);
          (_bg as Sprite).graphics.drawRect(-5,-5,203,55);
@@ -56,74 +57,80 @@ package auctionHouse.view
          super.createChildren();
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
-         var _loc2_:* = null;
+         var _aler:* = null;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc3_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         if(_loc3_ && param1.action != "split")
+         var info:ItemTemplateInfo = effect.data as ItemTemplateInfo;
+         if(info && effect.action != "split")
          {
-            param1.action = "none";
-            if(_loc3_.getRemainDate() <= 0)
+            effect.action = "none";
+            if(info.CategoryID == 74)
+            {
+               _goodsCount = 1;
+               bagCell = effect.source as BagCell;
+               DragManager.acceptDrag(bagCell,"link");
+            }
+            else if((info as InventoryItemInfo).getRemainDate() <= 0)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionCellView.Object"));
             }
-            else if(_loc3_.IsBinds)
+            else if((info as InventoryItemInfo).IsBinds)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionCellView.Sale"));
             }
             else
             {
                _goodsCount = 1;
-               bagCell = param1.source as BagCell;
+               bagCell = effect.source as BagCell;
                _temporaryCount = bagCell.itemInfo.Count;
                _temporaryInfo = bagCell.itemInfo;
                if(bagCell.itemInfo.Count > 1)
                {
-                  _loc2_ = ComponentFactory.Instance.creat("auctionHouse.AuctionSellLeftAler");
-                  _loc2_.show(_temporaryInfo.Count);
-                  _loc2_.addEventListener("sell",_alerSell);
-                  _loc2_.addEventListener("notsell",_alerNotSell);
+                  _aler = ComponentFactory.Instance.creat("auctionHouse.AuctionSellLeftAler");
+                  _aler.show(_temporaryInfo.Count);
+                  _aler.addEventListener("sell",_alerSell);
+                  _aler.addEventListener("notsell",_alerNotSell);
                }
                DragManager.acceptDrag(bagCell,"link");
             }
          }
       }
       
-      private function _alerSell(param1:AuctionSellEvent) : void
+      private function _alerSell(e:AuctionSellEvent) : void
       {
-         var _loc2_:AuctionSellLeftAler = param1.currentTarget as AuctionSellLeftAler;
-         _goodsCount = param1.sellCount;
-         _temporaryInfo.Count = param1.sellCount;
+         var _aler:AuctionSellLeftAler = e.currentTarget as AuctionSellLeftAler;
+         _goodsCount = e.sellCount;
+         _temporaryInfo.Count = e.sellCount;
          info = _temporaryInfo;
          if(bagCell)
          {
             bagCell.itemInfo.Count = _temporaryCount;
          }
-         _loc2_.dispose();
-         if(_loc2_ && _loc2_.parent)
+         _aler.dispose();
+         if(_aler && _aler.parent)
          {
-            removeChild(_loc2_);
+            removeChild(_aler);
          }
-         _loc2_ = null;
+         _aler = null;
       }
       
-      private function _alerNotSell(param1:AuctionSellEvent) : void
+      private function _alerNotSell(e:AuctionSellEvent) : void
       {
-         var _loc2_:AuctionSellLeftAler = param1.currentTarget as AuctionSellLeftAler;
+         var _aler:AuctionSellLeftAler = e.currentTarget as AuctionSellLeftAler;
          info = null;
          bagCell.locked = false;
          bagCell = null;
-         _loc2_.dispose();
-         if(_loc2_ && _loc2_.parent)
+         _aler.dispose();
+         if(_aler && _aler.parent)
          {
-            removeChild(_loc2_);
+            removeChild(_aler);
          }
-         _loc2_ = null;
+         _aler = null;
       }
       
       public function get goodsCount() : int
@@ -131,23 +138,23 @@ package auctionHouse.view
          return _goodsCount;
       }
       
-      override public function dragStop(param1:DragEffect) : void
+      override public function dragStop(effect:DragEffect) : void
       {
-         super.dragStop(param1);
+         super.dragStop(effect);
       }
       
-      override protected function onMouseClick(param1:MouseEvent) : void
+      override protected function onMouseClick(evt:MouseEvent) : void
       {
-         super.onMouseClick(param1);
+         super.onMouseClick(evt);
          dispatchEvent(new Event("selectBidGood"));
       }
       
-      override protected function onMouseOver(param1:MouseEvent) : void
+      override protected function onMouseOver(evt:MouseEvent) : void
       {
          dispatchEvent(new Event("Cell_mouseOver"));
       }
       
-      override protected function onMouseOut(param1:MouseEvent) : void
+      override protected function onMouseOut(evt:MouseEvent) : void
       {
          dispatchEvent(new Event("Cell_mouseOut"));
       }

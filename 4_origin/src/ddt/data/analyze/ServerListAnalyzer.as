@@ -14,40 +14,39 @@ package ddt.data.analyze
       
       public var zoneName:String;
       
-      public function ServerListAnalyzer(param1:Function)
+      public function ServerListAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:XML = new XML(param1);
-         if(_loc2_.@value == "true")
+         var xmllist:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var xml:XML = new XML(data);
+         if(xml.@value == "true")
          {
-            agentId = _loc2_.@agentId;
-            zoneName = _loc2_.@AreaName;
-            message = _loc2_.@message;
-            _loc3_ = _loc2_..Item;
+            agentId = xml.@agentId;
+            zoneName = xml.@AreaName;
+            message = xml.@message;
+            xmllist = xml..Item;
             list = new Vector.<ServerInfo>();
-            if(_loc3_.length() > 0)
+            if(xmllist.length() > 0)
             {
-               _loc5_ = 0;
-               while(_loc5_ < _loc3_.length())
+               for(i = 0; i < xmllist.length(); )
                {
-                  _loc4_ = new ServerInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc4_,_loc3_[_loc5_]);
-                  list.push(_loc4_);
-                  _loc5_++;
+                  info = new ServerInfo();
+                  ObjectUtils.copyPorpertiesByXML(info,xmllist[i]);
+                  list.push(info);
+                  i++;
                }
                onAnalyzeComplete();
             }
          }
          else
          {
-            message = _loc2_.@message;
+            message = xml.@message;
             onAnalyzeError();
          }
       }

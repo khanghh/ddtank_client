@@ -64,11 +64,11 @@ package gameCommon
       
       protected var _selectedItem:DoubleSelectedItem;
       
-      public function TryAgain(param1:MissionAgainInfo, param2:Boolean = true)
+      public function TryAgain(info:MissionAgainInfo, isShowNum:Boolean = true)
       {
          _numDic = new Dictionary();
-         _info = param1;
-         _isShowNum = param2;
+         _info = info;
+         _isShowNum = isShowNum;
          super();
          _timer = new Timer(1000,10);
          if(_isShowNum)
@@ -166,23 +166,22 @@ package gameCommon
       
       private function drawBlack() : void
       {
-         var _loc1_:Graphics = graphics;
-         _loc1_.clear();
-         _loc1_.beginFill(0,0.4);
-         _loc1_.drawRect(0,0,2000,1000);
-         _loc1_.endFill();
+         var pen:Graphics = graphics;
+         pen.clear();
+         pen.beginFill(0,0.4);
+         pen.drawRect(0,0,2000,1000);
+         pen.endFill();
       }
       
       private function creatNums() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < 10)
+         var bitmap:* = null;
+         var i:int = 0;
+         for(i = 0; i < 10; )
          {
-            _loc1_ = ComponentFactory.Instance.creatBitmapData("asset.game.mark.Blue" + _loc2_);
-            _numDic["Blue" + _loc2_] = _loc1_;
-            _loc2_++;
+            bitmap = ComponentFactory.Instance.creatBitmapData("asset.game.mark.Blue" + i);
+            _numDic["Blue" + i] = bitmap;
+            i++;
          }
       }
       
@@ -195,10 +194,10 @@ package gameCommon
          GameControl.Instance.addEventListener("missionAgain",__missionAgain);
       }
       
-      private function __missionAgain(param1:GameEvent) : void
+      private function __missionAgain(event:GameEvent) : void
       {
-         var _loc2_:int = param1.data;
-         switch(int(_loc2_))
+         var result:int = event.data;
+         switch(int(result))
          {
             case 0:
                __giveup(null);
@@ -216,7 +215,7 @@ package gameCommon
          dispatchEvent(new GameEvent("timeOut",null));
       }
       
-      private function __timeComplete(param1:TimerEvent) : void
+      private function __timeComplete(event:TimerEvent) : void
       {
          switch(int(GameControl.Instance.TryAgain))
          {
@@ -231,39 +230,38 @@ package gameCommon
          }
       }
       
-      private function drawMark(param1:int) : void
+      private function drawMark(count:int) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         var _loc6_:int = 0;
-         var _loc2_:Graphics = _markshape.graphics;
-         _loc2_.clear();
-         var _loc4_:String = param1.toString();
-         if(param1 == 10)
+         var bitmap:* = null;
+         var drawStr:* = null;
+         var i:int = 0;
+         var pen:Graphics = _markshape.graphics;
+         pen.clear();
+         var countStr:String = count.toString();
+         if(count == 10)
          {
-            _loc6_ = 0;
-            while(_loc6_ < _loc4_.length)
+            for(i = 0; i < countStr.length; )
             {
-               _loc5_ = "Blue" + _loc4_.substr(_loc6_,1);
-               _loc3_ = _numDic[_loc5_];
-               _loc2_.beginBitmapFill(_loc3_,new Matrix(1,0,0,1,_markshape.width));
-               _loc2_.drawRect(_markshape.width,0,_loc3_.width,_loc3_.height);
-               _loc2_.endFill();
-               _loc6_++;
+               drawStr = "Blue" + countStr.substr(i,1);
+               bitmap = _numDic[drawStr];
+               pen.beginBitmapFill(bitmap,new Matrix(1,0,0,1,_markshape.width));
+               pen.drawRect(_markshape.width,0,bitmap.width,bitmap.height);
+               pen.endFill();
+               i++;
             }
-            _markshape.x = (_back.width - _loc3_.width >> 1) - 20;
+            _markshape.x = (_back.width - bitmap.width >> 1) - 20;
          }
          else
          {
-            _loc3_ = _numDic["Blue" + _loc4_];
-            _loc2_.beginBitmapFill(_loc3_);
-            _loc2_.drawRect(0,0,_loc3_.width,_loc3_.height);
-            _loc2_.endFill();
-            _markshape.x = _back.width - _loc3_.width >> 1;
+            bitmap = _numDic["Blue" + countStr];
+            pen.beginBitmapFill(bitmap);
+            pen.drawRect(0,0,bitmap.width,bitmap.height);
+            pen.endFill();
+            _markshape.x = _back.width - bitmap.width >> 1;
          }
       }
       
-      private function __mark(param1:TimerEvent) : void
+      private function __mark(event:TimerEvent) : void
       {
          SoundManager.instance.play("014");
          if(_isShowNum)
@@ -272,9 +270,9 @@ package gameCommon
          }
       }
       
-      protected function __tryagainClick(param1:MouseEvent) : void
+      protected function __tryagainClick(event:MouseEvent) : void
       {
-         if(param1)
+         if(event)
          {
             SoundManager.instance.play("008");
          }
@@ -302,13 +300,13 @@ package gameCommon
          GameInSocketOut.sendMissionTryAgain(1,true,CheckMoneyUtils.instance.isBind);
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.target as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onResponse);
-         _loc2_.dispose();
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alert:BaseAlerFrame = evt.target as BaseAlerFrame;
+         alert.removeEventListener("response",__onResponse);
+         alert.dispose();
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
             LeavePageManager.leaveToFillPath();
          }
@@ -318,14 +316,14 @@ package gameCommon
          }
       }
       
-      protected function tryagain(param1:Boolean = true) : void
+      protected function tryagain(bool:Boolean = true) : void
       {
-         dispatchEvent(new GameEvent("tryagain",param1));
+         dispatchEvent(new GameEvent("tryagain",bool));
       }
       
-      private function __giveup(param1:MouseEvent) : void
+      private function __giveup(event:MouseEvent) : void
       {
-         if(param1)
+         if(event)
          {
             SoundManager.instance.play("008");
          }
@@ -351,10 +349,10 @@ package gameCommon
          removeEvent();
          var _loc3_:int = 0;
          var _loc2_:* = _numDic;
-         for(var _loc1_ in _numDic)
+         for(var key in _numDic)
          {
-            ObjectUtils.disposeObject(_numDic[_loc1_]);
-            delete _numDic[_loc1_];
+            ObjectUtils.disposeObject(_numDic[key]);
+            delete _numDic[key];
          }
          ObjectUtils.disposeObject(_selectedItem);
          _selectedItem = null;

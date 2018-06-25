@@ -56,30 +56,30 @@ package drgnBoatBuild.views
          _helpBtn.addEventListener("click",__helpBtnClick);
       }
       
-      protected function __helpBtnClick(param1:MouseEvent) : void
+      protected function __helpBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
-         var _loc2_:DisplayObject = ComponentFactory.Instance.creat("drgnBoatBuild.HelpPrompt");
-         var _loc3_:HelpFrame = ComponentFactory.Instance.creat("drgnBoatBuild.HelpFrame");
-         _loc3_.setView(_loc2_);
-         _loc3_.titleText = LanguageMgr.GetTranslation("store.view.HelpButtonText");
-         _loc3_.changeSubmitButtonY(-71);
-         LayerManager.Instance.addToLayer(_loc3_,3,true,1);
+         event.stopImmediatePropagation();
+         var helpBd:DisplayObject = ComponentFactory.Instance.creat("drgnBoatBuild.HelpPrompt");
+         var helpPage:HelpFrame = ComponentFactory.Instance.creat("drgnBoatBuild.HelpFrame");
+         helpPage.setView(helpBd);
+         helpPage.titleText = LanguageMgr.GetTranslation("store.view.HelpButtonText");
+         helpPage.changeSubmitButtonY(-71);
+         LayerManager.Instance.addToLayer(helpPage,3,true,1);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopPropagation();
-         (param1.currentTarget as DrgnBoatBuildFrame).removeEventListener("response",__frameEventHandler);
-         switch(int(param1.responseCode))
+         event.stopPropagation();
+         (event.currentTarget as DrgnBoatBuildFrame).removeEventListener("response",__frameEventHandler);
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
                dispose();
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
       private function removeEvents() : void

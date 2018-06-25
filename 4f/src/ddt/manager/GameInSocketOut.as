@@ -1,278 +1,132 @@
-package ddt.manager
-{
-   import cardCollectAward.data.AnswerInfo;
-   import flash.geom.Point;
-   import flash.utils.ByteArray;
-   import road7th.comm.ByteSocket;
-   import road7th.comm.PackageOut;
-   import sanXiao.model.SXCellData;
-   
-   public class GameInSocketOut
-   {
-      
-      private static var _socket:ByteSocket = SocketManager.Instance.socket;
-       
-      
-      public function GameInSocketOut(){super();}
-      
-      public static function sendGodOfWealthPay() : void{}
-      
-      public static function sendGodOfWealthInfo() : void{}
-      
-      public static function sendSXCreateMap(param1:Array) : void{}
-      
-      public static function sendSXRequireMapInfo() : void{}
-      
-      public static function sendSXPropCrossBomb(param1:Boolean, param2:int) : void{}
-      
-      public static function sendSXPropSquareBomb(param1:Boolean, param2:int) : void{}
-      
-      public static function sendSXPropClearColor(param1:Boolean, param2:int) : void{}
-      
-      public static function sendSXPropChangeColor(param1:Boolean, param2:int, param3:int, param4:int) : void{}
-      
-      public static function sendSXBoom(param1:int, param2:int, param3:int, param4:int, param5:Array) : void{}
-      
-      public static function sendSXFillCellList(param1:Vector.<SXCellData>) : void{}
-      
-      public static function sendSXRequireViewData() : void{}
-      
-      public static function sendSXGainPrise(param1:int) : void{}
-      
-      public static function sendSXBuyItem(param1:int, param2:int) : void{}
-      
-      public static function sendSXHitsEnd() : void{}
-      
-      public static function sendSXBuyOneTimes(param1:int, param2:Boolean) : void{}
-      
-      public static function sendSXRewardsData() : void{}
-      
-      public static function sendSXStoreData() : void{}
-      
-      public static function sendGradeBuy(param1:int, param2:int) : void{}
-      
-      public static function sendEvolutionMaterials(param1:Array) : void{}
-      
-      public static function sendIsMaster() : void{}
-      
-      public static function sendDdtKingLetterCompose() : void{}
-      
-      public static function sendBringUpLockStatusUpdate(param1:int, param2:int, param3:Boolean) : void{}
-      
-      public static function sendBringUpEat(param1:int, ... rest) : void{}
-      
-      public static function sendUseGirlNewPhoto(param1:Boolean) : void{}
-      
-      public static function sendUseGirlPhoto(param1:Boolean) : void{}
-      
-      public static function sendRedPkgGain(param1:int) : void{}
-      
-      public static function sendRedPkgSend(param1:int, param2:int, param3:String, param4:Boolean) : void{}
-      
-      public static function sendRedPkgSendRecord() : void{}
-      
-      public static function sendRedPkgGainRecord(param1:int) : void{}
-      
-      public static function sendRequestEnterPyramidSystem() : void{}
-      
-      public static function sendPyramidTurnCard(param1:int, param2:int, param3:Boolean) : void{}
-      
-      public static function sendPyramidStartOrstop(param1:Boolean) : void{}
-      
-      public static function sendPyramidRevive(param1:Boolean, param2:Boolean) : void{}
-      
-      public static function sendLanternIsOpen() : void{}
-      
-      public static function sendLanternRequireData() : void{}
-      
-      public static function sendLanternMakeLantern(param1:int) : void{}
-      
-      public static function sendLanternCookLantern(param1:int) : void{}
-      
-      public static function sendLanternWish(param1:int) : void{}
-      
-      public static function sendLanternGainWishGift() : void{}
-      
-      public static function sendMaxBtnState(param1:Boolean) : void{}
-      
-      public static function sendRequireMaxBtnState() : void{}
-      
-      public static function sendWorshipTheMoon(param1:int, param2:Boolean) : void{}
-      
-      public static function sendWorshipTheMoonIsActivityOpen() : void{}
-      
-      public static function sendBagLockStates(param1:ByteArray = null) : void{}
-      
-      public static function sendWorshipTheMoonFreeCount() : void{}
-      
-      public static function sendWorshipTheMoonAwardsList() : void{}
-      
-      public static function sendGainThe200timesAwardBox() : void{}
-      
-      public static function sendGypsyBuy(param1:int, param2:Boolean) : void{}
-      
-      public static function sendGypsyRefreshItemList() : void{}
-      
-      public static function sendGypsyManualRefreshItemList() : void{}
-      
-      public static function sendGypsyManualRefreshItemListWithRMB(param1:Boolean) : void{}
-      
-      public static function sendGypsyRefreshRareList() : void{}
-      
-      public static function sendRequestGypsyNPCState() : void{}
-      
-      public static function sendGetScenePlayer(param1:int) : void{}
-      
-      public static function sendInviteGame(param1:int) : void{}
-      
-      public static function sendBuyProp(param1:int) : void{}
-      
-      public static function sendSellProp(param1:int, param2:int) : void{}
-      
-      public static function sendGameRoomSetUp(param1:int, param2:int, param3:Boolean = false, param4:String = "", param5:String = "", param6:int = 2, param7:int = 0, param8:int = 0, param9:Boolean = false, param10:int = 0, param11:Boolean = false, param12:int = 0) : void{}
-      
-      public static function sendCreateRoom(param1:String, param2:int, param3:int = 2, param4:String = "", param5:Boolean = false) : void{}
-      
-      public static function sendGameRoomPlaceState(param1:int, param2:int, param3:Boolean = false, param4:int = -100) : void{}
-      
-      public static function sendGameRoomKick(param1:int) : void{}
-      
-      public static function sendExitScene() : void{}
-      
-      public static function sendGamePlayerExit() : void{}
-      
-      public static function sendGameTeam(param1:int) : void{}
-      
-      public static function sendFlagMode(param1:Boolean) : void{}
-      
-      public static function sendGameStart() : void{}
-      
-      public static function sendGameMissionStart(param1:Boolean) : void{}
-      
-      public static function sendGameMissionPrepare(param1:int, param2:Boolean) : void{}
-      
-      public static function sendLoadingProgress(param1:Number) : void{}
-      
-      public static function sendPlayerState(param1:int) : void{}
-      
-      public static function sendStartOrPreCheckEnergy() : void{}
-      
-      public static function sendGameCMDBlast(param1:int, param2:int, param3:int, param4:int) : void{}
-      
-      public static function sendGameCMDChange(param1:int, param2:int, param3:int, param4:int, param5:int) : void{}
-      
-      public static function sendGameCMDDirection(param1:int) : void{}
-      
-      public static function sendGameCMDStunt(param1:int = 0) : void{}
-      
-      public static function sendGameCMDShoot(param1:int, param2:int, param3:int, param4:int) : void{}
-      
-      public static function sendGameSkipNext(param1:int) : void{}
-      
-      public static function sendTransmissionGate(param1:Boolean) : void{}
-      
-      public static function sendGameStartMove(param1:Number, param2:int, param3:int, param4:Number, param5:Boolean, param6:Number) : void{}
-      
-      public static function sendGameStopMove(param1:int, param2:int, param3:Boolean) : void{}
-      
-      public static function sendGameTakeOut(param1:int) : void{}
-      
-      public static function sendBossTakeOut(param1:int) : void{}
-      
-      public static function sendGetTropToBag(param1:int) : void{}
-      
-      public static function sendShootTag(param1:Boolean, param2:int = 0) : void{}
-      
-      public static function sendBeat(param1:Number, param2:Number, param3:Number) : void{}
-      
-      public static function sendThrowProp(param1:int) : void{}
-      
-      public static function sendUseProp(param1:int, param2:int, param3:int) : void{}
-      
-      public static function sendCancelWait() : void{}
-      
-      public static function sendSingleRoomBegin(param1:int) : void{}
-      
-      public static function sendGameStyle(param1:int) : void{}
-      
-      public static function sendGhostTarget(param1:Point) : void{}
-      
-      public static function sendPaymentTakeCard(param1:int, param2:Boolean = true) : void{}
-      
-      public static function sendMissionTryAgain(param1:int, param2:Boolean, param3:Boolean = true) : void{}
-      
-      public static function sendFightLibInfoChange(param1:int, param2:int = -1) : void{}
-      
-      public static function sendPassStory() : void{}
-      
-      public static function sendClientScriptStart() : void{}
-      
-      public static function sendClientScriptEnd() : void{}
-      
-      public static function sendFightLibAnswer(param1:int, param2:int) : void{}
-      
-      public static function sendFightLibReanswer() : void{}
-      
-      public static function sendUpdatePlayStep(param1:String) : void{}
-      
-      public static function sendGodCardInfoAttribute() : void{}
-      
-      public static function sendGodCardOpenCard(param1:int, param2:Boolean) : void{}
-      
-      public static function sendGodCardOperateCard(param1:int, param2:int, param3:int) : void{}
-      
-      public static function sendGodCardExchange(param1:int, param2:Boolean = false) : void{}
-      
-      public static function sendGodCardPointAwardAttribute(param1:int) : void{}
-      
-      public static function sendSelectObject(param1:int, param2:int) : void{}
-      
-      public static function sendGetActivePveInfo() : void{}
-      
-      public static function sendMoneyTreeSpeedUp(param1:int, param2:int, param3:Boolean) : void{}
-      
-      public static function sendMoneyTreeSendRedPackage(param1:Array) : void{}
-      
-      public static function sendMoneyTreePick(param1:int) : void{}
-      
-      public static function sendMoneyTreeRequireInfo() : void{}
-      
-      public static function sendOrdinaryFB(param1:Boolean, param2:Boolean) : void{}
-      
-      public static function sendKingDivisionGameStart(param1:int) : void{}
-      
-      public static function sendGetConsortionMessageThisZone() : void{}
-      
-      public static function sendGetConsortionMessageAllZone() : void{}
-      
-      public static function sendGetEliminateConsortionMessageThisZone() : void{}
-      
-      public static function sendGetEliminateConsortionMessageAllZone() : void{}
-      
-      public static function sendDiceRefreshData() : void{}
-      
-      public static function sendStartDiceInfo(param1:int, param2:int) : void{}
-      
-      public static function sendRequestEnterDiceSystem() : void{}
-      
-      public static function sendGetBattleSkillInfo() : void{}
-      
-      public static function sendUpdateBattleSkill(param1:int) : void{}
-      
-      public static function sendBringBattleSkill(param1:int, param2:int) : void{}
-      
-      public static function sendGetFriendPack(param1:String, param2:String, param3:int, param4:int) : void{}
-      
-      public static function sendQuestionAnswer(param1:AnswerInfo) : void{}
-      
-      public static function sendGoldmineInfoAttribute() : void{}
-      
-      public static function sendGoldmineUse() : void{}
-      
-      public static function sendChangeRoomHost(param1:int) : void{}
-      
-      private static function sendPackage(param1:PackageOut) : void{}
-      
-      public static function sendCalendarPet() : void{}
-   }
-}
+package ddt.manager{   import cardCollectAward.data.AnswerInfo;   import flash.geom.Point;   import flash.utils.ByteArray;   import road7th.comm.ByteSocket;   import road7th.comm.PackageOut;   import sanXiao.model.SXCellData;      public class GameInSocketOut   {            private static var _socket:ByteSocket = SocketManager.Instance.socket;                   public function GameInSocketOut() { super(); }
+            public static function sendGodOfWealthPay() : void { }
+            public static function sendGodOfWealthInfo() : void { }
+            public static function sendSXCreateMap(map:Array) : void { }
+            public static function sendSXRequireMapInfo() : void { }
+            public static function sendSXPropCrossBomb(isBind:Boolean, needMoney:int) : void { }
+            public static function sendSXPropSquareBomb(isBind:Boolean, needMoney:int) : void { }
+            public static function sendSXPropClearColor(isBind:Boolean, needMoney:int) : void { }
+            public static function sendSXPropChangeColor(isBind:Boolean, needMoney:int, originalType:int, changeToType:int) : void { }
+            public static function sendSXBoom(rowA:int, columnA:int, rowB:int, columnB:int, boomList:Array) : void { }
+            public static function sendSXFillCellList($list:Vector.<SXCellData>) : void { }
+            public static function sendSXRequireViewData() : void { }
+            public static function sendSXGainPrise(id:int) : void { }
+            public static function sendSXBuyItem(id:int, num:int) : void { }
+            public static function sendSXHitsEnd() : void { }
+            public static function sendSXBuyOneTimes(times:int, isBind:Boolean) : void { }
+            public static function sendSXRewardsData() : void { }
+            public static function sendSXStoreData() : void { }
+            public static function sendGradeBuy(typeTempleteID:int, giftTempleteID:int) : void { }
+            public static function sendEvolutionMaterials(arr:Array) : void { }
+            public static function sendIsMaster() : void { }
+            public static function sendDdtKingLetterCompose() : void { }
+            public static function sendBringUpLockStatusUpdate(bagType:int, place:int, isLocked:Boolean) : void { }
+            public static function sendBringUpEat(count:int, ... arg) : void { }
+            public static function sendUseGirlNewPhoto($isBind:Boolean) : void { }
+            public static function sendUseGirlPhoto(isUse:Boolean) : void { }
+            public static function sendRedPkgGain(id:int) : void { }
+            public static function sendRedPkgSend(moneyNum:int, pkgNum:int, wishWords:String, isAverage:Boolean) : void { }
+            public static function sendRedPkgSendRecord() : void { }
+            public static function sendRedPkgGainRecord(id:int) : void { }
+            public static function sendRequestEnterPyramidSystem() : void { }
+            public static function sendPyramidTurnCard(layer:int, position:int, bindFlag:Boolean) : void { }
+            public static function sendPyramidStartOrstop(isStart:Boolean) : void { }
+            public static function sendPyramidRevive(isRevive:Boolean, bindFlag:Boolean) : void { }
+            public static function sendLanternIsOpen() : void { }
+            public static function sendLanternRequireData() : void { }
+            public static function sendLanternMakeLantern(num:int) : void { }
+            public static function sendLanternCookLantern(num:int) : void { }
+            public static function sendLanternWish(id:int) : void { }
+            public static function sendLanternGainWishGift() : void { }
+            public static function sendMaxBtnState(isPackUp:Boolean) : void { }
+            public static function sendRequireMaxBtnState() : void { }
+            public static function sendWorshipTheMoon(counts:int, isBindTickets:Boolean) : void { }
+            public static function sendWorshipTheMoonIsActivityOpen() : void { }
+            public static function sendBagLockStates(stateData:ByteArray = null) : void { }
+            public static function sendWorshipTheMoonFreeCount() : void { }
+            public static function sendWorshipTheMoonAwardsList() : void { }
+            public static function sendGainThe200timesAwardBox() : void { }
+            public static function sendGypsyBuy(id:int, isBind:Boolean) : void { }
+            public static function sendGypsyRefreshItemList() : void { }
+            public static function sendGypsyManualRefreshItemList() : void { }
+            public static function sendGypsyManualRefreshItemListWithRMB(isBind:Boolean) : void { }
+            public static function sendGypsyRefreshRareList() : void { }
+            public static function sendRequestGypsyNPCState() : void { }
+            public static function sendGetScenePlayer(index:int) : void { }
+            public static function sendInviteGame(playerid:int) : void { }
+            public static function sendBuyProp(id:int) : void { }
+            public static function sendSellProp(id:int, GoodsID:int) : void { }
+            public static function sendGameRoomSetUp(id:int, type:int, isOpenBoss:Boolean = false, pass:String = "", name:String = "", secondType:int = 2, permission:int = 0, levelLimits:int = 0, allowCrossZone:Boolean = false, tempID:int = 0, isBand:Boolean = false, gameType:int = 0) : void { }
+            public static function sendCreateRoom(name:String, roomType:int, timeType:int = 2, pass:String = "", isDouble:Boolean = false) : void { }
+            public static function sendGameRoomPlaceState(index:int, isOpened:int, toNewPlace:Boolean = false, _newPlace:int = -100) : void { }
+            public static function sendGameRoomKick(index:int) : void { }
+            public static function sendExitScene() : void { }
+            public static function sendGamePlayerExit() : void { }
+            public static function sendGameTeam(team:int) : void { }
+            public static function sendFlagMode(flag:Boolean) : void { }
+            public static function sendGameStart() : void { }
+            public static function sendGameMissionStart(isStart:Boolean) : void { }
+            public static function sendGameMissionPrepare(place:int, isRead:Boolean) : void { }
+            public static function sendLoadingProgress(progress:Number) : void { }
+            public static function sendPlayerState(ready:int) : void { }
+            public static function sendStartOrPreCheckEnergy() : void { }
+            public static function sendGameCMDBlast(id:int, x:int, y:int, t:int) : void { }
+            public static function sendGameCMDChange(id:int, bombPosX:int, bombPosY:int, vx:int, vy:int) : void { }
+            public static function sendGameCMDDirection(direction:int) : void { }
+            public static function sendGameCMDStunt(skillId:int = 0) : void { }
+            public static function sendGameCMDShoot(x:int, y:int, force:int, angle:int) : void { }
+            public static function sendGameSkipNext(time:int) : void { }
+            public static function sendTransmissionGate(value:Boolean) : void { }
+            public static function sendGameStartMove(type:Number, x:int, y:int, dir:Number, isLiving:Boolean, turnIndex:Number) : void { }
+            public static function sendGameStopMove(posX:int, posY:int, isUser:Boolean) : void { }
+            public static function sendGameTakeOut(place:int) : void { }
+            public static function sendBossTakeOut(place:int) : void { }
+            public static function sendGetTropToBag(place:int) : void { }
+            public static function sendShootTag(b:Boolean, time:int = 0) : void { }
+            public static function sendBeat(x:Number, y:Number, angle:Number) : void { }
+            public static function sendThrowProp(place:int) : void { }
+            public static function sendUseProp(type:int, place:int, tempid:int) : void { }
+            public static function sendCancelWait() : void { }
+            public static function sendSingleRoomBegin(type:int) : void { }
+            public static function sendGameStyle(style:int) : void { }
+            public static function sendGhostTarget(pos:Point) : void { }
+            public static function sendPaymentTakeCard(place:int, bool:Boolean = true) : void { }
+            public static function sendMissionTryAgain(tryAgain:int, isHost:Boolean, bool:Boolean = true) : void { }
+            public static function sendFightLibInfoChange(id:int, difficult:int = -1) : void { }
+            public static function sendPassStory() : void { }
+            public static function sendClientScriptStart() : void { }
+            public static function sendClientScriptEnd() : void { }
+            public static function sendFightLibAnswer(questionID:int, answerID:int) : void { }
+            public static function sendFightLibReanswer() : void { }
+            public static function sendUpdatePlayStep(cmd:String) : void { }
+            public static function sendGodCardInfoAttribute() : void { }
+            public static function sendGodCardOpenCard(type:int, isBind:Boolean) : void { }
+            public static function sendGodCardOperateCard(type:int, id:int, count:int) : void { }
+            public static function sendGodCardExchange(id:int, useGodCard:Boolean = false) : void { }
+            public static function sendGodCardPointAwardAttribute(id:int) : void { }
+            public static function sendSelectObject(id:int, zoneID:int) : void { }
+            public static function sendGetActivePveInfo() : void { }
+            public static function sendMoneyTreeSpeedUp(position:int, times:int, bind:Boolean) : void { }
+            public static function sendMoneyTreeSendRedPackage(sendList:Array) : void { }
+            public static function sendMoneyTreePick(position:int) : void { }
+            public static function sendMoneyTreeRequireInfo() : void { }
+            public static function sendOrdinaryFB(flag:Boolean, double:Boolean) : void { }
+            public static function sendKingDivisionGameStart(type:int) : void { }
+            public static function sendGetConsortionMessageThisZone() : void { }
+            public static function sendGetConsortionMessageAllZone() : void { }
+            public static function sendGetEliminateConsortionMessageThisZone() : void { }
+            public static function sendGetEliminateConsortionMessageAllZone() : void { }
+            public static function sendDiceRefreshData() : void { }
+            public static function sendStartDiceInfo(type:int, position:int) : void { }
+            public static function sendRequestEnterDiceSystem() : void { }
+            public static function sendGetBattleSkillInfo() : void { }
+            public static function sendUpdateBattleSkill(skillId:int) : void { }
+            public static function sendBringBattleSkill(skillID:int, skillPlace:int) : void { }
+            public static function sendGetFriendPack(name:String, content:String, bagType:int, place:int) : void { }
+            public static function sendQuestionAnswer(info:AnswerInfo) : void { }
+            public static function sendGoldmineInfoAttribute() : void { }
+            public static function sendGoldmineUse() : void { }
+            public static function sendChangeRoomHost(roomHostID:int) : void { }
+            private static function sendPackage(pkg:PackageOut) : void { }
+            public static function sendCalendarPet() : void { }
+   }}

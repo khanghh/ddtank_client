@@ -81,8 +81,8 @@ package petsBag.petsAdvanced
          _stoneCell.setCountPos(33,39);
          _stoneCell.type = 2;
          addChild(_stoneCell);
-         var _loc1_:Bitmap = ComponentFactory.Instance.creat("asset.petsBag.awaken.awakenEquipBg");
-         _equipCell = new PetsAwakenEquipCell(0,null,true,_loc1_);
+         var temBg:Bitmap = ComponentFactory.Instance.creat("asset.petsBag.awaken.awakenEquipBg");
+         _equipCell = new PetsAwakenEquipCell(0,null,true,temBg);
          _equipCell.x = 306;
          _equipCell.y = 106;
          _equipCell.PicPos = new Point(14,13);
@@ -105,15 +105,15 @@ package petsBag.petsAdvanced
       private function updateCount() : void
       {
          _stoneCell.itemInfo.Count = _stoneCell.itemInfo.Count - 1;
-         var _loc1_:int = _stoneCell.itemInfo.Count;
-         if(_loc1_ == 0)
+         var temCount:int = _stoneCell.itemInfo.Count;
+         if(temCount == 0)
          {
             _stoneCell.info = null;
             _stoneCell.itemInfo = null;
          }
-         else if(_loc1_ > 1)
+         else if(temCount > 1)
          {
-            _stoneCell.setCount(_loc1_);
+            _stoneCell.setCount(temCount);
             _stoneCell.setCountPos(33,39);
          }
          else
@@ -136,11 +136,11 @@ package petsBag.petsAdvanced
          _awakenBtn.enable = false;
       }
       
-      private function getItemCount(param1:int) : int
+      private function getItemCount(temId:int) : int
       {
-         var _loc2_:BagInfo = PlayerManager.Instance.Self.getBag(1);
-         var _loc3_:int = _loc2_.getItemCountByTemplateId(param1);
-         return _loc3_;
+         var bagInfo:BagInfo = PlayerManager.Instance.Self.getBag(1);
+         var count:int = bagInfo.getItemCountByTemplateId(temId);
+         return count;
       }
       
       protected function initEvent() : void
@@ -211,15 +211,15 @@ package petsBag.petsAdvanced
          PlayerManager.Instance.Self.getBag(1).removeEventListener("update",_updateEquipHandler);
       }
       
-      private function __removeEquipHandler(param1:InteractiveEvent) : void
+      private function __removeEquipHandler(evt:InteractiveEvent) : void
       {
-         var _loc2_:PetsAwakenEquipCell = param1.target as PetsAwakenEquipCell;
-         var _loc3_:ItemTemplateInfo = _loc2_.info;
-         if(!_loc3_)
+         var cell:PetsAwakenEquipCell = evt.target as PetsAwakenEquipCell;
+         var info:ItemTemplateInfo = cell.info;
+         if(!info)
          {
             return;
          }
-         if(_loc3_.CategoryID == 50 || _loc3_.CategoryID == 51 || _loc3_.CategoryID == 52)
+         if(info.CategoryID == 50 || info.CategoryID == 51 || info.CategoryID == 52)
          {
             SocketManager.Instance.out.sendMoveGoods(12,1,0,-1);
          }
@@ -227,22 +227,22 @@ package petsBag.petsAdvanced
          {
             SocketManager.Instance.out.sendMoveGoods(12,0,1,-1);
          }
-         _loc2_.info = null;
-         _loc2_.itemInfo = null;
+         cell.info = null;
+         cell.itemInfo = null;
          checkAwakenBtnEnable();
       }
       
-      private function __equipClickDragHandler(param1:InteractiveEvent) : void
+      private function __equipClickDragHandler(evt:InteractiveEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:PetsAwakenEquipCell = param1.target as PetsAwakenEquipCell;
-         if(_loc2_ && _loc2_.info)
+         var temCell:PetsAwakenEquipCell = evt.target as PetsAwakenEquipCell;
+         if(temCell && temCell.info)
          {
-            _loc2_.dragStart();
+            temCell.dragStart();
          }
       }
       
-      private function __equipDataChangeHandler(param1:Event) : void
+      private function __equipDataChangeHandler(evt:Event) : void
       {
          if(_equipCell && _equipCell.info == null)
          {
@@ -250,23 +250,23 @@ package petsBag.petsAdvanced
          }
       }
       
-      private function _updateEquipHandler(param1:BagEvent) : void
+      private function _updateEquipHandler(evt:BagEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:BagInfo = PlayerManager.Instance.Self.StoreBag;
-         if(_loc3_.items.length > 0)
+         var itemInfo:* = null;
+         var info:BagInfo = PlayerManager.Instance.Self.StoreBag;
+         if(info.items.length > 0)
          {
             checkAwakenBtnEnable();
             if(_equipInfoCell.cellInfo)
             {
                _equipInfoCell.iteminfo = null;
             }
-            if(_loc3_.items[0] is InventoryItemInfo)
+            if(info.items[0] is InventoryItemInfo)
             {
-               _loc2_ = _loc3_.items[0] as InventoryItemInfo;
-               if(_loc2_.Quality > 5)
+               itemInfo = info.items[0] as InventoryItemInfo;
+               if(itemInfo.Quality > 5)
                {
-                  _equipInfoCell.iteminfo = _loc2_;
+                  _equipInfoCell.iteminfo = itemInfo;
                }
             }
          }
@@ -283,59 +283,59 @@ package petsBag.petsAdvanced
       
       private function updateAwakenSuccessItemInfo() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var cellInfo:* = null;
+         var temInfo:* = null;
          if(_equipInfoCell && _equipInfoCell.cellInfo)
          {
-            _loc2_ = _equipInfoCell.cellInfo;
-            _loc1_ = PetsBagManager.instance().getAwakenEquipInfo(_loc2_.ItemID.toString());
-            if(_loc1_ != null)
+            cellInfo = _equipInfoCell.cellInfo;
+            temInfo = PetsBagManager.instance().getAwakenEquipInfo(cellInfo.ItemID.toString());
+            if(temInfo != null)
             {
-               _loc2_.awakenEquipPro = _loc1_;
-               _equipInfoCell.iteminfo = _loc2_;
+               cellInfo.awakenEquipPro = temInfo;
+               _equipInfoCell.iteminfo = cellInfo;
             }
          }
       }
       
-      private function __petAwakenResultHandler(param1:PkgEvent) : void
+      private function __petAwakenResultHandler(evt:PkgEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc6_:int = 0;
-         var _loc9_:int = 0;
-         var _loc3_:* = null;
+         var itemID:int = 0;
+         var skill1:int = 0;
+         var skill2:int = 0;
+         var petID:int = 0;
+         var awakenInfo:* = null;
          if(_equipCell)
          {
             _equipCell.info = null;
          }
-         var _loc7_:PackageIn = param1.pkg;
-         var _loc8_:Boolean = _loc7_.readBoolean();
-         if(_loc8_)
+         var pkg:PackageIn = evt.pkg;
+         var isSuccess:Boolean = pkg.readBoolean();
+         if(isSuccess)
          {
-            _loc4_ = _loc7_.readInt();
-            _loc5_ = _loc7_.readInt();
-            _loc6_ = _loc7_.readInt();
-            _loc9_ = _loc7_.readInt();
-            _loc3_ = new AwakenEquipInfo();
-            _loc3_.belongPetId = _loc9_;
-            _loc3_.skillId1 = _loc5_;
-            _loc3_.skillId2 = _loc6_;
-            _loc3_.itemID = _loc4_;
-            updateAwakenEquipList(_loc3_);
+            itemID = pkg.readInt();
+            skill1 = pkg.readInt();
+            skill2 = pkg.readInt();
+            petID = pkg.readInt();
+            awakenInfo = new AwakenEquipInfo();
+            awakenInfo.belongPetId = petID;
+            awakenInfo.skillId1 = skill1;
+            awakenInfo.skillId2 = skill2;
+            awakenInfo.itemID = itemID;
+            updateAwakenEquipList(awakenInfo);
          }
          updateAwakenSuccessItemInfo();
          updateCount();
          updateData();
-         var _loc2_:String = !!_loc8_?"petsBag.petsAwaken.awakenSuccessMsg":"petsBag.petsAwaken.awakenFailMsg";
-         MessageTipManager.getInstance().show(LanguageMgr.GetTranslation(_loc2_));
+         var result:String = !!isSuccess?"petsBag.petsAwaken.awakenSuccessMsg":"petsBag.petsAwaken.awakenFailMsg";
+         MessageTipManager.getInstance().show(LanguageMgr.GetTranslation(result));
       }
       
-      private function updateAwakenEquipList(param1:AwakenEquipInfo) : void
+      private function updateAwakenEquipList(info:AwakenEquipInfo) : void
       {
-         PetsBagManager.instance().updateAwakenEquipList(param1);
+         PetsBagManager.instance().updateAwakenEquipList(info);
       }
       
-      private function __sendPetsAwakentHandler(param1:MouseEvent) : void
+      private function __sendPetsAwakentHandler(evt:MouseEvent) : void
       {
          if(new Date().time - _clickDate <= 1000)
          {
@@ -357,54 +357,54 @@ package petsBag.petsAdvanced
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("petsBag.petsAwaken.sendAwakenFailMsg"));
       }
       
-      protected function __cellClickHandler(param1:CellEvent) : void
+      protected function __cellClickHandler(evt:CellEvent) : void
       {
-         var _loc3_:* = null;
+         var info:* = null;
          SoundManager.instance.play("008");
-         var _loc2_:PetsAwakenEquipCell = param1.data as PetsAwakenEquipCell;
-         if(_loc2_ && _loc2_.info)
+         var temCell:PetsAwakenEquipCell = evt.data as PetsAwakenEquipCell;
+         if(temCell && temCell.info)
          {
-            _loc3_ = _loc2_.info as InventoryItemInfo;
-            if(_loc3_.getRemainDate() <= 0)
+            info = temCell.info as InventoryItemInfo;
+            if(info.getRemainDate() <= 0)
             {
                return;
             }
-            _loc2_.dragStart();
+            temCell.dragStart();
          }
       }
       
-      protected function __cellDoubleClickHandler(param1:CellEvent) : void
+      protected function __cellDoubleClickHandler(evt:CellEvent) : void
       {
-         var _loc3_:* = null;
+         var info:* = null;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         param1.stopImmediatePropagation();
-         var _loc2_:PetsAwakenEquipCell = param1.data as PetsAwakenEquipCell;
-         if(_loc2_)
+         evt.stopImmediatePropagation();
+         var temCell:PetsAwakenEquipCell = evt.data as PetsAwakenEquipCell;
+         if(temCell)
          {
-            _loc3_ = _loc2_.info as InventoryItemInfo;
-            if(!_loc3_ || _loc3_.getRemainDate() <= 0)
+            info = temCell.info as InventoryItemInfo;
+            if(!info || info.getRemainDate() <= 0)
             {
                return;
             }
-            if((_loc3_.CategoryID == 50 || _loc3_.CategoryID == 51 || _loc3_.CategoryID == 52) && _loc3_.Quality == 5)
+            if((info.CategoryID == 50 || info.CategoryID == 51 || info.CategoryID == 52) && info.Quality == 5)
             {
-               _equipCell.info = _loc3_;
-               _equipCell.itemInfo = _loc3_;
+               _equipCell.info = info;
+               _equipCell.itemInfo = info;
             }
             else
             {
-               _stoneCell.info = _loc3_;
-               _stoneCell.itemInfo = _loc3_;
+               _stoneCell.info = info;
+               _stoneCell.itemInfo = info;
                _stoneCell.setCountPos(33,39);
             }
          }
       }
       
-      protected function __allComplete(param1:Event) : void
+      protected function __allComplete(event:Event) : void
       {
          _petsBasicInfoView.removeEventListener("all_movie_complete",__allComplete);
          PetsAdvancedControl.Instance.isAllMovieComplete = true;
@@ -413,10 +413,10 @@ package petsBag.petsAdvanced
       
       protected function updateData() : void
       {
-         var _loc1_:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
-         if(_loc1_ != null)
+         var petInfo:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
+         if(petInfo != null)
          {
-            _petsBasicInfoView && _petsBasicInfoView.setInfo(_loc1_);
+            _petsBasicInfoView && _petsBasicInfoView.setInfo(petInfo);
          }
          updateEquipList();
       }
@@ -426,13 +426,13 @@ package petsBag.petsAdvanced
          _equipCellList.setInfo(PlayerManager.Instance.Self.Bag,PlayerManager.Instance.Self.getBag(1));
       }
       
-      private function createTempleteInfo(param1:int) : InventoryItemInfo
+      private function createTempleteInfo(temID:int) : InventoryItemInfo
       {
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         _loc2_.TemplateID = param1;
-         _loc2_ = ItemManager.fill(_loc2_);
-         _loc2_.IsBinds = true;
-         return _loc2_;
+         var info:InventoryItemInfo = new InventoryItemInfo();
+         info.TemplateID = temID;
+         info = ItemManager.fill(info);
+         info.IsBinds = true;
+         return info;
       }
       
       private function clearHideBagItem() : void

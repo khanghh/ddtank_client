@@ -14,6 +14,8 @@ package store.data
       
       public var isMax:Boolean;
       
+      public var ReduceDander:int;
+      
       public function EvolutionData()
       {
          super();

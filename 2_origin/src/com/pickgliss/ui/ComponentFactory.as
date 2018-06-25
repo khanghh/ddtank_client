@@ -21,7 +21,7 @@ package com.pickgliss.ui
       
       private var _model:ComponentModel;
       
-      public function ComponentFactory(param1:ComponentFactoryEnforcer)
+      public function ComponentFactory(enforcer:ComponentFactoryEnforcer)
       {
          super();
          _model = new ComponentModel();
@@ -38,245 +38,239 @@ package com.pickgliss.ui
          return _instance;
       }
       
-      public static function parasArgs(param1:String) : Array
+      public static function parasArgs(args:String) : Array
       {
-         var _loc3_:int = 0;
-         var _loc2_:Array = param1.split(",");
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_.length)
+         var i:int = 0;
+         var resultArgs:Array = args.split(",");
+         for(i = 0; i < resultArgs.length; )
          {
-            StringUtils.trim(_loc2_[_loc3_]);
-            _loc3_++;
+            StringUtils.trim(resultArgs[i]);
+            i++;
          }
-         return _loc2_;
+         return resultArgs;
       }
       
-      public function creat(param1:String, param2:Array = null) : *
+      public function creat(stylename:String, args:Array = null) : *
       {
-         var _loc3_:* = undefined;
-         if(_model.getComonentStyle(param1))
+         var com:* = undefined;
+         if(_model.getComonentStyle(stylename))
          {
-            _loc3_ = creatComponentByStylename(param1,param2);
+            com = creatComponentByStylename(stylename,args);
          }
-         else if(_model.getBitmapSet(param1) || ClassUtils.classIsBitmapData(param1))
+         else if(_model.getBitmapSet(stylename) || ClassUtils.classIsBitmapData(stylename))
          {
-            _loc3_ = creatBitmap(param1);
+            com = creatBitmap(stylename);
          }
-         else if(_model.getCustomObjectStyle(param1))
+         else if(_model.getCustomObjectStyle(stylename))
          {
-            _loc3_ = creatCustomObject(param1,param2);
+            com = creatCustomObject(stylename,args);
          }
          else
          {
-            _loc3_ = ClassUtils.CreatInstance(param1,param2);
+            com = ClassUtils.CreatInstance(stylename,args);
          }
-         return _loc3_;
+         return com;
       }
       
-      public function creatBitmap(param1:String) : Bitmap
+      public function creatBitmap(classname:String) : Bitmap
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:XML = _model.getBitmapSet(param1);
-         if(_loc4_ == null)
+         var bitmapData:* = null;
+         var bitmap:* = null;
+         var bitmapSet:XML = _model.getBitmapSet(classname);
+         if(bitmapSet == null)
          {
-            if(ClassUtils.uiSourceDomain.hasDefinition(param1))
+            if(ClassUtils.uiSourceDomain.hasDefinition(classname))
             {
-               _loc2_ = ClassUtils.CreatInstance(param1,[0,0]);
-               _loc3_ = new Bitmap(_loc2_);
-               _model.addBitmapSet(param1,new XML("<bitmapData resourceLink=\'" + param1 + "\' width=\'" + _loc3_.width + "\' height=\'" + _loc3_.height + "\' />"));
+               bitmapData = ClassUtils.CreatInstance(classname,[0,0]);
+               bitmap = new Bitmap(bitmapData);
+               _model.addBitmapSet(classname,new XML("<bitmapData resourceLink=\'" + classname + "\' width=\'" + bitmap.width + "\' height=\'" + bitmap.height + "\' />"));
             }
             else
             {
-               throw new Error("Bitmap:" + param1 + " is Not Found!",888);
+               throw new Error("Bitmap:" + classname + " is Not Found!",888);
             }
          }
          else
          {
-            if(_loc4_.name() == ComponentSetting.BITMAPDATA_TAG_NAME)
+            if(bitmapSet.name() == ComponentSetting.BITMAPDATA_TAG_NAME)
             {
-               _loc2_ = creatBitmapData(param1);
-               _loc3_ = new Bitmap(_loc2_,"auto",String(_loc4_.@smoothing) == "true");
+               bitmapData = creatBitmapData(classname);
+               bitmap = new Bitmap(bitmapData,"auto",String(bitmapSet.@smoothing) == "true");
             }
             else
             {
-               _loc3_ = ClassUtils.CreatInstance(param1);
+               bitmap = ClassUtils.CreatInstance(classname);
             }
-            ObjectUtils.copyPorpertiesByXML(_loc3_,_loc4_);
+            ObjectUtils.copyPorpertiesByXML(bitmap,bitmapSet);
          }
-         return _loc3_;
+         return bitmap;
       }
       
-      public function creatNumberSprite(param1:int, param2:String, param3:int = 0) : Sprite
+      public function creatNumberSprite(num:int, classname:String, space:int = 0) : Sprite
       {
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         var _loc7_:Sprite = new Sprite();
-         var _loc5_:String = String(param1);
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_.length)
+         var i:int = 0;
+         var bit:* = null;
+         var spr:Sprite = new Sprite();
+         var strNum:String = String(num);
+         for(i = 0; i < strNum.length; )
          {
-            _loc4_ = creatBitmap(param2 + _loc5_.substr(_loc6_,1));
-            _loc7_.addChild(_loc4_);
-            _loc4_.x = (_loc4_.width + param3) * _loc6_;
-            _loc6_++;
+            bit = creatBitmap(classname + strNum.substr(i,1));
+            spr.addChild(bit);
+            bit.x = (bit.width + space) * i;
+            i++;
          }
-         return _loc7_;
+         return spr;
       }
       
-      public function creatBitmapData(param1:String) : BitmapData
+      public function creatBitmapData(classname:String) : BitmapData
       {
-         var _loc2_:* = null;
-         var _loc3_:XML = _model.getBitmapSet(param1);
-         if(_loc3_ == null)
+         var bitmapData:* = null;
+         var bitmapSet:XML = _model.getBitmapSet(classname);
+         if(bitmapSet == null)
          {
-            return ClassUtils.CreatInstance(param1,[0,0]);
+            return ClassUtils.CreatInstance(classname,[0,0]);
          }
-         if(_loc3_.name() == ComponentSetting.BITMAPDATA_TAG_NAME)
+         if(bitmapSet.name() == ComponentSetting.BITMAPDATA_TAG_NAME)
          {
-            _loc2_ = ClassUtils.CreatInstance(param1,[int(_loc3_.@width),int(_loc3_.@height)]);
+            bitmapData = ClassUtils.CreatInstance(classname,[int(bitmapSet.@width),int(bitmapSet.@height)]);
          }
          else
          {
-            _loc2_ = ClassUtils.CreatInstance(param1)["btimapData"];
+            bitmapData = ClassUtils.CreatInstance(classname)["btimapData"];
          }
-         return _loc2_;
+         return bitmapData;
       }
       
-      public function creatComponentByStylename(param1:String, param2:Array = null) : *
+      public function creatComponentByStylename(stylename:String, args:Array = null) : *
       {
-         var _loc3_:XML = getComponentStyle(param1);
-         var _loc5_:String = _loc3_.@classname;
-         var _loc4_:* = ClassUtils.CreatInstance(_loc5_,param2);
-         _loc4_.id = componentID;
-         _allComponents[_loc4_.id] = _loc4_;
-         if(ClassUtils.classIsComponent(_loc5_))
+         var style:XML = getComponentStyle(stylename);
+         var classname:String = style.@classname;
+         var component:* = ClassUtils.CreatInstance(classname,args);
+         component.id = componentID;
+         _allComponents[component.id] = component;
+         if(ClassUtils.classIsComponent(classname))
          {
-            _loc4_.beginChanges();
-            ObjectUtils.copyPorpertiesByXML(_loc4_,_loc3_);
-            _loc4_.commitChanges();
+            component.beginChanges();
+            ObjectUtils.copyPorpertiesByXML(component,style);
+            component.commitChanges();
          }
          else
          {
-            ObjectUtils.copyPorpertiesByXML(_loc4_,_loc3_);
+            ObjectUtils.copyPorpertiesByXML(component,style);
          }
-         _loc4_["stylename"] = param1;
-         return _loc4_;
+         component["stylename"] = stylename;
+         return component;
       }
       
-      private function getComponentStyle(param1:String) : XML
+      private function getComponentStyle(stylename:String) : XML
       {
-         var _loc3_:* = null;
-         var _loc2_:XML = _model.getComonentStyle(param1);
-         while(_loc2_ != null && _loc2_.hasOwnProperty("@parentStyle"))
+         var parentStyle:* = null;
+         var style:XML = _model.getComonentStyle(stylename);
+         while(style != null && style.hasOwnProperty("@parentStyle"))
          {
-            _loc3_ = _model.getComonentStyle(String(_loc2_.@parentStyle));
-            delete _loc2_.@parentStyle;
-            ObjectUtils.combineXML(_loc2_,_loc3_);
+            parentStyle = _model.getComonentStyle(String(style.@parentStyle));
+            delete style.@parentStyle;
+            ObjectUtils.combineXML(style,parentStyle);
          }
-         return _loc2_;
+         return style;
       }
       
-      public function getCustomStyle(param1:String) : XML
+      public function getCustomStyle(stylename:String) : XML
       {
-         var _loc3_:* = null;
-         var _loc2_:XML = _model.getCustomObjectStyle(param1);
-         if(_loc2_ == null)
+         var parentStyle:* = null;
+         var style:XML = _model.getCustomObjectStyle(stylename);
+         if(style == null)
          {
             return null;
          }
-         while(_loc2_ && _loc2_.hasOwnProperty("@parentStyle"))
+         while(style && style.hasOwnProperty("@parentStyle"))
          {
-            _loc3_ = _model.getCustomObjectStyle(String(_loc2_.@parentStyle));
-            delete _loc2_.@parentStyle;
-            ObjectUtils.combineXML(_loc2_,_loc3_);
+            parentStyle = _model.getCustomObjectStyle(String(style.@parentStyle));
+            delete style.@parentStyle;
+            ObjectUtils.combineXML(style,parentStyle);
          }
-         return _loc2_;
+         return style;
       }
       
-      public function creatCustomObject(param1:String, param2:Array = null) : *
+      public function creatCustomObject(stylename:String, args:Array = null) : *
       {
-         var _loc3_:XML = getCustomStyle(param1);
-         var _loc4_:String = _loc3_.@classname;
-         var _loc5_:* = ClassUtils.CreatInstance(_loc4_,param2);
-         ObjectUtils.copyPorpertiesByXML(_loc5_,_loc3_);
-         return _loc5_;
+         var style:XML = getCustomStyle(stylename);
+         var classname:String = style.@classname;
+         var custom:* = ClassUtils.CreatInstance(classname,args);
+         ObjectUtils.copyPorpertiesByXML(custom,style);
+         return custom;
       }
       
-      public function getComponentByID(param1:int) : *
+      public function getComponentByID(componentid:int) : *
       {
-         return _allComponents[param1];
+         return _allComponents[componentid];
       }
       
-      public function checkAllComponentDispose(param1:Array) : void
+      public function checkAllComponentDispose(moduleArr:Array) : void
       {
-         var _loc7_:int = 0;
-         var _loc6_:Dictionary = _model.allComponentStyle;
-         var _loc3_:int = param1.length;
-         var _loc5_:int = 1;
-         _loc7_ = 0;
-         while(_loc7_ < param1.length)
+         var i:int = 0;
+         var dicStyle:Dictionary = _model.allComponentStyle;
+         var len:int = moduleArr.length;
+         var k:int = 1;
+         for(i = 0; i < moduleArr.length; i++)
          {
             var _loc11_:int = 0;
-            var _loc10_:* = _loc6_;
-            for each(var _loc2_ in _loc6_)
+            var _loc10_:* = dicStyle;
+            for each(var item in dicStyle)
             {
-               if(_loc2_.@componentModule != null && _loc2_.@componentModule == param1[_loc7_])
+               if(item.@componentModule != null && item.@componentModule == moduleArr[i])
                {
                   var _loc9_:int = 0;
                   var _loc8_:* = _allComponents;
-                  for each(var _loc4_ in _allComponents)
+                  for each(var compo in _allComponents)
                   {
-                     if(_loc4_ && _loc4_.stylename == _loc2_.@stylename)
+                     if(compo && compo.stylename == item.@stylename)
                      {
-                        trace(_loc5_.toString() + ". " + String(_loc2_.@stylename) + " =================> 可能未释放...请注意!");
-                        _loc5_++;
+                        trace(k.toString() + ". " + String(item.@stylename) + " =================> 可能未释放...请注意!");
+                        k++;
                      }
                   }
                   continue;
                }
             }
-            _loc7_++;
          }
       }
       
-      public function removeComponent(param1:int) : void
+      public function removeComponent(componentid:int) : void
       {
       }
       
-      public function creatFrameFilters(param1:String) : Array
+      public function creatFrameFilters(filterString:String) : Array
       {
-         var _loc4_:int = 0;
-         var _loc2_:Array = parasArgs(param1);
-         var _loc3_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_.length)
+         var i:int = 0;
+         var filterStyles:Array = parasArgs(filterString);
+         var resultFilters:Array = [];
+         for(i = 0; i < filterStyles.length; )
          {
-            if(_loc2_[_loc4_] == "null")
+            if(filterStyles[i] == "null")
             {
-               _loc3_.push(null);
+               resultFilters.push(null);
             }
             else
             {
-               _loc3_.push(creatFilters(_loc2_[_loc4_]));
+               resultFilters.push(creatFilters(filterStyles[i]));
             }
-            _loc4_++;
+            i++;
          }
-         return _loc3_;
+         return resultFilters;
       }
       
-      public function creatFilters(param1:String) : Array
+      public function creatFilters(filtersStyle:String) : Array
       {
-         var _loc4_:int = 0;
-         var _loc3_:Array = param1.split("|");
-         var _loc2_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_.length)
+         var i:int = 0;
+         var frameFilterStyle:Array = filtersStyle.split("|");
+         var frameFilter:Array = [];
+         for(i = 0; i < frameFilterStyle.length; )
          {
-            _loc2_.push(ComponentFactory.Instance.model.getSet(_loc3_[_loc4_]));
-            _loc4_++;
+            frameFilter.push(ComponentFactory.Instance.model.getSet(frameFilterStyle[i]));
+            i++;
          }
-         return _loc2_;
+         return frameFilter;
       }
       
       public function get model() : ComponentModel
@@ -284,9 +278,9 @@ package com.pickgliss.ui
          return _model;
       }
       
-      public function setup(param1:XML) : void
+      public function setup(config:XML) : void
       {
-         _model.addComponentSet(param1);
+         _model.addComponentSet(config);
       }
       
       public function get componentID() : int

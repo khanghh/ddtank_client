@@ -28,11 +28,11 @@ package ddt.view.rescue
          addChild(_addBmp);
       }
       
-      public function setData(param1:int) : void
+      public function setData(num:int) : void
       {
          ObjectUtils.disposeObject(_numSprite);
          _numSprite = null;
-         _numSprite = ImgNumConverter.instance.convertToImg(param1,"rescue.room.num",11);
+         _numSprite = ImgNumConverter.instance.convertToImg(num,"rescue.room.num",11);
          PositionUtils.setPos(_numSprite,"rescue.numSpritePos");
          addChild(_numSprite);
       }

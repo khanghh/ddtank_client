@@ -30,47 +30,47 @@ package gameCommon.view.playerThumbnail
       
       private var _thumbnailTip:PlayerThumbnailTip;
       
-      public function PlayerThumbnailList(param1:DictionaryData, param2:int = 1)
+      public function PlayerThumbnailList(info:DictionaryData, dirct:int = 1)
       {
          super();
-         _dirct = param2;
-         _info = param1;
+         _dirct = dirct;
+         _info = info;
          initView();
          initEvents();
       }
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var j:int = 0;
+         var player:* = null;
          _list = [];
          _players = new DictionaryData();
          if(_info)
          {
-            _loc2_ = 0;
+            j = 0;
             var _loc5_:int = 0;
             var _loc4_:* = _info;
             for(_index in _info)
             {
-               _loc1_ = new PlayerThumbnail(_info[_loc3_],_dirct);
-               _loc1_.addEventListener("playerThumbnailEvent",__onTipClick);
-               _loc1_.addEventListener("wishSelect",__thumbnailHandle);
-               _players.add(_loc3_,_loc1_);
-               addChild(_loc1_);
-               _list.push(_loc1_);
+               player = new PlayerThumbnail(_info[i],_dirct);
+               player.addEventListener("playerThumbnailEvent",__onTipClick);
+               player.addEventListener("wishSelect",__thumbnailHandle);
+               _players.add(i,player);
+               addChild(player);
+               _list.push(player);
             }
          }
          arrange();
       }
       
-      private function __onTipClick(param1:Event) : void
+      private function __onTipClick(e:Event) : void
       {
-         e = param1;
-         __addTip = function(param1:Event):void
+         e = e;
+         __addTip = function(event:Event):void
          {
-            if((param1.currentTarget as PlayerThumbnailTip).tipDisplay)
+            if((event.currentTarget as PlayerThumbnailTip).tipDisplay)
             {
-               (param1.currentTarget as PlayerThumbnailTip).tipDisplay.recoverTip();
+               (event.currentTarget as PlayerThumbnailTip).tipDisplay.recoverTip();
             }
          };
          if(!PlayerManager.Instance.Self.IsWeakGuildFinish(5))
@@ -90,27 +90,27 @@ package gameCommon.view.playerThumbnail
          LayerManager.Instance.addToLayer(_thumbnailTip,3,false);
       }
       
-      private function __thumbnailHandle(param1:GameEvent) : void
+      private function __thumbnailHandle(e:GameEvent) : void
       {
-         dispatchEvent(new GameEvent("wishSelect",param1.data));
+         dispatchEvent(new GameEvent("wishSelect",e.data));
       }
       
       private function arrange() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
-         while(_loc2_ < numChildren)
+         var child:* = null;
+         var count:int = 0;
+         while(count < numChildren)
          {
-            _loc1_ = getChildAt(_loc2_);
+            child = getChildAt(count);
             if(_dirct < 0)
             {
-               _loc1_.x = (_loc2_ + 1) * (_loc1_.width + 4) * _dirct;
+               child.x = (count + 1) * (child.width + 4) * _dirct;
             }
             else
             {
-               _loc1_.x = _loc2_ * (_loc1_.width + 4) * _dirct;
+               child.x = count * (child.width + 4) * _dirct;
             }
-            _loc2_++;
+            count++;
          }
       }
       
@@ -126,53 +126,52 @@ package gameCommon.view.playerThumbnail
          _info.removeEventListener("add",__addLiving);
       }
       
-      private function __addLiving(param1:DictionaryEvent) : void
+      private function __addLiving(e:DictionaryEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         if(param1.data is Player)
+         var info:* = null;
+         var player:* = null;
+         if(e.data is Player)
          {
-            _loc3_ = param1.data as Player;
-            _loc2_ = new PlayerThumbnail(_loc3_,_dirct);
-            _loc2_.addEventListener("playerThumbnailEvent",__onTipClick);
-            _loc2_.addEventListener("wishSelect",__thumbnailHandle);
-            _players.add(String(_loc3_.playerInfo.ID),_loc2_);
-            addChild(_loc2_);
-            _list.push(_loc2_);
+            info = e.data as Player;
+            player = new PlayerThumbnail(info,_dirct);
+            player.addEventListener("playerThumbnailEvent",__onTipClick);
+            player.addEventListener("wishSelect",__thumbnailHandle);
+            _players.add(String(info.playerInfo.ID),player);
+            addChild(player);
+            _list.push(player);
             arrange();
          }
       }
       
-      private function delePlayer(param1:int) : void
+      private function delePlayer(id:int) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:int = _list.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var p:* = null;
+         var len:int = _list.length;
+         for(i = 0; i < len; )
          {
-            _loc2_ = _list[_loc4_] as PlayerThumbnail;
-            if(_loc2_.info.ID == param1)
+            p = _list[i] as PlayerThumbnail;
+            if(p.info.ID == id)
             {
-               removeChild(_loc2_);
-               _list.splice(_loc4_,1);
+               removeChild(p);
+               _list.splice(i,1);
                break;
             }
-            _loc4_++;
+            i++;
          }
       }
       
-      public function __removePlayer(param1:DictionaryEvent) : void
+      public function __removePlayer(evt:DictionaryEvent) : void
       {
-         var _loc2_:Player = param1.data as Player;
-         if(_loc2_ && _loc2_.playerInfo)
+         var info:Player = evt.data as Player;
+         if(info && info.playerInfo)
          {
-            if(_players[_loc2_.playerInfo.ID])
+            if(_players[info.playerInfo.ID])
             {
-               _players[_loc2_.playerInfo.ID].removeEventListener("playerThumbnailEvent",__onTipClick);
-               _players[_loc2_.playerInfo.ID].removeEventListener("wishSelect",__thumbnailHandle);
-               _players[_loc2_.playerInfo.ID].dispose();
-               delete _players[_loc2_.playerInfo.ID];
+               _players[info.playerInfo.ID].removeEventListener("playerThumbnailEvent",__onTipClick);
+               _players[info.playerInfo.ID].removeEventListener("wishSelect",__thumbnailHandle);
+               _players[info.playerInfo.ID].dispose();
+               delete _players[info.playerInfo.ID];
             }
          }
          arrange();
@@ -183,13 +182,13 @@ package gameCommon.view.playerThumbnail
          removeEvents();
          var _loc3_:int = 0;
          var _loc2_:* = _players;
-         for(var _loc1_ in _players)
+         for(var i in _players)
          {
-            if(_players[_loc1_])
+            if(_players[i])
             {
-               _players[_loc1_].removeEventListener("playerThumbnailEvent",__onTipClick);
-               _players[_loc1_].removeEventListener("wishSelect",__thumbnailHandle);
-               _players[_loc1_].dispose();
+               _players[i].removeEventListener("playerThumbnailEvent",__onTipClick);
+               _players[i].removeEventListener("wishSelect",__thumbnailHandle);
+               _players[i].dispose();
             }
          }
          _players = null;

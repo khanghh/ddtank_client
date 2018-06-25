@@ -8,11 +8,11 @@ package AvatarCollection.data
       
       public var selected:Boolean = false;
       
-      public function AvatarCollectionSelectData(param1:AvatarCollectionUnitVo, param2:Boolean)
+      public function AvatarCollectionSelectData($data:AvatarCollectionUnitVo, $selected:Boolean)
       {
          super();
-         value = param1;
-         selected = param2;
+         value = $data;
+         selected = $selected;
       }
    }
 }

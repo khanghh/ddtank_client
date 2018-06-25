@@ -53,11 +53,11 @@ package cardSystem
          signLockedCard = -1;
       }
       
-      public function showView(param1:int) : void
+      public function showView(type:int) : void
       {
-         if(_viewTypeArr.indexOf(param1) == -1)
+         if(_viewTypeArr.indexOf(type) == -1)
          {
-            _viewTypeArr.push(param1);
+            _viewTypeArr.push(type);
          }
          AssetModuleLoader.addModelLoader("ddtcardsystem",6);
          AssetModuleLoader.startCodeLoader(show);
@@ -65,20 +65,20 @@ package cardSystem
       
       public function show() : void
       {
-         var _loc1_:* = null;
+         var event:* = null;
          while(_viewTypeArr.length > 0)
          {
-            _loc1_ = new CardSystemEvent("bagViewOpen");
-            _loc1_.info = _viewTypeArr.shift();
-            dispatchEvent(_loc1_);
+            event = new CardSystemEvent("bagViewOpen");
+            event.info = _viewTypeArr.shift();
+            dispatchEvent(event);
          }
       }
       
-      public function disposeView(param1:int) : void
+      public function disposeView(type:int) : void
       {
-         var _loc2_:CardSystemEvent = new CardSystemEvent("viewDispose");
-         _loc2_.info = param1;
-         dispatchEvent(_loc2_);
+         var event:CardSystemEvent = new CardSystemEvent("viewDispose");
+         event.info = type;
+         dispatchEvent(event);
       }
       
       public function get model() : CardModel
@@ -86,53 +86,52 @@ package cardSystem
          return _model;
       }
       
-      public function initSetsProperties(param1:SetsPropertiesAnalyzer) : void
+      public function initSetsProperties(analyzer:SetsPropertiesAnalyzer) : void
       {
-         _model.setsList = param1.setsList;
+         _model.setsList = analyzer.setsList;
       }
       
-      public function initSetsSortRule(param1:SetsSortRuleAnalyzer) : void
+      public function initSetsSortRule(analyzer:SetsSortRuleAnalyzer) : void
       {
-         _model.setsSortRuleVector = param1.setsVector;
+         _model.setsSortRuleVector = analyzer.setsVector;
       }
       
-      public function initSetsUpgradeRule(param1:UpgradeRuleAnalyzer) : void
+      public function initSetsUpgradeRule(analyzer:UpgradeRuleAnalyzer) : void
       {
-         _model.upgradeRuleVec = param1.upgradeRuleVec;
+         _model.upgradeRuleVec = analyzer.upgradeRuleVec;
       }
       
-      public function initPropIncreaseRule(param1:CardPropIncreaseRuleAnalyzer) : void
+      public function initPropIncreaseRule(analyzer:CardPropIncreaseRuleAnalyzer) : void
       {
-         _model.propIncreaseDic = param1.propIncreaseDic;
+         _model.propIncreaseDic = analyzer.propIncreaseDic;
       }
       
-      public function initCardAchievement(param1:CardAchievementAnalyze) : void
+      public function initCardAchievement(analyzer:CardAchievementAnalyze) : void
       {
-         _model.achievementData = param1.data;
+         _model.achievementData = analyzer.data;
       }
       
-      private function __onAchievementProgress(param1:PkgEvent) : void
+      private function __onAchievementProgress(e:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         _model.achievementProperty[0] = param1.pkg.readInt();
-         _model.achievementProperty[1] = param1.pkg.readInt();
-         _model.achievementProperty[2] = param1.pkg.readInt();
-         _model.achievementProperty[3] = param1.pkg.readInt();
-         _model.achievementProperty[4] = param1.pkg.readInt();
-         _model.achievementProperty[5] = param1.pkg.readInt();
-         _model.achievementProperty[6] = param1.pkg.readInt();
-         _model.achievementProperty[7] = param1.pkg.readInt();
+         var i:int = 0;
+         var type:int = 0;
+         var completeID:int = 0;
+         _model.achievementProperty[0] = e.pkg.readInt();
+         _model.achievementProperty[1] = e.pkg.readInt();
+         _model.achievementProperty[2] = e.pkg.readInt();
+         _model.achievementProperty[3] = e.pkg.readInt();
+         _model.achievementProperty[4] = e.pkg.readInt();
+         _model.achievementProperty[5] = e.pkg.readInt();
+         _model.achievementProperty[6] = e.pkg.readInt();
+         _model.achievementProperty[7] = e.pkg.readInt();
          _model.achievementProgress.clear();
-         var _loc2_:int = param1.pkg.readInt();
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         var count:int = e.pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc3_ = param1.pkg.readInt();
-            _loc4_ = param1.pkg.readInt();
-            _model.achievementProgress.add(_loc3_,_loc4_);
-            _loc5_++;
+            type = e.pkg.readInt();
+            completeID = e.pkg.readInt();
+            _model.achievementProgress.add(type,completeID);
+            i++;
          }
          checkCardAchievementComplete();
          dispatchEvent(new CardSystemEvent("cardachievementupdate"));
@@ -146,42 +145,42 @@ package cardSystem
          }
          var _loc3_:int = 0;
          var _loc2_:* = _model.achievementData;
-         for each(var _loc1_ in _model.achievementData)
+         for each(var info in _model.achievementData)
          {
-            if(cardAchievementComplete(_loc1_.AchievementID))
+            if(cardAchievementComplete(info.AchievementID))
             {
-               new CardAchievementCompleteView(_loc1_).show();
+               new CardAchievementCompleteView(info).show();
                return;
             }
          }
       }
       
-      public function cardAchievementComplete(param1:int) : Boolean
+      public function cardAchievementComplete(id:int) : Boolean
       {
-         var _loc4_:* = null;
-         var _loc2_:int = 0;
-         if(!cardAchievementGet(param1))
+         var info:* = null;
+         var count:int = 0;
+         if(!cardAchievementGet(id))
          {
-            _loc4_ = _model.achievementData[param1];
-            if(_loc4_.RequireNum > 0 && PlayerManager.Instance.Self.getCardNumByType(_loc4_.RequireType) >= _loc4_.RequireNum)
+            info = _model.achievementData[id];
+            if(info.RequireNum > 0 && PlayerManager.Instance.Self.getCardNumByType(info.RequireType) >= info.RequireNum)
             {
                return true;
             }
-            if(_loc4_.RequireGroupid > 0 && PlayerManager.Instance.Self.checkCurrentCardSets(_loc4_.RequireGroupid,_loc4_.RequireType))
+            if(info.RequireGroupid > 0 && PlayerManager.Instance.Self.checkCurrentCardSets(info.RequireGroupid,info.RequireType))
             {
                return true;
             }
-            if(_loc4_.RequireGroupNum > 0)
+            if(info.RequireGroupNum > 0)
             {
-               _loc2_ = 0;
+               count = 0;
                var _loc6_:int = 0;
                var _loc5_:* = _model.setsSortRuleVector;
-               for each(var _loc3_ in _model.setsSortRuleVector)
+               for each(var item in _model.setsSortRuleVector)
                {
-                  if(PlayerManager.Instance.Self.checkCurrentCardSets(int(_loc3_.ID),_loc4_.RequireType))
+                  if(PlayerManager.Instance.Self.checkCurrentCardSets(int(item.ID),info.RequireType))
                   {
-                     _loc2_++;
-                     if(_loc2_ >= _loc4_.RequireGroupNum)
+                     count++;
+                     if(count >= info.RequireGroupNum)
                      {
                         return true;
                      }
@@ -192,25 +191,25 @@ package cardSystem
          return false;
       }
       
-      public function cardAchievementGet(param1:int) : Boolean
+      public function cardAchievementGet(id:int) : Boolean
       {
-         var _loc2_:CardAchievementInfo = _model.achievementData[param1];
-         if(_model.achievementProgress.hasKey(_loc2_.Type) && _loc2_.AchievementID <= _model.achievementProgress[_loc2_.Type])
+         var info:CardAchievementInfo = _model.achievementData[id];
+         if(_model.achievementProgress.hasKey(info.Type) && info.AchievementID <= _model.achievementProgress[info.Type])
          {
             return true;
          }
          return false;
       }
       
-      public function getCardSuitByID(param1:int) : SetsInfo
+      public function getCardSuitByID(id:int) : SetsInfo
       {
          var _loc4_:int = 0;
          var _loc3_:* = _model.setsSortRuleVector;
-         for each(var _loc2_ in _model.setsSortRuleVector)
+         for each(var item in _model.setsSortRuleVector)
          {
-            if(int(_loc2_.ID) == param1)
+            if(int(item.ID) == id)
             {
-               return _loc2_;
+               return item;
             }
          }
          return null;

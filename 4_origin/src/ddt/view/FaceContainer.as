@@ -21,7 +21,7 @@ package ddt.view
       
       private var _expressionID:int;
       
-      public function FaceContainer(param1:Boolean = false)
+      public function FaceContainer(topLayer:Boolean = false)
       {
          super();
          init();
@@ -37,9 +37,9 @@ package ddt.view
          return _expressionID;
       }
       
-      public function set isShowNickName(param1:Boolean) : void
+      public function set isShowNickName(value:Boolean) : void
       {
-         if(param1 && _face != null)
+         if(value && _face != null)
          {
             _nickName.y = _face.y - 20 - _face.height / 2;
             _nickName.x = -_face.width / 2;
@@ -58,26 +58,26 @@ package ddt.view
          return _isActingExpression;
       }
       
-      public function setNickName(param1:String) : void
+      public function setNickName(str:String) : void
       {
-         if(param1 == null)
+         if(str == null)
          {
             return;
          }
-         _nickName.text = param1 + ":";
+         _nickName.text = str + ":";
          this.addChild(_nickName);
          _nickName.visible = false;
       }
       
       private function init() : void
       {
-         var _loc1_:TextFormat = new TextFormat();
-         _loc1_.color = "0xff0000";
+         var tf:TextFormat = new TextFormat();
+         tf.color = "0xff0000";
          _nickName = new TextField();
-         _nickName.defaultTextFormat = _loc1_;
+         _nickName.defaultTextFormat = tf;
       }
       
-      private function __timerComplete(param1:TimerEvent) : void
+      private function __timerComplete(evt:TimerEvent) : void
       {
          clearFace();
          dispatchEvent(new Event("complete"));
@@ -98,11 +98,11 @@ package ddt.view
          }
       }
       
-      public function setFace(param1:int) : void
+      public function setFace(id:int) : void
       {
          clearFace();
-         _face = FaceSource.getFaceById(param1);
-         _expressionID = param1;
+         _face = FaceSource.getFaceById(id);
+         _expressionID = id;
          if(_face != null)
          {
             _isActingExpression = true;
@@ -120,7 +120,7 @@ package ddt.view
          clearFace();
       }
       
-      private function __enterFrame(param1:Event) : void
+      private function __enterFrame(event:Event) : void
       {
          if(_face.currentFrame >= _face.totalFrames)
          {

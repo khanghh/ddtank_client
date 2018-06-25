@@ -8,6 +8,7 @@ package mark.views
    import ddt.data.goods.QualityType;
    import ddt.manager.ItemManager;
    import ddt.manager.LanguageMgr;
+   import ddt.manager.SoundManager;
    import ddt.utils.PositionUtils;
    import flash.display.MovieClip;
    import flash.display.Shape;
@@ -53,11 +54,11 @@ package mark.views
          icon14.toolTip = LanguageMgr.GetTranslation("mark.mornUI.label14");
          icon14_1.toolTip = LanguageMgr.GetTranslation("mark.mornUI.label14");
          initEvent();
-         var _loc1_:Shape = new Shape();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,56,56);
-         _loc1_.graphics.endFill();
-         _item = new BaseCell(_loc1_);
+         var cellBG:Shape = new Shape();
+         cellBG.graphics.beginFill(16777215,0);
+         cellBG.graphics.drawRect(0,0,56,56);
+         cellBG.graphics.endFill();
+         _item = new BaseCell(cellBG);
          _item.setContentSize(68,68);
          PositionUtils.setPos(_item,{
             "x":15,
@@ -89,9 +90,10 @@ package mark.views
          btnTen.clickHandler = new Handler(hammer,[10]);
       }
       
-      private function hammer(param1:int) : void
+      private function hammer(cnt:int) : void
       {
-         MarkMgr.inst.reqHammerChip(param1);
+         SoundManager.instance.playButtonSound();
+         MarkMgr.inst.reqHammerChip(cnt);
       }
       
       private function initEvent() : void
@@ -118,10 +120,10 @@ package mark.views
          }
       }
       
-      private function hammerResultHandler(param1:MarkEvent) : void
+      private function hammerResultHandler(evt:MarkEvent) : void
       {
-         _result = param1.data.result;
-         _cnt = param1.data.cnt;
+         _result = evt.data.result;
+         _cnt = evt.data.cnt;
          _wheelMC.play();
          _progessMC.gotoAndPlay(1);
          _progessMC.visible = true;
@@ -133,7 +135,7 @@ package mark.views
          btnTen.disabled = true;
       }
       
-      private function frameHandler(param1:Event) : void
+      private function frameHandler(evt:Event) : void
       {
          if(!_successMC)
          {
@@ -155,7 +157,7 @@ package mark.views
          }
       }
       
-      private function frameHandler2(param1:Event) : void
+      private function frameHandler2(evt:Event) : void
       {
          if(!_failMC)
          {
@@ -177,7 +179,7 @@ package mark.views
          }
       }
       
-      private function frameHandler1(param1:Event) : void
+      private function frameHandler1(evt:Event) : void
       {
          if(!_progessMC)
          {
@@ -209,18 +211,18 @@ package mark.views
          }
       }
       
-      override public function set visible(param1:Boolean) : void
+      override public function set visible(value:Boolean) : void
       {
          _cnt = 0;
-         .super.visible = param1;
+         .super.visible = value;
          var _loc3_:* = false;
          _flashMC.visible = _loc3_;
          _loc3_ = _loc3_;
          _progessMC.visible = _loc3_;
          _successMC.visible = _loc3_;
          _wheelMC.stop();
-         var _loc2_:MarkChipData = MarkMgr.inst.model.getChipById(MarkMgr.inst.model.chipItemID);
-         if(!_loc2_)
+         var chip:MarkChipData = MarkMgr.inst.model.getChipById(MarkMgr.inst.model.chipItemID);
+         if(!chip)
          {
             _item.info = null;
             return;
@@ -228,20 +230,17 @@ package mark.views
          updateInfo();
       }
       
-      private function updateInfo(param1:MarkEvent = null) : void
+      private function updateInfo(evt:MarkEvent = null) : void
       {
-         evt = param1;
+         evt = evt;
          var chip:MarkChipData = MarkMgr.inst.model.getChipById(MarkMgr.inst.model.chipItemID);
          var itemInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(chip.templateId);
          _item.info = itemInfo;
-         _item.tipDirctions = "7,6,2,1,5,4,0,3,6";
          _item.tipGapV = 10;
          _item.tipGapH = 10;
-         _item.tipStyle = "mark.MarkChipTip";
          _item.tipData = chip;
          var stars:Array = [clipStar1,clipStar2,clipStar3,clipStar4,clipStar5];
-         var i:int = 0;
-         while(i < stars.length)
+         for(var i:int = 0; i < stars.length; )
          {
             if(i < chip.bornLv + chip.hammerLv)
             {
@@ -259,6 +258,7 @@ package mark.views
          _qualityTxt.textColor = QualityType.QUALITY_COLOR[character];
          var hammerData:MarkHammerTemplateData = MarkMgr.inst.getHammerData(chip.hLv,character);
          lblCost.text = hammerData.Expend.toString();
+         hammerRateLabel.text = LanguageMgr.GetTranslation("mark.propertyHammerRate",hammerData.rate);
          var isTop:Boolean = chip.hLv >= MarkMgr.inst.getHammerTopLv(character);
          imgNextLv.visible = !isTop;
          imgTopLv.visible = isTop;
@@ -268,12 +268,11 @@ package mark.views
          lblNextPro.visible = !isTop;
          var pro:MarkProData = null;
          var props:Array = [lblAttachPro1,lblAttachPro2,lblAttachPro3,lblAttachPro4];
-         props.forEach(function(param1:*, param2:int, param3:Array):void
+         props.forEach(function(item:*, index:int, array:Array):void
          {
-            param1.visible = false;
+            item.visible = false;
          });
-         var j:int = 0;
-         while(j < chip.props.length)
+         for(var j:int = 0; j < chip.props.length; )
          {
             pro = chip.props[j];
             if(!(j >= props.length || pro.type <= 0))
@@ -287,7 +286,7 @@ package mark.views
          imgAttach.visible = chip.hammerLv + chip.bornLv == 2?false:[2,5,8,11].indexOf(chip.hLv) != -1;
       }
       
-      private function updateMarkMoney(param1:MarkEvent) : void
+      private function updateMarkMoney(evt:MarkEvent) : void
       {
          lblDemandCnt.text = MarkMgr.inst.model.markMoney.toString();
       }

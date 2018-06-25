@@ -25,9 +25,9 @@ package farm.control
       
       public var composeHouseModel:ComposeHouseModel;
       
-      public function FarmComposeHouseController(param1:IEventDispatcher = null)
+      public function FarmComposeHouseController(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function instance() : FarmComposeHouseController
@@ -44,105 +44,104 @@ package farm.control
          composeHouseModel = new ComposeHouseModel();
       }
       
-      public function getResultPages(param1:int = 10) : int
+      public function getResultPages(count:int = 10) : int
       {
-         var _loc2_:Vector.<InventoryItemInfo> = getAllItems();
-         var _loc3_:int = Math.ceil(_loc2_.length / param1);
-         _loc3_ = _loc3_ == 0?1:_loc3_;
-         return _loc3_ == 0?1:_loc3_;
+         var list:Vector.<InventoryItemInfo> = getAllItems();
+         var totlaPage:int = Math.ceil(list.length / count);
+         totlaPage = totlaPage == 0?1:totlaPage;
+         return totlaPage == 0?1:totlaPage;
       }
       
       public function getAllItems() : Vector.<InventoryItemInfo>
       {
-         var _loc1_:Vector.<InventoryItemInfo> = new Vector.<InventoryItemInfo>();
+         var result:Vector.<InventoryItemInfo> = new Vector.<InventoryItemInfo>();
          var _loc4_:int = 0;
          var _loc3_:* = composeHouseModel.items;
-         for each(var _loc2_ in composeHouseModel.items)
+         for each(var item in composeHouseModel.items)
          {
-            _loc1_.push(_loc2_);
+            result.push(item);
          }
-         return _loc1_;
+         return result;
       }
       
-      public function getItemsByPage(param1:int, param2:int = 10) : Vector.<InventoryItemInfo>
+      public function getItemsByPage(page:int, count:int = 10) : Vector.<InventoryItemInfo>
       {
-         var _loc4_:int = 0;
-         var _loc6_:int = 0;
-         var _loc8_:int = 0;
-         var _loc3_:Vector.<InventoryItemInfo> = new Vector.<InventoryItemInfo>();
-         var _loc5_:Vector.<InventoryItemInfo> = getAllItems();
-         var _loc7_:int = Math.ceil(_loc5_.length / param2);
-         if(param1 > 0 && param1 <= _loc7_)
+         var startIndex:int = 0;
+         var len:int = 0;
+         var i:int = 0;
+         var result:Vector.<InventoryItemInfo> = new Vector.<InventoryItemInfo>();
+         var list:Vector.<InventoryItemInfo> = getAllItems();
+         var totlaPage:int = Math.ceil(list.length / count);
+         if(page > 0 && page <= totlaPage)
          {
-            _loc4_ = 0 + param2 * (param1 - 1);
-            _loc6_ = Math.min(_loc5_.length - _loc4_,param2);
-            _loc8_ = 0;
-            while(_loc8_ < _loc6_)
+            startIndex = 0 + count * (page - 1);
+            len = Math.min(list.length - startIndex,count);
+            for(i = 0; i < len; )
             {
-               _loc3_.push(_loc5_[_loc4_ + _loc8_]);
-               _loc8_++;
+               result.push(list[startIndex + i]);
+               i++;
             }
          }
-         return _loc3_;
+         return result;
       }
       
-      public function setupFoodComposeList(param1:FoodComposeListAnalyzer) : void
+      public function setupFoodComposeList(analyzer:FoodComposeListAnalyzer) : void
       {
-         composeHouseModel.foodComposeList = param1.list;
+         composeHouseModel.foodComposeList = analyzer.list;
       }
       
-      private function __onLoadError(param1:LoaderEvent) : void
+      private function __onLoadError(event:LoaderEvent) : void
       {
-         var _loc3_:String = param1.loader.loadErrorMessage;
-         if(param1.loader.analyzer)
+         var msg:String = event.loader.loadErrorMessage;
+         if(event.loader.analyzer)
          {
-            if(param1.loader.analyzer.message != null)
+            if(event.loader.analyzer.message != null)
             {
-               _loc3_ = param1.loader.loadErrorMessage + "\n" + param1.loader.analyzer.message;
+               msg = event.loader.loadErrorMessage + "\n" + event.loader.analyzer.message;
             }
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("alert"),_loc3_,LanguageMgr.GetTranslation("tank.room.RoomIIView2.affirm"),"",false,false,false,0,null,"farmSimpleAlert");
-         _loc2_.addEventListener("response",__onAlertResponse);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("alert"),msg,LanguageMgr.GetTranslation("tank.room.RoomIIView2.affirm"),"",false,false,false,0,null,"farmSimpleAlert");
+         alert.addEventListener("response",__onAlertResponse);
       }
       
-      private function __onAlertResponse(param1:FrameEvent) : void
+      private function __onAlertResponse(event:FrameEvent) : void
       {
-         param1.currentTarget.removeEventListener("response",__onAlertResponse);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         event.currentTarget.removeEventListener("response",__onAlertResponse);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
-      public function getComposeDetailByID(param1:int) : Vector.<FoodComposeListTemplateInfo>
+      public function getComposeDetailByID(foodID:int) : Vector.<FoodComposeListTemplateInfo>
       {
-         return composeHouseModel.foodComposeList[param1];
+         return composeHouseModel.foodComposeList[foodID];
       }
       
       public function getNextUpdatePetTimes() : String
       {
-         var _loc2_:Date = TimeManager.Instance.Now();
-         var _loc3_:Number = 24 - _loc2_.getHours();
-         var _loc1_:* = 0;
-         if(_loc2_.getMinutes() > 0)
+         var now:Date = TimeManager.Instance.Now();
+         var remainHour:Number = 24 - now.getHours();
+         var remainMin:* = 0;
+         if(now.getMinutes() > 0)
          {
-            _loc3_--;
-            _loc1_ = Number(60 - _loc2_.getMinutes());
+            remainHour--;
+            remainMin = Number(60 - now.getMinutes());
          }
-         return String(_loc3_) + LanguageMgr.GetTranslation("hour") + String(_loc1_) + LanguageMgr.GetTranslation("minute") + LanguageMgr.GetTranslation("ddt.farms.refreshPetsLastTimes");
+         return String(remainHour) + LanguageMgr.GetTranslation("hour") + String(remainMin) + LanguageMgr.GetTranslation("minute") + LanguageMgr.GetTranslation("ddt.farms.refreshPetsLastTimes");
       }
       
-      public function isFourStarPet(param1:Array) : Boolean
+      public function isFourStarPet(pets:Array) : Boolean
       {
-         var _loc2_:Boolean = false;
+         var resultBool:Boolean = false;
          var _loc5_:int = 0;
-         var _loc4_:* = param1;
-         for each(var _loc3_ in param1)
+         var _loc4_:* = pets;
+         for each(var petInfo in pets)
          {
-            if(_loc3_.StarLevel == 4)
+            if(petInfo.StarLevel == 4)
             {
-               _loc2_ = true;
+               resultBool = true;
                break;
             }
          }
-         return _loc2_;
+         return resultBool;
       }
       
       public function refreshVolume() : String

@@ -67,27 +67,27 @@ package farm.viewx.poultry
          FarmModelController.instance.addEventListener("farmTree_updateTreeLevel",__onUpdateFarmTreeLevel);
       }
       
-      protected function __onUpdateFarmTreeLevel(param1:FarmEvent) : void
+      protected function __onUpdateFarmTreeLevel(event:FarmEvent) : void
       {
          _levelNum = FarmModelController.instance.model.FarmTreeLevel;
          _level.text = LanguageMgr.GetTranslation("ddt.cardSystem.CardEquipView.levelText") + _levelNum;
       }
       
-      public function setLevel(param1:int) : void
+      public function setLevel(level:int) : void
       {
-         FarmModelController.instance.model.FarmTreeLevel = param1;
-         _levelNum = param1;
+         FarmModelController.instance.model.FarmTreeLevel = level;
+         _levelNum = level;
          _level.text = LanguageMgr.GetTranslation("ddt.cardSystem.CardEquipView.levelText") + _levelNum;
       }
       
-      protected function __onTreeClick(param1:MouseEvent) : void
+      protected function __onTreeClick(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var testView:* = null;
          if(FarmModelController.instance.model.currentFarmerId == PlayerManager.Instance.Self.ID)
          {
             SoundManager.instance.playButtonSound();
-            _loc2_ = ComponentFactory.Instance.creatCustomObject("farm.poultry.treeUpgrade");
-            LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+            testView = ComponentFactory.Instance.creatCustomObject("farm.poultry.treeUpgrade");
+            LayerManager.Instance.addToLayer(testView,3,true,1);
          }
          else
          {
@@ -95,12 +95,12 @@ package farm.viewx.poultry
          }
       }
       
-      protected function __onTreeOver(param1:MouseEvent) : void
+      protected function __onTreeOver(event:MouseEvent) : void
       {
          _tree.gotoAndStop(2);
       }
       
-      protected function __onTreeOut(param1:MouseEvent) : void
+      protected function __onTreeOut(event:MouseEvent) : void
       {
          _tree.gotoAndStop(1);
       }

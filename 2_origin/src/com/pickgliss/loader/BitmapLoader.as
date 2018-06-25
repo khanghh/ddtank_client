@@ -15,9 +15,9 @@ package com.pickgliss.loader
       
       private var _sourceBitmap:Bitmap;
       
-      public function BitmapLoader(param1:int, param2:String)
+      public function BitmapLoader(id:int, url:String)
       {
-         super(param1,param2);
+         super(id,url);
       }
       
       override public function get content() : *
@@ -38,32 +38,32 @@ package com.pickgliss.loader
          return null;
       }
       
-      override protected function __onContentLoadComplete(param1:Event) : void
+      override protected function __onContentLoadComplete(event:Event) : void
       {
          _sourceBitmap = _displayLoader.content as Bitmap;
-         super.__onContentLoadComplete(param1);
+         super.__onContentLoadComplete(event);
       }
       
-      override public function loadFromBytes(param1:ByteArray) : void
+      override public function loadFromBytes(data:ByteArray) : void
       {
-         var _loc2_:* = null;
-         if(NewCrypto.isEncryed(param1))
+         var temp:* = null;
+         if(NewCrypto.isEncryed(data))
          {
             _displayLoader.contentLoaderInfo.addEventListener("complete",__onContentLoadComplete);
             _displayLoader.contentLoaderInfo.addEventListener("ioError",__onDisplayIoError);
-            _loc2_ = NewCrypto.decry(param1);
+            temp = NewCrypto.decry(data);
             if(domain != null)
             {
-               _displayLoader.loadBytes(_loc2_,new LoaderContext(false,domain));
+               _displayLoader.loadBytes(temp,new LoaderContext(false,domain));
             }
             else
             {
-               _displayLoader.loadBytes(_loc2_,Context);
+               _displayLoader.loadBytes(temp,Context);
             }
          }
          else
          {
-            super.loadFromBytes(param1);
+            super.loadFromBytes(data);
          }
       }
       

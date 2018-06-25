@@ -9,15 +9,15 @@ package fightLib.script.HighThrow
    {
        
       
-      public function NormalHighThrow(param1:Object)
+      public function NormalHighThrow(fightView:Object)
       {
-         super(param1);
+         super(fightView);
       }
       
       override protected function initializeScript() : void
       {
-         var _loc1_:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.HighThrow.NormalHighThrow.command2"),LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.startTrain"),startTrain);
-         _commonds.push(_loc1_);
+         var command2:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.HighThrow.NormalHighThrow.command2"),LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.startTrain"),startTrain);
+         _commonds.push(command2);
          super.initializeScript();
       }
       

@@ -24,10 +24,10 @@ package team.event
       
       private var _data:Object;
       
-      public function TeamEvent(param1:String, param2:Object = null)
+      public function TeamEvent(type:String, data:Object = null)
       {
-         _data = param2;
-         super(param1);
+         _data = data;
+         super(type);
       }
       
       public function get data() : Object

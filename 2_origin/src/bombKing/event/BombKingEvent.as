@@ -14,10 +14,10 @@ package bombKing.event
       
       public var data:Object;
       
-      public function BombKingEvent(param1:String, param2:Object = null)
+      public function BombKingEvent(type:String, value:Object = null)
       {
-         data = param2;
-         super(param1,bubbles,cancelable);
+         data = value;
+         super(type,bubbles,cancelable);
       }
    }
 }

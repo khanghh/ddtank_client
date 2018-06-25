@@ -104,58 +104,58 @@ package ddt.view.roulette
       
       private var _selectedGoodsCountList:Array;
       
-      public function RouletteView(param1:Array)
+      public function RouletteView(templateIDList:Array)
       {
          _needKeyCount = [1,2,3,4,5,6,7,8,0];
          super();
-         _templateIDList = param1;
+         _templateIDList = templateIDList;
          init();
          initEvent();
       }
       
       private function init() : void
       {
-         var _loc8_:int = 0;
-         var _loc15_:* = null;
-         var _loc5_:* = null;
-         var _loc1_:* = null;
-         var _loc7_:* = null;
-         var _loc6_:int = 0;
-         var _loc21_:* = null;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var bg:* = null;
+         var cell:* = null;
+         var goodsInfo:* = null;
+         var info:* = null;
+         var j:int = 0;
+         var bgII:* = null;
+         var selectCell:* = null;
          _turnControl = new TurnControl();
          _goodsList = new Vector.<RouletteGoodsCell>();
          _selectGoodsList = new Vector.<RouletteGoodsCell>();
-         var _loc19_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.awardSystem.roulette.RouletteBG");
-         addChild(_loc19_);
-         var _loc3_:MutipleImage = ComponentFactory.Instance.creatComponentByStylename("roulette.BGI");
-         addChild(_loc3_);
-         var _loc4_:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("roulette.BGII");
-         addChild(_loc4_);
-         var _loc18_:MutipleImage = ComponentFactory.Instance.creatComponentByStylename("roulette.cellBGIII");
-         addChild(_loc18_);
-         var _loc17_:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("roulette.cellBGV");
-         addChild(_loc17_);
-         var _loc16_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.awardSystem.roulette.RouletteBGII");
-         addChild(_loc16_);
-         var _loc14_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.awardSystem.roulette.tipBG");
-         addChild(_loc14_);
-         var _loc22_:Image = ComponentFactory.Instance.creatComponentByStylename("roulette.VIPicon1");
-         addChild(_loc22_);
-         var _loc20_:Image = ComponentFactory.Instance.creatComponentByStylename("roulette.VIPicon2");
-         addChild(_loc20_);
-         var _loc11_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("roulette.RouletteTipI");
-         _loc11_.text = LanguageMgr.GetTranslation("roulette.tipTxt1");
-         addChild(_loc11_);
-         var _loc9_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("roulette.RouletteTipII");
-         _loc9_.text = LanguageMgr.GetTranslation("roulette.tipTxt2");
-         addChild(_loc9_);
-         var _loc13_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("roulette.RouletteTipIII");
-         _loc13_.text = LanguageMgr.GetTranslation("roulette.tipTxt3");
-         addChild(_loc13_);
-         var _loc12_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("roulette.RouletteTipV");
-         _loc12_.text = LanguageMgr.GetTranslation("roulette.tipTxt4");
-         addChild(_loc12_);
+         var _bg:Bitmap = ComponentFactory.Instance.creatBitmap("asset.awardSystem.roulette.RouletteBG");
+         addChild(_bg);
+         var _bg2:MutipleImage = ComponentFactory.Instance.creatComponentByStylename("roulette.BGI");
+         addChild(_bg2);
+         var _bg3:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("roulette.BGII");
+         addChild(_bg3);
+         var _bg4:MutipleImage = ComponentFactory.Instance.creatComponentByStylename("roulette.cellBGIII");
+         addChild(_bg4);
+         var _bg5:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("roulette.cellBGV");
+         addChild(_bg5);
+         var _bg6:Bitmap = ComponentFactory.Instance.creatBitmap("asset.awardSystem.roulette.RouletteBGII");
+         addChild(_bg6);
+         var _bg7:Bitmap = ComponentFactory.Instance.creatBitmap("asset.awardSystem.roulette.tipBG");
+         addChild(_bg7);
+         var _bg8:Image = ComponentFactory.Instance.creatComponentByStylename("roulette.VIPicon1");
+         addChild(_bg8);
+         var _bg9:Image = ComponentFactory.Instance.creatComponentByStylename("roulette.VIPicon2");
+         addChild(_bg9);
+         var tiptxt1:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("roulette.RouletteTipI");
+         tiptxt1.text = LanguageMgr.GetTranslation("roulette.tipTxt1");
+         addChild(tiptxt1);
+         var tiptxt2:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("roulette.RouletteTipII");
+         tiptxt2.text = LanguageMgr.GetTranslation("roulette.tipTxt2");
+         addChild(tiptxt2);
+         var tiptxt3:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("roulette.RouletteTipIII");
+         tiptxt3.text = LanguageMgr.GetTranslation("roulette.tipTxt3");
+         addChild(tiptxt3);
+         var tiptxt4:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("roulette.RouletteTipV");
+         tiptxt4.text = LanguageMgr.GetTranslation("roulette.tipTxt4");
+         addChild(tiptxt4);
          _keyConutText = ComponentFactory.Instance.creat("roulette.RouletteStyleI");
          _selectNumberText = ComponentFactory.Instance.creat("roulette.RouletteStyleII");
          _needKeyText = ComponentFactory.Instance.creat("roulette.RouletteStyleIII");
@@ -163,40 +163,38 @@ package ddt.view.roulette
          addChild(_selectNumberText);
          addChild(_needKeyText);
          getAllGoodsPoint();
-         var _loc10_:Sprite = ComponentFactory.Instance.creatCustomObject("roulette.cellSprite");
-         addChild(_loc10_);
-         _loc8_ = 0;
-         while(_loc8_ <= 17)
+         var _cellSprite:Sprite = ComponentFactory.Instance.creatCustomObject("roulette.cellSprite");
+         addChild(_cellSprite);
+         for(i = 0; i <= 17; )
          {
-            _loc15_ = ComponentFactory.Instance.creatBitmap("asset.awardSystem.roulette.CellBGAsset");
-            _loc5_ = new RouletteGoodsCell(_loc15_,10,32);
-            _loc5_.addCellBg(ComponentFactory.Instance.creatComponentByStylename("roulette.cellBG"));
-            _loc5_.x = _pointArray[_loc8_].x;
-            _loc5_.y = _pointArray[_loc8_].y;
-            _loc5_.selected = true;
-            _loc10_.addChild(_loc5_);
-            _loc1_ = _templateIDList[_loc8_] as BoxGoodsTempInfo;
-            _loc7_ = getTemplateInfo(_loc1_.TemplateId) as InventoryItemInfo;
-            _loc7_.IsBinds = _loc1_.IsBind;
-            _loc7_.ValidDate = _loc1_.ItemValid;
-            _loc7_.IsJudge = true;
-            _loc5_.info = _loc7_;
-            _loc5_.count = _loc1_.ItemCount;
-            _goodsList.push(_loc5_);
-            _loc8_++;
+            bg = ComponentFactory.Instance.creatBitmap("asset.awardSystem.roulette.CellBGAsset");
+            cell = new RouletteGoodsCell(bg,10,32);
+            cell.addCellBg(ComponentFactory.Instance.creatComponentByStylename("roulette.cellBG"));
+            cell.x = _pointArray[i].x;
+            cell.y = _pointArray[i].y;
+            cell.selected = true;
+            _cellSprite.addChild(cell);
+            goodsInfo = _templateIDList[i] as BoxGoodsTempInfo;
+            info = getTemplateInfo(goodsInfo.TemplateId) as InventoryItemInfo;
+            info.IsBinds = goodsInfo.IsBind;
+            info.ValidDate = goodsInfo.ItemValid;
+            info.IsJudge = true;
+            cell.info = info;
+            cell.count = goodsInfo.ItemCount;
+            _goodsList.push(cell);
+            i++;
          }
          _selectedCellBox = ComponentFactory.Instance.creat("roulette.SeletedHBox");
          _selectedCellBox.beginChanges();
-         _loc6_ = 0;
-         while(_loc6_ < 8)
+         for(j = 0; j < 8; )
          {
-            _loc21_ = ComponentFactory.Instance.creatBitmap("asset.awardSystem.roulette.SelectCellBGAsset");
-            _loc2_ = new RouletteGoodsCell(_loc21_,4,26);
-            _loc2_.addCellBg(ComponentFactory.Instance.creatComponentByStylename("roulette.cellBGII"));
-            _loc2_.selected = false;
-            _selectGoodsList.push(_loc2_);
-            _selectedCellBox.addChild(_loc2_);
-            _loc6_++;
+            bgII = ComponentFactory.Instance.creatBitmap("asset.awardSystem.roulette.SelectCellBGAsset");
+            selectCell = new RouletteGoodsCell(bgII,4,26);
+            selectCell.addCellBg(ComponentFactory.Instance.creatComponentByStylename("roulette.cellBGII"));
+            selectCell.selected = false;
+            _selectGoodsList.push(selectCell);
+            _selectedCellBox.addChild(selectCell);
+            j++;
          }
          _selectedCellBox.commitChanges();
          addChild(_selectedCellBox);
@@ -215,15 +213,14 @@ package ddt.view.roulette
       
       private function getAllGoodsPoint() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var point:* = null;
          _pointArray = [];
-         _loc2_ = 0;
-         while(_loc2_ < 18)
+         for(i = 0; i < 18; )
          {
-            _loc1_ = ComponentFactory.Instance.creatCustomObject("roulette.point" + _loc2_);
-            _pointArray.push(_loc1_);
-            _loc2_++;
+            point = ComponentFactory.Instance.creatCustomObject("roulette.point" + i);
+            _pointArray.push(point);
+            i++;
          }
       }
       
@@ -237,57 +234,56 @@ package ddt.view.roulette
          _buyKeyButton.addEventListener("click",_buyKeyClick);
       }
       
-      private function _getItem(param1:PkgEvent) : void
+      private function _getItem(e:PkgEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc8_:int = 0;
-         var _loc2_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
+         var count:int = 0;
+         var i:int = 0;
+         var templateID:int = 0;
+         var itemType:int = 0;
+         var timer:* = null;
          _itemList = new Vector.<RouletteGoodsCell>();
          _selectedGoodsInfoList = [];
          _selectedGoodsCountList = [];
-         var _loc6_:PackageIn = param1.pkg;
-         var _loc7_:Boolean = _loc6_.readBoolean();
-         if(_loc7_)
+         var pkg:PackageIn = e.pkg;
+         var btlifeBoo:Boolean = pkg.readBoolean();
+         if(btlifeBoo)
          {
-            _loc3_ = _loc6_.readInt();
-            if(_loc3_ > 1)
+            count = pkg.readInt();
+            if(count > 1)
             {
-               _type = _loc3_;
+               _type = count;
             }
-            _loc8_ = 0;
-            while(_loc8_ < _loc3_)
+            for(i = 0; i < count; )
             {
-               _loc2_ = _loc6_.readInt();
-               _loc5_ = _loc6_.readInt();
-               _selectedGoodsInfo = getTemplateInfo(_loc2_) as InventoryItemInfo;
-               _selectedGoodsInfo.StrengthenLevel = _loc6_.readInt();
-               _selectedGoodsInfo.AttackCompose = _loc6_.readInt();
-               _selectedGoodsInfo.DefendCompose = _loc6_.readInt();
-               _selectedGoodsInfo.LuckCompose = _loc6_.readInt();
-               _selectedGoodsInfo.AgilityCompose = _loc6_.readInt();
-               _selectedGoodsInfo.IsBinds = _loc6_.readBoolean();
-               _selectedGoodsInfo.ValidDate = _loc6_.readInt();
-               _selectedCount = _loc6_.readByte();
+               templateID = pkg.readInt();
+               itemType = pkg.readInt();
+               _selectedGoodsInfo = getTemplateInfo(templateID) as InventoryItemInfo;
+               _selectedGoodsInfo.StrengthenLevel = pkg.readInt();
+               _selectedGoodsInfo.AttackCompose = pkg.readInt();
+               _selectedGoodsInfo.DefendCompose = pkg.readInt();
+               _selectedGoodsInfo.LuckCompose = pkg.readInt();
+               _selectedGoodsInfo.AgilityCompose = pkg.readInt();
+               _selectedGoodsInfo.IsBinds = pkg.readBoolean();
+               _selectedGoodsInfo.ValidDate = pkg.readInt();
+               _selectedCount = pkg.readByte();
                _selectedGoodsInfo.IsJudge = true;
-               _selectedItemType = _loc5_;
-               turnSlectedNumber = _findCellByItemID(_loc2_,_selectedCount);
-               _selectedGoodsNumberInTemplateIDList = _findSelectedGoodsNumberInTemplateIDList(_loc2_,_selectedCount);
+               _selectedItemType = itemType;
+               turnSlectedNumber = _findCellByItemID(templateID,_selectedCount);
+               _selectedGoodsNumberInTemplateIDList = _findSelectedGoodsNumberInTemplateIDList(templateID,_selectedCount);
                _selectedGoodsInfoList.push(_selectedGoodsInfo);
                _selectedGoodsCountList.push(_selectedCount);
-               _loc8_++;
+               i++;
             }
-            if(_loc3_ > 1)
+            if(count > 1)
             {
                _startButton.enable = false;
                _oneKeyStartBtn.enable = false;
                _isCanClose = false;
-               _loc4_ = new Timer(500);
-               _loc4_.repeatCount = _loc3_;
-               _loc4_.start();
-               _loc4_.addEventListener("timer",timerHander);
-               _loc4_.addEventListener("timerComplete",timerCompHander);
+               timer = new Timer(500);
+               timer.repeatCount = count;
+               timer.start();
+               timer.addEventListener("timer",timerHander);
+               timer.addEventListener("timerComplete",timerCompHander);
                return;
             }
             if(turnSlectedNumber == -1)
@@ -307,43 +303,43 @@ package ddt.view.roulette
          }
       }
       
-      private function timerHander(param1:TimerEvent) : void
+      private function timerHander(e:TimerEvent) : void
       {
          _moveToSelctViewTimer(_index);
          _index = Number(_index) + 1;
       }
       
-      private function timerCompHander(param1:TimerEvent) : void
+      private function timerCompHander(e:TimerEvent) : void
       {
-         var _loc2_:Timer = param1.currentTarget as Timer;
-         _loc2_.start();
+         var timer:Timer = e.currentTarget as Timer;
+         timer.start();
          _index = 0;
          _selectNumber = 0;
-         _loc2_.removeEventListener("timer",timerHander);
-         _loc2_.removeEventListener("timerComplete",timerCompHander);
+         timer.removeEventListener("timer",timerHander);
+         timer.removeEventListener("timerComplete",timerCompHander);
          SoundManager.instance.play("125");
          _isCanClose = true;
       }
       
-      private function _oneKeyClick(param1:MouseEvent) : void
+      private function _oneKeyClick(e:MouseEvent) : void
       {
-         var _loc3_:int = 8 - _selectNumber;
-         var _loc2_:int = totalKeyCount();
-         sendStartRoulette(_loc3_);
+         var type:int = 8 - _selectNumber;
+         var total:int = totalKeyCount();
+         sendStartRoulette(type);
          _selectNumberText.text = "0";
-         _needKeyText.text = String(_loc2_);
+         _needKeyText.text = String(total);
       }
       
-      private function _turnClick(param1:MouseEvent) : void
+      private function _turnClick(e:MouseEvent) : void
       {
          sendStartRoulette(1);
          _needKeyText.text = _needKeyCount[_selectNumber];
          _selectNumberText.text = String(8 - _selectNumber);
       }
       
-      private function sendStartRoulette(param1:int = 0) : void
+      private function sendStartRoulette(type:int = 0) : void
       {
-         var _loc2_:int = 0;
+         var total:int = 0;
          SoundManager.instance.play("008");
          if(!PlayerManager.Instance.Self.IsVIP)
          {
@@ -351,15 +347,15 @@ package ddt.view.roulette
             return;
          }
          _turnControl.autoMove = false;
-         if(param1 > 1)
+         if(type > 1)
          {
-            _loc2_ = totalKeyCount();
-            if(_loc2_ <= keyCount && !isTurn)
+            total = totalKeyCount();
+            if(total <= keyCount && !isTurn)
             {
                isTurn = true;
-               SocketManager.Instance.out.sendStartTurn(param1);
+               SocketManager.Instance.out.sendStartTurn(type);
             }
-            else if(_loc2_ > keyCount)
+            else if(total > keyCount)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.vip.vipIcon.notVipCoin"));
             }
@@ -368,7 +364,7 @@ package ddt.view.roulette
          if(needKeyCount <= keyCount && !isTurn)
          {
             isTurn = true;
-            SocketManager.Instance.out.sendStartTurn(param1);
+            SocketManager.Instance.out.sendStartTurn(type);
          }
          else if(needKeyCount > keyCount)
          {
@@ -378,15 +374,14 @@ package ddt.view.roulette
       
       private function totalKeyCount() : int
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         _loc2_ = _selectNumber;
-         while(_loc2_ < 8)
+         var i:int = 0;
+         var total:int = 0;
+         for(i = _selectNumber; i < 8; )
          {
-            _loc1_ = _loc1_ + _needKeyCount[_loc2_];
-            _loc2_++;
+            total = total + _needKeyCount[i];
+            i++;
          }
-         return _loc1_;
+         return total;
       }
       
       private function _startTurn() : void
@@ -396,19 +391,19 @@ package ddt.view.roulette
          _turnControl.turnPlate(_goodsList,turnSlectedNumber);
       }
       
-      private function _buyKeyClick(param1:MouseEvent) : void
+      private function _buyKeyClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:int = _needKeyCount[_selectNumber] == 0?1:_needKeyCount[_selectNumber];
-         RouletteManager.instance.showBuyRouletteKey(_loc2_);
+         var i:int = _needKeyCount[_selectNumber] == 0?1:_needKeyCount[_selectNumber];
+         RouletteManager.instance.showBuyRouletteKey(i);
       }
       
-      private function _keyUpdate(param1:RouletteEvent) : void
+      private function _keyUpdate(e:RouletteEvent) : void
       {
-         keyCount = param1.keyCount;
+         keyCount = e.keyCount;
       }
       
-      private function _turnComplete(param1:Event) : void
+      private function _turnComplete(e:Event) : void
       {
          _startButton.enable = true;
          _oneKeyStartBtn.enable = true;
@@ -436,7 +431,7 @@ package ddt.view.roulette
          }
       }
       
-      private function _bigGlintComplete(param1:Event) : void
+      private function _bigGlintComplete(e:Event) : void
       {
          _glintView.removeEventListener("bigGlintComplete",_bigGlintComplete);
          selectNumber = Number(selectNumber) + 1;
@@ -444,15 +439,15 @@ package ddt.view.roulette
          SoundManager.instance.stop("063");
       }
       
-      private function _moveToSelctViewTimer(param1:int) : void
+      private function _moveToSelctViewTimer(index:int) : void
       {
          SoundManager.instance.play("135");
-         _itemList[param1].out();
-         var _loc2_:RouletteGoodsCell = _itemList[param1] as RouletteGoodsCell;
+         _itemList[index].out();
+         var cell:RouletteGoodsCell = _itemList[index] as RouletteGoodsCell;
          if(selectNumber < 8)
          {
-            _selectGoodsList[selectNumber].info = _selectedGoodsInfoList[param1];
-            _selectGoodsList[selectNumber].count = _selectedGoodsCountList[param1];
+            _selectGoodsList[selectNumber].info = _selectedGoodsInfoList[index];
+            _selectGoodsList[selectNumber].count = _selectedGoodsCountList[index];
          }
          if(_type > 1)
          {
@@ -463,7 +458,7 @@ package ddt.view.roulette
       private function _moveToSelctView() : void
       {
          _goodsList[turnSlectedNumber].out();
-         var _loc1_:RouletteGoodsCell = _goodsList.splice(turnSlectedNumber,1)[0] as RouletteGoodsCell;
+         var cell:RouletteGoodsCell = _goodsList.splice(turnSlectedNumber,1)[0] as RouletteGoodsCell;
          if(selectNumber < 8)
          {
             _selectGoodsList[selectNumber].info = _selectedGoodsInfo;
@@ -471,37 +466,35 @@ package ddt.view.roulette
          }
       }
       
-      private function _findCellByItemID(param1:int, param2:int) : int
+      private function _findCellByItemID(itemId:int, _count:int) : int
       {
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < _goodsList.length)
+         var i:int = 0;
+         for(i = 0; i < _goodsList.length; )
          {
-            if(_goodsList[_loc3_].info.TemplateID == param1 && _goodsList[_loc3_].count == param2)
+            if(_goodsList[i].info.TemplateID == itemId && _goodsList[i].count == _count)
             {
                if(_type > 1)
                {
-                  _itemList.push(_goodsList[_loc3_]);
-                  _goodsList.splice(_loc3_,1);
+                  _itemList.push(_goodsList[i]);
+                  _goodsList.splice(i,1);
                }
-               return _loc3_;
+               return i;
             }
-            _loc3_++;
+            i++;
          }
          return -1;
       }
       
-      private function _findSelectedGoodsNumberInTemplateIDList(param1:int, param2:int) : int
+      private function _findSelectedGoodsNumberInTemplateIDList(itemId:int, _count:int) : int
       {
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < _templateIDList.length)
+         var i:int = 0;
+         for(i = 0; i < _templateIDList.length; )
          {
-            if(_templateIDList[_loc3_].TemplateId == param1 && _templateIDList[_loc3_].ItemCount == param2)
+            if(_templateIDList[i].TemplateId == itemId && _templateIDList[i].ItemCount == _count)
             {
-               return _loc3_;
+               return i;
             }
-            _loc3_++;
+            i++;
          }
          return -1;
       }
@@ -511,9 +504,9 @@ package ddt.view.roulette
          SocketManager.Instance.out.sendFinishRoulette();
       }
       
-      public function set keyCount(param1:int) : void
+      public function set keyCount(value:int) : void
       {
-         _keyCount = param1;
+         _keyCount = value;
          _keyConutText.text = String(_keyCount);
       }
       
@@ -522,9 +515,9 @@ package ddt.view.roulette
          return _keyCount;
       }
       
-      public function set selectNumber(param1:int) : void
+      public function set selectNumber(value:int) : void
       {
-         _selectNumber = param1;
+         _selectNumber = value;
          _selectNumberText.text = String(8 - _selectNumber);
          _needKeyText.text = String(_needKeyCount[_selectNumber]);
          if(_selectNumber == 8)
@@ -544,9 +537,9 @@ package ddt.view.roulette
          return _selectNumber;
       }
       
-      public function set turnSlectedNumber(param1:int) : void
+      public function set turnSlectedNumber(value:int) : void
       {
-         _turnSlectedNumber = param1;
+         _turnSlectedNumber = value;
       }
       
       public function get turnSlectedNumber() : int
@@ -554,9 +547,9 @@ package ddt.view.roulette
          return _turnSlectedNumber;
       }
       
-      public function set isTurn(param1:Boolean) : void
+      public function set isTurn(value:Boolean) : void
       {
-         _isTurn = param1;
+         _isTurn = value;
          if(_isTurn)
          {
             _buyKeyButton.enable = false;
@@ -577,18 +570,18 @@ package ddt.view.roulette
          return _isCanClose;
       }
       
-      private function getTemplateInfo(param1:int) : InventoryItemInfo
+      private function getTemplateInfo(id:int) : InventoryItemInfo
       {
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         _loc2_.TemplateID = param1;
-         ItemManager.fill(_loc2_);
-         return _loc2_;
+         var itemInfo:InventoryItemInfo = new InventoryItemInfo();
+         itemInfo.TemplateID = id;
+         ItemManager.fill(itemInfo);
+         return itemInfo;
       }
       
       public function dispose() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var i:int = 0;
+         var j:int = 0;
          RouletteManager.instance.removeEventListener("roulette_key_count_update",_keyUpdate);
          SocketManager.Instance.removeEventListener(PkgEvent.format(30),_getItem);
          _turnControl.removeEventListener("turn_complete",_turnComplete);
@@ -610,17 +603,15 @@ package ddt.view.roulette
          _finish();
          _templateIDList.splice(0,_templateIDList.length);
          clearTimeout(_winTimeOut);
-         _loc2_ = 0;
-         while(_loc2_ < _goodsList.length)
+         for(i = 0; i < _goodsList.length; )
          {
-            _goodsList[_loc2_].dispose();
-            _loc2_++;
+            _goodsList[i].dispose();
+            i++;
          }
-         _loc1_ = 0;
-         while(_loc1_ < _selectGoodsList.length)
+         for(j = 0; j < _selectGoodsList.length; )
          {
-            _selectGoodsList[_loc1_].dispose();
-            _loc1_++;
+            _selectGoodsList[j].dispose();
+            j++;
          }
          if(_startButton)
          {

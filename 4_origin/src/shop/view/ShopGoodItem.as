@@ -187,31 +187,31 @@ package shop.view
          addChild(_itemCountTxt);
          _timeline = new TimelineMax();
          _timeline.addEventListener("complete",__timelineComplete);
-         var _loc2_:TweenLite = TweenLite.to(_labelIcon,0.25,{
+         var tw1:TweenLite = TweenLite.to(_labelIcon,0.25,{
             "alpha":0,
             "y":"-30"
          });
-         _timeline.append(_loc2_);
-         var _loc1_:TweenLite = TweenLite.to(_itemCountTxt,0.25,{
+         _timeline.append(tw1);
+         var tw2:TweenLite = TweenLite.to(_itemCountTxt,0.25,{
             "alpha":0,
             "y":"-30"
          });
-         _timeline.append(_loc1_,-0.25);
-         var _loc3_:TweenMax = TweenMax.from(_shopItemCellTypeBg,0.1,{
+         _timeline.append(tw2,-0.25);
+         var tw5:TweenMax = TweenMax.from(_shopItemCellTypeBg,0.1,{
             "autoAlpha":0,
             "y":"5"
          });
-         _timeline.append(_loc3_,-0.2);
+         _timeline.append(tw5,-0.2);
          _timeline.stop();
       }
       
       protected function creatItemCell() : ShopItemCell
       {
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,75,75);
-         _loc1_.graphics.endFill();
-         return CellFactory.instance.createShopItemCell(_loc1_,null,true,true) as ShopItemCell;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,75,75);
+         sp.graphics.endFill();
+         return CellFactory.instance.createShopItemCell(sp,null,true,true) as ShopItemCell;
       }
       
       public function get shopItemInfo() : ShopItemInfo
@@ -219,22 +219,22 @@ package shop.view
          return _shopItemInfo;
       }
       
-      public function set shopItemInfo(param1:ShopItemInfo) : void
+      public function set shopItemInfo(value:ShopItemInfo) : void
       {
          if(_shopItemInfo)
          {
             _shopItemInfo.removeEventListener("change",__updateShopItem);
          }
-         if(param1 == null)
+         if(value == null)
          {
             _shopItemInfo = null;
             _itemCell.info = null;
          }
          else
          {
-            _shopItemInfo = param1;
-            _itemCell.info = param1.TemplateInfo;
-            _itemCell.tipInfo = param1;
+            _shopItemInfo = value;
+            _itemCell.info = value.TemplateInfo;
+            _itemCell.tipInfo = value;
          }
          if(_itemCell.info != null)
          {
@@ -249,7 +249,7 @@ package shop.view
             _payPaneBuyBtn.visible = true;
             _payPaneaskBtn.visible = true;
             _itemNameTxt.text = String(_itemCell.info.Name);
-            _itemCell.tipInfo = param1;
+            _itemCell.tipInfo = value;
             initPrice();
             if(_shopItemInfo.ShopID == 1)
             {
@@ -309,7 +309,7 @@ package shop.view
          }
       }
       
-      private function __updateShopItem(param1:Event) : void
+      private function __updateShopItem(evt:Event) : void
       {
          updateCount();
       }
@@ -423,7 +423,7 @@ package shop.view
          _itemBg.removeEventListener("mouseOut",__itemMouseOut);
       }
       
-      private function payPanAskHander(param1:MouseEvent) : void
+      private function payPanAskHander(e:MouseEvent) : void
       {
          _shopPresentClearingFrame = ComponentFactory.Instance.creatComponentByStylename("core.ddtshop.ShopPresentClearingFrame");
          _shopPresentClearingFrame.show();
@@ -432,30 +432,30 @@ package shop.view
          _shopPresentClearingFrame.addEventListener("response",shopPresentClearingFrameResponseHandler);
       }
       
-      protected function shopPresentClearingFrameResponseHandler(param1:FrameEvent) : void
+      protected function shopPresentClearingFrameResponseHandler(event:FrameEvent) : void
       {
          _shopPresentClearingFrame.removeEventListener("response",shopPresentClearingFrameResponseHandler);
          if(_shopPresentClearingFrame.presentBtn)
          {
             _shopPresentClearingFrame.presentBtn.removeEventListener("click",presentBtnClick);
          }
-         if(param1.responseCode == 0 || param1.responseCode == 1 || param1.responseCode == 4)
+         if(event.responseCode == 0 || event.responseCode == 1 || event.responseCode == 4)
          {
             _shopPresentClearingFrame.dispose();
             _shopPresentClearingFrame = null;
          }
       }
       
-      protected function presentBtnClick(param1:MouseEvent) : void
+      protected function presentBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:String = _shopPresentClearingFrame.nameInput.text;
-         if(_loc2_ == "")
+         var name:String = _shopPresentClearingFrame.nameInput.text;
+         if(name == "")
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.ShopIIPresentView.askPay"));
             return;
          }
-         if(FilterWordManager.IsNullorEmpty(_loc2_))
+         if(FilterWordManager.IsNullorEmpty(name))
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.ShopIIPresentView.askSpace"));
             return;
@@ -466,7 +466,7 @@ package shop.view
          _shopPresentClearingFrame = null;
       }
       
-      protected function __payPaneBuyBtnOver(param1:MouseEvent) : void
+      protected function __payPaneBuyBtnOver(event:MouseEvent) : void
       {
          if(_shopItemInfo && _shopItemInfo.LimitGrade > PlayerManager.Instance.Self.Grade)
          {
@@ -477,14 +477,14 @@ package shop.view
          }
       }
       
-      protected function __payPaneBuyBtnOut(param1:MouseEvent) : void
+      protected function __payPaneBuyBtnOut(event:MouseEvent) : void
       {
          ShowTipManager.Instance.removeTip(_payPaneBuyBtn);
       }
       
-      protected function __payPanelClick(param1:MouseEvent) : void
+      protected function __payPanelClick(event:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
          if(_shopItemInfo && _shopItemInfo.LimitCount == 0)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.ShopIIModel.countOver"));
@@ -498,11 +498,11 @@ package shop.view
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.shop.discount.exit"));
                return;
             }
-            if(param1.currentTarget == _payPaneGivingBtn)
+            if(event.currentTarget == _payPaneGivingBtn)
             {
                ShopGiftsManager.Instance.buy(_shopItemInfo.GoodsID,_shopItemInfo.isDiscount == 2,2);
             }
-            else if(param1.currentTarget == _payPaneBuyBtn)
+            else if(event.currentTarget == _payPaneBuyBtn)
             {
                ShopBuyManager.Instance.buy(_shopItemInfo.GoodsID,_shopItemInfo.isDiscount,_shopItemInfo.getItemPrice(1).PriceType);
             }
@@ -514,7 +514,7 @@ package shop.view
          dispatchEvent(new ItemEvent("itemSelect",_shopItemInfo,0));
       }
       
-      protected function __payPaneGetBtnClick(param1:MouseEvent) : void
+      protected function __payPaneGetBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -522,45 +522,44 @@ package shop.view
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("shop.view.ShopRightView.getSimpleAlert.title"),LanguageMgr.GetTranslation("shop.view.ShopRightView.getSimpleAlert.msg"),"",LanguageMgr.GetTranslation("cancel"),true,false,false,2);
-         _loc2_.addEventListener("response",__onResponse);
+         var frame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("shop.view.ShopRightView.getSimpleAlert.title"),LanguageMgr.GetTranslation("shop.view.ShopRightView.getSimpleAlert.msg"),"",LanguageMgr.GetTranslation("cancel"),true,false,false,2);
+         frame.addEventListener("response",__onResponse);
          dispatchEvent(new ItemEvent("itemSelect",_shopItemInfo,0));
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(evt:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc7_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         var _loc6_:* = null;
-         var _loc8_:int = 0;
+         var items:* = null;
+         var types:* = null;
+         var colors:* = null;
+         var dresses:* = null;
+         var places:* = null;
+         var i:int = 0;
          SoundManager.instance.play("008");
-         var _loc4_:BaseAlerFrame = param1.target as BaseAlerFrame;
-         _loc4_.removeEventListener("response",__onResponse);
-         _loc4_.dispose();
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alert:BaseAlerFrame = evt.target as BaseAlerFrame;
+         alert.removeEventListener("response",__onResponse);
+         alert.dispose();
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
-            _loc2_ = [];
-            _loc7_ = [];
-            _loc3_ = [];
-            _loc5_ = [];
-            _loc6_ = [];
-            _loc8_ = 0;
-            while(_loc8_ < 1)
+            items = [];
+            types = [];
+            colors = [];
+            dresses = [];
+            places = [];
+            for(i = 0; i < 1; )
             {
-               _loc2_.push(_shopItemInfo.GoodsID);
-               _loc7_.push(1);
-               _loc3_.push("");
-               _loc5_.push("");
-               _loc6_.push("");
-               _loc8_++;
+               items.push(_shopItemInfo.GoodsID);
+               types.push(1);
+               colors.push("");
+               dresses.push("");
+               places.push("");
+               i++;
             }
-            SocketManager.Instance.out.sendBuyGoods(_loc2_,_loc7_,_loc3_,_loc6_,_loc5_);
+            SocketManager.Instance.out.sendBuyGoods(items,types,colors,places,dresses);
          }
       }
       
-      protected function __itemClick(param1:MouseEvent) : void
+      protected function __itemClick(evt:MouseEvent) : void
       {
          if(!_shopItemInfo)
          {
@@ -579,7 +578,7 @@ package shop.view
          dispatchEvent(new ItemEvent("itemClick",_shopItemInfo,1));
       }
       
-      protected function __itemMouseOver(param1:MouseEvent) : void
+      protected function __itemMouseOver(event:MouseEvent) : void
       {
          if(!_itemCell.info)
          {
@@ -594,7 +593,7 @@ package shop.view
          _timeline.play();
       }
       
-      protected function __itemMouseOut(param1:MouseEvent) : void
+      protected function __itemMouseOut(event:MouseEvent) : void
       {
          ObjectUtils.disposeObject(_lightMc);
          if(!_shopItemInfo)
@@ -605,19 +604,19 @@ package shop.view
          __timelineComplete();
       }
       
-      public function setItemLight(param1:MovieClip) : void
+      public function setItemLight($lightMc:MovieClip) : void
       {
-         if(_lightMc == param1)
+         if(_lightMc == $lightMc)
          {
             return;
          }
-         _lightMc = param1;
+         _lightMc = $lightMc;
          _lightMc.mouseChildren = false;
          _lightMc.mouseEnabled = false;
          _lightMc.gotoAndPlay(1);
       }
       
-      protected function __timelineComplete(param1:TweenEvent = null) : void
+      protected function __timelineComplete(event:TweenEvent = null) : void
       {
          if(_timeline.currentTime < _timeline.totalDuration)
          {
@@ -635,7 +634,7 @@ package shop.view
          return this;
       }
       
-      public function set autoSelect(param1:Boolean) : void
+      public function set autoSelect(value:Boolean) : void
       {
       }
       
@@ -644,17 +643,17 @@ package shop.view
          return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         if(_selected == param1)
+         if(_selected == value)
          {
             return;
          }
-         _selected = param1;
+         _selected = value;
          _itemBg.setFrame(!!_selected?3:checkType());
          _itemCellBg.setFrame(!!_selected?3:checkType());
-         _itemNameTxt.setFrame(!!param1?2:1);
-         _itemPriceTxt.setFrame(!!param1?2:1);
+         _itemNameTxt.setFrame(!!value?2:1);
+         _itemPriceTxt.setFrame(!!value?2:1);
       }
       
       public function dispose() : void

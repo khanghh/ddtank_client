@@ -21,9 +21,9 @@ package store.view.storeBag
          super();
       }
       
-      public function set OtherCells(param1:DictionaryData) : void
+      public function set OtherCells(value:DictionaryData) : void
       {
-         _otherCells = param1;
+         _otherCells = value;
       }
       
       override protected function createPanel() : void
@@ -32,38 +32,38 @@ package store.view.storeBag
          super.createPanel();
       }
       
-      private function __showLight(param1:StoreIIEvent) : void
+      private function __showLight(evt:StoreIIEvent) : void
       {
-         if(param1.data)
+         if(evt.data)
          {
-            _categoryID = param1.data.CategoryID;
-            _showLight = param1.bool;
+            _categoryID = evt.data.CategoryID;
+            _showLight = evt.bool;
          }
          else
          {
             _categoryID = -1;
-            _showLight = param1.bool;
+            _showLight = evt.bool;
          }
          showLight(_categoryID,_showLight);
       }
       
-      private function showLight(param1:Number, param2:Boolean) : void
+      private function showLight(categoryType:Number, isShow:Boolean) : void
       {
          var _loc7_:int = 0;
          var _loc6_:* = cells;
-         for each(var _loc3_ in cells)
+         for each(var cell in cells)
          {
-            _loc3_.light = false;
+            cell.light = false;
          }
-         if(param1 != -1)
+         if(categoryType != -1)
          {
             var _loc9_:int = 0;
             var _loc8_:* = cells;
-            for each(var _loc5_ in cells)
+            for each(var i in cells)
             {
-               if(_loc5_.info && _loc5_.info.CategoryID == param1)
+               if(i.info && i.info.CategoryID == categoryType)
                {
-                  _loc5_.light = param2;
+                  i.light = isShow;
                }
             }
          }
@@ -71,9 +71,9 @@ package store.view.storeBag
          {
             var _loc11_:int = 0;
             var _loc10_:* = cells;
-            for each(var _loc4_ in cells)
+            for each(var j in cells)
             {
-               _loc4_.light = param2;
+               j.light = isShow;
             }
          }
       }
@@ -84,15 +84,15 @@ package store.view.storeBag
          super.dispose();
       }
       
-      override protected function __addGoods(param1:DictionaryEvent) : void
+      override protected function __addGoods(evt:DictionaryEvent) : void
       {
-         super.__addGoods(param1);
+         super.__addGoods(evt);
          showLight(_categoryID,_showLight);
       }
       
-      override protected function __removeGoods(param1:StoreBagEvent) : void
+      override protected function __removeGoods(evt:StoreBagEvent) : void
       {
-         super.__removeGoods(param1);
+         super.__removeGoods(evt);
          showLight(_categoryID,_showLight);
       }
    }

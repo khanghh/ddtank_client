@@ -21,15 +21,15 @@ package ddt.data.analyze
       
       private var _index:int;
       
-      public function InventoryItemAnalyzer(param1:Function)
+      public function InventoryItemAnalyzer(onCompleteCall:Function)
       {
          list = new Vector.<InventoryItemInfo>();
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         _xml = new XML(param1);
+         _xml = new XML(data);
          list = new Vector.<InventoryItemInfo>();
          parseTemplate();
       }
@@ -51,21 +51,20 @@ package ddt.data.analyze
          }
       }
       
-      private function __partexceute(param1:TimerEvent) : void
+      private function __partexceute(event:TimerEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < 40)
+         var i:int = 0;
+         var info:* = null;
+         for(i = 0; i < 40; )
          {
             _index = Number(_index) + 1;
             if(_index < _xmllist.length())
             {
-               _loc2_ = new InventoryItemInfo();
-               ObjectUtils.copyPorpertiesByXML(_loc2_,_xmllist[_index]);
-               ItemManager.fill(_loc2_);
-               list.push(_loc2_);
-               _loc3_++;
+               info = new InventoryItemInfo();
+               ObjectUtils.copyPorpertiesByXML(info,_xmllist[_index]);
+               ItemManager.fill(info);
+               list.push(info);
+               i++;
                continue;
             }
             _timer.removeEventListener("timer",__partexceute);

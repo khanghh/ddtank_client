@@ -85,31 +85,31 @@ package tofflist.view
       
       public function dispose() : void
       {
-         var _loc2_:* = null;
-         var _loc4_:* = 0;
-         var _loc1_:* = 0;
+         var dis:* = null;
+         var i:* = 0;
+         var total:* = 0;
          removeEvent();
          if(hLines)
          {
             var _loc6_:int = 0;
             var _loc5_:* = hLines;
-            for each(var _loc3_ in hLines)
+            for each(var bm in hLines)
             {
-               ObjectUtils.disposeObject(_loc3_);
+               ObjectUtils.disposeObject(bm);
             }
          }
          if(_resourceArr)
          {
-            _loc4_ = uint(0);
-            _loc1_ = uint(_resourceArr.length);
-            _loc4_;
-            while(_loc4_ < _loc1_)
+            i = uint(0);
+            total = uint(_resourceArr.length);
+            i;
+            while(i < total)
             {
-               _loc2_ = _resourceArr[_loc4_].dis;
-               ObjectUtils.disposeObject(_loc2_);
-               _loc2_ = null;
-               _resourceArr[_loc4_] = null;
-               _loc4_++;
+               dis = _resourceArr[i].dis;
+               ObjectUtils.disposeObject(dis);
+               dis = null;
+               _resourceArr[i] = null;
+               i++;
             }
             _resourceArr = null;
          }
@@ -146,9 +146,9 @@ package tofflist.view
          return this._index;
       }
       
-      public function set index(param1:int) : void
+      public function set index(i:int) : void
       {
-         this._index = param1;
+         this._index = i;
          _bg.setFrame(_index % 2 + 1);
       }
       
@@ -157,26 +157,26 @@ package tofflist.view
          return _info.MountsLevelInfo;
       }
       
-      public function showHLine(param1:Vector.<Point>) : void
+      public function showHLine(points:Vector.<Point>) : void
       {
          if(hLines)
          {
             var _loc5_:int = 0;
             var _loc4_:* = hLines;
-            for each(var _loc3_ in hLines)
+            for each(var bm in hLines)
             {
-               ObjectUtils.disposeObject(_loc3_);
+               ObjectUtils.disposeObject(bm);
             }
          }
          hLines = [];
          var _loc7_:int = 0;
-         var _loc6_:* = param1;
-         for each(var _loc2_ in param1)
+         var _loc6_:* = points;
+         for each(var p in points)
          {
-            _loc3_ = ComponentFactory.Instance.creatBitmap("asset.corel.formLine");
-            addChild(_loc3_);
-            hLines.push(_loc3_);
-            PositionUtils.setPos(_loc3_,new Point(_loc2_.x - parent.parent.x,_loc2_.y));
+            bm = ComponentFactory.Instance.creatBitmap("asset.corel.formLine");
+            addChild(bm);
+            hLines.push(bm);
+            PositionUtils.setPos(bm,new Point(p.x - parent.parent.x,p.y));
          }
       }
       
@@ -185,25 +185,25 @@ package tofflist.view
          return this._info;
       }
       
-      public function set info(param1:Object) : void
+      public function set info($info:Object) : void
       {
-         var _loc2_:* = null;
-         if(param1 is PlayerInfo)
+         var $consortiaInfo:* = null;
+         if($info is PlayerInfo)
          {
-            _info = param1 as TofflistPlayerInfo;
+            _info = $info as TofflistPlayerInfo;
          }
-         else if(param1 is TofflistConsortiaData)
+         else if($info is TofflistConsortiaData)
          {
-            _loc2_ = param1 as TofflistConsortiaData;
-            if(_loc2_)
+            $consortiaInfo = $info as TofflistConsortiaData;
+            if($consortiaInfo)
             {
-               _info = _loc2_.playerInfo;
-               _consortiaInfo = _loc2_.consortiaInfo;
+               _info = $consortiaInfo.playerInfo;
+               _consortiaInfo = $consortiaInfo.consortiaInfo;
             }
          }
-         else if(param1 is TeamRankInfo)
+         else if($info is TeamRankInfo)
          {
-            _teamRankinfo = param1 as TeamRankInfo;
+            _teamRankinfo = $info as TeamRankInfo;
          }
          if(_info)
          {
@@ -215,89 +215,87 @@ package tofflist.view
          }
       }
       
-      public function set isSelect(param1:Boolean) : void
+      public function set isSelect(b:Boolean) : void
       {
-         var _loc2_:* = param1;
+         var _loc2_:* = b;
          this._isSelect = _loc2_;
          _shine.visible = _loc2_;
-         if(param1)
+         if(b)
          {
             this.dispatchEvent(new TofflistEvent("tofflistitemselect",this));
          }
       }
       
-      public function set resourceLink(param1:String) : void
+      public function set resourceLink(value:String) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:* = null;
+         var dis:* = null;
+         var obj:* = null;
          _resourceArr = [];
-         var _loc3_:Array = param1.replace(/(\s*)|(\s*$)/g,"").split("|");
-         var _loc6_:uint = 0;
-         var _loc2_:uint = _loc3_.length;
-         _loc6_;
-         while(_loc6_ < _loc2_)
+         var tempArr:Array = value.replace(/(\s*)|(\s*$)/g,"").split("|");
+         var i:uint = 0;
+         var total:uint = tempArr.length;
+         i;
+         while(i < total)
          {
-            _loc5_ = {};
-            _loc5_.id = _loc3_[_loc6_].split("#")[0];
-            _loc5_.className = _loc3_[_loc6_].split("#")[1];
-            _loc4_ = ComponentFactory.Instance.creat(_loc5_.className);
-            addChild(_loc4_);
-            _loc5_.dis = _loc4_;
-            _resourceArr.push(_loc5_);
-            _loc6_++;
+            obj = {};
+            obj.id = tempArr[i].split("#")[0];
+            obj.className = tempArr[i].split("#")[1];
+            dis = ComponentFactory.Instance.creat(obj.className);
+            addChild(dis);
+            obj.dis = dis;
+            _resourceArr.push(obj);
+            i++;
          }
       }
       
-      public function set setAllStyleXY(param1:String) : void
+      public function set setAllStyleXY(value:String) : void
       {
-         _styleLinkArr = param1.replace(/(\s*)|(\s*$)/g,"").split("~");
+         _styleLinkArr = value.replace(/(\s*)|(\s*$)/g,"").split("~");
          updateStyleXY();
       }
       
-      public function updateStyleXY(param1:int = 0) : void
+      public function updateStyleXY($id:int = 0) : void
       {
-         var _loc5_:* = null;
-         var _loc8_:* = 0;
-         var _loc6_:* = 0;
-         var _loc2_:int = 0;
-         var _loc7_:* = null;
-         var _loc3_:uint = _resourceArr.length;
-         var _loc4_:Array = _styleLinkArr[param1].split("|");
-         _loc3_ = _loc4_.length;
-         _loc8_ = uint(0);
-         while(_loc8_ < _loc3_)
+         var dis:* = null;
+         var i:* = 0;
+         var j:* = 0;
+         var id:int = 0;
+         var pot:* = null;
+         var total:uint = _resourceArr.length;
+         var tempArr:Array = _styleLinkArr[$id].split("|");
+         total = tempArr.length;
+         for(i = uint(0); i < total; )
          {
-            _loc5_ = null;
-            _loc2_ = _loc4_[_loc8_].split("#")[0];
-            _loc6_ = uint(0);
-            while(_loc6_ < _resourceArr.length)
+            dis = null;
+            id = tempArr[i].split("#")[0];
+            for(j = uint(0); j < _resourceArr.length; )
             {
-               if(_loc2_ == _resourceArr[_loc6_].id)
+               if(id == _resourceArr[j].id)
                {
-                  _loc5_ = _resourceArr[_loc6_].dis;
+                  dis = _resourceArr[j].dis;
                   break;
                }
-               _loc6_++;
+               j++;
             }
-            if(_loc5_)
+            if(dis)
             {
-               _loc7_ = new Point();
-               _loc7_.x = _loc4_[_loc8_].split("#")[1].split(",")[0];
-               _loc7_.y = _loc4_[_loc8_].split("#")[1].split(",")[1];
-               _loc5_.x = _loc7_.x;
-               _loc5_.y = _loc7_.y;
-               if(_loc4_[_loc8_].split("#")[1].split(",")[2])
+               pot = new Point();
+               pot.x = tempArr[i].split("#")[1].split(",")[0];
+               pot.y = tempArr[i].split("#")[1].split(",")[1];
+               dis.x = pot.x;
+               dis.y = pot.y;
+               if(tempArr[i].split("#")[1].split(",")[2])
                {
-                  _loc5_.width = _loc4_[_loc8_].split("#")[1].split(",")[2];
+                  dis.width = tempArr[i].split("#")[1].split(",")[2];
                }
-               if(_loc4_[_loc8_].split("#")[1].split(",")[3])
+               if(tempArr[i].split("#")[1].split(",")[3])
                {
-                  _loc5_.height = _loc4_[_loc8_].split("#")[1].split(",")[3];
+                  dis.height = tempArr[i].split("#")[1].split(",")[3];
                }
-               _loc5_["text"] = _loc5_["text"];
-               _loc5_.visible = true;
+               dis["text"] = dis["text"];
+               dis.visible = true;
             }
-            _loc8_++;
+            i++;
          }
          if(_index < 4)
          {
@@ -311,22 +309,22 @@ package tofflist.view
       
       private function get NO_ID() : String
       {
-         var _loc1_:String = "";
+         var str:String = "";
          switch(int(_index) - 1)
          {
             case 0:
-               _loc1_ = "1st";
+               str = "1st";
                break;
             case 1:
-               _loc1_ = "2nd";
+               str = "2nd";
                break;
             case 2:
-               _loc1_ = "3rd";
+               str = "3rd";
          }
-         return _loc1_;
+         return str;
       }
       
-      private function __itemClickHandler(param1:MouseEvent) : void
+      private function __itemClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(!_isSelect)
@@ -335,7 +333,7 @@ package tofflist.view
          }
       }
       
-      private function __itemMouseOutHandler(param1:MouseEvent) : void
+      private function __itemMouseOutHandler(evt:MouseEvent) : void
       {
          if(_isSelect)
          {
@@ -344,7 +342,7 @@ package tofflist.view
          _shine.visible = false;
       }
       
-      private function __itemMouseOverHandler(param1:MouseEvent) : void
+      private function __itemMouseOverHandler(evt:MouseEvent) : void
       {
          _shine.visible = true;
       }
@@ -357,9 +355,9 @@ package tofflist.view
          PlayerManager.Instance.Self.addEventListener("propertychange",__offerChange);
       }
       
-      private function __offerChange(param1:PlayerPropertyEvent) : void
+      private function __offerChange(evt:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["isVip"])
+         if(evt.changedProperties["isVip"])
          {
             upView();
          }
@@ -411,18 +409,17 @@ package tofflist.view
       
       private function upView() : void
       {
-         var _loc3_:* = null;
-         var _loc5_:* = 0;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc1_:uint = _resourceArr.length;
-         _loc5_ = uint(0);
-         while(_loc5_ < _loc1_)
+         var dis:* = null;
+         var i:* = 0;
+         var textFormat:* = null;
+         var textFormat1:* = null;
+         var total:uint = _resourceArr.length;
+         for(i = uint(0); i < total; )
          {
-            _loc3_ = _resourceArr[_loc5_].dis;
-            _loc3_["text"] = "";
-            _loc3_.visible = false;
-            _loc5_++;
+            dis = _resourceArr[i].dis;
+            dis["text"] = "";
+            dis.visible = false;
+            i++;
          }
          _resourceArr[0].dis["text"] = NO_ID;
          _levelStar.visible = false;
@@ -764,10 +761,10 @@ package tofflist.view
                      ObjectUtils.disposeObject(_vipName);
                   }
                   _vipName = VipController.instance.getVipNameTxt(1,_info.typeVIP);
-                  _loc4_ = new TextFormat();
-                  _loc4_.align = "center";
-                  _loc4_.bold = true;
-                  _vipName.textField.defaultTextFormat = _loc4_;
+                  textFormat1 = new TextFormat();
+                  textFormat1.align = "center";
+                  textFormat1.bold = true;
+                  _vipName.textField.defaultTextFormat = textFormat1;
                   _vipName.textSize = 16;
                   _vipName.textField.width = _resourceArr[1].dis.width;
                   _vipName.x = _resourceArr[1].dis.x;
@@ -925,10 +922,10 @@ package tofflist.view
                   ObjectUtils.disposeObject(_vipName);
                }
                _vipName = VipController.instance.getVipNameTxt(1,_info.typeVIP);
-               _loc2_ = new TextFormat();
-               _loc2_.align = "center";
-               _loc2_.bold = true;
-               _vipName.textField.defaultTextFormat = _loc2_;
+               textFormat = new TextFormat();
+               textFormat.align = "center";
+               textFormat.bold = true;
+               _vipName.textField.defaultTextFormat = textFormat;
                _vipName.textSize = 16;
                _vipName.textField.width = _resourceArr[1].dis.width;
                _vipName.x = _resourceArr[1].dis.x;

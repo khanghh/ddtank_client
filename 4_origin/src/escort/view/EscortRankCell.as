@@ -25,25 +25,25 @@ package escort.view
       
       private var _awardCell:BaseCell;
       
-      public function EscortRankCell(param1:int)
+      public function EscortRankCell(index:int)
       {
          super();
          _rankTxt = ComponentFactory.Instance.creatComponentByStylename("escort.rankView.cellTxt");
-         _rankTxt.text = (param1 + 1).toString();
+         _rankTxt.text = (index + 1).toString();
          _nameTxt1 = ComponentFactory.Instance.creatComponentByStylename("escort.rankView.cellTxt");
          _nameTxt1.text = "-------";
          PositionUtils.setPos(_nameTxt1,"escort.rankView.cellNameTxtPos");
          _nameTxt2 = ComponentFactory.Instance.creatComponentByStylename("escort.rankView.cellNameTxt");
          _nameTxt2.visible = false;
          _rateTxt = ComponentFactory.Instance.creatComponentByStylename("escort.rankView.cellTxt");
-         _rateTxt.text = EscortControl.instance.rankAddInfo[param1] + "%";
+         _rateTxt.text = EscortControl.instance.rankAddInfo[index] + "%";
          PositionUtils.setPos(_rateTxt,"escort.rankView.cellRateTxtPos");
-         var _loc3_:Sprite = new Sprite();
-         _loc3_.graphics.beginFill(16711680,0);
-         _loc3_.graphics.drawRect(0,0,30,30);
-         _loc3_.graphics.endFill();
-         var _loc2_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(EscortControl.instance.sprintAwardInfo[param1]);
-         _awardCell = new BaseCell(_loc3_,_loc2_);
+         var tmpSprite:Sprite = new Sprite();
+         tmpSprite.graphics.beginFill(16711680,0);
+         tmpSprite.graphics.drawRect(0,0,30,30);
+         tmpSprite.graphics.endFill();
+         var tmpItemInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(EscortControl.instance.sprintAwardInfo[index]);
+         _awardCell = new BaseCell(tmpSprite,tmpItemInfo);
          PositionUtils.setPos(_awardCell,"escort.rankView.cellAwardCellPos");
          addChild(_rankTxt);
          addChild(_nameTxt1);
@@ -52,14 +52,14 @@ package escort.view
          addChild(_awardCell);
       }
       
-      public function setName(param1:String, param2:int) : void
+      public function setName(name:String, carType:int) : void
       {
-         _nameTxt2.text = param1;
-         if(param2 == 0)
+         _nameTxt2.text = name;
+         if(carType == 0)
          {
             _nameTxt2.textColor = 16777215;
          }
-         else if(param2 == 1)
+         else if(carType == 1)
          {
             _nameTxt2.textColor = 710173;
          }

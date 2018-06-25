@@ -44,14 +44,14 @@ package mines.view
          MinesManager.instance.addEventListener(MinesManager.LEVEL_UP_TOOL,levelUpTool);
       }
       
-      private function levelUpTool(param1:Event) : void
+      private function levelUpTool(e:Event) : void
       {
          setData();
-         var _loc2_:InventoryItemInfo = PlayerManager.Instance.Self.getBag(52).getItemAt(place) as InventoryItemInfo;
-         if(_loc2_)
+         var info:InventoryItemInfo = PlayerManager.Instance.Self.getBag(52).getItemAt(place) as InventoryItemInfo;
+         if(info)
          {
-            cell.setCount(_loc2_.Count);
-            cell.info = _loc2_;
+            cell.setCount(info.Count);
+            cell.info = info;
          }
          else
          {
@@ -84,13 +84,13 @@ package mines.view
          }
       }
       
-      public function cellChange(param1:BagCell) : void
+      public function cellChange(value:BagCell) : void
       {
-         if(param1)
+         if(value)
          {
-            cell.info = param1.info;
-            cell.setCount(param1.getCount());
-            place = param1.place;
+            cell.info = value.info;
+            cell.setCount(value.getCount());
+            place = value.place;
          }
          else
          {
@@ -99,50 +99,49 @@ package mines.view
          }
       }
       
-      public function DrawSector(param1:Shape, param2:Number = 200, param3:Number = 200, param4:Number = 100, param5:Number = 27, param6:Number = 270, param7:Number = 16711680) : void
+      public function DrawSector(shape:Shape, x:Number = 200, y:Number = 200, r:Number = 100, angle:Number = 27, startFrom:Number = 270, color:Number = 16711680) : void
       {
-         var _loc15_:int = 0;
-         var _loc11_:Number = NaN;
-         var _loc14_:Number = NaN;
-         var _loc13_:Number = NaN;
-         var _loc12_:Number = NaN;
-         var _loc10_:Number = NaN;
-         param1.graphics.clear();
-         param1.graphics.beginFill(param7,0);
-         param1.graphics.lineStyle(0,param7,0);
-         param1.graphics.moveTo(param2,param3);
-         param5 = Math.abs(param5) > 360?360:Number(param5);
-         var _loc9_:Number = Math.ceil(Math.abs(param5) / 45);
-         var _loc8_:Number = param5 / _loc9_;
-         _loc8_ = _loc8_ * 3.14159265358979 / 180;
-         param6 = param6 * 3.14159265358979 / 180;
-         param1.graphics.lineTo(param2 + param4 * Math.cos(param6),param3 + param4 * Math.sin(param6));
-         _loc15_ = 1;
-         while(_loc15_ <= _loc9_)
+         var i:int = 0;
+         var angleMid:Number = NaN;
+         var bx:Number = NaN;
+         var by:Number = NaN;
+         var cx:Number = NaN;
+         var cy:Number = NaN;
+         shape.graphics.clear();
+         shape.graphics.beginFill(color,0);
+         shape.graphics.lineStyle(0,color,0);
+         shape.graphics.moveTo(x,y);
+         angle = Math.abs(angle) > 360?360:Number(angle);
+         var n:Number = Math.ceil(Math.abs(angle) / 45);
+         var angleA:Number = angle / n;
+         angleA = angleA * 3.14159265358979 / 180;
+         startFrom = startFrom * 3.14159265358979 / 180;
+         shape.graphics.lineTo(x + r * Math.cos(startFrom),y + r * Math.sin(startFrom));
+         for(i = 1; i <= n; )
          {
-            param6 = param6 + _loc8_;
-            _loc11_ = param6 - _loc8_ / 2;
-            _loc14_ = param2 + param4 / Math.cos(_loc8_ / 2) * Math.cos(_loc11_);
-            _loc13_ = param3 + param4 / Math.cos(_loc8_ / 2) * Math.sin(_loc11_);
-            _loc12_ = param2 + param4 * Math.cos(param6);
-            _loc10_ = param3 + param4 * Math.sin(param6);
-            param1.graphics.curveTo(_loc14_,_loc13_,_loc12_,_loc10_);
-            _loc15_++;
+            startFrom = startFrom + angleA;
+            angleMid = startFrom - angleA / 2;
+            bx = x + r / Math.cos(angleA / 2) * Math.cos(angleMid);
+            by = y + r / Math.cos(angleA / 2) * Math.sin(angleMid);
+            cx = x + r * Math.cos(startFrom);
+            cy = y + r * Math.sin(startFrom);
+            shape.graphics.curveTo(bx,by,cx,cy);
+            i++;
          }
-         if(param5 != 360)
+         if(angle != 360)
          {
-            param1.graphics.lineTo(param2,param3);
+            shape.graphics.lineTo(x,y);
          }
-         param1.graphics.endFill();
+         shape.graphics.endFill();
       }
       
       private function setData() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         var _loc4_:Number = NaN;
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
+         var current:int = 0;
+         var total:int = 0;
+         var angle:Number = NaN;
+         var x:int = 0;
+         var y:int = 0;
          toolName.text = nameList[MinesManager.instance.model.toolLevel - 1];
          if(MinesManager.instance.model.toolLevel >= nameList.length)
          {
@@ -153,14 +152,14 @@ package mines.view
          else
          {
             nextToolName.text = LanguageMgr.GetTranslation("ddt.mines.toolView.nextTool",nameList[MinesManager.instance.model.toolLevel]);
-            _loc2_ = MinesManager.instance.model.toolExp - MinesManager.instance.model.toolList[MinesManager.instance.model.toolLevel - 1].exp;
-            _loc1_ = MinesManager.instance.model.toolList[MinesManager.instance.model.toolLevel].exp - MinesManager.instance.model.toolList[MinesManager.instance.model.toolLevel - 1].exp;
-            _loc4_ = 360 * _loc2_ / _loc1_;
-            _loc5_ = round.x + round.width / 2;
-            _loc3_ = round.y + round.height / 2;
-            DrawSector(shape,_loc5_,_loc3_,2 + Math.ceil(round.width / 2),_loc4_,90);
+            current = MinesManager.instance.model.toolExp - MinesManager.instance.model.toolList[MinesManager.instance.model.toolLevel - 1].exp;
+            total = MinesManager.instance.model.toolList[MinesManager.instance.model.toolLevel].exp - MinesManager.instance.model.toolList[MinesManager.instance.model.toolLevel - 1].exp;
+            angle = 360 * current / total;
+            x = round.x + round.width / 2;
+            y = round.y + round.height / 2;
+            DrawSector(shape,x,y,2 + Math.ceil(round.width / 2),angle,90);
             round.mask = shape;
-            proLabel.text = String(_loc2_) + "/" + String(_loc1_);
+            proLabel.text = String(current) + "/" + String(total);
          }
          toolImage.skin = "asset.mines.ToolView.tool" + String(MinesManager.instance.model.toolLevel);
       }

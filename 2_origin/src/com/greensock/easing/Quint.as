@@ -11,32 +11,32 @@ package com.greensock.easing
          super();
       }
       
-      public static function easeIn(param1:Number, param2:Number, param3:Number, param4:Number) : Number
+      public static function easeIn(t:Number, b:Number, c:Number, d:Number) : Number
       {
-         param1 = param1 / param4;
-         var _loc5_:Number = param3 * (param1 / param4) * param1 * param1 * param1 * param1 + param2;
-         if(_loc5_ > 1.79769313486232e308 || _loc5_ < 1.79769313486232e308)
+         t = t / d;
+         var e:Number = c * (t / d) * t * t * t * t + b;
+         if(e > 1.79769313486232e308 || e < 1.79769313486232e308)
          {
             return 1;
          }
-         return _loc5_;
+         return e;
       }
       
-      public static function easeOut(param1:Number, param2:Number, param3:Number, param4:Number) : Number
+      public static function easeOut(t:Number, b:Number, c:Number, d:Number) : Number
       {
-         param1 = param1 / param4 - 1;
-         return param3 * ((param1 / param4 - 1) * param1 * param1 * param1 * param1 + 1) + param2;
+         t = t / d - 1;
+         return c * ((t / d - 1) * t * t * t * t + 1) + b;
       }
       
-      public static function easeInOut(param1:Number, param2:Number, param3:Number, param4:Number) : Number
+      public static function easeInOut(t:Number, b:Number, c:Number, d:Number) : Number
       {
-         param1 = param1 / (param4 * 0.5);
-         if(param1 / (param4 * 0.5) < 1)
+         t = t / (d * 0.5);
+         if(t / (d * 0.5) < 1)
          {
-            return param3 * 0.5 * param1 * param1 * param1 * param1 * param1 + param2;
+            return c * 0.5 * t * t * t * t * t + b;
          }
-         param1 = param1 - 2;
-         return param3 * 0.5 * ((param1 - 2) * param1 * param1 * param1 * param1 + 2) + param2;
+         t = t - 2;
+         return c * 0.5 * ((t - 2) * t * t * t * t + 2) + b;
       }
    }
 }

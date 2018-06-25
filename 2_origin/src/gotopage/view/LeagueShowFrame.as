@@ -99,15 +99,15 @@ package gotopage.view
          titleText = LanguageMgr.GetTranslation("gotopage.view.LeagueShowFrame.title");
          _leftBack = ComponentFactory.Instance.creatComponentByStylename("leagueShow.leftBack");
          addToContent(_leftBack);
-         var _loc2_:Number = PlayerManager.Instance.Self.DailyLeagueLastScore;
-         var _loc1_:Boolean = PlayerManager.Instance.Self.DailyLeagueFirst;
+         var score:Number = PlayerManager.Instance.Self.DailyLeagueLastScore;
+         var leagueFirst:Boolean = PlayerManager.Instance.Self.DailyLeagueFirst;
          _leagueRank = new DailyLeagueLevel();
-         _leagueRank.leagueFirst = _loc1_;
-         _leagueRank.score = _loc2_;
+         _leagueRank.leagueFirst = leagueFirst;
+         _leagueRank.score = score;
          PositionUtils.setPos(_leagueRank,"leagueShow.view.leagueRankPos");
          addToContent(_leagueRank);
          _leagueTitle = ComponentFactory.Instance.creatComponentByStylename("leagueShow.view.leagueTitle");
-         _leagueTitle.text = DailyLeagueManager.Instance.getLeagueLevelByScore(_loc2_,_loc1_).Name;
+         _leagueTitle.text = DailyLeagueManager.Instance.getLeagueLevelByScore(score,leagueFirst).Name;
          addToContent(_leagueTitle);
          _todayNumberTitle = ComponentFactory.Instance.creatBitmap("asset.leagueShow.todayNumberTxt");
          addToContent(_todayNumberTitle);
@@ -192,35 +192,33 @@ package gotopage.view
          _scoreSelGroup.addEventListener("change",__onItemChanaged);
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(event:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
          dispose();
       }
       
-      private function __onItemChanaged(param1:Event) : void
+      private function __onItemChanaged(event:Event) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = 0;
-         if(param1)
+         var i:int = 0;
+         var j:* = 0;
+         if(event)
          {
             SoundManager.instance.playButtonSound();
          }
          _awardBox.disposeAllChildren();
          ObjectUtils.removeChildAllChildren(_awardBox);
-         var _loc3_:Array = DailyLeagueManager.Instance.filterLeagueAwardList(_levelSelGroup.selectIndex,_scoreSelGroup.selectIndex);
-         var _loc2_:int = Math.min(_loc3_.length,14);
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         var list:Array = DailyLeagueManager.Instance.filterLeagueAwardList(_levelSelGroup.selectIndex,_scoreSelGroup.selectIndex);
+         var count:int = Math.min(list.length,14);
+         for(i = 0; i < count; )
          {
-            _awardBox.addChild(new LeagueAwardCell(_loc3_[_loc5_]));
-            _loc5_++;
+            _awardBox.addChild(new LeagueAwardCell(list[i]));
+            i++;
          }
-         _loc4_ = _loc2_;
-         while(_loc4_ < 14)
+         for(j = count; j < 14; )
          {
             _awardBox.addChild(new BaseCell(ComponentFactory.Instance.creatComponentByStylename("leagueShow.view.awardcellBg")));
-            _loc4_++;
+            j++;
          }
       }
       
@@ -398,9 +396,9 @@ class LeagueAwardCell extends BaseCell
    
    private var _countTxt:FilterFrameText;
    
-   function LeagueAwardCell(param1:DailyLeagueAwardInfo)
+   function LeagueAwardCell(awardInfo:DailyLeagueAwardInfo)
    {
-      _awardInfo = param1;
+      _awardInfo = awardInfo;
       super(ComponentFactory.Instance.creatBitmap("asset.leagueAward.cellBackAsset"),ItemManager.Instance.getTemplateById(_awardInfo.TemplateID));
       initII();
    }

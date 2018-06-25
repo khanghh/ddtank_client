@@ -26,9 +26,9 @@ package ddt.manager
       
       private var _hall:HallStateView;
       
-      public function DraftManager(param1:IEventDispatcher = null)
+      public function DraftManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : DraftManager
@@ -52,10 +52,10 @@ package ddt.manager
          }
       }
       
-      protected function __onShowIcon(param1:PkgEvent) : void
+      protected function __onShowIcon(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _showFlag = _loc2_.readBoolean();
+         var pkg:PackageIn = event.pkg;
+         _showFlag = pkg.readBoolean();
          if(_showFlag)
          {
             showDraftIcon();
@@ -71,7 +71,7 @@ package ddt.manager
          HallIconManager.instance.updateSwitchHandler("draft",true);
       }
       
-      protected function __onOpenView(param1:MouseEvent) : void
+      protected function __onOpenView(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          show();

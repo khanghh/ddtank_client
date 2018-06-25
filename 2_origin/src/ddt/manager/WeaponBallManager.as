@@ -14,14 +14,14 @@ package ddt.manager
          super();
       }
       
-      public static function setup(param1:WeaponBallInfoAnalyze) : void
+      public static function setup(action:WeaponBallInfoAnalyze) : void
       {
-         bobms = param1.bombs;
+         bobms = action.bombs;
       }
       
-      public static function getWeaponBallInfo(param1:int) : Array
+      public static function getWeaponBallInfo(id:int) : Array
       {
-         return bobms[param1];
+         return bobms[id];
       }
    }
 }

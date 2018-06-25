@@ -1,11 +1,1 @@
-package auctionHouse
-{
-   public interface IAuctionHouse
-   {
-       
-      
-      function show() : void;
-      
-      function hide() : void;
-   }
-}
+package auctionHouse{   public interface IAuctionHouse   {                   function show() : void;            function hide() : void;   }}

@@ -54,19 +54,19 @@ package ddt.manager
          SocketManager.Instance.addEventListener(PkgEvent.format(31),__AnswerBoxQuestion);
       }
       
-      public function analyzer(param1:QuestionInfoAnalyze) : void
+      public function analyzer(analyze:QuestionInfoAnalyze) : void
       {
-         _allQuestion = param1.allQuestion;
+         _allQuestion = analyze.allQuestion;
          showGoogsView();
       }
       
-      private function __AnswerBoxQuestion(param1:PkgEvent) : void
+      private function __AnswerBoxQuestion(event:PkgEvent) : void
       {
-         _questionCatalogID = param1.pkg.readInt();
-         _questionID = param1.pkg.readInt();
-         _questionTotal = param1.pkg.readInt();
-         _questionCurrentNum = param1.pkg.readInt();
-         _correctQuestionNum = param1.pkg.readInt();
+         _questionCatalogID = event.pkg.readInt();
+         _questionID = event.pkg.readInt();
+         _questionTotal = event.pkg.readInt();
+         _questionCurrentNum = event.pkg.readInt();
+         _correctQuestionNum = event.pkg.readInt();
          if(!_allQuestion)
          {
             LoaderManager.Instance.startLoad(LoaderCreate.Instance.creatAllQuestionInfoLoader());
@@ -90,10 +90,10 @@ package ddt.manager
          return _allQuestion[_questionCatalogID][_questionID];
       }
       
-      public function sendRespond(param1:int) : void
+      public function sendRespond(value:int) : void
       {
          _questionCurrentNum = Number(_questionCurrentNum) + 1;
-         SocketManager.Instance.out.sendQuestionReply(param1);
+         SocketManager.Instance.out.sendQuestionReply(value);
          hideQuestionFrame();
       }
       

@@ -8,41 +8,39 @@ package morn.core.managers
       
       public function LangManager()
       {
-         this._data = {};
+         _data = {};
          super();
       }
       
       public function get data() : Object
       {
-         return this._data;
+         return _data;
       }
       
-      public function set data(param1:Object) : void
+      public function set data(value:Object) : void
       {
-         this._data = param1;
+         _data = value;
       }
       
-      public function add(param1:String, param2:Object) : void
+      public function add(key:String, value:Object) : void
       {
-         this._data[param1] = param2;
+         _data[key] = value;
       }
       
-      public function getLang(param1:String, ... rest) : String
+      public function getLang(code:String, ... args) : String
       {
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc3_:String = this._data[param1] || param1;
-         if(rest.length > 0)
+         var i:int = 0;
+         var n:int = 0;
+         var str:String = _data[code] || code;
+         if(args.length > 0)
          {
-            _loc4_ = 0;
-            _loc5_ = rest.length;
-            while(_loc4_ < _loc5_)
+            for(i = 0,n = args.length; i < n; )
             {
-               _loc3_ = _loc3_.replace("{" + _loc4_ + "}",rest[_loc4_]);
-               _loc4_++;
+               str = str.replace("{" + i + "}",args[i]);
+               i++;
             }
          }
-         return _loc3_;
+         return str;
       }
    }
 }

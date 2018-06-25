@@ -51,27 +51,27 @@ package im
          ConsortionModelManager.Instance.model.addEventListener("memberUpdata",__updateList);
       }
       
-      private function __updateList(param1:ConsortionEvent) : void
+      private function __updateList(event:ConsortionEvent) : void
       {
          _pos = _list.list.viewPosition.y;
          update();
-         var _loc2_:IntPoint = new IntPoint(0,_pos);
-         _list.list.viewPosition = _loc2_;
+         var intPoint:IntPoint = new IntPoint(0,_pos);
+         _list.list.viewPosition = intPoint;
       }
       
-      private function __itemClick(param1:ListItemEvent) : void
+      private function __itemClick(event:ListItemEvent) : void
       {
-         if((param1.cellValue as ConsortiaPlayerInfo).type == 1)
+         if((event.cellValue as ConsortiaPlayerInfo).type == 1)
          {
             if(!_currentItem)
             {
-               _currentItem = param1.cellValue as ConsortiaPlayerInfo;
+               _currentItem = event.cellValue as ConsortiaPlayerInfo;
                _currentItem.isSelected = true;
             }
-            else if(_currentItem != param1.cellValue as ConsortiaPlayerInfo)
+            else if(_currentItem != event.cellValue as ConsortiaPlayerInfo)
             {
                _currentItem.isSelected = false;
-               _currentItem = param1.cellValue as ConsortiaPlayerInfo;
+               _currentItem = event.cellValue as ConsortiaPlayerInfo;
                _currentItem.isSelected = true;
             }
          }
@@ -79,13 +79,13 @@ package im
          {
             if(!_currentTitle)
             {
-               _currentTitle = param1.cellValue as ConsortiaPlayerInfo;
+               _currentTitle = event.cellValue as ConsortiaPlayerInfo;
                _currentTitle.isSelected = true;
             }
-            if(_currentTitle != param1.cellValue as ConsortiaPlayerInfo)
+            if(_currentTitle != event.cellValue as ConsortiaPlayerInfo)
             {
                _currentTitle.isSelected = false;
-               _currentTitle = param1.cellValue as ConsortiaPlayerInfo;
+               _currentTitle = event.cellValue as ConsortiaPlayerInfo;
                _currentTitle.isSelected = true;
             }
             else
@@ -100,13 +100,13 @@ package im
       
       private function updateList() : void
       {
-         var _loc1_:* = null;
+         var intPoint:* = null;
          _pos = _list.list.viewPosition.y;
          if(_currentTitle.type == 0 && _currentTitle.isSelected)
          {
             update();
-            _loc1_ = new IntPoint(0,_pos);
-            _list.list.viewPosition = _loc1_;
+            intPoint = new IntPoint(0,_pos);
+            _list.list.viewPosition = intPoint;
          }
          else if(!_currentTitle.isSelected)
          {
@@ -118,36 +118,35 @@ package im
       
       private function update() : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
+         var i:int = 0;
+         var info:* = null;
          _consortiaPlayerArray = [];
          _consortiaPlayerArray = ConsortionModelManager.Instance.model.onlineConsortiaMemberList;
          if(!_consortiaInfoArray || _consortiaInfoArray.length == 0)
          {
             _consortiaInfoArray = ConsortionModelManager.Instance.model.consortiaInfo;
          }
-         var _loc3_:Array = [];
-         var _loc1_:Array = [];
-         _loc5_ = 0;
-         while(_loc5_ < _consortiaPlayerArray.length)
+         var tempArr:Array = [];
+         var tempArr1:Array = [];
+         for(i = 0; i < _consortiaPlayerArray.length; )
          {
-            _loc4_ = _consortiaPlayerArray[_loc5_] as ConsortiaPlayerInfo;
-            if(_loc4_.IsVIP)
+            info = _consortiaPlayerArray[i] as ConsortiaPlayerInfo;
+            if(info.IsVIP)
             {
-               _loc3_.push(_loc4_);
+               tempArr.push(info);
             }
             else
             {
-               _loc1_.push(_loc4_);
+               tempArr1.push(info);
             }
-            _loc5_++;
+            i++;
          }
-         _loc3_ = _loc3_.sortOn("Grade",16 | 2);
-         _loc1_ = _loc1_.sortOn("Grade",16 | 2);
-         _consortiaPlayerArray = _loc3_.concat(_loc1_);
-         var _loc2_:Array = ConsortionModelManager.Instance.model.offlineConsortiaMemberList;
-         _loc2_ = _loc2_.sortOn("Grade",16 | 2);
-         _consortiaPlayerArray = _consortiaPlayerArray.concat(_loc2_);
+         tempArr = tempArr.sortOn("Grade",16 | 2);
+         tempArr1 = tempArr1.sortOn("Grade",16 | 2);
+         _consortiaPlayerArray = tempArr.concat(tempArr1);
+         var tempArray:Array = ConsortionModelManager.Instance.model.offlineConsortiaMemberList;
+         tempArray = tempArray.sortOn("Grade",16 | 2);
+         _consortiaPlayerArray = _consortiaPlayerArray.concat(tempArray);
          _consortiaPlayerArray = _consortiaInfoArray.concat(_consortiaPlayerArray);
          _list.vectorListModel.clear();
          _list.vectorListModel.appendAll(_consortiaPlayerArray);

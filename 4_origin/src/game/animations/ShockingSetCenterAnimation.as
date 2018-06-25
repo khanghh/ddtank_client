@@ -15,10 +15,10 @@ package game.animations
       
       private var _y:Number;
       
-      public function ShockingSetCenterAnimation(param1:Number, param2:Number, param3:int = 165, param4:Boolean = false, param5:int = 0, param6:int = 12)
+      public function ShockingSetCenterAnimation(cx:Number, cy:Number, life:int = 165, directed:Boolean = false, level:int = 0, shocking:int = 12)
       {
-         super(param1,param2,param3,false,param5,48);
-         _shocking = param6;
+         super(cx,cy,life,false,level,48);
+         _shocking = shocking;
          _shockDelay = 0;
       }
       
@@ -27,9 +27,9 @@ package game.animations
          return Math.random() * _shocking * 2 - _shocking;
       }
       
-      override public function update(param1:MapView) : Boolean
+      override public function update(movie:MapView) : Boolean
       {
-         var _loc2_:* = null;
+         var p:* = null;
          _life = Number(_life) - 1;
          if(_life < 0)
          {
@@ -37,27 +37,27 @@ package game.animations
          }
          if(!_finished)
          {
-            _loc2_ = new Point(_target.x - param1.x,_target.y - param1.y);
-            if(_loc2_.length > 192)
+            p = new Point(_target.x - movie.x,_target.y - movie.y);
+            if(p.length > 192)
             {
-               param1.x = param1.x + _loc2_.x / 48;
-               param1.y = param1.y + _loc2_.y / 48;
+               movie.x = movie.x + p.x / 48;
+               movie.y = movie.y + p.y / 48;
             }
-            else if(_loc2_.length >= 4)
+            else if(p.length >= 4)
             {
-               _loc2_.normalize(4);
-               param1.x = param1.x + _loc2_.x;
-               param1.y = param1.y + _loc2_.y;
+               p.normalize(4);
+               movie.x = movie.x + p.x;
+               movie.y = movie.y + p.y;
             }
-            else if(_loc2_.length >= 1)
+            else if(p.length >= 1)
             {
-               param1.x = param1.x + _loc2_.x;
-               param1.y = param1.y + _loc2_.y;
+               movie.x = movie.x + p.x;
+               movie.y = movie.y + p.y;
             }
             if(_life % 2)
             {
                _shocking = -_shocking;
-               param1.y = param1.y + _shocking;
+               movie.y = movie.y + _shocking;
             }
             return true;
          }

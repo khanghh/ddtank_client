@@ -34,13 +34,13 @@ package ddt.view.chat
          reset();
       }
       
-      public function addChat(param1:ChatData) : void
+      public function addChat(data:ChatData) : void
       {
-         tryAddToCurrentChats(param1);
-         tryAddToRecent(param1);
-         tryAddToClubChats(param1);
-         tryAddToPrivateChats(param1);
-         dispatchEvent(new ChatEvent("addChat",param1));
+         tryAddToCurrentChats(data);
+         tryAddToRecent(data);
+         tryAddToClubChats(data);
+         tryAddToPrivateChats(data);
+         dispatchEvent(new ChatEvent("addChat",data));
       }
       
       public function get customFastReply() : Vector.<String>
@@ -48,34 +48,34 @@ package ddt.view.chat
          return _customFastReply;
       }
       
-      public function addLink(param1:String, param2:ItemTemplateInfo) : void
+      public function addLink(key:String, info:ItemTemplateInfo) : void
       {
-         _linkInfoMap[param1] = param2;
+         _linkInfoMap[key] = info;
       }
       
-      public function getLink(param1:String) : ItemTemplateInfo
+      public function getLink(itemIDLv:String) : ItemTemplateInfo
       {
-         return _linkInfoMap[param1];
+         return _linkInfoMap[itemIDLv];
       }
       
-      public function addCardGrooveLink(param1:String, param2:GrooveInfo) : void
+      public function addCardGrooveLink(key:String, info:GrooveInfo) : void
       {
-         _linkInfoMap[param1] = param2;
+         _linkInfoMap[key] = info;
       }
       
-      public function getCardGrooveLink(param1:String) : GrooveInfo
+      public function getCardGrooveLink(itemIDLv:String) : GrooveInfo
       {
-         return _linkInfoMap[param1];
+         return _linkInfoMap[itemIDLv];
       }
       
-      public function addCardInfoLink(param1:String, param2:CardInfo) : void
+      public function addCardInfoLink(key:String, info:CardInfo) : void
       {
-         _linkInfoMap[param1] = param2;
+         _linkInfoMap[key] = info;
       }
       
-      public function getCardInfoLink(param1:String) : CardInfo
+      public function getCardInfoLink(itemIDLv:String) : CardInfo
       {
-         return _linkInfoMap[param1];
+         return _linkInfoMap[itemIDLv];
       }
       
       public function removeAllLink() : void
@@ -83,47 +83,47 @@ package ddt.view.chat
          _linkInfoMap = new Dictionary();
       }
       
-      public function getChatsByOutputChannel(param1:int, param2:int, param3:int) : Object
+      public function getChatsByOutputChannel(channel:int, offset:int, count:int) : Object
       {
-         param2 = param2 < 0?0:param2;
-         var _loc4_:Array = [];
-         if(param1 == 0)
+         offset = offset < 0?0:offset;
+         var list:Array = [];
+         if(channel == 0)
          {
-            _loc4_ = _currentChats;
+            list = _currentChats;
          }
-         else if(param1 == 1)
+         else if(channel == 1)
          {
-            _loc4_ = _clubChats;
+            list = _clubChats;
          }
-         else if(param1 == 2)
+         else if(channel == 2)
          {
-            _loc4_ = _privateChats;
+            list = _privateChats;
          }
-         if(_loc4_.length <= param3)
+         if(list.length <= count)
          {
             return {
                "offset":0,
-               "result":_loc4_
+               "result":list
             };
          }
-         if(_loc4_.length <= param3 + param2)
+         if(list.length <= count + offset)
          {
             return {
-               "offset":_loc4_.length - param3,
-               "result":_loc4_.slice(0,param3)
+               "offset":list.length - count,
+               "result":list.slice(0,count)
             };
          }
          return {
-            "offset":param2,
-            "result":_loc4_.slice(_loc4_.length - param3 - param2,_loc4_.length - param2)
+            "offset":offset,
+            "result":list.slice(list.length - count - offset,list.length - offset)
          };
       }
       
-      public function getInputInOutputChannel(param1:int, param2:int) : Boolean
+      public function getInputInOutputChannel(inputChannel:int, outputChannel:int) : Boolean
       {
-         if(param2 == 1)
+         if(outputChannel == 1)
          {
-            switch(int(param1))
+            switch(int(inputChannel))
             {
                case 0:
                case 1:
@@ -145,9 +145,9 @@ package ddt.view.chat
                   return true;
             }
          }
-         else if(param2 == 2)
+         else if(outputChannel == 2)
          {
-            switch(int(param1))
+            switch(int(inputChannel))
             {
                case 0:
                case 1:
@@ -169,7 +169,7 @@ package ddt.view.chat
                   return true;
             }
          }
-         else if(param2 == 0)
+         else if(outputChannel == 0)
          {
             return true;
          }
@@ -206,52 +206,52 @@ package ddt.view.chat
          return _resentChats;
       }
       
-      private function checkOverCount(param1:Array) : void
+      private function checkOverCount(chatDatas:Array) : void
       {
-         if(param1.length > 200)
+         if(chatDatas.length > 200)
          {
-            param1.shift();
+            chatDatas.shift();
          }
       }
       
-      public function getRowsByOutputChangel(param1:int) : int
+      public function getRowsByOutputChangel(channel:int) : int
       {
-         return param1 == 0?_currentChats.length:uint(param1 == 1?_clubChats.length:uint(_privateChats.length));
+         return channel == 0?_currentChats.length:uint(channel == 1?_clubChats.length:uint(_privateChats.length));
       }
       
-      private function tryAddToClubChats(param1:ChatData) : void
+      private function tryAddToClubChats(data:ChatData) : void
       {
-         if(getInputInOutputChannel(param1.channel,1))
+         if(getInputInOutputChannel(data.channel,1))
          {
-            _clubChats.push(param1);
+            _clubChats.push(data);
          }
          checkOverCount(_clubChats);
       }
       
-      private function tryAddToCurrentChats(param1:ChatData) : void
+      private function tryAddToCurrentChats(chats:ChatData) : void
       {
-         _currentChats.push(param1);
+         _currentChats.push(chats);
          checkOverCount(_currentChats);
       }
       
-      private function tryAddToPrivateChats(param1:ChatData) : void
+      private function tryAddToPrivateChats(data:ChatData) : void
       {
-         if(getInputInOutputChannel(param1.channel,2))
+         if(getInputInOutputChannel(data.channel,2))
          {
-            _privateChats.push(param1);
-            if(PlayerManager.Instance.Self.playerState.AutoReply != "" && !StringUtils.isEmpty(param1.sender) && param1.receiver == PlayerManager.Instance.Self.NickName && param1.isAutoReply == false)
+            _privateChats.push(data);
+            if(PlayerManager.Instance.Self.playerState.AutoReply != "" && !StringUtils.isEmpty(data.sender) && data.receiver == PlayerManager.Instance.Self.NickName && data.isAutoReply == false)
             {
-               ChatManager.Instance.sendPrivateMessage(param1.sender,FilterWordManager.filterWrod(PlayerManager.Instance.Self.playerState.AutoReply),param1.senderID,true);
+               ChatManager.Instance.sendPrivateMessage(data.sender,FilterWordManager.filterWrod(PlayerManager.Instance.Self.playerState.AutoReply),data.senderID,true);
             }
          }
          checkOverCount(_privateChats);
       }
       
-      private function tryAddToRecent(param1:ChatData) : void
+      private function tryAddToRecent(data:ChatData) : void
       {
-         if(param1.sender == PlayerManager.Instance.Self.NickName)
+         if(data.sender == PlayerManager.Instance.Self.NickName)
          {
-            _resentChats.push(param1);
+            _resentChats.push(data);
          }
          checkOverCount(_resentChats);
       }

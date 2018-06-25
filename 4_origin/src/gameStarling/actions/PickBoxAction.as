@@ -14,11 +14,11 @@ package gameStarling.actions
       
       private var _boxid:int;
       
-      public function PickBoxAction(param1:int, param2:int)
+      public function PickBoxAction(boxid:int, time:int)
       {
          super();
-         _time = param2;
-         _boxid = param1;
+         _time = time;
+         _boxid = boxid;
       }
       
       public function get time() : int
@@ -26,13 +26,13 @@ package gameStarling.actions
          return _time;
       }
       
-      public function execute(param1:GamePlayer3D) : void
+      public function execute(player:GamePlayer3D) : void
       {
          executed = true;
-         var _loc2_:PhysicalObj3D = param1.map.getPhysical(_boxid);
-         if(_loc2_ is SimpleBox3D)
+         var obj:PhysicalObj3D = player.map.getPhysical(_boxid);
+         if(obj is SimpleBox3D)
          {
-            SimpleBox3D(_loc2_).pickByLiving(param1.info);
+            SimpleBox3D(obj).pickByLiving(player.info);
          }
       }
    }

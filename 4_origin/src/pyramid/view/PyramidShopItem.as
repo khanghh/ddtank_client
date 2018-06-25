@@ -81,13 +81,13 @@ package pyramid.view
          _shopViewItemBtn.addEventListener("click",__shopViewItemBtnClick);
       }
       
-      public function set shopItemInfo(param1:ShopItemInfo) : void
+      public function set shopItemInfo(value:ShopItemInfo) : void
       {
          if(_shopItemInfo)
          {
             _shopItemInfo.removeEventListener("change",__updateShopItem);
          }
-         _shopItemInfo = param1;
+         _shopItemInfo = value;
          if(_shopItemInfo)
          {
             _itemCell.info = _shopItemInfo.TemplateInfo;
@@ -134,7 +134,7 @@ package pyramid.view
          return _shopItemInfo;
       }
       
-      private function __updateShopItem(param1:Event) : void
+      private function __updateShopItem(event:Event) : void
       {
          _itemCell.info = _shopItemInfo.TemplateInfo;
          _itemCell.tipInfo = _shopItemInfo;
@@ -144,14 +144,14 @@ package pyramid.view
       
       protected function creatItemCell() : ShopItemCell
       {
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,60,60);
-         _loc1_.graphics.endFill();
-         return CellFactory.instance.createShopItemCell(_loc1_,null,true,true) as ShopItemCell;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,60,60);
+         sp.graphics.endFill();
+         return CellFactory.instance.createShopItemCell(sp,null,true,true) as ShopItemCell;
       }
       
-      private function __shopViewItemBtnClick(param1:MouseEvent) : void
+      private function __shopViewItemBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -169,9 +169,9 @@ package pyramid.view
          }
       }
       
-      private function isButtonGrey(param1:Boolean) : void
+      private function isButtonGrey(bool:Boolean) : void
       {
-         if(param1)
+         if(bool)
          {
             _shopViewItemBtn.mouseChildren = false;
             _shopViewItemBtn.mouseEnabled = false;
@@ -185,7 +185,7 @@ package pyramid.view
          }
       }
       
-      private function __shopItemOver(param1:MouseEvent) : void
+      private function __shopItemOver(event:MouseEvent) : void
       {
          if(_shopItemInfo)
          {
@@ -193,7 +193,7 @@ package pyramid.view
          }
       }
       
-      private function __shopItemOut(param1:MouseEvent) : void
+      private function __shopItemOut(event:MouseEvent) : void
       {
          _bg.setFrame(1);
       }

@@ -23,9 +23,9 @@ package dragonBones.events
       
       public var animationState:Object;
       
-      public function AnimationEvent(param1:String, param2:Boolean = false)
+      public function AnimationEvent(type:String, cancelable:Boolean = false)
       {
-         super(param1,false,param2);
+         super(type,false,cancelable);
       }
       
       public static function get MOVEMENT_CHANGE() : String
@@ -50,9 +50,9 @@ package dragonBones.events
       
       override public function clone() : Event
       {
-         var _loc1_:AnimationEvent = new AnimationEvent(type,cancelable);
-         _loc1_.animationState = animationState;
-         return _loc1_;
+         var event:AnimationEvent = new AnimationEvent(type,cancelable);
+         event.animationState = animationState;
+         return event;
       }
    }
 }

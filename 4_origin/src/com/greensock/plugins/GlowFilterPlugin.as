@@ -18,11 +18,11 @@ package com.greensock.plugins
          this.overwriteProps = ["glowFilter"];
       }
       
-      override public function onInitTween(param1:Object, param2:*, param3:TweenLite) : Boolean
+      override public function onInitTween(target:Object, value:*, tween:TweenLite) : Boolean
       {
-         _target = param1;
+         _target = target;
          _type = GlowFilter;
-         initFilter(param2,new GlowFilter(16777215,0,0,0,param2.strength || 1,param2.quality || 2,param2.inner,param2.knockout),_propNames);
+         initFilter(value,new GlowFilter(16777215,0,0,0,value.strength || 1,value.quality || 2,value.inner,value.knockout),_propNames);
          return true;
       }
    }

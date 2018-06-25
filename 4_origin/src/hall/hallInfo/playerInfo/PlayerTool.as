@@ -109,13 +109,13 @@ package hall.hallInfo.playerInfo
          }
       }
       
-      protected function __onRegressRecvPacks(param1:PkgEvent) : void
+      protected function __onRegressRecvPacks(event:PkgEvent) : void
       {
          SocketManager.Instance.removeEventListener(PkgEvent.format(149,5),__onRegressRecvPacks);
-         RegressManager.recvPacksInfo(param1.pkg);
+         RegressManager.recvPacksInfo(event.pkg);
       }
       
-      private function __onAddRegressBtn(param1:RegressEvent) : void
+      private function __onAddRegressBtn(event:RegressEvent) : void
       {
          RegressManager.instance.removeEventListener("regress_addbtn",__onAddRegressBtn);
          if(!_selfInfo.isOld || RegressManager.isOver)
@@ -149,12 +149,12 @@ package hall.hallInfo.playerInfo
          MailManager.Instance.Model.addEventListener("cancelemailshine",__onSetEmailShine);
       }
       
-      protected function __onSetEmailShine(param1:NewHallEvent) : void
+      protected function __onSetEmailShine(event:NewHallEvent) : void
       {
          showEmailEffect(false);
       }
       
-      protected function __updateEmail(param1:Event) : void
+      protected function __updateEmail(event:Event) : void
       {
          if(_emailBtn)
          {
@@ -162,9 +162,9 @@ package hall.hallInfo.playerInfo
          }
       }
       
-      private function showEmailEffect(param1:Boolean) : void
+      private function showEmailEffect(show:Boolean) : void
       {
-         if(param1 && MailManager.Instance.Model.hasUnReadEmail())
+         if(show && MailManager.Instance.Model.hasUnReadEmail())
          {
             _emailBtn.movie.gotoAndStop(2);
             _emailBtn.mouseEnabled = true;
@@ -176,14 +176,14 @@ package hall.hallInfo.playerInfo
          }
       }
       
-      protected function __onOldPlayerClick(param1:MouseEvent) : void
+      protected function __onOldPlayerClick(event:MouseEvent) : void
       {
          RegressManager.instance.show();
       }
       
-      private function __propertyChange(param1:PlayerPropertyEvent) : void
+      private function __propertyChange(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Grade"])
+         if(event.changedProperties["Grade"])
          {
             refreshView();
          }
@@ -191,8 +191,8 @@ package hall.hallInfo.playerInfo
       
       private function refreshView() : void
       {
-         var _loc1_:int = PlayerManager.Instance.Self.Grade;
-         if(_loc1_ >= 20)
+         var grade:int = PlayerManager.Instance.Self.Grade;
+         if(grade >= 20)
          {
             _celebrityBtn.alpha = 1;
             _celebrityBtn.mouseEnabled = true;
@@ -204,7 +204,7 @@ package hall.hallInfo.playerInfo
             _celebrityBtn.mouseEnabled = false;
             _celebrityBtn.mouseChildren = false;
          }
-         if(_loc1_ == 20 && !PlayerManager.Instance.Self.isNewOnceFinish(109))
+         if(grade == 20 && !PlayerManager.Instance.Self.isNewOnceFinish(109))
          {
             SocketManager.Instance.out.syncWeakStep(109);
             NewHandContainer.Instance.showGuideCover("circle",[236,116,30]);
@@ -212,13 +212,13 @@ package hall.hallInfo.playerInfo
          }
       }
       
-      protected function __onSignBuffClick(param1:MouseEvent) : void
+      protected function __onSignBuffClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("003");
          SignBuffManager.instance.show();
       }
       
-      protected function __onCelebrityClick(param1:MouseEvent) : void
+      protected function __onCelebrityClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("047");
          NewHandContainer.Instance.hideGuideCover();
@@ -230,7 +230,7 @@ package hall.hallInfo.playerInfo
          }
       }
       
-      protected function __onMailClick(param1:MouseEvent) : void
+      protected function __onMailClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("003");
          MailManager.Instance.switchVisible();
@@ -247,7 +247,7 @@ package hall.hallInfo.playerInfo
          }
       }
       
-      private function __onLoginClick(param1:MouseEvent) : void
+      private function __onLoginClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("003");
          LoginDeviceManager.instance().show();

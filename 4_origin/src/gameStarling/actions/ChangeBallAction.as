@@ -13,12 +13,12 @@ package gameStarling.actions
       
       private var _isSpecialSkill:Boolean;
       
-      public function ChangeBallAction(param1:Player, param2:Boolean, param3:int)
+      public function ChangeBallAction(player:Player, isSpecialSkill:Boolean, currentBomb:int)
       {
          super();
-         _player = param1;
-         _currentBomb = param3;
-         _isSpecialSkill = param2;
+         _player = player;
+         _currentBomb = currentBomb;
+         _isSpecialSkill = isSpecialSkill;
       }
       
       override public function executeAtOnce() : void

@@ -58,7 +58,7 @@ package flowerGiving.views
          _givingBtn.addEventListener("click",__clickHandler);
       }
       
-      protected function __clickHandler(param1:MouseEvent) : void
+      protected function __clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _frame = ComponentFactory.Instance.creatCustomObject("flowerGiving.FlowerSendFrame");
@@ -68,24 +68,24 @@ package flowerGiving.views
       
       public function setActDate() : void
       {
-         var _loc2_:GmActivityInfo = FlowerGivingManager.instance.xmlData;
-         var _loc5_:String = dateTrim(_loc2_.beginTime,true);
-         var _loc4_:String = dateTrim(_loc2_.endTime,true);
-         var _loc1_:String = dateTrim(_loc2_.beginShowTime);
-         var _loc3_:String = dateTrim(_loc2_.endShowTime);
-         _desc.text = LanguageMgr.GetTranslation("flowerGiving.desc",_loc5_,_loc4_,_loc1_,_loc3_);
+         var xmlData:GmActivityInfo = FlowerGivingManager.instance.xmlData;
+         var beginDate:String = dateTrim(xmlData.beginTime,true);
+         var endDate:String = dateTrim(xmlData.endTime,true);
+         var beginShow:String = dateTrim(xmlData.beginShowTime);
+         var endShow:String = dateTrim(xmlData.endShowTime);
+         _desc.text = LanguageMgr.GetTranslation("flowerGiving.desc",beginDate,endDate,beginShow,endShow);
       }
       
-      private function dateTrim(param1:String, param2:Boolean = false) : String
+      private function dateTrim(dateStr:String, flag:Boolean = false) : String
       {
-         var _loc3_:String = "";
-         var _loc4_:Array = param1.split(" ");
-         _loc3_ = _loc4_[0].replace(/\//g,"-");
-         if(param2)
+         var str:String = "";
+         var temp:Array = dateStr.split(" ");
+         str = temp[0].replace(/\//g,"-");
+         if(flag)
          {
-            _loc3_ = _loc3_ + (" " + _loc4_[1].slice(0,5));
+            str = str + (" " + temp[1].slice(0,5));
          }
-         return _loc3_;
+         return str;
       }
       
       private function removeEvents() : void

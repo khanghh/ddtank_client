@@ -19,29 +19,29 @@ package tofflist.data
          TitleTextPoint = new Vector.<Point>();
       }
       
-      public function set titleHLinePt(param1:String) : void
+      public function set titleHLinePt(value:String) : void
       {
-         TitleHLinePoint = parseValue(param1);
+         TitleHLinePoint = parseValue(value);
       }
       
-      public function set titleTextPt(param1:String) : void
+      public function set titleTextPt(value:String) : void
       {
-         TitleTextPoint = parseValue(param1);
+         TitleTextPoint = parseValue(value);
       }
       
-      private function parseValue(param1:String) : Vector.<Point>
+      private function parseValue(value:String) : Vector.<Point>
       {
-         var _loc4_:* = null;
-         var _loc2_:Vector.<Point> = new Vector.<Point>();
-         var _loc5_:Array = param1.split("|");
+         var pt:* = null;
+         var result:Vector.<Point> = new Vector.<Point>();
+         var pts:Array = value.split("|");
          var _loc7_:int = 0;
-         var _loc6_:* = _loc5_;
-         for each(var _loc3_ in _loc5_)
+         var _loc6_:* = pts;
+         for each(var p in pts)
          {
-            _loc4_ = new Point(_loc3_.split(",")[0],_loc3_.split(",")[1]);
-            _loc2_.push(_loc4_);
+            pt = new Point(p.split(",")[0],p.split(",")[1]);
+            result.push(pt);
          }
-         return _loc2_;
+         return result;
       }
    }
 }

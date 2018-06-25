@@ -89,12 +89,12 @@ package petsBag.petsAdvanced
          PetsBagManager.instance().petModel.addEventListener("change",onPetInfoChange);
       }
       
-      protected function update(param1:Event) : void
+      protected function update(e:Event) : void
       {
          updateData();
       }
       
-      protected function onPetInfoChange(param1:Event) : void
+      protected function onPetInfoChange(e:Event) : void
       {
          if(_txtBreakCurGradeInfo == null)
          {
@@ -105,8 +105,8 @@ package petsBag.petsAdvanced
       
       protected function initView() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          selectList = [];
          _bg = ComponentFactory.Instance.creatBitmap("petsBag.break.bg");
          _bg.x = 19;
@@ -115,26 +115,25 @@ package petsBag.petsAdvanced
          _petsBasicInfoView = new PetsBasicInfoView();
          addChild(_petsBasicInfoView);
          _petsBasicInfoView.addEventListener("all_movie_complete",__allComplete);
-         var _loc2_:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
-         if(_loc2_ != null)
+         var petInfo:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
+         if(petInfo != null)
          {
-            _petsBasicInfoView && _petsBasicInfoView.setInfo(_loc2_);
+            _petsBasicInfoView && _petsBasicInfoView.setInfo(petInfo);
          }
          itemContainer = ComponentFactory.Instance.creatComponentByStylename("petsBag.petbreakItemContainer");
          itemContainer.x = 68;
          itemContainer.y = 365;
          itemContainer.spacing = 1;
          _petsImgVec = new Vector.<PetSmallDetailItem>();
-         _loc4_ = 0;
-         while(_loc4_ < 4)
+         for(i = 0; i < 4; )
          {
-            _loc1_ = new PetSmallDetailItem();
-            _loc1_.mouseChildren = false;
-            _loc1_.buttonMode = true;
-            _loc1_.useHandCursor = true;
-            _loc1_.addEventListener("click",onCellClick);
-            _petsImgVec.push(itemContainer.addChild(_loc1_));
-            _loc4_++;
+            cell = new PetSmallDetailItem();
+            cell.mouseChildren = false;
+            cell.buttonMode = true;
+            cell.useHandCursor = true;
+            cell.addEventListener("click",onCellClick);
+            _petsImgVec.push(itemContainer.addChild(cell));
+            i++;
          }
          addChild(itemContainer);
          _leftBtn = ComponentFactory.Instance.creatComponentByStylename("petsBag.button.left");
@@ -152,13 +151,13 @@ package petsBag.petsAdvanced
          addChild(_bagCellBreak);
          _bagCellBg = ComponentFactory.Instance.creat("petsBag.risingStar.bagCellBg");
          addChild(_bagCellBg);
-         var _loc3_:InventoryItemInfo = new InventoryItemInfo();
-         _loc3_.TemplateID = 11167;
-         _loc3_ = ItemManager.fill(_loc3_);
+         var info:InventoryItemInfo = new InventoryItemInfo();
+         info.TemplateID = 11167;
+         info = ItemManager.fill(info);
          _bagCellProtect = new PetsAdvancedCell();
          _bagCellProtect.x = 389;
          _bagCellProtect.y = 336;
-         _bagCellProtect.info = _loc3_;
+         _bagCellProtect.info = info;
          _bagCellProtect.buyBtn.x = 16;
          _bagCellProtect.buyBtn.y = 38;
          addChild(_bagCellProtect);
@@ -189,15 +188,15 @@ package petsBag.petsAdvanced
          PlayerManager.Instance.addEventListener("updatePet",onUpdatePet);
       }
       
-      protected function onPetsCellUpdated(param1:Event) : void
+      protected function onPetsCellUpdated(e:Event) : void
       {
-         var _loc4_:BreakInfo = PetsBagManager.instance().petModel.currentPetBreakInfo;
-         var _loc3_:int = _bagCellProtect.getCount();
-         var _loc2_:int = _loc4_.stoneNumber;
-         _bagCellBreak.text = LanguageMgr.GetTranslation("ddt.pets.break.stone",_loc3_,_loc2_);
+         var breakInfo:BreakInfo = PetsBagManager.instance().petModel.currentPetBreakInfo;
+         var count:int = _bagCellProtect.getCount();
+         var num:int = breakInfo.stoneNumber;
+         _bagCellBreak.text = LanguageMgr.GetTranslation("ddt.pets.break.stone",count,num);
       }
       
-      private function __left(param1:MouseEvent) : void
+      private function __left(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          countTotalPage();
@@ -205,7 +204,7 @@ package petsBag.petsAdvanced
          updateData(currentPage);
       }
       
-      private function __right(param1:MouseEvent) : void
+      private function __right(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          countTotalPage();
@@ -213,9 +212,9 @@ package petsBag.petsAdvanced
          updateData(currentPage);
       }
       
-      protected function onBreakResult(param1:Event) : void
+      protected function onBreakResult(e:Event) : void
       {
-         e = param1;
+         e = e;
          onSucComplete = function():void
          {
             onSucEnd = function():void
@@ -285,51 +284,51 @@ package petsBag.petsAdvanced
          }
       }
       
-      protected function onCellClick(param1:MouseEvent) : void
+      protected function onCellClick(me:MouseEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc5_:Boolean = false;
-         var _loc6_:int = 0;
-         var _loc2_:PetSmallDetailItem = param1.target as PetSmallDetailItem;
-         if(_loc2_.info == null)
+         var petNumNeeded:int = 0;
+         var alreadyOne:Boolean = false;
+         var i:int = 0;
+         var item:PetSmallDetailItem = me.target as PetSmallDetailItem;
+         if(item.info == null)
          {
             return;
          }
-         if(_loc2_.selected == false)
+         if(item.selected == false)
          {
-            _loc4_ = PetsBagManager.instance().petModel.currentPetBreakInfo.numPetsNeeded;
-            _loc5_ = false;
-            if(_loc4_ == 1)
+            petNumNeeded = PetsBagManager.instance().petModel.currentPetBreakInfo.numPetsNeeded;
+            alreadyOne = false;
+            if(petNumNeeded == 1)
             {
                if(selectList.length == 1)
                {
                   return;
                }
             }
-            else if(selectList.length + 1 > _loc4_)
+            else if(selectList.length + 1 > petNumNeeded)
             {
                return;
             }
          }
-         _loc2_.selected = !_loc2_.selected;
-         var _loc3_:Object = {};
-         if(_loc2_.selected)
+         item.selected = !item.selected;
+         var obj:Object = {};
+         if(item.selected)
          {
-            _loc3_.info = _loc2_.info;
-            _loc3_.starNum = _loc2_.getStarNum();
-            _loc3_.place = _loc2_.info.Place;
-            selectList.push(_loc3_);
+            obj.info = item.info;
+            obj.starNum = item.getStarNum();
+            obj.place = item.info.Place;
+            selectList.push(obj);
          }
          else
          {
-            _loc6_ = 0;
-            while(_loc6_ < selectList.length)
+            i = 0;
+            while(i < selectList.length)
             {
-               if(selectList[_loc6_].place == _loc2_.info.Place)
+               if(selectList[i].place == item.info.Place)
                {
-                  selectList.splice(_loc6_);
+                  selectList.splice(i);
                }
-               _loc6_++;
+               i++;
             }
          }
          if(selectList.length > 0)
@@ -342,12 +341,12 @@ package petsBag.petsAdvanced
          }
       }
       
-      public function set btnEatPetsEnable(param1:Boolean) : void
+      public function set btnEatPetsEnable(value:Boolean) : void
       {
-         _btnEatPets.enable = param1;
+         _btnEatPets.enable = value;
       }
       
-      public function set valueOfTotalSelected(param1:int) : void
+      public function set valueOfTotalSelected(value:int) : void
       {
          if(selectList.length > 0)
          {
@@ -369,83 +368,83 @@ package petsBag.petsAdvanced
          return _petsImgVec;
       }
       
-      protected function useProtectHander(param1:MouseEvent) : void
+      protected function useProtectHander(e:MouseEvent) : void
       {
       }
       
-      protected function onBtnEatClick(param1:MouseEvent) : void
+      protected function onBtnEatClick(e:MouseEvent) : void
       {
-         var _loc10_:* = null;
-         var _loc4_:* = null;
-         var _loc12_:* = null;
+         var alertString:* = null;
+         var alert:* = null;
+         var alert2:* = null;
          SoundManager.instance.play("008");
-         var _loc6_:BreakInfo = PetsBagManager.instance().petModel.currentPetBreakInfo;
-         var _loc2_:int = PetsBagManager.instance().petModel.currentPetInfo.Level;
-         var _loc5_:int = PetsBagManager.instance().petModel.currentPetBreakInfo.targetGrade;
-         var _loc16_:Boolean = petsToEatIsFighting();
-         var _loc11_:Boolean = getBreakGradeEnough(_loc6_);
-         var _loc15_:int = _loc6_.numPetsNeeded;
-         var _loc13_:int = _loc6_.stoneNumber;
-         var _loc9_:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(11167);
-         var _loc7_:int = getNumPetsToEatSelected();
-         var _loc8_:Boolean = _checkBoxProtect.selected;
-         var _loc14_:Boolean = getPetsStarsEnough(_loc6_);
-         var _loc3_:Boolean = riseStarEver();
-         if(_loc2_ < _loc5_)
+         var breakInfo:BreakInfo = PetsBagManager.instance().petModel.currentPetBreakInfo;
+         var tagPetLevel:int = PetsBagManager.instance().petModel.currentPetInfo.Level;
+         var levelNeeded:int = PetsBagManager.instance().petModel.currentPetBreakInfo.targetGrade;
+         var isFighting:Boolean = petsToEatIsFighting();
+         var breakGradeEnough:Boolean = getBreakGradeEnough(breakInfo);
+         var numNeeded:int = breakInfo.numPetsNeeded;
+         var numNeedSamSangStone:int = breakInfo.stoneNumber;
+         var numSamSangStone:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(11167);
+         var numEatPetsSeletcted:int = getNumPetsToEatSelected();
+         var useProtectStone:Boolean = _checkBoxProtect.selected;
+         var petsStarsEnough:Boolean = getPetsStarsEnough(breakInfo);
+         var petRiseStarsEver:Boolean = riseStarEver();
+         if(tagPetLevel < levelNeeded)
          {
-            _loc10_ = LanguageMgr.GetTranslation("ddt.pets.break.petLevel.NotEnough");
-            MessageTipManager.getInstance().show(_loc10_,0,false,1);
+            alertString = LanguageMgr.GetTranslation("ddt.pets.break.petLevel.NotEnough");
+            MessageTipManager.getInstance().show(alertString,0,false,1);
             return;
          }
-         if(_loc7_ < _loc15_)
+         if(numEatPetsSeletcted < numNeeded)
          {
-            _loc10_ = LanguageMgr.GetTranslation("ddt.pets.break.eatNum.NotEnough");
-            MessageTipManager.getInstance().show(_loc10_,0,false,1);
+            alertString = LanguageMgr.GetTranslation("ddt.pets.break.eatNum.NotEnough");
+            MessageTipManager.getInstance().show(alertString,0,false,1);
             return;
          }
-         if(_loc14_ == false)
+         if(petsStarsEnough == false)
          {
-            _loc10_ = LanguageMgr.GetTranslation("ddt.pets.break.stars.NotEnough");
-            MessageTipManager.getInstance().show(_loc10_,0,false,1);
+            alertString = LanguageMgr.GetTranslation("ddt.pets.break.stars.NotEnough");
+            MessageTipManager.getInstance().show(alertString,0,false,1);
             return;
          }
-         if(_loc9_ < _loc13_)
+         if(numSamSangStone < numNeedSamSangStone)
          {
-            _loc10_ = LanguageMgr.GetTranslation("ddt.pets.break.samsang.NotEnough");
-            MessageTipManager.getInstance().show(_loc10_,0,false,1);
+            alertString = LanguageMgr.GetTranslation("ddt.pets.break.samsang.NotEnough");
+            MessageTipManager.getInstance().show(alertString,0,false,1);
             return;
          }
-         if(_loc16_)
+         if(isFighting)
          {
-            _loc10_ = LanguageMgr.GetTranslation("ddt.pets.break.shoudnotFight");
-            MessageTipManager.getInstance().show(_loc10_,0,false,1);
+            alertString = LanguageMgr.GetTranslation("ddt.pets.break.shoudnotFight");
+            MessageTipManager.getInstance().show(alertString,0,false,1);
             return;
          }
-         if(_loc11_ == false)
+         if(breakGradeEnough == false)
          {
-            _loc10_ = LanguageMgr.GetTranslation("ddt.pets.break.breakGradeEnough");
-            MessageTipManager.getInstance().show(_loc10_,0,false,1);
+            alertString = LanguageMgr.GetTranslation("ddt.pets.break.breakGradeEnough");
+            MessageTipManager.getInstance().show(alertString,0,false,1);
             return;
          }
-         if(_loc8_ == true && getProtectStoneNumber() < 1)
+         if(useProtectStone == true && getProtectStoneNumber() < 1)
          {
-            _loc10_ = LanguageMgr.GetTranslation("ddt.pets.break.protectedNotEnough");
-            MessageTipManager.getInstance().show(_loc10_,0,false,1);
+            alertString = LanguageMgr.GetTranslation("ddt.pets.break.protectedNotEnough");
+            MessageTipManager.getInstance().show(alertString,0,false,1);
             buyProtectStone();
             return;
          }
-         if(_loc3_)
+         if(petRiseStarsEver)
          {
-            _loc10_ = LanguageMgr.GetTranslation("ddt.pets.break.starExpWaste");
-            _loc4_ = AlertManager.Instance.simpleAlert("Cảnh cáo：",_loc10_,"O K","Hủy",false,true,false,1);
-            _loc4_.addEventListener("response",__onAlertRiseStarResponse);
+            alertString = LanguageMgr.GetTranslation("ddt.pets.break.starExpWaste");
+            alert = AlertManager.Instance.simpleAlert("Cảnh cáo：",alertString,"O K","Hủy",false,true,false,1);
+            alert.addEventListener("response",__onAlertRiseStarResponse);
             return;
          }
-         if(_loc8_ == false)
+         if(useProtectStone == false)
          {
-            _loc10_ = LanguageMgr.GetTranslation("ddt.pets.break.sureToNotUseProtect");
-            _loc12_ = AlertManager.Instance.simpleAlert("Cảnh cáo：",_loc10_,"O K","Hủy",false,true,false,1);
-            _loc12_.addEventListener("response",__onAlertResponse);
+            alertString = LanguageMgr.GetTranslation("ddt.pets.break.sureToNotUseProtect");
+            alert2 = AlertManager.Instance.simpleAlert("Cảnh cáo：",alertString,"O K","Hủy",false,true,false,1);
+            alert2.addEventListener("response",__onAlertResponse);
             return;
          }
          showBreakFrame();
@@ -458,30 +457,30 @@ package petsBag.petsAdvanced
          _petBreakFrame._btnBreak.addEventListener("click",onBreakClick);
       }
       
-      protected function __onAlertRiseStarResponse(param1:FrameEvent) : void
+      protected function __onAlertRiseStarResponse(event:FrameEvent) : void
       {
-         var _loc5_:Boolean = false;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
+         var useProtectStone:Boolean = false;
+         var alertString:* = null;
+         var alert1:* = null;
          SoundManager.instance.play("008");
-         var _loc3_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc3_.removeEventListener("response",__onAlertRiseStarResponse);
-         switch(int(param1.responseCode))
+         var alert:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__onAlertRiseStarResponse);
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
-               _loc3_.dispose();
+               alert.dispose();
                break;
             case 2:
             case 3:
             case 4:
-               _loc3_.dispose();
-               _loc5_ = _checkBoxProtect.selected;
-               if(_loc5_ == false)
+               alert.dispose();
+               useProtectStone = _checkBoxProtect.selected;
+               if(useProtectStone == false)
                {
-                  _loc2_ = LanguageMgr.GetTranslation("ddt.pets.break.sureToNotUseProtect");
-                  _loc4_ = AlertManager.Instance.simpleAlert("Cảnh cáo：",_loc2_,"O K","Hủy",false,false,false,1);
-                  _loc4_.addEventListener("response",__onAlertResponse);
+                  alertString = LanguageMgr.GetTranslation("ddt.pets.break.sureToNotUseProtect");
+                  alert1 = AlertManager.Instance.simpleAlert("Cảnh cáo：",alertString,"O K","Hủy",false,false,false,1);
+                  alert1.addEventListener("response",__onAlertResponse);
                   break;
                }
                showBreakFrame();
@@ -489,31 +488,31 @@ package petsBag.petsAdvanced
          }
       }
       
-      protected function __onAlertResponse(param1:FrameEvent) : void
+      protected function __onAlertResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onAlertResponse);
-         switch(int(param1.responseCode))
+         var alert:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__onAlertResponse);
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
-               _loc2_.dispose();
+               alert.dispose();
                break;
             case 2:
             case 3:
             case 4:
                showBreakFrame();
-               _loc2_.dispose();
+               alert.dispose();
          }
       }
       
       private function getProtectStoneNumber() : int
       {
-         var _loc2_:int = 0;
-         var _loc1_:BagInfo = PlayerManager.Instance.Self.getBag(1);
-         _loc2_ = _loc1_.getItemCountByTemplateId(11168);
-         return _loc2_;
+         var number:int = 0;
+         var bagInfo:BagInfo = PlayerManager.Instance.Self.getBag(1);
+         number = bagInfo.getItemCountByTemplateId(11168);
+         return number;
       }
       
       private function buyProtectStone() : void
@@ -523,15 +522,15 @@ package petsBag.petsAdvanced
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc1_:ShopItemInfo = ShopManager.Instance.getGoodsByTemplateID(11168,1);
-         var _loc2_:QuickBuyAlertBase = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickBuyAlert");
-         _loc2_.setData(_loc1_.TemplateID,_loc1_.GoodsID,_loc1_.AValue1);
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var shopInfo:ShopItemInfo = ShopManager.Instance.getGoodsByTemplateID(11168,1);
+         var quickBuyFrame:QuickBuyAlertBase = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickBuyAlert");
+         quickBuyFrame.setData(shopInfo.TemplateID,shopInfo.GoodsID,shopInfo.AValue1);
+         LayerManager.Instance.addToLayer(quickBuyFrame,3,true,1);
       }
       
-      protected function onBreakClick(param1:MouseEvent) : void
+      protected function onBreakClick(e:MouseEvent) : void
       {
-         var _loc4_:int = 0;
+         var i:int = 0;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -539,104 +538,98 @@ package petsBag.petsAdvanced
             return;
          }
          _petBreakFrame._btnBreak.enable = false;
-         var _loc2_:int = PetsBagManager.instance().petModel.currentPetInfo.Place;
-         var _loc5_:Boolean = _checkBoxProtect.selected;
-         var _loc3_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < selectList.length)
+         var tagPet:int = PetsBagManager.instance().petModel.currentPetInfo.Place;
+         var useProtect:Boolean = _checkBoxProtect.selected;
+         var eatPosList:Array = [];
+         for(i = 0; i < selectList.length; )
          {
-            _loc3_.push(selectList[_loc4_].place);
-            _loc4_++;
+            eatPosList.push(selectList[i].place);
+            i++;
          }
-         if(_loc3_.length < 2)
+         if(eatPosList.length < 2)
          {
-            _loc3_.push(-1);
+            eatPosList.push(-1);
          }
-         PetsBagManager.instance().petBreakBtnClick(_loc2_,_loc5_,_loc3_);
+         PetsBagManager.instance().petBreakBtnClick(tagPet,useProtect,eatPosList);
       }
       
       private function getNumPetsToEatSelected() : int
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < selectList.length)
+         var i:int = 0;
+         var num:int = 0;
+         for(i = 0; i < selectList.length; )
          {
-            _loc1_++;
-            _loc2_++;
+            num++;
+            i++;
          }
-         return _loc1_;
+         return num;
       }
       
-      private function getPetsStarsEnough(param1:BreakInfo) : Boolean
+      private function getPetsStarsEnough(breakInfo:BreakInfo) : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc2_:Boolean = true;
-         _loc3_ = 0;
-         while(_loc3_ < selectList.length)
+         var i:int = 0;
+         var enough:Boolean = true;
+         for(i = 0; i < selectList.length; )
          {
-            if(selectList[_loc3_].starNum < param1.star1)
+            if(selectList[i].starNum < breakInfo.star1)
             {
-               _loc2_ = false;
+               enough = false;
                break;
             }
-            _loc3_++;
+            i++;
          }
-         return _loc2_;
+         return enough;
       }
       
       private function petsToEatIsFighting() : Boolean
       {
-         var _loc2_:int = 0;
-         var _loc1_:Boolean = false;
-         _loc2_ = 0;
-         while(_loc2_ < selectList.length)
+         var i:int = 0;
+         var isFighting:Boolean = false;
+         for(i = 0; i < selectList.length; )
          {
-            if(selectList[_loc2_].info.IsEquip)
+            if(selectList[i].info.IsEquip)
             {
-               _loc1_ = true;
+               isFighting = true;
                break;
             }
-            _loc2_++;
+            i++;
          }
-         return _loc1_;
+         return isFighting;
       }
       
-      private function getBreakGradeEnough(param1:BreakInfo) : Boolean
+      private function getBreakGradeEnough(breakInfo:BreakInfo) : Boolean
       {
-         var _loc3_:int = 0;
-         var _loc2_:Boolean = true;
-         _loc3_ = 0;
-         while(_loc3_ < selectList.length)
+         var i:int = 0;
+         var breakGradeEnough:Boolean = true;
+         for(i = 0; i < selectList.length; )
          {
-            if(selectList[_loc3_].info.Level < param1.breakGrade1)
+            if(selectList[i].info.Level < breakInfo.breakGrade1)
             {
-               _loc2_ = false;
+               breakGradeEnough = false;
                break;
             }
-            _loc3_++;
+            i++;
          }
-         return _loc2_;
+         return breakGradeEnough;
       }
       
       private function riseStarEver() : Boolean
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < selectList.length)
+         var i:int = 0;
+         var petInfo:* = null;
+         for(i = 0; i < selectList.length; )
          {
-            _loc1_ = selectList[_loc2_].info;
-            if(_loc1_.currentStarExp > 0)
+            petInfo = selectList[i].info;
+            if(petInfo.currentStarExp > 0)
             {
                return true;
             }
-            _loc2_++;
+            i++;
          }
          return false;
       }
       
-      protected function onUpdatePet(param1:CEvent) : void
+      protected function onUpdatePet(e:CEvent) : void
       {
          countTotalPage();
          updateData();
@@ -644,30 +637,30 @@ package petsBag.petsAdvanced
       
       private function countTotalPage() : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
-         var _loc1_:BreakInfo = PetsBagManager.instance().petModel.currentPetBreakInfo;
+         var totalPet:int = 0;
+         var petInfo:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
+         var breakInfo:BreakInfo = PetsBagManager.instance().petModel.currentPetBreakInfo;
          _petInfo = PlayerManager.Instance.Self;
          var _loc6_:int = 0;
          var _loc5_:* = _petInfo.pets;
-         for each(var _loc2_ in _petInfo.pets)
+         for each(var pt in _petInfo.pets)
          {
-            if(_loc2_.Place != _loc4_.Place && _loc2_.StarLevel >= _loc1_.star1 && _loc2_.Level >= _loc1_.breakGrade1)
+            if(pt.Place != petInfo.Place && pt.StarLevel >= breakInfo.star1 && pt.Level >= breakInfo.breakGrade1)
             {
-               _loc3_++;
+               totalPet++;
             }
          }
-         totalPage = Math.ceil(_loc3_ / 4);
+         totalPage = Math.ceil(totalPet / 4);
       }
       
-      private function updateData(param1:int = 1) : void
+      private function updateData(page:int = 1) : void
       {
-         var _loc11_:int = 0;
-         var _loc8_:int = 0;
-         var _loc7_:int = 0;
-         var _loc4_:int = 0;
-         var _loc10_:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
-         if(_loc10_ == null)
+         var i:int = 0;
+         var j:int = 0;
+         var totalPet:int = 0;
+         var p:int = 0;
+         var petInfo:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
+         if(petInfo == null)
          {
             return;
          }
@@ -675,68 +668,67 @@ package petsBag.petsAdvanced
          {
             return;
          }
-         _petsBasicInfoView && _petsBasicInfoView.setInfo(_loc10_);
-         var _loc5_:BreakInfo = PetsBagManager.instance().petModel.currentPetBreakInfo;
+         _petsBasicInfoView && _petsBasicInfoView.setInfo(petInfo);
+         var breakInfo:BreakInfo = PetsBagManager.instance().petModel.currentPetBreakInfo;
          _petInfo = PlayerManager.Instance.Self;
          var _loc13_:int = 0;
          var _loc12_:* = _petsImgVec;
-         for each(var _loc9_ in _petsImgVec)
+         for each(var petItem in _petsImgVec)
          {
-            _loc9_.info = null;
-            _loc9_.setNameTxt("");
-            _loc9_.setGradeTxt("0");
-            _loc9_.setStarNum(0);
+            petItem.info = null;
+            petItem.setNameTxt("");
+            petItem.setGradeTxt("0");
+            petItem.setStarNum(0);
          }
-         if(_loc5_.targetGrade != -1)
+         if(breakInfo.targetGrade != -1)
          {
-            _loc11_ = 0;
-            _loc8_ = 0;
+            i = 0;
+            j = 0;
             var _loc15_:int = 0;
             var _loc14_:* = _petInfo.pets;
-            for each(var _loc6_ in _petInfo.pets)
+            for each(var pt in _petInfo.pets)
             {
-               if(_loc6_.Place != _loc10_.Place && _loc6_.StarLevel >= _loc5_.star1 && _loc6_.Level >= _loc5_.breakGrade1)
+               if(pt.Place != petInfo.Place && pt.StarLevel >= breakInfo.star1 && pt.Level >= breakInfo.breakGrade1)
                {
-                  _loc7_++;
-                  _loc8_++;
-                  if(_loc8_ <= 4 * param1 && _loc8_ > 4 * (param1 - 1))
+                  totalPet++;
+                  j++;
+                  if(j <= 4 * page && j > 4 * (page - 1))
                   {
-                     _petsImgVec[_loc11_].info = _loc6_;
-                     _petsImgVec[_loc11_].setNameTxt(_loc6_.Name);
-                     _petsImgVec[_loc11_].setGradeTxt(_loc6_.Level.toString());
-                     _petsImgVec[_loc11_].setStarNum(_loc6_.StarLevel);
-                     _petsImgVec[_loc11_].selected = false;
-                     _loc4_ = 0;
-                     while(_loc4_ < selectList.length)
+                     _petsImgVec[i].info = pt;
+                     _petsImgVec[i].setNameTxt(pt.Name);
+                     _petsImgVec[i].setGradeTxt(pt.Level.toString());
+                     _petsImgVec[i].setStarNum(pt.StarLevel);
+                     _petsImgVec[i].selected = false;
+                     for(p = 0; p < selectList.length; )
                      {
-                        if(_loc6_.Place == selectList[_loc4_].place)
+                        if(pt.Place == selectList[p].place)
                         {
-                           _petsImgVec[_loc11_].selected = true;
+                           _petsImgVec[i].selected = true;
                            break;
                         }
-                        _loc4_++;
+                        p++;
                      }
-                     _loc11_++;
+                     i++;
                   }
                }
             }
-            totalPage = Math.ceil(_loc7_ / 4);
+            totalPage = Math.ceil(totalPet / 4);
          }
          _bagCellProtect.updateCount();
-         var _loc3_:int = _bagCellProtect.getCount();
-         var _loc2_:int = _loc5_.stoneNumber;
-         _bagCellBreak.text = LanguageMgr.GetTranslation("ddt.pets.break.stone",_loc3_,_loc2_);
-         if(_loc5_.targetGrade == -1)
+         var count:int = _bagCellProtect.getCount();
+         var num:int = breakInfo.stoneNumber;
+         _bagCellBreak.text = LanguageMgr.GetTranslation("ddt.pets.break.stone",count,num);
+         if(breakInfo.targetGrade == -1)
          {
             _txtBreakCurGradeInfo.text = LanguageMgr.GetTranslation("ddt.pets.break.fullGrade");
          }
          else
          {
-            _txtBreakCurGradeInfo.text = LanguageMgr.GetTranslation("ddt.pets.break.breakCurGradeInfo",_loc5_.targetGrade,_loc5_.numPetsNeeded,_loc5_.breakGrade1,_loc5_.star1);
+            _txtBreakCurGradeInfo.text = LanguageMgr.GetTranslation("ddt.pets.break.breakCurGradeInfo",breakInfo.targetGrade,breakInfo.numPetsNeeded,breakInfo.breakGrade1,breakInfo.star1);
          }
       }
       
-      protected function __allComplete(param1:Event) : void
+      protected function __allComplete(event:Event) : void
       {
          PetsAdvancedControl.Instance.isAllMovieComplete = true;
          PetsAdvancedControl.Instance.frame.enableBtn = true;
@@ -764,9 +756,9 @@ package petsBag.petsAdvanced
          {
             var _loc3_:int = 0;
             var _loc2_:* = _petsImgVec;
-            for each(var _loc1_ in _petsImgVec)
+            for each(var item in _petsImgVec)
             {
-               ObjectUtils.disposeObject(_loc1_);
+               ObjectUtils.disposeObject(item);
             }
             _petsImgVec.length = 0;
             _petsImgVec = null;
@@ -836,16 +828,16 @@ class StateNeed2PetsClickSelected implements IEatState
    
    private var view:PetsMaxGradeBreakView;
    
-   function StateNeed2PetsClickSelected(param1:PetsMaxGradeBreakView)
+   function StateNeed2PetsClickSelected($view:PetsMaxGradeBreakView)
    {
       super();
-      view = param1;
+      view = $view;
    }
    
-   public function onClicked(param1:MouseEvent) : void
+   public function onClicked(me:MouseEvent) : void
    {
-      var _loc2_:PetSmallDetailItem = param1.target as PetSmallDetailItem;
-      _loc2_.selected = false;
+      var item:PetSmallDetailItem = me.target as PetSmallDetailItem;
+      item.selected = false;
       view.valueOfTotalSelected--;
    }
 }
@@ -860,20 +852,20 @@ class StateNeed2PetsClickUnelected implements IEatState
    
    private var view:PetsMaxGradeBreakView;
    
-   function StateNeed2PetsClickUnelected(param1:PetsMaxGradeBreakView)
+   function StateNeed2PetsClickUnelected($view:PetsMaxGradeBreakView)
    {
       super();
-      view = param1;
+      view = $view;
    }
    
-   public function onClicked(param1:MouseEvent) : void
+   public function onClicked(me:MouseEvent) : void
    {
-      var _loc2_:PetSmallDetailItem = param1.target as PetSmallDetailItem;
+      var item:PetSmallDetailItem = me.target as PetSmallDetailItem;
       if(view.valueOfTotalSelected > 1)
       {
          return;
       }
-      _loc2_.selected = true;
+      item.selected = true;
       view.valueOfTotalSelected++;
    }
 }
@@ -888,24 +880,23 @@ class StateNeed1PetClickUnselected implements IEatState
    
    private var view:PetsMaxGradeBreakView;
    
-   function StateNeed1PetClickUnselected(param1:PetsMaxGradeBreakView)
+   function StateNeed1PetClickUnselected($view:PetsMaxGradeBreakView)
    {
       super();
-      view = param1;
+      view = $view;
    }
    
-   public function onClicked(param1:MouseEvent) : void
+   public function onClicked(me:MouseEvent) : void
    {
-      var _loc4_:int = 0;
-      var _loc2_:PetSmallDetailItem = param1.target as PetSmallDetailItem;
-      var _loc3_:int = view.valueOfPetsImgVec.length;
-      _loc4_ = 0;
-      while(_loc4_ < _loc3_)
+      var i:int = 0;
+      var item:PetSmallDetailItem = me.target as PetSmallDetailItem;
+      var len:int = view.valueOfPetsImgVec.length;
+      for(i = 0; i < len; )
       {
-         view.valueOfPetsImgVec[_loc4_].selected = false;
-         _loc4_++;
+         view.valueOfPetsImgVec[i].selected = false;
+         i++;
       }
-      _loc2_.selected = true;
+      item.selected = true;
    }
 }
 
@@ -919,16 +910,16 @@ class StateNeed1PetClickSelected implements IEatState
    
    private var view:PetsMaxGradeBreakView;
    
-   function StateNeed1PetClickSelected(param1:PetsMaxGradeBreakView)
+   function StateNeed1PetClickSelected($view:PetsMaxGradeBreakView)
    {
       super();
-      view = param1;
+      view = $view;
    }
    
-   public function onClicked(param1:MouseEvent) : void
+   public function onClicked(me:MouseEvent) : void
    {
-      var _loc2_:PetSmallDetailItem = param1.target as PetSmallDetailItem;
-      _loc2_.selected = false;
+      var item:PetSmallDetailItem = me.target as PetSmallDetailItem;
+      item.selected = false;
       view.valueOfTotalSelected--;
    }
 }

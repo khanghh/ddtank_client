@@ -23,25 +23,24 @@ package carnivalActivity.view.activityItem
       
       protected var _propCell:BagCell;
       
-      public function UsePropsItem(param1:int, param2:GiftBagInfo, param3:int)
+      public function UsePropsItem(type:int, info:GiftBagInfo, index:int)
       {
-         super(param1,param2,param3);
+         super(type,info,index);
       }
       
       override protected function initData() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _info.giftConditionArr.length)
+         var info:* = null;
+         var i:int = 0;
+         for(i = 0; i < _info.giftConditionArr.length; )
          {
-            _loc2_ = _info.giftConditionArr[_loc1_];
-            if(_loc2_.conditionIndex > 50 && _loc2_.conditionIndex < 100)
+            info = _info.giftConditionArr[i];
+            if(info.conditionIndex > 50 && info.conditionIndex < 100)
             {
-               _propId = _loc2_.conditionValue;
-               _useCount = _loc2_.remain1;
+               _propId = info.conditionValue;
+               _useCount = info.remain1;
             }
-            _loc1_++;
+            i++;
          }
       }
       
@@ -74,14 +73,14 @@ package carnivalActivity.view.activityItem
       
       protected function createProp() : BagCell
       {
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         _loc2_.TemplateID = _propId;
-         _loc2_ = ItemManager.fill(_loc2_);
-         _loc2_.BindType = 4;
-         var _loc1_:BagCell = new BagCell(0);
-         _loc1_.info = _loc2_;
-         _loc1_.setCountNotVisible();
-         return _loc1_;
+         var info:InventoryItemInfo = new InventoryItemInfo();
+         info.TemplateID = _propId;
+         info = ItemManager.fill(info);
+         info.BindType = 4;
+         var cell:BagCell = new BagCell(0);
+         cell.info = info;
+         cell.setCountNotVisible();
+         return cell;
       }
       
       override public function updateView() : void
@@ -90,20 +89,20 @@ package carnivalActivity.view.activityItem
          _statusArr = WonderfulActivityManager.Instance.activityInitData[_info.activityId].statusArr;
          _playerAlreadyGetCount = _giftCurInfo.times;
          _allGiftAlreadyGetCount = _giftCurInfo.allGiftGetTimes;
-         var _loc1_:int = 0;
+         var currentUseCount:int = 0;
          var _loc4_:int = 0;
          var _loc3_:* = _statusArr;
-         for each(var _loc2_ in _statusArr)
+         for each(var info in _statusArr)
          {
-            if(_loc2_.statusID == _propId)
+            if(info.statusID == _propId)
             {
-               _loc1_ = _loc2_.statusValue;
+               currentUseCount = info.statusValue;
             }
          }
-         _getBtn.enable = CarnivalActivityControl.instance.canGetAward() && _playerAlreadyGetCount == 0 && _loc1_ >= _useCount && (_sumCount == 0 || _sumCount - _allGiftAlreadyGetCount > 0);
+         _getBtn.enable = CarnivalActivityControl.instance.canGetAward() && _playerAlreadyGetCount == 0 && currentUseCount >= _useCount && (_sumCount == 0 || _sumCount - _allGiftAlreadyGetCount > 0);
          _alreadyGetBtn.visible = _playerAlreadyGetCount > 0;
          _getBtn.visible = !_alreadyGetBtn.visible;
-         _descTxt.text = (_loc1_ > _useCount?_useCount:int(_loc1_)) + "/" + _useCount;
+         _descTxt.text = (currentUseCount > _useCount?_useCount:int(currentUseCount)) + "/" + _useCount;
       }
       
       override public function dispose() : void

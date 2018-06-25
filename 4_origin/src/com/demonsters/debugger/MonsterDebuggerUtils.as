@@ -24,108 +24,108 @@ package com.demonsters.debugger
          super();
       }
       
-      public static function snapshot(param1:flash.display.DisplayObject, param2:Rectangle = null) : BitmapData
+      public static function snapshot(object:flash.display.DisplayObject, rectangle:Rectangle = null) : BitmapData
       {
-         var _loc7_:* = null;
-         var _loc11_:* = null;
-         var _loc10_:Number = NaN;
-         var _loc6_:* = null;
-         if(param1 == null)
+         var m:* = null;
+         var scaled:* = null;
+         var s:Number = NaN;
+         var b:* = null;
+         if(object == null)
          {
             return null;
          }
-         var _loc5_:Boolean = param1.visible;
-         var _loc13_:Number = param1.alpha;
-         var _loc12_:Number = param1.rotation;
-         var _loc3_:Number = param1.scaleX;
-         var _loc4_:Number = param1.scaleY;
+         var visible:Boolean = object.visible;
+         var alpha:Number = object.alpha;
+         var rotation:Number = object.rotation;
+         var scaleX:Number = object.scaleX;
+         var scaleY:Number = object.scaleY;
          try
          {
-            param1.visible = true;
-            param1.alpha = 1;
-            param1.rotation = 0;
-            param1.scaleX = 1;
-            param1.scaleY = 1;
+            object.visible = true;
+            object.alpha = 1;
+            object.rotation = 0;
+            object.scaleX = 1;
+            object.scaleY = 1;
          }
          catch(e1:Error)
          {
          }
-         var _loc8_:Rectangle = param1.getBounds(param1);
-         _loc8_.x = int(_loc8_.x + 0.5);
-         _loc8_.y = int(_loc8_.y + 0.5);
-         _loc8_.width = int(_loc8_.width + 0.5);
-         _loc8_.height = int(_loc8_.height + 0.5);
-         if(param1 is Stage)
+         var bounds:Rectangle = object.getBounds(object);
+         bounds.x = int(bounds.x + 0.5);
+         bounds.y = int(bounds.y + 0.5);
+         bounds.width = int(bounds.width + 0.5);
+         bounds.height = int(bounds.height + 0.5);
+         if(object is Stage)
          {
-            _loc8_.x = 0;
-            _loc8_.y = 0;
-            _loc8_.width = Stage(param1).stageWidth;
-            _loc8_.height = Stage(param1).stageHeight;
+            bounds.x = 0;
+            bounds.y = 0;
+            bounds.width = Stage(object).stageWidth;
+            bounds.height = Stage(object).stageHeight;
          }
-         var _loc9_:* = null;
-         if(_loc8_.width <= 0 || _loc8_.height <= 0)
+         var bitmapData:* = null;
+         if(bounds.width <= 0 || bounds.height <= 0)
          {
             return null;
          }
          try
          {
-            _loc9_ = new BitmapData(_loc8_.width,_loc8_.height,false,16777215);
-            _loc7_ = new Matrix();
-            _loc7_.tx = -_loc8_.x;
-            _loc7_.ty = -_loc8_.y;
-            _loc9_.draw(param1,_loc7_,null,null,null,false);
+            bitmapData = new BitmapData(bounds.width,bounds.height,false,16777215);
+            m = new Matrix();
+            m.tx = -bounds.x;
+            m.ty = -bounds.y;
+            bitmapData.draw(object,m,null,null,null,false);
          }
          catch(e2:Error)
          {
-            _loc9_ = null;
+            bitmapData = null;
          }
          try
          {
-            param1.visible = _loc5_;
-            param1.alpha = _loc13_;
-            param1.rotation = _loc12_;
-            param1.scaleX = _loc3_;
-            param1.scaleY = _loc4_;
+            object.visible = visible;
+            object.alpha = alpha;
+            object.rotation = rotation;
+            object.scaleX = scaleX;
+            object.scaleY = scaleY;
          }
          catch(e3:Error)
          {
          }
-         if(_loc9_ == null)
+         if(bitmapData == null)
          {
             return null;
          }
-         if(param2 != null)
+         if(rectangle != null)
          {
-            if(_loc8_.width <= param2.width && _loc8_.height <= param2.height)
+            if(bounds.width <= rectangle.width && bounds.height <= rectangle.height)
             {
-               return _loc9_;
+               return bitmapData;
             }
-            _loc11_ = _loc8_.clone();
-            _loc11_.width = param2.width;
-            _loc11_.height = param2.width * (_loc8_.height / _loc8_.width);
-            if(_loc11_.height > param2.height)
+            scaled = bounds.clone();
+            scaled.width = rectangle.width;
+            scaled.height = rectangle.width * (bounds.height / bounds.width);
+            if(scaled.height > rectangle.height)
             {
-               _loc11_ = _loc8_.clone();
-               _loc11_.width = param2.height * (_loc8_.width / _loc8_.height);
-               _loc11_.height = param2.height;
+               scaled = bounds.clone();
+               scaled.width = rectangle.height * (bounds.width / bounds.height);
+               scaled.height = rectangle.height;
             }
-            _loc10_ = _loc11_.width / _loc8_.width;
+            s = scaled.width / bounds.width;
             try
             {
-               _loc6_ = new BitmapData(_loc11_.width,_loc11_.height,false,0);
-               _loc7_ = new Matrix();
-               _loc7_.scale(_loc10_,_loc10_);
-               _loc6_.draw(_loc9_,_loc7_,null,null,null,true);
-               _loc9_.dispose();
-               _loc9_ = _loc6_;
+               b = new BitmapData(scaled.width,scaled.height,false,0);
+               m = new Matrix();
+               m.scale(s,s);
+               b.draw(bitmapData,m,null,null,null,true);
+               bitmapData.dispose();
+               bitmapData = b;
             }
             catch(e4:Error)
             {
-               _loc9_.dispose();
-               _loc9_ = null;
+               bitmapData.dispose();
+               bitmapData = null;
             }
          }
-         return _loc9_;
+         return bitmapData;
       }
       
       public static function getMemory() : uint
@@ -163,153 +163,152 @@ package com.demonsters.debugger
       
       public static function stackTrace() : XML
       {
-         var _loc12_:* = null;
-         var _loc10_:* = null;
-         var _loc4_:int = 0;
-         var _loc7_:* = null;
-         var _loc5_:int = 0;
-         var _loc6_:* = 0;
-         var _loc1_:* = null;
-         var _loc11_:* = null;
-         var _loc8_:* = null;
-         var _loc3_:* = null;
-         var _loc13_:* = null;
-         var _loc2_:XML = <root/>;
-         var _loc9_:XML = <node/>;
+         var stack:* = null;
+         var lines:* = null;
+         var i:int = 0;
+         var s:* = null;
+         var bracketIndex:int = 0;
+         var methodIndex:* = 0;
+         var classname:* = null;
+         var method:* = null;
+         var file:* = null;
+         var line:* = null;
+         var functionXML:* = null;
+         var rootXML:XML = <root/>;
+         var childXML:XML = <node/>;
          try
          {
             throw new Error();
          }
          catch(e:Error)
          {
-            _loc12_ = e.getStackTrace();
-            if(_loc12_ == null || _loc12_ == "")
+            stack = e.getStackTrace();
+            if(stack == null || stack == "")
             {
                var _loc15_:* = <root><error>Stack unavailable</error></root>;
                return _loc15_;
             }
-            _loc12_ = _loc12_.split("\t").join("");
-            _loc10_ = _loc12_.split("\n");
-            if(_loc10_.length <= 4)
+            stack = stack.split("\t").join("");
+            lines = stack.split("\n");
+            if(lines.length <= 4)
             {
                var _loc17_:* = <root><error>Stack to short</error></root>;
                return _loc17_;
             }
-            _loc10_.shift();
-            _loc10_.shift();
-            _loc10_.shift();
-            _loc10_.shift();
-            _loc4_ = 0;
-            while(_loc4_ < _loc10_.length)
+            lines.shift();
+            lines.shift();
+            lines.shift();
+            lines.shift();
+            i = 0;
+            while(i < lines.length)
             {
-               _loc7_ = _loc10_[_loc4_];
-               _loc7_ = _loc7_.substring(3,_loc7_.length);
-               _loc5_ = _loc7_.indexOf("[");
-               _loc6_ = int(_loc7_.indexOf("/"));
-               if(_loc5_ == -1)
+               s = lines[i];
+               s = s.substring(3,s.length);
+               bracketIndex = s.indexOf("[");
+               methodIndex = int(s.indexOf("/"));
+               if(bracketIndex == -1)
                {
-                  _loc5_ = _loc7_.length;
+                  bracketIndex = s.length;
                }
-               if(_loc6_ == -1)
+               if(methodIndex == -1)
                {
-                  _loc6_ = _loc5_;
+                  methodIndex = bracketIndex;
                }
-               _loc1_ = MonsterDebuggerUtils.parseType(_loc7_.substring(0,_loc6_));
-               _loc11_ = "";
-               _loc8_ = "";
-               _loc3_ = "";
-               if(_loc6_ != _loc7_.length && _loc6_ != _loc5_)
+               classname = MonsterDebuggerUtils.parseType(s.substring(0,methodIndex));
+               method = "";
+               file = "";
+               line = "";
+               if(methodIndex != s.length && methodIndex != bracketIndex)
                {
-                  _loc11_ = _loc7_.substring(_loc6_ + 1,_loc5_);
+                  method = s.substring(methodIndex + 1,bracketIndex);
                }
-               if(_loc5_ != _loc7_.length)
+               if(bracketIndex != s.length)
                {
-                  _loc8_ = _loc7_.substring(_loc5_ + 1,_loc7_.lastIndexOf(":"));
-                  _loc3_ = _loc7_.substring(_loc7_.lastIndexOf(":") + 1,_loc7_.length - 1);
+                  file = s.substring(bracketIndex + 1,s.lastIndexOf(":"));
+                  line = s.substring(s.lastIndexOf(":") + 1,s.length - 1);
                }
-               _loc13_ = <node/>;
-               _loc13_.@classname = _loc1_;
-               _loc13_.@method = _loc11_;
-               _loc13_.@file = _loc8_;
-               _loc13_.@line = _loc3_;
-               _loc9_.appendChild(_loc13_);
-               _loc4_++;
+               functionXML = <node/>;
+               functionXML.@classname = classname;
+               functionXML.@method = method;
+               functionXML.@file = file;
+               functionXML.@line = line;
+               childXML.appendChild(functionXML);
+               i++;
             }
          }
-         _loc2_.appendChild(_loc9_.children());
-         return _loc2_;
+         rootXML.appendChild(childXML.children());
+         return rootXML;
       }
       
-      public static function getReferenceID(param1:*) : String
+      public static function getReferenceID(target:*) : String
       {
-         if(param1 in _references)
+         if(target in _references)
          {
-            return _references[param1];
+            return _references[target];
          }
-         var _loc2_:String = "#" + String(_reference);
-         _references[param1] = _loc2_;
+         var reference:String = "#" + String(_reference);
+         _references[target] = reference;
          _reference = Number(_reference) + 1;
-         return _loc2_;
+         return reference;
       }
       
-      public static function getReference(param1:String) : *
+      public static function getReference(id:String) : *
       {
-         var _loc2_:* = null;
-         if(param1.charAt(0) != "#")
+         var value:* = null;
+         if(id.charAt(0) != "#")
          {
             return null;
          }
          var _loc5_:int = 0;
          var _loc4_:* = _references;
-         for(var _loc3_ in _references)
+         for(var key in _references)
          {
-            _loc2_ = _references[_loc3_];
-            if(_loc2_ == param1)
+            value = _references[key];
+            if(value == id)
             {
-               return _loc3_;
+               return key;
             }
          }
          return null;
       }
       
-      public static function getObject(param1:*, param2:String = "", param3:int = 0) : *
+      public static function getObject(base:*, target:String = "", parent:int = 0) : *
       {
-         var _loc7_:int = 0;
-         var _loc4_:Number = NaN;
-         if(param2 == null || param2 == "")
+         var i:int = 0;
+         var index:Number = NaN;
+         if(target == null || target == "")
          {
-            return param1;
+            return base;
          }
-         if(param2.charAt(0) == "#")
+         if(target.charAt(0) == "#")
          {
-            return getReference(param2);
+            return getReference(target);
          }
-         var _loc6_:* = param1;
-         var _loc5_:Array = param2.split(".");
-         _loc7_ = 0;
-         while(_loc7_ < _loc5_.length - param3)
+         var object:* = base;
+         var splitted:Array = target.split(".");
+         for(i = 0; i < splitted.length - parent; )
          {
-            if(_loc5_[_loc7_] != "")
+            if(splitted[i] != "")
             {
                try
                {
-                  if(_loc5_[_loc7_] == "children()")
+                  if(splitted[i] == "children()")
                   {
-                     _loc6_ = _loc6_.children();
+                     object = object.children();
                   }
-                  else if(_loc6_ is flash.display.DisplayObjectContainer && _loc5_[_loc7_].indexOf("getChildAt(") == 0)
+                  else if(object is flash.display.DisplayObjectContainer && splitted[i].indexOf("getChildAt(") == 0)
                   {
-                     _loc4_ = _loc5_[_loc7_].substring(11,_loc5_[_loc7_].indexOf(")",11));
-                     _loc6_ = flash.display.DisplayObjectContainer(_loc6_).getChildAt(_loc4_);
+                     index = splitted[i].substring(11,splitted[i].indexOf(")",11));
+                     object = flash.display.DisplayObjectContainer(object).getChildAt(index);
                   }
-                  else if(_loc6_ is starling.display.DisplayObjectContainer && _loc5_[_loc7_].indexOf("getChildAt(") == 0)
+                  else if(object is starling.display.DisplayObjectContainer && splitted[i].indexOf("getChildAt(") == 0)
                   {
-                     _loc4_ = _loc5_[_loc7_].substring(11,_loc5_[_loc7_].indexOf(")",11));
-                     _loc6_ = starling.display.DisplayObjectContainer(_loc6_).getChildAt(_loc4_);
+                     index = splitted[i].substring(11,splitted[i].indexOf(")",11));
+                     object = starling.display.DisplayObjectContainer(object).getChildAt(index);
                   }
                   else
                   {
-                     _loc6_ = _loc6_[_loc5_[_loc7_]];
+                     object = object[splitted[i]];
                   }
                }
                catch(e:Error)
@@ -317,719 +316,707 @@ package com.demonsters.debugger
                   break;
                }
             }
-            _loc7_++;
+            i++;
          }
-         return _loc6_;
+         return object;
       }
       
-      public static function parse(param1:*, param2:String = "", param3:int = 1, param4:int = 5, param5:Boolean = true) : XML
+      public static function parse(object:*, target:String = "", currentDepth:int = 1, maxDepth:int = 5, includeDisplayObjects:Boolean = true) : XML
       {
-         var _loc11_:* = null;
-         var _loc7_:XML = <root/>;
-         var _loc13_:XML = <node/>;
-         var _loc12_:XML = new XML();
-         var _loc10_:String = "";
-         var _loc14_:String = "";
-         var _loc8_:Boolean = false;
-         var _loc9_:String = null;
-         var _loc6_:String = "iconRoot";
-         if(param4 != -1 && param3 > param4)
+         var topXML:* = null;
+         var rootXML:XML = <root/>;
+         var childXML:XML = <node/>;
+         var description:XML = new XML();
+         var type:String = "";
+         var base:String = "";
+         var isDynamic:Boolean = false;
+         var label:String = null;
+         var icon:String = "iconRoot";
+         if(maxDepth != -1 && currentDepth > maxDepth)
          {
-            return _loc7_;
+            return rootXML;
          }
-         if(param1 == null)
+         if(object == null)
          {
-            _loc10_ = "null";
-            _loc9_ = "null";
-            _loc6_ = "iconWarning";
+            type = "null";
+            label = "null";
+            icon = "iconWarning";
          }
          else
          {
-            _loc12_ = MonsterDebuggerDescribeType.get(param1);
-            _loc10_ = parseType(_loc12_.@name);
-            _loc14_ = parseType(_loc12_.@base);
-            _loc8_ = _loc12_.@isDynamic;
-            if(param1 is Class)
+            description = MonsterDebuggerDescribeType.get(object);
+            type = parseType(description.@name);
+            base = parseType(description.@base);
+            isDynamic = description.@isDynamic;
+            if(object is Class)
             {
-               _loc9_ = "Class = " + _loc10_;
-               _loc10_ = "Class";
-               _loc13_.appendChild(parseClass(param1,param2,_loc12_,param3,param4,param5).children());
+               label = "Class = " + type;
+               type = "Class";
+               childXML.appendChild(parseClass(object,target,description,currentDepth,maxDepth,includeDisplayObjects).children());
             }
-            else if(_loc10_ == "XML")
+            else if(type == "XML")
             {
-               _loc13_.appendChild(parseXML(param1,param2 + ".children()",param3,param4).children());
+               childXML.appendChild(parseXML(object,target + ".children()",currentDepth,maxDepth).children());
             }
-            else if(_loc10_ == "XMLList")
+            else if(type == "XMLList")
             {
-               _loc9_ = _loc10_ + " [" + String(param1.length()) + "]";
-               _loc13_.appendChild(parseXMLList(param1,param2,param3,param4).children());
+               label = type + " [" + String(object.length()) + "]";
+               childXML.appendChild(parseXMLList(object,target,currentDepth,maxDepth).children());
             }
-            else if(_loc10_ == "Array" || _loc10_.indexOf("Vector.") == 0)
+            else if(type == "Array" || type.indexOf("Vector.") == 0)
             {
-               _loc9_ = _loc10_ + " [" + String(param1["length"]) + "]";
-               _loc13_.appendChild(parseArray(param1,param2,param3,param4).children());
+               label = type + " [" + String(object["length"]) + "]";
+               childXML.appendChild(parseArray(object,target,currentDepth,maxDepth).children());
             }
-            else if(_loc10_ == "String" || _loc10_ == "Boolean" || _loc10_ == "Number" || _loc10_ == "int" || _loc10_ == "uint")
+            else if(type == "String" || type == "Boolean" || type == "Number" || type == "int" || type == "uint")
             {
-               _loc13_.appendChild(parseBasics(param1,param2,_loc10_).children());
+               childXML.appendChild(parseBasics(object,target,type).children());
             }
-            else if(_loc10_ == "Object")
+            else if(type == "Object")
             {
-               _loc13_.appendChild(parseObject(param1,param2,param3,param4,param5).children());
+               childXML.appendChild(parseObject(object,target,currentDepth,maxDepth,includeDisplayObjects).children());
             }
             else
             {
-               _loc13_.appendChild(parseClass(param1,param2,_loc12_,param3,param4,param5).children());
+               childXML.appendChild(parseClass(object,target,description,currentDepth,maxDepth,includeDisplayObjects).children());
             }
          }
-         if(param3 == 1)
+         if(currentDepth == 1)
          {
-            _loc11_ = <node/>;
-            _loc11_.@icon = _loc6_;
-            _loc11_.@label = _loc10_;
-            _loc11_.@type = _loc10_;
-            _loc11_.@target = param2;
-            if(_loc9_ != null)
+            topXML = <node/>;
+            topXML.@icon = icon;
+            topXML.@label = type;
+            topXML.@type = type;
+            topXML.@target = target;
+            if(label != null)
             {
-               _loc11_.@label = _loc9_;
+               topXML.@label = label;
             }
-            _loc11_.appendChild(_loc13_.children());
-            _loc7_.appendChild(_loc11_);
+            topXML.appendChild(childXML.children());
+            rootXML.appendChild(topXML);
          }
          else
          {
-            _loc7_.appendChild(_loc13_.children());
+            rootXML.appendChild(childXML.children());
          }
-         return _loc7_;
+         return rootXML;
       }
       
-      private static function parseBasics(param1:*, param2:String, param3:String) : XML
+      private static function parseBasics(object:*, target:String, type:String) : XML
       {
-         var _loc5_:XML = <root/>;
-         var _loc4_:XML = <node/>;
-         _loc4_.@icon = "iconVariable";
-         _loc4_.@access = "variable";
-         _loc4_.@permission = "readwrite";
-         _loc4_.@label = param3 + " = " + printValue(param1,param3,true);
-         _loc4_.@name = "";
-         _loc4_.@type = param3;
-         _loc4_.@value = printValue(param1,param3);
-         _loc4_.@target = param2;
-         _loc5_.appendChild(_loc4_);
-         return _loc5_;
+         var rootXML:XML = <root/>;
+         var nodeXML:XML = <node/>;
+         nodeXML.@icon = "iconVariable";
+         nodeXML.@access = "variable";
+         nodeXML.@permission = "readwrite";
+         nodeXML.@label = type + " = " + printValue(object,type,true);
+         nodeXML.@name = "";
+         nodeXML.@type = type;
+         nodeXML.@value = printValue(object,type);
+         nodeXML.@target = target;
+         rootXML.appendChild(nodeXML);
+         return rootXML;
       }
       
-      private static function parseArray(param1:*, param2:String, param3:int = 1, param4:int = 5, param5:Boolean = true) : XML
+      private static function parseArray(object:*, target:String, currentDepth:int = 1, maxDepth:int = 5, includeDisplayObjects:Boolean = true) : XML
       {
-         var _loc11_:* = null;
-         var _loc9_:XML = <root/>;
-         var _loc12_:String = "";
-         var _loc7_:String = "";
-         var _loc10_:int = 0;
-         var _loc8_:Array = [];
-         var _loc6_:Boolean = true;
+         var childXML:* = null;
+         var rootXML:XML = <root/>;
+         var childType:String = "";
+         var childTarget:String = "";
+         var i:int = 0;
+         var keys:Array = [];
+         var isNumeric:Boolean = true;
          var _loc15_:int = 0;
-         var _loc14_:* = param1;
-         for(var _loc13_ in param1)
+         var _loc14_:* = object;
+         for(var key in object)
          {
-            if(!(_loc13_ is int))
+            if(!(key is int))
             {
-               _loc6_ = false;
+               isNumeric = false;
             }
-            _loc8_.push(_loc13_);
+            keys.push(key);
          }
-         if(_loc6_)
+         if(isNumeric)
          {
-            _loc8_.sort(16);
+            keys.sort(16);
          }
          else
          {
-            _loc8_.sort(1);
+            keys.sort(1);
          }
-         _loc10_ = 0;
-         while(_loc10_ < _loc8_.length)
+         for(i = 0; i < keys.length; )
          {
-            _loc12_ = parseType(MonsterDebuggerDescribeType.get(param1[_loc8_[_loc10_]]).@name);
-            _loc7_ = param2 + "." + String(_loc8_[_loc10_]);
-            if(_loc12_ == "String" || _loc12_ == "Boolean" || _loc12_ == "Number" || _loc12_ == "int" || _loc12_ == "uint" || _loc12_ == "Function")
+            childType = parseType(MonsterDebuggerDescribeType.get(object[keys[i]]).@name);
+            childTarget = target + "." + String(keys[i]);
+            if(childType == "String" || childType == "Boolean" || childType == "Number" || childType == "int" || childType == "uint" || childType == "Function")
             {
-               _loc11_ = <node/>;
-               _loc11_.@icon = "iconVariable";
-               _loc11_.@access = "variable";
-               _loc11_.@permission = "readwrite";
-               _loc11_.@label = "[" + _loc8_[_loc10_] + "] (" + _loc12_ + ") = " + printValue(param1[_loc8_[_loc10_]],_loc12_,true);
-               _loc11_.@name = "[" + _loc8_[_loc10_] + "]";
-               _loc11_.@type = _loc12_;
-               _loc11_.@value = printValue(param1[_loc8_[_loc10_]],_loc12_);
-               _loc11_.@target = _loc7_;
-               _loc9_.appendChild(_loc11_);
+               childXML = <node/>;
+               childXML.@icon = "iconVariable";
+               childXML.@access = "variable";
+               childXML.@permission = "readwrite";
+               childXML.@label = "[" + keys[i] + "] (" + childType + ") = " + printValue(object[keys[i]],childType,true);
+               childXML.@name = "[" + keys[i] + "]";
+               childXML.@type = childType;
+               childXML.@value = printValue(object[keys[i]],childType);
+               childXML.@target = childTarget;
+               rootXML.appendChild(childXML);
             }
             else
             {
-               _loc11_ = <node/>;
-               _loc11_.@icon = "iconVariable";
-               _loc11_.@access = "variable";
-               _loc11_.@permission = "readwrite";
-               _loc11_.@label = "[" + _loc8_[_loc10_] + "] (" + _loc12_ + ")";
-               _loc11_.@name = "[" + _loc8_[_loc10_] + "]";
-               _loc11_.@type = _loc12_;
-               _loc11_.@value = "";
-               _loc11_.@target = _loc7_;
-               if(param1[_loc8_[_loc10_]] == null)
+               childXML = <node/>;
+               childXML.@icon = "iconVariable";
+               childXML.@access = "variable";
+               childXML.@permission = "readwrite";
+               childXML.@label = "[" + keys[i] + "] (" + childType + ")";
+               childXML.@name = "[" + keys[i] + "]";
+               childXML.@type = childType;
+               childXML.@value = "";
+               childXML.@target = childTarget;
+               if(object[keys[i]] == null)
                {
-                  _loc11_.@icon = "iconWarning";
-                  _loc11_.@label = _loc11_.@label + " = null";
+                  childXML.@icon = "iconWarning";
+                  childXML.@label = childXML.@label + " = null";
                }
-               _loc11_.appendChild(parse(param1[_loc8_[_loc10_]],_loc7_,param3 + 1,param4,param5).children());
-               _loc9_.appendChild(_loc11_);
+               childXML.appendChild(parse(object[keys[i]],childTarget,currentDepth + 1,maxDepth,includeDisplayObjects).children());
+               rootXML.appendChild(childXML);
             }
-            _loc10_++;
+            i++;
          }
-         return _loc9_;
+         return rootXML;
       }
       
-      public static function parseXML(param1:*, param2:String = "", param3:int = 1, param4:int = -1) : XML
+      public static function parseXML(xml:*, target:String = "", currentDepth:int = 1, maxDepth:int = -1) : XML
       {
-         var _loc7_:* = null;
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc8_:XML = <root/>;
-         var _loc9_:int = 0;
-         if(param4 != -1 && param3 > param4)
+         var nodeXML:* = null;
+         var childXML:* = null;
+         var childTarget:* = null;
+         var rootXML:XML = <root/>;
+         var i:int = 0;
+         if(maxDepth != -1 && currentDepth > maxDepth)
          {
-            return _loc8_;
+            return rootXML;
          }
-         if(param2.indexOf("@") != -1)
+         if(target.indexOf("@") != -1)
          {
-            _loc7_ = <node/>;
-            _loc7_.@icon = "iconXMLAttribute";
-            _loc7_.@type = "XMLAttribute";
-            _loc7_.@access = "variable";
-            _loc7_.@permission = "readwrite";
-            _loc7_.@label = param1;
-            _loc7_.@name = "";
-            _loc7_.@value = param1;
-            _loc7_.@target = param2;
-            _loc8_.appendChild(_loc7_);
+            nodeXML = <node/>;
+            nodeXML.@icon = "iconXMLAttribute";
+            nodeXML.@type = "XMLAttribute";
+            nodeXML.@access = "variable";
+            nodeXML.@permission = "readwrite";
+            nodeXML.@label = xml;
+            nodeXML.@name = "";
+            nodeXML.@value = xml;
+            nodeXML.@target = target;
+            rootXML.appendChild(nodeXML);
          }
-         else if("name" in param1 && param1.name() == null)
+         else if("name" in xml && xml.name() == null)
          {
-            _loc7_ = <node/>;
-            _loc7_.@icon = "iconXMLValue";
-            _loc7_.@type = "XMLValue";
-            _loc7_.@access = "variable";
-            _loc7_.@permission = "readwrite";
-            _loc7_.@label = "(XMLValue) = " + printValue(param1,"XMLValue",true);
-            _loc7_.@name = "";
-            _loc7_.@value = printValue(param1,"XMLValue");
-            _loc7_.@target = param2;
-            _loc8_.appendChild(_loc7_);
+            nodeXML = <node/>;
+            nodeXML.@icon = "iconXMLValue";
+            nodeXML.@type = "XMLValue";
+            nodeXML.@access = "variable";
+            nodeXML.@permission = "readwrite";
+            nodeXML.@label = "(XMLValue) = " + printValue(xml,"XMLValue",true);
+            nodeXML.@name = "";
+            nodeXML.@value = printValue(xml,"XMLValue");
+            nodeXML.@target = target;
+            rootXML.appendChild(nodeXML);
          }
-         else if("hasSimpleContent" in param1 && param1.hasSimpleContent())
+         else if("hasSimpleContent" in xml && xml.hasSimpleContent())
          {
-            _loc7_ = <node/>;
-            _loc7_.@icon = "iconXMLNode";
-            _loc7_.@type = "XMLNode";
-            _loc7_.@access = "variable";
-            _loc7_.@permission = "readwrite";
-            _loc7_.@label = param1.name() + " (" + "XMLNode" + ")";
-            _loc7_.@name = param1.name();
-            _loc7_.@value = "";
-            _loc7_.@target = param2;
-            if(param1 != "")
+            nodeXML = <node/>;
+            nodeXML.@icon = "iconXMLNode";
+            nodeXML.@type = "XMLNode";
+            nodeXML.@access = "variable";
+            nodeXML.@permission = "readwrite";
+            nodeXML.@label = xml.name() + " (" + "XMLNode" + ")";
+            nodeXML.@name = xml.name();
+            nodeXML.@value = "";
+            nodeXML.@target = target;
+            if(xml != "")
             {
-               _loc6_ = <node/>;
-               _loc6_.@icon = "iconXMLValue";
-               _loc6_.@type = "XMLValue";
-               _loc6_.@access = "variable";
-               _loc6_.@permission = "readwrite";
-               _loc6_.@label = "(XMLValue) = " + printValue(param1,"XMLValue");
-               _loc6_.@name = "";
-               _loc6_.@value = printValue(param1,"XMLValue");
-               _loc6_.@target = param2;
-               _loc7_.appendChild(_loc6_);
+               childXML = <node/>;
+               childXML.@icon = "iconXMLValue";
+               childXML.@type = "XMLValue";
+               childXML.@access = "variable";
+               childXML.@permission = "readwrite";
+               childXML.@label = "(XMLValue) = " + printValue(xml,"XMLValue");
+               childXML.@name = "";
+               childXML.@value = printValue(xml,"XMLValue");
+               childXML.@target = target;
+               nodeXML.appendChild(childXML);
             }
-            _loc9_ = 0;
-            while(_loc9_ < param1.attributes().length())
+            i = 0;
+            while(i < xml.attributes().length())
             {
-               _loc6_ = <node/>;
-               _loc6_.@icon = "iconXMLAttribute";
-               _loc6_.@type = "XMLAttribute";
-               _loc6_.@access = "variable";
-               _loc6_.@permission = "readwrite";
-               _loc6_.@label = "@" + param1.attributes()[_loc9_].name() + " (" + "XMLAttribute" + ") = " + param1.attributes()[_loc9_];
-               _loc6_.@name = "";
-               _loc6_.@value = param1.attributes()[_loc9_];
-               _loc6_.@target = param2 + "." + "@" + param1.attributes()[_loc9_].name();
-               _loc7_.appendChild(_loc6_);
-               _loc9_++;
+               childXML = <node/>;
+               childXML.@icon = "iconXMLAttribute";
+               childXML.@type = "XMLAttribute";
+               childXML.@access = "variable";
+               childXML.@permission = "readwrite";
+               childXML.@label = "@" + xml.attributes()[i].name() + " (" + "XMLAttribute" + ") = " + xml.attributes()[i];
+               childXML.@name = "";
+               childXML.@value = xml.attributes()[i];
+               childXML.@target = target + "." + "@" + xml.attributes()[i].name();
+               nodeXML.appendChild(childXML);
+               i++;
             }
-            _loc8_.appendChild(_loc7_);
+            rootXML.appendChild(nodeXML);
          }
          else
          {
-            _loc7_ = <node/>;
-            _loc7_.@icon = "iconXMLNode";
-            _loc7_.@type = "XMLNode";
-            _loc7_.@access = "variable";
-            _loc7_.@permission = "readwrite";
-            _loc7_.@label = param1.name() + " (" + "XMLNode" + ")";
-            _loc7_.@name = param1.name();
-            _loc7_.@value = "";
-            _loc7_.@target = param2;
-            _loc9_ = 0;
-            while(_loc9_ < param1.attributes().length())
+            nodeXML = <node/>;
+            nodeXML.@icon = "iconXMLNode";
+            nodeXML.@type = "XMLNode";
+            nodeXML.@access = "variable";
+            nodeXML.@permission = "readwrite";
+            nodeXML.@label = xml.name() + " (" + "XMLNode" + ")";
+            nodeXML.@name = xml.name();
+            nodeXML.@value = "";
+            nodeXML.@target = target;
+            for(i = 0; i < xml.attributes().length(); )
             {
-               _loc6_ = <node/>;
-               _loc6_.@icon = "iconXMLAttribute";
-               _loc6_.@type = "XMLAttribute";
-               _loc6_.@access = "variable";
-               _loc6_.@permission = "readwrite";
-               _loc6_.@label = "@" + param1.attributes()[_loc9_].name() + " (" + "XMLAttribute" + ") = " + param1.attributes()[_loc9_];
-               _loc6_.@name = "";
-               _loc6_.@value = param1.attributes()[_loc9_];
-               _loc6_.@target = param2 + "." + "@" + param1.attributes()[_loc9_].name();
-               _loc7_.appendChild(_loc6_);
-               _loc9_++;
+               childXML = <node/>;
+               childXML.@icon = "iconXMLAttribute";
+               childXML.@type = "XMLAttribute";
+               childXML.@access = "variable";
+               childXML.@permission = "readwrite";
+               childXML.@label = "@" + xml.attributes()[i].name() + " (" + "XMLAttribute" + ") = " + xml.attributes()[i];
+               childXML.@name = "";
+               childXML.@value = xml.attributes()[i];
+               childXML.@target = target + "." + "@" + xml.attributes()[i].name();
+               nodeXML.appendChild(childXML);
+               i++;
             }
-            _loc9_ = 0;
-            while(_loc9_ < param1.children().length())
+            for(i = 0; i < xml.children().length(); )
             {
-               _loc5_ = param2 + "." + "children()" + "." + _loc9_;
-               _loc7_.appendChild(parseXML(param1.children()[_loc9_],_loc5_,param3 + 1,param4).children());
-               _loc9_++;
+               childTarget = target + "." + "children()" + "." + i;
+               nodeXML.appendChild(parseXML(xml.children()[i],childTarget,currentDepth + 1,maxDepth).children());
+               i++;
             }
-            _loc8_.appendChild(_loc7_);
+            rootXML.appendChild(nodeXML);
          }
-         return _loc8_;
+         return rootXML;
       }
       
-      public static function parseXMLList(param1:*, param2:String = "", param3:int = 1, param4:int = -1) : XML
+      public static function parseXMLList(xml:*, target:String = "", currentDepth:int = 1, maxDepth:int = -1) : XML
       {
-         var _loc6_:int = 0;
-         var _loc5_:XML = <root/>;
-         if(param4 != -1 && param3 > param4)
+         var i:int = 0;
+         var rootXML:XML = <root/>;
+         if(maxDepth != -1 && currentDepth > maxDepth)
          {
-            return _loc5_;
+            return rootXML;
          }
-         _loc6_ = 0;
-         while(_loc6_ < param1.length())
+         for(i = 0; i < xml.length(); )
          {
-            _loc5_.appendChild(parseXML(param1[_loc6_],param2 + "." + String(_loc6_) + ".children()",param3,param4).children());
-            _loc6_++;
+            rootXML.appendChild(parseXML(xml[i],target + "." + String(i) + ".children()",currentDepth,maxDepth).children());
+            i++;
          }
-         return _loc5_;
+         return rootXML;
       }
       
-      private static function parseObject(param1:*, param2:String, param3:int = 1, param4:int = 5, param5:Boolean = true) : XML
+      private static function parseObject(object:*, target:String, currentDepth:int = 1, maxDepth:int = 5, includeDisplayObjects:Boolean = true) : XML
       {
-         var _loc13_:* = null;
-         var _loc9_:XML = <root/>;
-         var _loc10_:XML = <node/>;
-         var _loc14_:String = "";
-         var _loc7_:String = "";
-         var _loc12_:int = 0;
-         var _loc11_:Array = [];
-         var _loc6_:Boolean = true;
+         var childXML:* = null;
+         var rootXML:XML = <root/>;
+         var nodeXML:XML = <node/>;
+         var childType:String = "";
+         var childTarget:String = "";
+         var i:int = 0;
+         var properties:Array = [];
+         var isNumeric:Boolean = true;
          var _loc16_:int = 0;
-         var _loc15_:* = param1;
-         for(var _loc8_ in param1)
+         var _loc15_:* = object;
+         for(var prop in object)
          {
-            if(!(_loc8_ is int))
+            if(!(prop is int))
             {
-               _loc6_ = false;
+               isNumeric = false;
             }
-            _loc11_.push(_loc8_);
+            properties.push(prop);
          }
-         if(_loc6_)
+         if(isNumeric)
          {
-            _loc11_.sort(16);
+            properties.sort(16);
          }
          else
          {
-            _loc11_.sort(1);
+            properties.sort(1);
          }
-         _loc12_ = 0;
-         while(_loc12_ < _loc11_.length)
+         for(i = 0; i < properties.length; )
          {
-            _loc14_ = parseType(MonsterDebuggerDescribeType.get(param1[_loc11_[_loc12_]]).@name);
-            _loc7_ = param2 + "." + _loc11_[_loc12_];
-            if(_loc14_ == "String" || _loc14_ == "Boolean" || _loc14_ == "Number" || _loc14_ == "int" || _loc14_ == "uint" || _loc14_ == "Function")
+            childType = parseType(MonsterDebuggerDescribeType.get(object[properties[i]]).@name);
+            childTarget = target + "." + properties[i];
+            if(childType == "String" || childType == "Boolean" || childType == "Number" || childType == "int" || childType == "uint" || childType == "Function")
             {
-               _loc13_ = <node/>;
-               _loc13_.@icon = "iconVariable";
-               _loc13_.@access = "variable";
-               _loc13_.@permission = "readwrite";
-               _loc13_.@label = _loc11_[_loc12_] + " (" + _loc14_ + ") = " + printValue(param1[_loc11_[_loc12_]],_loc14_,true);
-               _loc13_.@name = _loc11_[_loc12_];
-               _loc13_.@type = _loc14_;
-               _loc13_.@value = printValue(param1[_loc11_[_loc12_]],_loc14_);
-               _loc13_.@target = _loc7_;
-               _loc10_.appendChild(_loc13_);
+               childXML = <node/>;
+               childXML.@icon = "iconVariable";
+               childXML.@access = "variable";
+               childXML.@permission = "readwrite";
+               childXML.@label = properties[i] + " (" + childType + ") = " + printValue(object[properties[i]],childType,true);
+               childXML.@name = properties[i];
+               childXML.@type = childType;
+               childXML.@value = printValue(object[properties[i]],childType);
+               childXML.@target = childTarget;
+               nodeXML.appendChild(childXML);
             }
             else
             {
-               _loc13_ = <node/>;
-               _loc13_.@icon = "iconVariable";
-               _loc13_.@access = "variable";
-               _loc13_.@permission = "readwrite";
-               _loc13_.@label = _loc11_[_loc12_] + " (" + _loc14_ + ")";
-               _loc13_.@name = _loc11_[_loc12_];
-               _loc13_.@type = _loc14_;
-               _loc13_.@value = "";
-               _loc13_.@target = _loc7_;
-               if(param1[_loc11_[_loc12_]] == null)
+               childXML = <node/>;
+               childXML.@icon = "iconVariable";
+               childXML.@access = "variable";
+               childXML.@permission = "readwrite";
+               childXML.@label = properties[i] + " (" + childType + ")";
+               childXML.@name = properties[i];
+               childXML.@type = childType;
+               childXML.@value = "";
+               childXML.@target = childTarget;
+               if(object[properties[i]] == null)
                {
-                  _loc13_.@icon = "iconWarning";
-                  _loc13_.@label = _loc13_.@label + " = null";
+                  childXML.@icon = "iconWarning";
+                  childXML.@label = childXML.@label + " = null";
                }
-               _loc13_.appendChild(parse(param1[_loc11_[_loc12_]],_loc7_,param3 + 1,param4,param5).children());
-               _loc10_.appendChild(_loc13_);
+               childXML.appendChild(parse(object[properties[i]],childTarget,currentDepth + 1,maxDepth,includeDisplayObjects).children());
+               nodeXML.appendChild(childXML);
             }
-            _loc12_++;
+            i++;
          }
-         _loc9_.appendChild(_loc10_.children());
-         return _loc9_;
+         rootXML.appendChild(nodeXML.children());
+         return rootXML;
       }
       
-      private static function parseClass(param1:*, param2:String, param3:XML, param4:int = 1, param5:int = 5, param6:Boolean = true) : XML
+      private static function parseClass(object:*, target:String, description:XML, currentDepth:int = 1, maxDepth:int = 5, includeDisplayObjects:Boolean = true) : XML
       {
-         var _loc17_:* = null;
-         var _loc18_:int = 0;
-         var _loc34_:* = undefined;
-         var _loc19_:* = null;
-         var _loc30_:* = null;
-         var _loc10_:* = null;
-         var _loc35_:* = null;
-         var _loc23_:* = null;
-         var _loc20_:* = null;
-         var _loc22_:* = null;
-         var _loc31_:int = 0;
-         var _loc11_:* = null;
-         var _loc7_:* = null;
-         var _loc12_:* = null;
-         var _loc29_:* = null;
-         var _loc15_:* = null;
-         var _loc28_:XML = <root/>;
-         var _loc27_:XML = <node/>;
-         var _loc32_:XMLList = param3..variable;
-         var _loc9_:XMLList = param3..accessor;
-         var _loc26_:XMLList = param3..constant;
-         var _loc25_:Boolean = param3.@isDynamic;
-         var _loc13_:int = _loc32_.length();
-         var _loc8_:int = _loc9_.length();
-         var _loc16_:int = _loc26_.length();
-         var _loc14_:int = 0;
-         var _loc21_:Object = {};
-         var _loc33_:Array = [];
-         if(_loc25_)
+         var key:* = null;
+         var itemsArrayLength:int = 0;
+         var item:* = undefined;
+         var itemXML:* = null;
+         var itemAccess:* = null;
+         var itemPermission:* = null;
+         var itemIcon:* = null;
+         var itemType:* = null;
+         var itemName:* = null;
+         var itemTarget:* = null;
+         var i:int = 0;
+         var displayObject:* = null;
+         var displayObjects:* = null;
+         var child:* = null;
+         var starlingDisplayObject:* = null;
+         var starlingChild:* = null;
+         var rootXML:XML = <root/>;
+         var nodeXML:XML = <node/>;
+         var variables:XMLList = description..variable;
+         var accessors:XMLList = description..accessor;
+         var constants:XMLList = description..constant;
+         var isDynamic:Boolean = description.@isDynamic;
+         var variablesLength:int = variables.length();
+         var accessorsLength:int = accessors.length();
+         var constantsLength:int = constants.length();
+         var childLength:int = 0;
+         var keys:Object = {};
+         var itemsArray:Array = [];
+         if(isDynamic)
          {
             var _loc37_:int = 0;
-            var _loc36_:* = param1;
-            for(_loc17_ in param1)
+            var _loc36_:* = object;
+            for(key in object)
             {
-               if(!_loc21_.hasOwnProperty(_loc17_))
+               if(!keys.hasOwnProperty(key))
                {
-                  _loc21_[_loc17_] = _loc17_;
-                  _loc20_ = _loc17_;
-                  _loc23_ = parseType(getQualifiedClassName(param1[_loc17_]));
-                  _loc22_ = param2 + "." + _loc17_;
-                  _loc30_ = "variable";
-                  _loc10_ = "readwrite";
-                  _loc35_ = "iconVariable";
-                  _loc33_[_loc33_.length] = {
-                     "name":_loc20_,
-                     "type":_loc23_,
-                     "target":_loc22_,
-                     "access":_loc30_,
-                     "permission":_loc10_,
-                     "icon":_loc35_
+                  keys[key] = key;
+                  itemName = key;
+                  itemType = parseType(getQualifiedClassName(object[key]));
+                  itemTarget = target + "." + key;
+                  itemAccess = "variable";
+                  itemPermission = "readwrite";
+                  itemIcon = "iconVariable";
+                  itemsArray[itemsArray.length] = {
+                     "name":itemName,
+                     "type":itemType,
+                     "target":itemTarget,
+                     "access":itemAccess,
+                     "permission":itemPermission,
+                     "icon":itemIcon
                   };
                }
             }
          }
-         _loc31_ = 0;
-         while(_loc31_ < _loc13_)
+         for(i = 0; i < variablesLength; )
          {
-            _loc17_ = _loc32_[_loc31_].@name;
-            if(!_loc21_.hasOwnProperty(_loc17_))
+            key = variables[i].@name;
+            if(!keys.hasOwnProperty(key))
             {
-               _loc21_[_loc17_] = _loc17_;
-               _loc20_ = _loc17_;
-               _loc23_ = parseType(_loc32_[_loc31_].@type);
-               _loc22_ = param2 + "." + _loc17_;
-               _loc30_ = "variable";
-               _loc10_ = "readwrite";
-               _loc35_ = "iconVariable";
-               _loc33_[_loc33_.length] = {
-                  "name":_loc20_,
-                  "type":_loc23_,
-                  "target":_loc22_,
-                  "access":_loc30_,
-                  "permission":_loc10_,
-                  "icon":_loc35_
+               keys[key] = key;
+               itemName = key;
+               itemType = parseType(variables[i].@type);
+               itemTarget = target + "." + key;
+               itemAccess = "variable";
+               itemPermission = "readwrite";
+               itemIcon = "iconVariable";
+               itemsArray[itemsArray.length] = {
+                  "name":itemName,
+                  "type":itemType,
+                  "target":itemTarget,
+                  "access":itemAccess,
+                  "permission":itemPermission,
+                  "icon":itemIcon
                };
             }
-            _loc31_++;
+            i++;
          }
-         _loc31_ = 0;
-         while(_loc31_ < _loc8_)
+         for(i = 0; i < accessorsLength; )
          {
-            _loc17_ = _loc9_[_loc31_].@name;
-            if(!_loc21_.hasOwnProperty(_loc17_))
+            key = accessors[i].@name;
+            if(!keys.hasOwnProperty(key))
             {
-               _loc21_[_loc17_] = _loc17_;
-               _loc20_ = _loc17_;
-               _loc23_ = parseType(_loc9_[_loc31_].@type);
-               _loc22_ = param2 + "." + _loc17_;
-               _loc30_ = "accessor";
-               _loc10_ = "readwrite";
-               _loc35_ = "iconVariable";
-               if(_loc9_[_loc31_].@access == "readonly")
+               keys[key] = key;
+               itemName = key;
+               itemType = parseType(accessors[i].@type);
+               itemTarget = target + "." + key;
+               itemAccess = "accessor";
+               itemPermission = "readwrite";
+               itemIcon = "iconVariable";
+               if(accessors[i].@access == "readonly")
                {
-                  _loc10_ = "readonly";
-                  _loc35_ = "iconVariableReadonly";
+                  itemPermission = "readonly";
+                  itemIcon = "iconVariableReadonly";
                }
-               if(_loc9_[_loc31_].@access == "writeonly")
+               if(accessors[i].@access == "writeonly")
                {
-                  _loc10_ = "writeonly";
-                  _loc35_ = "iconVariableWriteonly";
+                  itemPermission = "writeonly";
+                  itemIcon = "iconVariableWriteonly";
                }
-               _loc33_[_loc33_.length] = {
-                  "name":_loc20_,
-                  "type":_loc23_,
-                  "target":_loc22_,
-                  "access":_loc30_,
-                  "permission":_loc10_,
-                  "icon":_loc35_
+               itemsArray[itemsArray.length] = {
+                  "name":itemName,
+                  "type":itemType,
+                  "target":itemTarget,
+                  "access":itemAccess,
+                  "permission":itemPermission,
+                  "icon":itemIcon
                };
             }
-            _loc31_++;
+            i++;
          }
-         _loc31_ = 0;
-         while(_loc31_ < _loc16_)
+         for(i = 0; i < constantsLength; )
          {
-            _loc17_ = _loc26_[_loc31_].@name;
-            if(!_loc21_.hasOwnProperty(_loc17_))
+            key = constants[i].@name;
+            if(!keys.hasOwnProperty(key))
             {
-               _loc21_[_loc17_] = _loc17_;
-               _loc20_ = _loc17_;
-               _loc23_ = parseType(_loc26_[_loc31_].@type);
-               _loc22_ = param2 + "." + _loc17_;
-               _loc30_ = "constant";
-               _loc10_ = "readonly";
-               _loc35_ = "iconVariableReadonly";
-               _loc33_[_loc33_.length] = {
-                  "name":_loc20_,
-                  "type":_loc23_,
-                  "target":_loc22_,
-                  "access":_loc30_,
-                  "permission":_loc10_,
-                  "icon":_loc35_
+               keys[key] = key;
+               itemName = key;
+               itemType = parseType(constants[i].@type);
+               itemTarget = target + "." + key;
+               itemAccess = "constant";
+               itemPermission = "readonly";
+               itemIcon = "iconVariableReadonly";
+               itemsArray[itemsArray.length] = {
+                  "name":itemName,
+                  "type":itemType,
+                  "target":itemTarget,
+                  "access":itemAccess,
+                  "permission":itemPermission,
+                  "icon":itemIcon
                };
             }
-            _loc31_++;
+            i++;
          }
-         _loc33_.sortOn("name",1);
-         if(param6 && param1 is flash.display.DisplayObjectContainer)
+         itemsArray.sortOn("name",1);
+         if(includeDisplayObjects && object is flash.display.DisplayObjectContainer)
          {
-            _loc11_ = flash.display.DisplayObjectContainer(param1);
-            _loc7_ = [];
-            _loc14_ = _loc11_.numChildren;
-            _loc31_ = 0;
-            while(_loc31_ < _loc14_)
+            displayObject = flash.display.DisplayObjectContainer(object);
+            displayObjects = [];
+            childLength = displayObject.numChildren;
+            for(i = 0; i < childLength; )
             {
-               _loc12_ = null;
+               child = null;
                try
                {
-                  _loc12_ = _loc11_.getChildAt(_loc31_);
+                  child = displayObject.getChildAt(i);
                }
                catch(e1:Error)
                {
                }
-               if(_loc12_ != null)
+               if(child != null)
                {
-                  _loc19_ = MonsterDebuggerDescribeType.get(_loc12_);
-                  _loc23_ = parseType(_loc19_.@name);
-                  _loc20_ = "DisplayObject";
-                  if(_loc12_.name != null)
+                  itemXML = MonsterDebuggerDescribeType.get(child);
+                  itemType = parseType(itemXML.@name);
+                  itemName = "DisplayObject";
+                  if(child.name != null)
                   {
-                     _loc20_ = _loc20_ + (" - " + _loc12_.name);
+                     itemName = itemName + (" - " + child.name);
                   }
-                  _loc22_ = param2 + "." + "getChildAt(" + _loc31_ + ")";
-                  _loc30_ = "displayObject";
-                  _loc10_ = "readwrite";
-                  _loc35_ = _loc12_ is flash.display.DisplayObjectContainer?"iconRoot":"iconDisplayObject";
-                  _loc7_[_loc7_.length] = {
-                     "name":_loc20_,
-                     "type":_loc23_,
-                     "target":_loc22_,
-                     "access":_loc30_,
-                     "permission":_loc10_,
-                     "icon":_loc35_,
-                     "index":_loc31_
+                  itemTarget = target + "." + "getChildAt(" + i + ")";
+                  itemAccess = "displayObject";
+                  itemPermission = "readwrite";
+                  itemIcon = child is flash.display.DisplayObjectContainer?"iconRoot":"iconDisplayObject";
+                  displayObjects[displayObjects.length] = {
+                     "name":itemName,
+                     "type":itemType,
+                     "target":itemTarget,
+                     "access":itemAccess,
+                     "permission":itemPermission,
+                     "icon":itemIcon,
+                     "index":i
                   };
                }
-               _loc31_++;
+               i++;
             }
-            _loc7_.sortOn("name",1);
-            _loc33_ = _loc7_.concat(_loc33_);
+            displayObjects.sortOn("name",1);
+            itemsArray = displayObjects.concat(itemsArray);
          }
-         else if(param6 && param1 is starling.display.DisplayObjectContainer)
+         else if(includeDisplayObjects && object is starling.display.DisplayObjectContainer)
          {
-            _loc29_ = starling.display.DisplayObjectContainer(param1);
-            _loc7_ = [];
-            _loc14_ = _loc29_.numChildren;
-            _loc31_ = 0;
-            while(_loc31_ < _loc14_)
+            starlingDisplayObject = starling.display.DisplayObjectContainer(object);
+            displayObjects = [];
+            childLength = starlingDisplayObject.numChildren;
+            for(i = 0; i < childLength; )
             {
-               _loc15_ = null;
+               starlingChild = null;
                try
                {
-                  _loc15_ = _loc29_.getChildAt(_loc31_);
+                  starlingChild = starlingDisplayObject.getChildAt(i);
                }
                catch(e1:Error)
                {
                }
-               if(_loc15_ != null)
+               if(starlingChild != null)
                {
-                  _loc19_ = MonsterDebuggerDescribeType.get(_loc15_);
-                  _loc23_ = parseType(_loc19_.@name);
-                  _loc20_ = "Starling DisplayObject";
-                  if(_loc15_.name != null)
+                  itemXML = MonsterDebuggerDescribeType.get(starlingChild);
+                  itemType = parseType(itemXML.@name);
+                  itemName = "Starling DisplayObject";
+                  if(starlingChild.name != null)
                   {
-                     _loc20_ = _loc20_ + (" - " + _loc15_.name);
+                     itemName = itemName + (" - " + starlingChild.name);
                   }
-                  _loc22_ = param2 + "." + "getChildAt(" + _loc31_ + ")";
-                  _loc30_ = "displayObject";
-                  _loc10_ = "readwrite";
-                  _loc35_ = _loc15_ is starling.display.DisplayObjectContainer?"iconRoot":"iconDisplayObject";
-                  _loc7_[_loc7_.length] = {
-                     "name":_loc20_,
-                     "type":_loc23_,
-                     "target":_loc22_,
-                     "access":_loc30_,
-                     "permission":_loc10_,
-                     "icon":_loc35_,
-                     "index":_loc31_
+                  itemTarget = target + "." + "getChildAt(" + i + ")";
+                  itemAccess = "displayObject";
+                  itemPermission = "readwrite";
+                  itemIcon = starlingChild is starling.display.DisplayObjectContainer?"iconRoot":"iconDisplayObject";
+                  displayObjects[displayObjects.length] = {
+                     "name":itemName,
+                     "type":itemType,
+                     "target":itemTarget,
+                     "access":itemAccess,
+                     "permission":itemPermission,
+                     "icon":itemIcon,
+                     "index":i
                   };
                }
-               _loc31_++;
+               i++;
             }
-            _loc7_.sortOn("name",1);
-            _loc33_ = _loc7_.concat(_loc33_);
+            displayObjects.sortOn("name",1);
+            itemsArray = displayObjects.concat(itemsArray);
          }
-         _loc18_ = _loc33_.length;
-         _loc31_ = 0;
-         while(_loc31_ < _loc18_)
+         itemsArrayLength = itemsArray.length;
+         for(i = 0; i < itemsArrayLength; )
          {
-            _loc23_ = _loc33_[_loc31_].type;
-            _loc20_ = _loc33_[_loc31_].name;
-            _loc22_ = _loc33_[_loc31_].target;
-            _loc10_ = _loc33_[_loc31_].permission;
-            _loc30_ = _loc33_[_loc31_].access;
-            _loc35_ = _loc33_[_loc31_].icon;
-            if(_loc10_ != "writeonly")
+            itemType = itemsArray[i].type;
+            itemName = itemsArray[i].name;
+            itemTarget = itemsArray[i].target;
+            itemPermission = itemsArray[i].permission;
+            itemAccess = itemsArray[i].access;
+            itemIcon = itemsArray[i].icon;
+            if(itemPermission != "writeonly")
             {
                try
                {
-                  if(_loc30_ == "displayObject")
+                  if(itemAccess == "displayObject")
                   {
-                     if(param1 is flash.display.DisplayObjectContainer)
+                     if(object is flash.display.DisplayObjectContainer)
                      {
-                        _loc34_ = flash.display.DisplayObjectContainer(param1).getChildAt(_loc33_[_loc31_].index);
+                        item = flash.display.DisplayObjectContainer(object).getChildAt(itemsArray[i].index);
                      }
-                     else if(param1 is starling.display.DisplayObjectContainer)
+                     else if(object is starling.display.DisplayObjectContainer)
                      {
-                        _loc34_ = starling.display.DisplayObjectContainer(param1).getChildAt(_loc33_[_loc31_].index);
+                        item = starling.display.DisplayObjectContainer(object).getChildAt(itemsArray[i].index);
                      }
                   }
                   else
                   {
-                     _loc34_ = param1[_loc20_];
+                     item = object[itemName];
                   }
                }
                catch(e2:Error)
                {
-                  _loc34_ = null;
+                  item = null;
                }
-               if(_loc23_ == "String" || _loc23_ == "Boolean" || _loc23_ == "Number" || _loc23_ == "int" || _loc23_ == "uint" || _loc23_ == "Function")
+               if(itemType == "String" || itemType == "Boolean" || itemType == "Number" || itemType == "int" || itemType == "uint" || itemType == "Function")
                {
-                  _loc27_ = <node/>;
-                  _loc27_.@icon = _loc35_;
-                  _loc27_.@label = _loc20_ + " (" + _loc23_ + ") = " + printValue(_loc34_,_loc23_,true);
-                  _loc27_.@name = _loc20_;
-                  _loc27_.@type = _loc23_;
-                  _loc27_.@value = printValue(_loc34_,_loc23_);
-                  _loc27_.@target = _loc22_;
-                  _loc27_.@access = _loc30_;
-                  _loc27_.@permission = _loc10_;
-                  _loc28_.appendChild(_loc27_);
+                  nodeXML = <node/>;
+                  nodeXML.@icon = itemIcon;
+                  nodeXML.@label = itemName + " (" + itemType + ") = " + printValue(item,itemType,true);
+                  nodeXML.@name = itemName;
+                  nodeXML.@type = itemType;
+                  nodeXML.@value = printValue(item,itemType);
+                  nodeXML.@target = itemTarget;
+                  nodeXML.@access = itemAccess;
+                  nodeXML.@permission = itemPermission;
+                  rootXML.appendChild(nodeXML);
                }
                else
                {
-                  _loc27_ = <node/>;
-                  _loc27_.@icon = _loc35_;
-                  _loc27_.@label = _loc20_ + " (" + _loc23_ + ")";
-                  _loc27_.@name = _loc20_;
-                  _loc27_.@type = _loc23_;
-                  _loc27_.@target = _loc22_;
-                  _loc27_.@access = _loc30_;
-                  _loc27_.@permission = _loc10_;
-                  if(_loc34_ == null)
+                  nodeXML = <node/>;
+                  nodeXML.@icon = itemIcon;
+                  nodeXML.@label = itemName + " (" + itemType + ")";
+                  nodeXML.@name = itemName;
+                  nodeXML.@type = itemType;
+                  nodeXML.@target = itemTarget;
+                  nodeXML.@access = itemAccess;
+                  nodeXML.@permission = itemPermission;
+                  if(item == null)
                   {
-                     _loc27_.@icon = "iconWarning";
-                     _loc27_.@label = _loc27_.@label + " = null";
+                     nodeXML.@icon = "iconWarning";
+                     nodeXML.@label = nodeXML.@label + " = null";
                   }
-                  _loc27_.appendChild(parse(_loc34_,_loc22_,param4 + 1,param5,param6).children());
-                  _loc28_.appendChild(_loc27_);
+                  nodeXML.appendChild(parse(item,itemTarget,currentDepth + 1,maxDepth,includeDisplayObjects).children());
+                  rootXML.appendChild(nodeXML);
                }
             }
-            _loc31_++;
+            i++;
          }
-         return _loc28_;
+         return rootXML;
       }
       
-      public static function parseFunctions(param1:*, param2:String = "") : XML
+      public static function parseFunctions(object:*, target:String = "") : XML
       {
-         var _loc3_:* = null;
-         var _loc24_:* = null;
-         var _loc16_:* = null;
-         var _loc23_:* = null;
-         var _loc14_:int = 0;
-         var _loc9_:* = null;
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc17_:* = null;
-         var _loc13_:XML = <root/>;
-         var _loc21_:XML = MonsterDebuggerDescribeType.get(param1);
-         var _loc15_:String = parseType(_loc21_.@name);
-         var _loc10_:String = "";
-         var _loc7_:String = "";
-         var _loc11_:String = "";
-         var _loc8_:Object = {};
-         var _loc4_:XMLList = _loc21_..method;
-         var _loc19_:Array = [];
-         var _loc20_:int = _loc4_.length();
-         var _loc22_:Boolean = false;
-         var _loc18_:int = 0;
-         var _loc12_:int = 0;
-         _loc3_ = <node/>;
-         _loc3_.@icon = "iconDefault";
-         _loc3_.@label = "(" + _loc15_ + ")";
-         _loc3_.@target = param2;
-         _loc18_ = 0;
-         while(_loc18_ < _loc20_)
+         var itemXML:* = null;
+         var key:* = null;
+         var returnType:* = null;
+         var parameters:* = null;
+         var parametersLength:int = 0;
+         var args:* = null;
+         var argsString:* = null;
+         var methodXML:* = null;
+         var parameterXML:* = null;
+         var rootXML:XML = <root/>;
+         var description:XML = MonsterDebuggerDescribeType.get(object);
+         var type:String = parseType(description.@name);
+         var itemType:String = "";
+         var itemName:String = "";
+         var itemTarget:String = "";
+         var keys:Object = {};
+         var methods:XMLList = description..method;
+         var methodsArr:Array = [];
+         var methodsLength:int = methods.length();
+         var optional:Boolean = false;
+         var i:int = 0;
+         var n:int = 0;
+         itemXML = <node/>;
+         itemXML.@icon = "iconDefault";
+         itemXML.@label = "(" + type + ")";
+         itemXML.@target = target;
+         for(i = 0; i < methodsLength; )
          {
-            _loc24_ = _loc4_[_loc18_].@name;
+            key = methods[i].@name;
             try
             {
-               if(!_loc8_.hasOwnProperty(_loc24_))
+               if(!keys.hasOwnProperty(key))
                {
-                  _loc8_[_loc24_] = _loc24_;
-                  _loc19_[_loc19_.length] = {
-                     "name":_loc24_,
-                     "xml":_loc4_[_loc18_],
+                  keys[key] = key;
+                  methodsArr[methodsArr.length] = {
+                     "name":key,
+                     "xml":methods[i],
                      "access":"method"
                   };
                }
@@ -1037,204 +1024,199 @@ package com.demonsters.debugger
             catch(e:Error)
             {
             }
-            _loc18_++;
+            i++;
          }
-         _loc19_.sortOn("name",1);
-         _loc20_ = _loc19_.length;
-         _loc18_ = 0;
-         while(_loc18_ < _loc20_)
+         methodsArr.sortOn("name",1);
+         methodsLength = methodsArr.length;
+         for(i = 0; i < methodsLength; )
          {
-            _loc10_ = "Function";
-            _loc7_ = _loc19_[_loc18_].xml.@name;
-            _loc11_ = param2 + "." + _loc7_;
-            _loc16_ = parseType(_loc19_[_loc18_].xml.@returnType);
-            _loc23_ = _loc19_[_loc18_].xml..parameter;
-            _loc14_ = _loc23_.length();
-            _loc9_ = [];
-            _loc6_ = "";
-            _loc22_ = false;
-            _loc12_ = 0;
-            while(_loc12_ < _loc14_)
+            itemType = "Function";
+            itemName = methodsArr[i].xml.@name;
+            itemTarget = target + "." + itemName;
+            returnType = parseType(methodsArr[i].xml.@returnType);
+            parameters = methodsArr[i].xml..parameter;
+            parametersLength = parameters.length();
+            args = [];
+            argsString = "";
+            optional = false;
+            for(n = 0; n < parametersLength; )
             {
-               if(_loc23_[_loc12_].@optional == "true" && !_loc22_)
+               if(parameters[n].@optional == "true" && !optional)
                {
-                  _loc22_ = true;
-                  _loc9_[_loc9_.length] = "[";
+                  optional = true;
+                  args[args.length] = "[";
                }
-               _loc9_[_loc9_.length] = parseType(_loc23_[_loc12_].@type);
-               _loc12_++;
+               args[args.length] = parseType(parameters[n].@type);
+               n++;
             }
-            if(_loc22_)
+            if(optional)
             {
-               _loc9_[_loc9_.length] = "]";
+               args[args.length] = "]";
             }
-            _loc6_ = _loc9_.join(", ");
-            _loc6_ = _loc6_.replace("[, ","[");
-            _loc6_ = _loc6_.replace(", ]","]");
-            _loc5_ = <node/>;
-            _loc5_.@icon = "iconFunction";
-            _loc5_.@type = "Function";
-            _loc5_.@access = "method";
-            _loc5_.@label = _loc7_ + "(" + _loc6_ + "):" + _loc16_;
-            _loc5_.@name = _loc7_;
-            _loc5_.@target = _loc11_;
-            _loc5_.@args = _loc6_;
-            _loc5_.@returnType = _loc16_;
-            _loc12_ = 0;
-            while(_loc12_ < _loc14_)
+            argsString = args.join(", ");
+            argsString = argsString.replace("[, ","[");
+            argsString = argsString.replace(", ]","]");
+            methodXML = <node/>;
+            methodXML.@icon = "iconFunction";
+            methodXML.@type = "Function";
+            methodXML.@access = "method";
+            methodXML.@label = itemName + "(" + argsString + "):" + returnType;
+            methodXML.@name = itemName;
+            methodXML.@target = itemTarget;
+            methodXML.@args = argsString;
+            methodXML.@returnType = returnType;
+            for(n = 0; n < parametersLength; )
             {
-               _loc17_ = <node/>;
-               _loc17_.@type = parseType(_loc23_[_loc12_].@type);
-               _loc17_.@index = _loc23_[_loc12_].@index;
-               _loc17_.@optional = _loc23_[_loc12_].@optional;
-               _loc5_.appendChild(_loc17_);
-               _loc12_++;
+               parameterXML = <node/>;
+               parameterXML.@type = parseType(parameters[n].@type);
+               parameterXML.@index = parameters[n].@index;
+               parameterXML.@optional = parameters[n].@optional;
+               methodXML.appendChild(parameterXML);
+               n++;
             }
-            _loc3_.appendChild(_loc5_);
-            _loc18_++;
+            itemXML.appendChild(methodXML);
+            i++;
          }
-         _loc13_.appendChild(_loc3_);
-         return _loc13_;
+         rootXML.appendChild(itemXML);
+         return rootXML;
       }
       
-      public static function parseType(param1:String) : String
+      public static function parseType(type:String) : String
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         if(param1.indexOf("::") != -1)
+         var part1:* = null;
+         var part2:* = null;
+         if(type.indexOf("::") != -1)
          {
-            param1 = param1.substring(param1.indexOf("::") + 2,param1.length);
+            type = type.substring(type.indexOf("::") + 2,type.length);
          }
-         if(param1.indexOf("::") != -1)
+         if(type.indexOf("::") != -1)
          {
-            _loc3_ = param1.substring(0,param1.indexOf("<") + 1);
-            _loc2_ = param1.substring(param1.indexOf("::") + 2,param1.length);
-            param1 = _loc3_ + _loc2_;
+            part1 = type.substring(0,type.indexOf("<") + 1);
+            part2 = type.substring(type.indexOf("::") + 2,type.length);
+            type = part1 + part2;
          }
-         param1 = param1.replace("()","");
-         param1 = param1.replace("MethodClosure","Function");
-         return param1;
+         type = type.replace("()","");
+         type = type.replace("MethodClosure","Function");
+         return type;
       }
       
-      public static function isDisplayObject(param1:*) : Boolean
+      public static function isDisplayObject(object:*) : Boolean
       {
-         return param1 is flash.display.DisplayObject || param1 is flash.display.DisplayObjectContainer;
+         return object is flash.display.DisplayObject || object is flash.display.DisplayObjectContainer;
       }
       
-      public static function isStarlingDisplayObject(param1:*) : Boolean
+      public static function isStarlingDisplayObject(object:*) : Boolean
       {
-         return param1 is starling.display.DisplayObject || param1 is starling.display.DisplayObjectContainer;
+         return object is starling.display.DisplayObject || object is starling.display.DisplayObjectContainer;
       }
       
-      public static function printValue(param1:*, param2:String, param3:Boolean = false) : String
+      public static function printValue(value:*, type:String, limit:Boolean = false) : String
       {
-         if(param2 == "ByteArray")
+         if(type == "ByteArray")
          {
-            return param1["length"] + " bytes";
+            return value["length"] + " bytes";
          }
-         if(param1 == null)
+         if(value == null)
          {
             return "null";
          }
-         var _loc4_:String = String(param1);
-         if(param3 && _loc4_.length > 140)
+         var v:String = String(value);
+         if(limit && v.length > 140)
          {
-            _loc4_ = _loc4_.substr(0,140) + "...";
+            v = v.substr(0,140) + "...";
          }
-         return _loc4_;
+         return v;
       }
       
-      public static function getObjectUnderPoint(param1:flash.display.DisplayObjectContainer, param2:Point) : flash.display.DisplayObject
+      public static function getObjectUnderPoint(container:flash.display.DisplayObjectContainer, point:Point) : flash.display.DisplayObject
       {
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         if(param1.areInaccessibleObjectsUnderPoint(param2))
+         var objects:* = null;
+         var object:* = null;
+         var i:int = 0;
+         var o:* = null;
+         if(container.areInaccessibleObjectsUnderPoint(point))
          {
-            return param1;
+            return container;
          }
-         _loc5_ = param1.getObjectsUnderPoint(param2);
-         _loc5_.reverse();
-         if(_loc5_ == null || _loc5_.length == 0)
+         objects = container.getObjectsUnderPoint(point);
+         objects.reverse();
+         if(objects == null || objects.length == 0)
          {
-            return param1;
+            return container;
          }
-         _loc4_ = _loc5_[0];
-         _loc5_.length = 0;
+         object = objects[0];
+         objects.length = 0;
          while(true)
          {
-            _loc5_[_loc5_.length] = _loc4_;
-            if(_loc4_.parent != null)
+            objects[objects.length] = object;
+            if(object.parent != null)
             {
-               _loc4_ = _loc4_.parent;
+               object = object.parent;
                continue;
             }
             break;
          }
-         _loc5_.reverse();
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_.length)
+         objects.reverse();
+         for(i = 0; i < objects.length; )
          {
-            _loc3_ = _loc5_[_loc6_];
-            if(_loc3_ is flash.display.DisplayObjectContainer)
+            o = objects[i];
+            if(o is flash.display.DisplayObjectContainer)
             {
-               _loc4_ = _loc3_;
-               if(flash.display.DisplayObjectContainer(_loc3_).mouseChildren)
+               object = o;
+               if(flash.display.DisplayObjectContainer(o).mouseChildren)
                {
-                  _loc6_++;
+                  i++;
                   continue;
                }
                break;
             }
             break;
          }
-         return _loc4_;
+         return object;
       }
       
-      public static function getStarlingObjectUnderPoint(param1:starling.display.DisplayObjectContainer, param2:Point) : starling.display.DisplayObject
+      public static function getStarlingObjectUnderPoint(container:starling.display.DisplayObjectContainer, point:Point) : starling.display.DisplayObject
       {
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:* = param1.hitTest(param2,false);
-         if(_loc4_ == null || _loc4_ == param1)
+         var i:int = 0;
+         var o:* = null;
+         var object:* = container.hitTest(point,false);
+         if(object == null || object == container)
          {
-            return param1;
+            return container;
          }
-         var _loc5_:Array = [];
+         var objects:Array = [];
          while(true)
          {
-            _loc5_[_loc5_.length] = _loc4_;
-            if(_loc4_.parent != null)
+            objects[objects.length] = object;
+            if(object.parent != null)
             {
-               _loc4_ = _loc4_.parent;
+               object = object.parent;
                continue;
             }
             break;
          }
-         _loc5_.reverse();
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_.length)
+         objects.reverse();
+         for(i = 0; i < objects.length; )
          {
-            _loc3_ = _loc5_[_loc6_];
-            if(_loc3_ is starling.display.DisplayObjectContainer)
+            o = objects[i];
+            if(o is starling.display.DisplayObjectContainer)
             {
-               param1 = starling.display.DisplayObjectContainer(_loc3_);
-               if(!param1.touchable || !param1.visible)
+               container = starling.display.DisplayObjectContainer(o);
+               if(!container.touchable || !container.visible)
                {
-                  if(param1.stage == param1)
+                  if(container.stage == container)
                   {
-                     return param1;
+                     return container;
                   }
                   break;
                }
-               _loc4_ = _loc3_;
-               _loc6_++;
+               object = o;
+               i++;
                continue;
             }
             break;
          }
-         return _loc4_;
+         return object;
       }
    }
 }

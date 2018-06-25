@@ -45,24 +45,24 @@ package wonderfulActivity.items
          _timeText = UICreatShortcut.creatAndAdd("wonderfulactivity.wasteRecycleText",this);
          PositionUtils.setPos(this,"wonderfulactivity.wasteRecycleViewPos");
          _openBtn.addEventListener("click",__onOpen);
-         var _loc1_:Number = TimeManager.Instance.Now().getTime();
-         var _loc3_:Number = WasteRecycleManager.Instance.endDate.getTime();
-         _activityTime = _loc3_ - _loc1_;
-         var _loc2_:Array = DateUtils.dateTimeRemainArr(_activityTime / 1000);
-         _timeText.text = LanguageMgr.GetTranslation("tank.timeRemain.msg1",_loc2_[0],_loc2_[1],_loc2_[2]);
+         var currentTime:Number = TimeManager.Instance.Now().getTime();
+         var endTime:Number = WasteRecycleManager.Instance.endDate.getTime();
+         _activityTime = endTime - currentTime;
+         var arr:Array = DateUtils.dateTimeRemainArr(_activityTime / 1000);
+         _timeText.text = LanguageMgr.GetTranslation("tank.timeRemain.msg1",arr[0],arr[1],arr[2]);
          _timer = TimerManager.getInstance().addTimerJuggler(60000,0);
          _timer.addEventListener("timer",__onTimer,false,0,true);
          _timer.start();
       }
       
-      private function __onTimer(param1:Event) : void
+      private function __onTimer(e:Event) : void
       {
-         var _loc2_:* = null;
+         var arr:* = null;
          _activityTime = _activityTime - 60000;
          if(_activityTime > 0)
          {
-            _loc2_ = DateUtils.dateTimeRemainArr(_activityTime / 1000);
-            _timeText.text = LanguageMgr.GetTranslation("tank.timeRemain.msg1",_loc2_[0],_loc2_[1],_loc2_[2]);
+            arr = DateUtils.dateTimeRemainArr(_activityTime / 1000);
+            _timeText.text = LanguageMgr.GetTranslation("tank.timeRemain.msg1",arr[0],arr[1],arr[2]);
          }
          else
          {
@@ -70,7 +70,7 @@ package wonderfulActivity.items
          }
       }
       
-      private function __onOpen(param1:MouseEvent) : void
+      private function __onOpen(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          WasteRecycleController.instance.showView();
@@ -81,7 +81,7 @@ package wonderfulActivity.items
          return this;
       }
       
-      public function setState(param1:int, param2:int) : void
+      public function setState(type:int, id:int) : void
       {
       }
       

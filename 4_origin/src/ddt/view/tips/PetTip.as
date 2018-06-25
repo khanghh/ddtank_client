@@ -51,18 +51,18 @@ package ddt.view.tips
          addChild(_petIconContainer);
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         if(param1)
+         if(data)
          {
             if(_petIcon)
             {
                ObjectUtils.disposeObject(_petIcon);
             }
-            _tipData = param1;
-            _petName.text = String(param1["petName"]);
-            _petLevel.text = "Lv." + String(param1["petLevel"]);
-            _petIcon = new BitmapLoaderProxy(PathManager.solvePetIconUrl(String(param1["petIconUrl"])),new Rectangle(0,0,35,35),true);
+            _tipData = data;
+            _petName.text = String(data["petName"]);
+            _petLevel.text = "Lv." + String(data["petLevel"]);
+            _petIcon = new BitmapLoaderProxy(PathManager.solvePetIconUrl(String(data["petIconUrl"])),new Rectangle(0,0,35,35),true);
             _petIconContainer.addChild(_petIcon);
             updateWH();
          }

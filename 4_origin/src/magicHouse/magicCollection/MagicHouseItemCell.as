@@ -79,7 +79,7 @@ package magicHouse.magicCollection
          _openBtn.removeEventListener("click",__openItem);
       }
       
-      private function __openItem(param1:MouseEvent) : void
+      private function __openItem(e:MouseEvent) : void
       {
          if(_openEnable)
          {
@@ -96,7 +96,7 @@ package magicHouse.magicCollection
          }
       }
       
-      private function __okBtnHandler(param1:MouseEvent) : void
+      private function __okBtnHandler(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _frame.removeEventListener("response",__okBtnHandler);
@@ -110,7 +110,7 @@ package magicHouse.magicCollection
          SocketManager.Instance.out.openMagicLib(_type,_pos);
       }
       
-      private function __cancelBtnHandler(param1:MouseEvent) : void
+      private function __cancelBtnHandler(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _frame.removeEventListener("response",__okBtnHandler);
@@ -122,7 +122,7 @@ package magicHouse.magicCollection
          _frame = null;
       }
       
-      private function __confirmResponse(param1:FrameEvent) : void
+      private function __confirmResponse(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          _frame.removeEventListener("response",__okBtnHandler);
@@ -132,7 +132,7 @@ package magicHouse.magicCollection
             _frame.parent.removeChild(_frame);
          }
          _frame = null;
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             _openEnable = false;
             SocketManager.Instance.out.openMagicLib(_type,_pos);
@@ -141,8 +141,8 @@ package magicHouse.magicCollection
       
       public function setFilter() : void
       {
-         var _loc1_:Boolean = MagicHouseModel.instance.equipOpenList[(_type - 1) * 3 + _pos];
-         if(_loc1_)
+         var b:Boolean = MagicHouseModel.instance.equipOpenList[(_type - 1) * 3 + _pos];
+         if(b)
          {
             if(_cell.getContent())
             {
@@ -153,33 +153,33 @@ package magicHouse.magicCollection
          {
             _cell.getContent().filters = [new ColorMatrixFilter([0.3086,0.6094,0.082,0,0,0.3086,0.6094,0.082,0,0,0.3086,0.6094,0.082,0,0,0,0,0,1,0])];
          }
-         _openBtn.visible = _loc1_;
-         _openEnable = _loc1_;
+         _openBtn.visible = b;
+         _openEnable = b;
       }
       
-      public function setOpened(param1:Boolean) : void
+      public function setOpened($b:Boolean) : void
       {
-         _isOpen = param1;
-         _openBtn.visible = !param1;
+         _isOpen = $b;
+         _openBtn.visible = !$b;
       }
       
-      public function set cellInfo(param1:ItemTemplateInfo) : void
+      public function set cellInfo($info:ItemTemplateInfo) : void
       {
-         _info = param1;
-         _cell.info = param1;
-         var _loc2_:Object = {};
-         _loc2_.titleName = _info.Name;
-         _loc2_.type = EquipType.PARTNAME[_info.CategoryID];
-         _loc2_.activate = _isOpen;
-         _loc2_.datail = LanguageMgr.GetTranslation("magichouse.collectionItem.itemTip.activateDetail");
-         _loc2_.placed = LanguageMgr.GetTranslation("avatarCollection.itemTip.placeTxt") + " " + LanguageMgr.GetTranslation("tank.view.movement.MovementLeftView.action");
-         _itemContent.tipData = _loc2_;
+         _info = $info;
+         _cell.info = $info;
+         var obj:Object = {};
+         obj.titleName = _info.Name;
+         obj.type = EquipType.PARTNAME[_info.CategoryID];
+         obj.activate = _isOpen;
+         obj.datail = LanguageMgr.GetTranslation("magichouse.collectionItem.itemTip.activateDetail");
+         obj.placed = LanguageMgr.GetTranslation("avatarCollection.itemTip.placeTxt") + " " + LanguageMgr.GetTranslation("tank.view.movement.MovementLeftView.action");
+         _itemContent.tipData = obj;
       }
       
-      public function setTypeAndPos(param1:int, param2:int) : void
+      public function setTypeAndPos($type:int, $pos:int) : void
       {
-         _type = param1;
-         _pos = param2;
+         _type = $type;
+         _pos = $pos;
       }
       
       public function get isOpen() : Boolean
@@ -189,11 +189,11 @@ package magicHouse.magicCollection
       
       private function createItemCell() : ShopItemCell
       {
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,46,46);
-         _loc1_.graphics.endFill();
-         return CellFactory.instance.createShopItemCell(_loc1_,null,true,true) as ShopItemCell;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,46,46);
+         sp.graphics.endFill();
+         return CellFactory.instance.createShopItemCell(sp,null,true,true) as ShopItemCell;
       }
       
       public function dispose() : void

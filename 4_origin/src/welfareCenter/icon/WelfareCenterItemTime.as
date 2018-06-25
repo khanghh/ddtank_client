@@ -17,9 +17,9 @@ package welfareCenter.icon
       
       private var _firstEnterCdSec:int;
       
-      public function WelfareCenterItemTime(param1:int)
+      public function WelfareCenterItemTime($type:int)
       {
-         super(param1);
+         super($type);
       }
       
       override protected function init() : void
@@ -39,7 +39,7 @@ package welfareCenter.icon
          updateLeftTimeTf();
       }
       
-      private function onTimerTick(param1:TimerEvent) : void
+      private function onTimerTick(evt:TimerEvent) : void
       {
          _firstEnterCdSec = Number(_firstEnterCdSec) - 1;
          if(_firstEnterCdSec <= 0)
@@ -53,10 +53,10 @@ package welfareCenter.icon
       
       private function updateLeftTimeTf() : void
       {
-         var _loc1_:Array = TimeManager.getHHMMSSArr(_firstEnterCdSec);
-         if(_loc1_)
+         var timeArr:Array = TimeManager.getHHMMSSArr(_firstEnterCdSec);
+         if(timeArr)
          {
-            _leftTimeTf.text = _loc1_.join(":");
+            _leftTimeTf.text = timeArr.join(":");
          }
          else
          {
@@ -66,9 +66,9 @@ package welfareCenter.icon
       
       override public function get canClick() : Boolean
       {
-         var _loc1_:int = 0;
-         _loc1_ = CallBackLotteryDrawManager.instance.callBackLotteryDrawModel.phase;
-         if(_firstEnterCdSec <= 0 && _loc1_ == 0 || _loc1_ > 0)
+         var phase:int = 0;
+         phase = CallBackLotteryDrawManager.instance.callBackLotteryDrawModel.phase;
+         if(_firstEnterCdSec <= 0 && phase == 0 || phase > 0)
          {
             return true;
          }

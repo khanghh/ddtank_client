@@ -22,10 +22,10 @@ package cloudBuyLottery.view
       
       public var property:Array;
       
-      public function WinningLogItemInfo(param1:int = 0)
+      public function WinningLogItemInfo($TemplateID:int = 0)
       {
          super();
-         TemplateID = param1;
+         TemplateID = $TemplateID;
       }
       
       public function get TemplateInfo() : ItemTemplateInfo
@@ -42,9 +42,9 @@ package cloudBuyLottery.view
          return _logNameArr;
       }
       
-      public function set logNameArr(param1:Array) : void
+      public function set logNameArr(value:Array) : void
       {
-         _logNameArr = param1;
+         _logNameArr = value;
       }
    }
 }

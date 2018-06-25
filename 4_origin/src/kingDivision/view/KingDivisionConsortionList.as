@@ -21,19 +21,18 @@ package kingDivision.view
       
       override protected function init() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          super.init();
          spacing = 2;
          length = KingDivisionManager.Instance.model.conLen;
          items = new Vector.<KingDivisionConsortionListItem>(length);
-         _loc1_ = 1;
-         while(_loc1_ <= length)
+         for(i = 1; i <= length; )
          {
-            items[_loc1_ - 1] = new KingDivisionConsortionListItem(_loc1_);
-            items[_loc1_ - 1].buttonMode = true;
-            items[_loc1_ - 1].info = KingDivisionManager.Instance.model.conItemInfo[_loc1_ - 1];
-            addChild(items[_loc1_ - 1]);
-            _loc1_++;
+            items[i - 1] = new KingDivisionConsortionListItem(i);
+            items[i - 1].buttonMode = true;
+            items[i - 1].info = KingDivisionManager.Instance.model.conItemInfo[i - 1];
+            addChild(items[i - 1]);
+            i++;
          }
       }
    }

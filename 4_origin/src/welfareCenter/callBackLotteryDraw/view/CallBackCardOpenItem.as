@@ -59,14 +59,14 @@ package welfareCenter.callBackLotteryDraw.view
       
       private var _maskSp:Sprite;
       
-      public function CallBackCardOpenItem(param1:int, param2:int, param3:int)
+      public function CallBackCardOpenItem(index:int, orglX:int, orglY:int)
       {
          super();
-         _index = param1;
+         _index = index;
          _manager = CallBackLotteryDrawManager.instance;
          _award = _manager.callBackLotteryDrawModel.awardArr[_index];
-         _orglX = param2;
-         _orglY = param3;
+         _orglX = orglX;
+         _orglY = orglY;
          _mc = ComponentFactory.Instance.creat("callbacklotterydraw.cardOpen");
          _mc.stop();
          addChild(_mc);
@@ -86,9 +86,9 @@ package welfareCenter.callBackLotteryDraw.view
          CallBackLotteryDrawManager.instance.addEventListener("event_op_back_buy",onBuy);
       }
       
-      private function onCardOpenMCMouseHandler(param1:MouseEvent) : void
+      private function onCardOpenMCMouseHandler(evt:MouseEvent) : void
       {
-         evt = param1;
+         evt = evt;
          var eventType:String = evt.type;
          if(_hasFlipOver == false)
          {
@@ -121,9 +121,9 @@ package welfareCenter.callBackLotteryDraw.view
             var target:* = evt.target;
             if(target == _buyBtn)
             {
-               onAlertFrameResponse = function(param1:FrameEvent):void
+               onAlertFrameResponse = function(evt:FrameEvent):void
                {
-                  if(param1.responseCode == 3 || param1.responseCode == 2)
+                  if(evt.responseCode == 3 || evt.responseCode == 2)
                   {
                      CheckMoneyUtils.instance.checkMoney(_payAlert.isBand,newPrice,onCheckComplete);
                   }
@@ -157,23 +157,23 @@ package welfareCenter.callBackLotteryDraw.view
          _mc.addEventListener("enterFrame",onCardOpenEnterFrame);
       }
       
-      private function onCardOpenEnterFrame(param1:Event) : void
+      private function onCardOpenEnterFrame(evt:Event) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var cardFont3:* = null;
+         var maskPic:* = null;
          if(_mc.currentFrame == 5)
          {
             _mc.gotoAndStop(5);
-            _loc3_ = CallBackLotteryDrawController.instance.getCardShowFont(_award,"callbacklotterydraw");
-            _loc3_.x = -5;
-            _loc3_.y = 18;
-            _mc["c1"].addChild(_loc3_);
+            cardFont3 = CallBackLotteryDrawController.instance.getCardShowFont(_award,"callbacklotterydraw");
+            cardFont3.x = -5;
+            cardFont3.y = 18;
+            _mc["c1"].addChild(cardFont3);
             _buyBtn = UICreatShortcut.creatAndAdd("callbacklotterydraw.buyBtn",_mc["c1"]);
             _buyBtn.visible = _award["IsCanGet"];
             if(!_award["IsCanGet"])
             {
-               _loc2_ = UICreatShortcut.creatAndAdd("callbacklotterydraw.pic7",_mc);
-               PositionUtils.setPos(_loc2_,"callbacklotterydraw.hasGetMask");
+               maskPic = UICreatShortcut.creatAndAdd("callbacklotterydraw.pic7",_mc);
+               PositionUtils.setPos(maskPic,"callbacklotterydraw.hasGetMask");
             }
             _mc.play();
          }
@@ -193,13 +193,13 @@ package welfareCenter.callBackLotteryDraw.view
          return _mc.totalFrames;
       }
       
-      private function onBuy(param1:CEvent) : void
+      private function onBuy(evt:CEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:Object = param1.data;
-         if(_loc2_.index == _award["Index"])
+         var maskPic:* = null;
+         var data:Object = evt.data;
+         if(data.index == _award["Index"])
          {
-            if(_loc2_.res)
+            if(data.res)
             {
                if(_manager.callBackLotteryDrawModel.currPhaseHasGetCount == 1)
                {
@@ -210,8 +210,8 @@ package welfareCenter.callBackLotteryDraw.view
                {
                   _buyBtn.visible = false;
                }
-               _loc3_ = UICreatShortcut.creatAndAdd("callbacklotterydraw.pic7",_mc);
-               PositionUtils.setPos(_loc3_,"callbacklotterydraw.hasGetMask");
+               maskPic = UICreatShortcut.creatAndAdd("callbacklotterydraw.pic7",_mc);
+               PositionUtils.setPos(maskPic,"callbacklotterydraw.hasGetMask");
             }
             _maskSp.parent.removeChild(_maskSp);
          }

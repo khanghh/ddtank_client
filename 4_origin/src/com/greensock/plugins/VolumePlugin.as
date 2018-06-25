@@ -20,21 +20,21 @@ package com.greensock.plugins
          this.overwriteProps = ["volume"];
       }
       
-      override public function onInitTween(param1:Object, param2:*, param3:TweenLite) : Boolean
+      override public function onInitTween(target:Object, value:*, tween:TweenLite) : Boolean
       {
-         if(isNaN(param2) || param1.hasOwnProperty("volume") || !param1.hasOwnProperty("soundTransform"))
+         if(isNaN(value) || target.hasOwnProperty("volume") || !target.hasOwnProperty("soundTransform"))
          {
             return false;
          }
-         _target = param1;
+         _target = target;
          _st = _target.soundTransform;
-         addTween(_st,"volume",_st.volume,param2,"volume");
+         addTween(_st,"volume",_st.volume,value,"volume");
          return true;
       }
       
-      override public function set changeFactor(param1:Number) : void
+      override public function set changeFactor(n:Number) : void
       {
-         updateTweens(param1);
+         updateTweens(n);
          _target.soundTransform = _st;
       }
    }

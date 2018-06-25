@@ -70,15 +70,15 @@ package vip
          AssetModuleLoader.addModelLoader("ddtvipview",6);
          AssetModuleLoader.startCodeLoader(function():void
          {
-            var _loc1_:* = null;
-            var _loc2_:* = null;
+            var selfInfo:* = null;
+            var rechargeAlertTxt:* = null;
             if(_rechargeAlertFrame == null)
             {
                _rechargeAlertFrame = ComponentFactory.Instance.creatComponentByStylename("vip.vipRechargeAlertFrame");
-               _loc1_ = PlayerManager.Instance.Self;
-               _loc2_ = new RechargeAlertTxt();
-               _loc2_.AlertContent = _loc1_.VIPLevel;
-               _rechargeAlertFrame.content = _loc2_;
+               selfInfo = PlayerManager.Instance.Self;
+               rechargeAlertTxt = new RechargeAlertTxt();
+               rechargeAlertTxt.AlertContent = selfInfo.VIPLevel;
+               _rechargeAlertFrame.content = rechargeAlertTxt;
                _rechargeAlertFrame.show();
                _rechargeAlertFrame.addEventListener("response",__responseRechargeAlertHandler);
             }
@@ -93,11 +93,11 @@ package vip
          }
       }
       
-      protected function __responseHandler(param1:FrameEvent) : void
+      protected function __responseHandler(event:FrameEvent) : void
       {
          _helpframe.removeEventListener("response",__responseHandler);
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -105,11 +105,11 @@ package vip
          }
       }
       
-      protected function __responseRechargeAlertHandler(param1:FrameEvent) : void
+      protected function __responseRechargeAlertHandler(event:FrameEvent) : void
       {
          _rechargeAlertFrame.removeEventListener("response",__responseRechargeAlertHandler);
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -121,9 +121,9 @@ package vip
          }
       }
       
-      public function sendOpenVip(param1:String, param2:int, param3:Boolean = true) : void
+      public function sendOpenVip(name:String, days:int, bool:Boolean = true) : void
       {
-         SocketManager.Instance.out.sendOpenVip(param1,param2,param3);
+         SocketManager.Instance.out.sendOpenVip(name,days,bool);
       }
       
       public function hide() : void
@@ -135,30 +135,30 @@ package vip
          _vipFrame = null;
       }
       
-      public function getVipNameTxt(param1:int = -1, param2:int = 1) : GradientText
+      public function getVipNameTxt($width:int = -1, typeVIP:int = 1) : GradientText
       {
-         var _loc3_:* = null;
-         switch(int(param2))
+         var text:* = null;
+         switch(int(typeVIP))
          {
             case 0:
                throw new Error("会员类型错误,不能为非会员玩家创建会员字体.");
             case 1:
-               _loc3_ = ComponentFactory.Instance.creatComponentByStylename("vipName");
+               text = ComponentFactory.Instance.creatComponentByStylename("vipName");
             case 2:
-               _loc3_ = ComponentFactory.Instance.creatComponentByStylename("vipName");
+               text = ComponentFactory.Instance.creatComponentByStylename("vipName");
          }
       }
       
-      public function getVIPStrengthenEx(param1:int) : Number
+      public function getVIPStrengthenEx(level:int) : Number
       {
-         if(param1 - 1 < 0)
+         if(level - 1 < 0)
          {
             return 0;
          }
-         var _loc2_:Array = ServerConfigManager.instance.VIPStrengthenEx;
-         if(_loc2_)
+         var arr:Array = ServerConfigManager.instance.VIPStrengthenEx;
+         if(arr)
          {
-            return _loc2_[param1 - 1];
+            return arr[level - 1];
          }
          return 0;
       }

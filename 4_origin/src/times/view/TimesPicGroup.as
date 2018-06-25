@@ -30,38 +30,37 @@ package times.view
       
       private var _timer:TimerJuggler;
       
-      public function TimesPicGroup(param1:Vector.<TimesPicInfo>, param2:int)
+      public function TimesPicGroup($info:Vector.<TimesPicInfo>, index:int)
       {
          super();
-         _infos = param1;
-         _index = param2;
+         _infos = $info;
+         _index = index;
          init();
          initEvent();
       }
       
       public function init() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var tmpUV:* = null;
          _pics = new Vector.<Sprite>();
          _timer = TimerManager.getInstance().addTimerJuggler(5000);
          _maxIdx = _infos.length;
-         _loc2_ = 0;
-         while(_loc2_ < _maxIdx)
+         for(i = 0; i < _maxIdx; )
          {
-            if(_index == 0 && TimesController.Instance.isShowUpdateView && _loc2_ == 0)
+            if(_index == 0 && TimesController.Instance.isShowUpdateView && i == 0)
             {
-               _loc1_ = new TimesUpdateView(TimesController.Instance.updateContenList,true);
-               _loc1_.x = 15;
-               _loc1_.y = 47;
-               _pics.push(_loc1_);
+               tmpUV = new TimesUpdateView(TimesController.Instance.updateContenList,true);
+               tmpUV.x = 15;
+               tmpUV.y = 47;
+               _pics.push(tmpUV);
             }
             else
             {
-               _pics.push(new TimesPicBase(_infos[_loc2_]));
-               (_pics[_loc2_] as TimesPicBase).load();
+               _pics.push(new TimesPicBase(_infos[i]));
+               (_pics[i] as TimesPicBase).load();
             }
-            _loc2_++;
+            i++;
          }
          addChild(_pics[_currentIdx]);
       }
@@ -78,7 +77,7 @@ package times.view
          }
       }
       
-      private function __onMouseOut(param1:MouseEvent) : void
+      private function __onMouseOut(event:MouseEvent) : void
       {
          if(_timer && !_timer.running)
          {
@@ -86,7 +85,7 @@ package times.view
          }
       }
       
-      private function __onMouseOver(param1:MouseEvent) : void
+      private function __onMouseOver(event:MouseEvent) : void
       {
          if(_timer && _timer.running)
          {
@@ -94,7 +93,7 @@ package times.view
          }
       }
       
-      private function __onPicClick(param1:MouseEvent) : void
+      private function __onPicClick(e:MouseEvent) : void
       {
          if(_infos[_currentIdx].type == "big" || _infos[_currentIdx].type == "small")
          {
@@ -102,7 +101,7 @@ package times.view
          }
       }
       
-      private function __onTick(param1:Event) : void
+      private function __onTick(event:Event) : void
       {
          if(_currentIdx == _maxIdx - 1)
          {
@@ -120,13 +119,13 @@ package times.view
          return _currentIdx;
       }
       
-      public function set currentIdx(param1:int) : void
+      public function set currentIdx(value:int) : void
       {
          if(contains(_pics[_currentIdx]))
          {
             removeChild(_pics[_currentIdx]);
          }
-         _currentIdx = param1;
+         _currentIdx = value;
          if(_timer.hasEventListener("timer"))
          {
             _timer.reset();
@@ -141,37 +140,36 @@ package times.view
          return _infos[_currentIdx];
       }
       
-      public function set picType(param1:String) : void
+      public function set picType(str:String) : void
       {
-         var _loc2_:int = 0;
-         _picType = param1;
-         _loc2_ = 0;
-         while(_loc2_ < _maxIdx)
+         var i:int = 0;
+         _picType = str;
+         for(i = 0; i < _maxIdx; )
          {
-            _infos[_loc2_].type = param1;
-            _loc2_++;
+            _infos[i].type = str;
+            i++;
          }
       }
       
-      public function load(param1:int) : void
+      public function load(startIdx:int) : void
       {
       }
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEventListener("click",__onPicClick);
          if(_infos && _infos[0] && _infos[0].type == "big")
          {
             removeEventListener("rollOver",__onMouseOver);
             removeEventListener("rollOut",__onMouseOut);
          }
-         _loc1_ = 0;
-         while(_loc1_ < _pics.length)
+         i = 0;
+         while(i < _pics.length)
          {
-            ObjectUtils.disposeObject(_pics[_loc1_]);
-            _pics[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_pics[i]);
+            _pics[i] = null;
+            i++;
          }
          _infos = null;
          _pics = null;

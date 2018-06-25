@@ -76,10 +76,10 @@ package store.view.fusion
          addToContent(_inputText);
       }
       
-      public function show(param1:int = 5, param2:int = 1) : void
+      public function show(max:int = 5, min:int = 1) : void
       {
-         _maxNum = param1;
-         _minNum = param2;
+         _maxNum = max;
+         _minNum = min;
          _nowNum = _maxNum;
          LayerManager.Instance.addToLayer(this,3,true,1);
       }
@@ -155,14 +155,14 @@ package store.view.fusion
          }
       }
       
-      private function __addToStageHandler(param1:Event) : void
+      private function __addToStageHandler(e:Event) : void
       {
          _inputText.appendText(_nowNum.toString());
          _inputText.setFocus();
          _upbtView();
       }
       
-      private function _changeInput(param1:Event) : void
+      private function _changeInput(e:Event) : void
       {
          if(int(_inputText.text) == 0)
          {
@@ -179,28 +179,28 @@ package store.view.fusion
          upSee();
       }
       
-      private function __enterHanlder(param1:KeyboardEvent) : void
+      private function __enterHanlder(event:KeyboardEvent) : void
       {
-         param1.stopImmediatePropagation();
-         if(param1.keyCode == 13)
+         event.stopImmediatePropagation();
+         if(event.keyCode == 13)
          {
             __confirm();
          }
-         if(param1.keyCode == 27)
+         if(event.keyCode == 27)
          {
             SoundManager.instance.play("008");
             dispose();
          }
       }
       
-      private function click_btn1(param1:MouseEvent) : void
+      private function click_btn1(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _nowNum = _nowNum + 1;
          upSee();
       }
       
-      private function click_btn2(param1:MouseEvent) : void
+      private function click_btn2(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _nowNum = _nowNum - 1;
@@ -221,19 +221,19 @@ package store.view.fusion
          }
       }
       
-      private function onFrameResponse(param1:FrameEvent) : void
+      private function onFrameResponse(evt:FrameEvent) : void
       {
-         var _loc2_:* = null;
+         var e:* = null;
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
                dispose();
-               _loc2_ = new FusionSelectEvent("notsell",_nowNum);
-               _loc2_.info = goodsinfo;
-               _loc2_.index = index;
-               dispatchEvent(_loc2_);
+               e = new FusionSelectEvent("notsell",_nowNum);
+               e.info = goodsinfo;
+               e.index = index;
+               dispatchEvent(e);
                break;
             case 2:
             case 3:
@@ -244,7 +244,7 @@ package store.view.fusion
       
       private function __confirm() : void
       {
-         var _loc1_:* = null;
+         var e:* = null;
          if(int(_inputText.text) >= _maxNum)
          {
             _nowNum = _maxNum;
@@ -253,10 +253,10 @@ package store.view.fusion
          {
             _nowNum = 1;
          }
-         _loc1_ = new FusionSelectEvent("sell",_nowNum);
-         _loc1_.info = goodsinfo;
-         _loc1_.index = index;
-         dispatchEvent(_loc1_);
+         e = new FusionSelectEvent("sell",_nowNum);
+         e.info = goodsinfo;
+         e.index = index;
+         dispatchEvent(e);
       }
       
       public function get goodsinfo() : InventoryItemInfo
@@ -264,9 +264,9 @@ package store.view.fusion
          return _goodsinfo;
       }
       
-      public function set goodsinfo(param1:InventoryItemInfo) : void
+      public function set goodsinfo(value:InventoryItemInfo) : void
       {
-         _goodsinfo = param1;
+         _goodsinfo = value;
       }
       
       override public function dispose() : void

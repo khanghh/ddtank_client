@@ -37,18 +37,18 @@ package cardSystem.view.cardCollect
          initEvent();
       }
       
-      public function set maxPage(param1:int) : void
+      public function set maxPage(value:int) : void
       {
-         _maxPage = param1;
+         _maxPage = value;
       }
       
-      public function set page(param1:int) : void
+      public function set page(value:int) : void
       {
-         if(_presentPage == param1)
+         if(_presentPage == value)
          {
             return;
          }
-         _presentPage = param1;
+         _presentPage = value;
          _pageText.text = _presentPage + "/" + _maxPage;
          dispatchEvent(new Event("change"));
       }
@@ -84,7 +84,7 @@ package cardSystem.view.cardCollect
          _nextBtn.removeEventListener("click",__nextPage);
       }
       
-      protected function __prePage(param1:MouseEvent) : void
+      protected function __prePage(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(page <= 1)
@@ -97,7 +97,7 @@ package cardSystem.view.cardCollect
          }
       }
       
-      protected function __nextPage(param1:MouseEvent) : void
+      protected function __nextPage(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(page >= _maxPage)

@@ -45,26 +45,25 @@ package wasteRecycle
       
       private function initAwardList() : void
       {
-         var _loc3_:* = null;
-         var _loc1_:* = undefined;
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
+         var list:* = null;
+         var infoList:* = undefined;
+         var i:int = 0;
+         var data:* = null;
+         var info:* = null;
          if(_model.trophyList == null)
          {
-            _loc3_ = ServerConfigManager.instance.wasteRecycleAwardIdList;
-            _loc1_ = new Vector.<InventoryItemInfo>();
-            _loc5_ = 0;
-            while(_loc5_ < _loc3_.length)
+            list = ServerConfigManager.instance.wasteRecycleAwardIdList;
+            infoList = new Vector.<InventoryItemInfo>();
+            for(i = 0; i < list.length; )
             {
-               _loc2_ = _loc3_[_loc5_].split(",");
-               _loc4_ = ItemManager.fillByID(int(_loc2_[0]));
-               _loc4_.IsBinds = true;
-               _loc4_.Count = int(_loc2_[1]);
-               _loc1_.push(_loc4_);
-               _loc5_++;
+               data = list[i].split(",");
+               info = ItemManager.fillByID(int(data[0]));
+               info.IsBinds = true;
+               info.Count = int(data[1]);
+               infoList.push(info);
+               i++;
             }
-            _model.trophyList = _loc1_;
+            _model.trophyList = infoList;
          }
       }
       
@@ -79,21 +78,21 @@ package wasteRecycle
       
       private function loadComplete() : void
       {
-         var _loc1_:WasteRecycleFrame = ComponentFactory.Instance.creatComponentByStylename("wasteRecycle.WasteRecycleFrame");
-         _loc1_.show();
+         var frame:WasteRecycleFrame = ComponentFactory.Instance.creatComponentByStylename("wasteRecycle.WasteRecycleFrame");
+         frame.show();
       }
       
       private function createLoader() : BaseLoader
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("RecycleActivityInfo.xml"),5);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.wasteRecycle.loadDataFail");
-         _loc1_.analyzer = new WasteRecycleAnalyzer(onDataComplete);
-         return _loc1_;
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("RecycleActivityInfo.xml"),5);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.wasteRecycle.loadDataFail");
+         loader.analyzer = new WasteRecycleAnalyzer(onDataComplete);
+         return loader;
       }
       
-      private function onDataComplete(param1:WasteRecycleAnalyzer) : void
+      private function onDataComplete(analyzer:WasteRecycleAnalyzer) : void
       {
-         _model.data = param1.data;
+         _model.data = analyzer.data;
       }
       
       public function get model() : WasteRecycleModel
@@ -101,9 +100,9 @@ package wasteRecycle
          return _model;
       }
       
-      public function set isPlay(param1:Boolean) : void
+      public function set isPlay(value:Boolean) : void
       {
-         _isPlay = param1;
+         _isPlay = value;
       }
       
       public function get isPlay() : Boolean
@@ -113,8 +112,8 @@ package wasteRecycle
       
       public function openHelpFram() : void
       {
-         var _loc1_:WasteRecycleHelperFrame = ComponentFactory.Instance.creatComponentByStylename("wasteRecycle.helperFrame");
-         _loc1_.show();
+         var frame:WasteRecycleHelperFrame = ComponentFactory.Instance.creatComponentByStylename("wasteRecycle.helperFrame");
+         frame.show();
       }
    }
 }

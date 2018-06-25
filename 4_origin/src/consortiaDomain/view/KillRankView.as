@@ -74,7 +74,7 @@ package consortiaDomain.view
          _mgr.removeEventListener("event_kill_rank_update",onGetRankInfoBack);
       }
       
-      private function onGetRankInfoBack(param1:Event) : void
+      private function onGetRankInfoBack(evt:Event) : void
       {
          _listPanel.vectorListModel.clear();
          _listPanel.vectorListModel.appendAll(_mgr.model.killRankArr);
@@ -89,23 +89,23 @@ package consortiaDomain.view
          }
       }
       
-      private function formatName(param1:String) : String
+      private function formatName(name:String) : String
       {
-         if(param1.length > 4)
+         if(name.length > 4)
          {
-            return param1.slice(0,4) + "...";
+            return name.slice(0,4) + "...";
          }
-         return param1;
+         return name;
       }
       
-      private function __showTotalInfo(param1:MouseEvent) : void
+      private function __showTotalInfo(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _show_totalInfoBtnIMG.setFrame(!!_open_show?2:1);
          addEventListener("enterFrame",__totalViewShowOrHide);
       }
       
-      private function __totalViewShowOrHide(param1:Event) : void
+      private function __totalViewShowOrHide(evt:Event) : void
       {
          if(_open_show)
          {
@@ -129,9 +129,9 @@ package consortiaDomain.view
          }
       }
       
-      public function setOpen(param1:Boolean) : void
+      public function setOpen(isOpen:Boolean) : void
       {
-         if(param1)
+         if(isOpen)
          {
             this.x = StageReferance.stageWidth - this.width + 29;
             _open_show = true;

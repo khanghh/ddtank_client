@@ -15,30 +15,30 @@ package com.greensock.plugins
          this.overwriteProps = [];
       }
       
-      override public function onInitTween(param1:Object, param2:*, param3:TweenLite) : Boolean
+      override public function onInitTween(target:Object, value:*, tween:TweenLite) : Boolean
       {
-         if(typeof param2 == "number")
+         if(typeof value == "number")
          {
             return false;
          }
          var _loc6_:int = 0;
-         var _loc5_:* = param2;
-         for(var _loc4_ in param2)
+         var _loc5_:* = value;
+         for(var p in value)
          {
-            initRotation(param1,_loc4_,param1[_loc4_],typeof param2[_loc4_] == "number"?Number(param2[_loc4_]):param1[_loc4_] + Number(param2[_loc4_]));
+            initRotation(target,p,target[p],typeof value[p] == "number"?Number(value[p]):target[p] + Number(value[p]));
          }
          return true;
       }
       
-      public function initRotation(param1:Object, param2:String, param3:Number, param4:Number) : void
+      public function initRotation(target:Object, propName:String, start:Number, end:Number) : void
       {
-         var _loc5_:Number = (param4 - param3) % 360;
-         if(_loc5_ != _loc5_ % 180)
+         var dif:Number = (end - start) % 360;
+         if(dif != dif % 180)
          {
-            _loc5_ = _loc5_ < 0?_loc5_ + 360:Number(_loc5_ - 360);
+            dif = dif < 0?dif + 360:Number(dif - 360);
          }
-         addTween(param1,param2,param3,param3 + _loc5_,param2);
-         this.overwriteProps[this.overwriteProps.length] = param2;
+         addTween(target,propName,start,start + dif,propName);
+         this.overwriteProps[this.overwriteProps.length] = propName;
       }
    }
 }

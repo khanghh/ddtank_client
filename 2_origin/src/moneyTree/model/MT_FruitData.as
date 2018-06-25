@@ -21,8 +21,8 @@ package moneyTree.model
          {
             return false;
          }
-         var _loc1_:Number = timeGrown.time - TimeManager.Instance.Now().time;
-         return _loc1_ <= 0;
+         var remain:Number = timeGrown.time - TimeManager.Instance.Now().time;
+         return remain <= 0;
       }
    }
 }

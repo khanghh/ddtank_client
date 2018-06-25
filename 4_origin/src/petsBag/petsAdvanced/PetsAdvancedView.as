@@ -76,10 +76,10 @@ package petsBag.petsAdvanced
       
       private var _clickDate:Number = 0;
       
-      public function PetsAdvancedView(param1:int)
+      public function PetsAdvancedView(viewType:int)
       {
          super();
-         _viewType = param1;
+         _viewType = viewType;
          _petInfo = PetsBagManager.instance().petModel.currentPetInfo;
          _itemVector = new Vector.<PetsPropItem>();
          _self = PlayerManager.Instance.Self;
@@ -90,8 +90,8 @@ package petsBag.petsAdvanced
       
       protected function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          if(_viewType == 1)
          {
             _bg = ComponentFactory.Instance.creat("petsBag.risingStar.petsBag.bg");
@@ -105,13 +105,12 @@ package petsBag.petsAdvanced
          addChild(_petsBasicInfoView);
          _vBox = ComponentFactory.Instance.creatComponentByStylename("petsBag.advanced.vBox");
          addChild(_vBox);
-         _loc2_ = 0;
-         while(_loc2_ < 5)
+         for(i = 0; i < 5; )
          {
-            _loc1_ = new PetsPropItem(_viewType);
-            _itemVector.push(_loc1_);
-            _vBox.addChild(_loc1_);
-            _loc2_++;
+            item = new PetsPropItem(_viewType);
+            _itemVector.push(item);
+            _vBox.addChild(item);
+            i++;
          }
          _allBtn = ComponentFactory.Instance.creatComponentByStylename("petsBag.risingStar.allRisingStarBtn");
          addChild(_allBtn);
@@ -174,22 +173,22 @@ package petsBag.petsAdvanced
          DeedManager.instance.addEventListener("update_main_event",refreshFreeTipTxt);
       }
       
-      private function refreshFreeTipTxt(param1:Event = null) : void
+      private function refreshFreeTipTxt(event:Event = null) : void
       {
-         var _loc3_:int = DeedManager.instance.getOneBuffData(10);
-         var _loc2_:int = DeedManager.instance.getOneBuffData(11);
+         var freeCount1:int = DeedManager.instance.getOneBuffData(10);
+         var freeCount2:int = DeedManager.instance.getOneBuffData(11);
          if(_viewType == 1)
          {
-            if(_loc3_ > 0 && _petInfo.StarLevel < 5)
+            if(freeCount1 > 0 && _petInfo.StarLevel < 5)
             {
                _freeBtn.visible = true;
                _freeTxt.visible = true;
-               _freeTxt.text = "(" + _loc3_ + ")";
+               _freeTxt.text = "(" + freeCount1 + ")";
                _btn.visible = false;
             }
             else
             {
-               _freeTxt.text = "(" + _loc3_ + ")";
+               _freeTxt.text = "(" + freeCount1 + ")";
                _freeBtn.visible = false;
                _freeTxt.visible = false;
                _btn.visible = true;
@@ -197,16 +196,16 @@ package petsBag.petsAdvanced
          }
          else if(_viewType == 2)
          {
-            if(_loc2_ > 0 && _self.evolutionGrade < PetsAdvancedManager.Instance.evolutionDataList.length)
+            if(freeCount2 > 0 && _self.evolutionGrade < PetsAdvancedManager.Instance.evolutionDataList.length)
             {
                _freeBtn.visible = true;
                _freeTxt.visible = true;
-               _freeTxt.text = "(" + _loc2_ + ")";
+               _freeTxt.text = "(" + freeCount2 + ")";
                _btn.visible = false;
             }
             else
             {
-               _freeTxt.text = "(" + _loc2_ + ")";
+               _freeTxt.text = "(" + freeCount2 + ")";
                _freeBtn.visible = false;
                _freeTxt.visible = false;
                _btn.visible = true;
@@ -214,12 +213,12 @@ package petsBag.petsAdvanced
          }
       }
       
-      protected function __hideTip(param1:MouseEvent) : void
+      protected function __hideTip(event:MouseEvent) : void
       {
          _tip.visible = false;
       }
       
-      protected function __showTip(param1:MouseEvent) : void
+      protected function __showTip(event:MouseEvent) : void
       {
          _tip.tipData = _progress.currentExp + "/" + _progress.max;
          _tip.visible = true;
@@ -227,16 +226,15 @@ package petsBag.petsAdvanced
       
       protected function playNumMovie() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _itemVector.length)
+         var i:int = 0;
+         for(i = 0; i < _itemVector.length; )
          {
-            _itemVector[_loc1_].playNumMc();
-            _loc1_++;
+            _itemVector[i].playNumMc();
+            i++;
          }
       }
       
-      protected function __allComplete(param1:Event) : void
+      protected function __allComplete(event:Event) : void
       {
          if(_viewType == 1)
          {
@@ -261,7 +259,7 @@ package petsBag.petsAdvanced
          PetsAdvancedControl.Instance.frame.enableBtn = true;
       }
       
-      protected function __progressMovieHandler(param1:PetsAdvancedEvent) : void
+      protected function __progressMovieHandler(event:PetsAdvancedEvent) : void
       {
          if(_viewType == 1)
          {
@@ -279,14 +277,14 @@ package petsBag.petsAdvanced
          addEventListener("enterFrame",__enterFrame);
       }
       
-      protected function __enterFrame(param1:Event) : void
+      protected function __enterFrame(event:Event) : void
       {
       }
       
-      protected function __clickHandler(param1:MouseEvent) : void
+      protected function __clickHandler(event:MouseEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
+         var count:int = 0;
+         var temp:int = 0;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
@@ -304,14 +302,14 @@ package petsBag.petsAdvanced
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.pets.evolution.cannotEvolutionTxt"));
             return;
          }
-         var _loc8_:int = DeedManager.instance.getOneBuffData(10);
-         var _loc7_:int = DeedManager.instance.getOneBuffData(11);
-         if(_viewType == 1 && _loc8_ > 0)
+         var freeCount1:int = DeedManager.instance.getOneBuffData(10);
+         var freeCount2:int = DeedManager.instance.getOneBuffData(11);
+         if(_viewType == 1 && freeCount1 > 0)
          {
             SocketManager.Instance.out.sendPetRisingStar(_bagCell.getTempleteId(),1,_petInfo.Place);
             return;
          }
-         if(_viewType == 2 && _loc7_ > 0)
+         if(_viewType == 2 && freeCount2 > 0)
          {
             SocketManager.Instance.out.sendPetEvolution(_bagCell.getTempleteId(),1);
             return;
@@ -321,25 +319,25 @@ package petsBag.petsAdvanced
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.pets.advanced.noPropTxt",_bagCell.getPropName()));
             return;
          }
-         var _loc2_:int = _bagCell.getExpOfBagcell();
-         var _loc5_:int = _bagCell.getTempleteId();
+         var exp:int = _bagCell.getExpOfBagcell();
+         var templeteId:int = _bagCell.getTempleteId();
          if(_allBtn.selected)
          {
-            _loc4_ = Math.ceil((_progress.max - _progress.currentExp) / _loc2_);
-            _loc3_ = _loc4_ < _bagCell.getCount()?_loc4_:int(_bagCell.getCount());
+            temp = Math.ceil((_progress.max - _progress.currentExp) / exp);
+            count = temp < _bagCell.getCount()?temp:int(_bagCell.getCount());
          }
          else
          {
-            _loc3_ = 1;
+            count = 1;
          }
-         var _loc6_:int = _petInfo.Place;
+         var place:int = _petInfo.Place;
          if(_viewType == 1)
          {
-            SocketManager.Instance.out.sendPetRisingStar(_loc5_,_loc3_,_loc6_);
+            SocketManager.Instance.out.sendPetRisingStar(templeteId,count,place);
          }
          else
          {
-            SocketManager.Instance.out.sendPetEvolution(_loc5_,_loc3_);
+            SocketManager.Instance.out.sendPetEvolution(templeteId,count);
          }
       }
       
@@ -358,7 +356,7 @@ package petsBag.petsAdvanced
          }
       }
       
-      private function __toLinkTxtHandler(param1:TextEvent) : void
+      private function __toLinkTxtHandler(evt:TextEvent) : void
       {
          SoundManager.instance.playButtonSound();
          StateManager.setState("dungeon");
@@ -382,10 +380,10 @@ package petsBag.petsAdvanced
       {
          var _loc3_:int = 0;
          var _loc2_:* = _itemVector;
-         for each(var _loc1_ in _itemVector)
+         for each(var item in _itemVector)
          {
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
+            ObjectUtils.disposeObject(item);
+            item = null;
          }
          _itemVector = null;
          removeEvent();

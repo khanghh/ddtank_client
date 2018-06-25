@@ -41,6 +41,7 @@ package ddt
    import cryptBoss.CryptBossManager;
    import dayActivity.DayActivityManager;
    import ddQiYuan.DDQiYuanManager;
+   import ddt.dailyRecord.DailyRecordControl;
    import ddt.data.AccountInfo;
    import ddt.data.ColorEnum;
    import ddt.data.ConfigParaser;
@@ -92,8 +93,10 @@ package ddt
    import ddtmatch.manager.DDTMatchManager;
    import defendisland.DefendislandManager;
    import demonChiYou.DemonChiYouManager;
+   import devilTurn.DevilTurnManager;
    import dice.DiceManager;
    import dragonBoat.DragonBoatManager;
+   import dreamlandChallenge.DreamlandChallengeManager;
    import drgnBoat.DrgnBoatManager;
    import entertainmentMode.EntertainmentModeManager;
    import escort.EscortManager;
@@ -142,6 +145,7 @@ package ddt
    import moneyTree.MoneyTreeManager;
    import mysteriousRoullete.MysteriousManager;
    import newChickenBox.NewChickenBoxManager;
+   import newOldPlayer.NewOldPlayerManager;
    import newTitle.NewTitleManager;
    import newYearRice.NewYearRiceManager;
    import oldPlayerComeBack.OldPlayerComeBackManager;
@@ -166,6 +170,7 @@ package ddt
    import signBuff.SignBuffManager;
    import stock.StockMgr;
    import team.TeamManager;
+   import totem.TotemManager;
    import trainer.controller.LevelRewardManager;
    import trainer.controller.WeakGuildManager;
    import treasureHunting.TreasureManager;
@@ -179,6 +184,7 @@ package ddt
    import witchBlessing.WitchBlessingManager;
    import wonderfulActivity.WonderfulActivityManager;
    import worldboss.WorldBossManager;
+   import worldcup.WorldcupManager;
    import zodiac.ZodiacManager;
    
    public class DDT
@@ -220,61 +226,59 @@ package ddt
       {
       }
       
-      private function onClick(param1:MouseEvent) : void
+      private function onClick(event:MouseEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var ch:* = null;
          numCh = 0;
-         _loc3_ = 0;
-         while(_loc3_ < StageReferance.stage.numChildren)
+         for(i = 0; i < StageReferance.stage.numChildren; )
          {
-            _loc2_ = StageReferance.stage.getChildAt(_loc3_);
-            _loc2_.visible = true;
+            ch = StageReferance.stage.getChildAt(i);
+            ch.visible = true;
             numCh = Number(numCh) + 1;
-            if(_loc2_ is DisplayObjectContainer)
+            if(ch is DisplayObjectContainer)
             {
-               show(DisplayObjectContainer(_loc2_));
+               show(DisplayObjectContainer(ch));
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      private function show(param1:DisplayObjectContainer) : void
+      private function show(dis:DisplayObjectContainer) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < param1.numChildren)
+         var i:int = 0;
+         var ch:* = null;
+         for(i = 0; i < dis.numChildren; )
          {
-            _loc2_ = param1.getChildAt(_loc3_);
-            _loc2_.visible = true;
+            ch = dis.getChildAt(i);
+            ch.visible = true;
             numCh = Number(numCh) + 1;
-            if(_loc2_ is DisplayObjectContainer)
+            if(ch is DisplayObjectContainer)
             {
-               show(DisplayObjectContainer(_loc2_));
+               show(DisplayObjectContainer(ch));
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      public function lunch(param1:XML, param2:String, param3:String, param4:int, param5:String = "", param6:String = "", param7:Boolean = false, param8:String = "") : void
+      public function lunch(config:XML, username:String, password:String, mode:int, rid:String = "", $baiduEnterCode:String = "", newPlayerIsMaster:Boolean = false, requestUa:String = "") : void
       {
          handleDebugSystem();
          App.init(StageReferance.stage,DisplayLoader.Context.applicationDomain);
-         isMaster = param7;
+         isMaster = newPlayerIsMaster;
          DesktopManager.Instance.checkIsDesktop();
-         PlayerManager.Instance.Self.baiduEnterCode = param6;
-         REQUEST_BY_DEVICE = param8;
+         PlayerManager.Instance.Self.baiduEnterCode = $baiduEnterCode;
+         REQUEST_BY_DEVICE = requestUa;
          if(!_loaded)
          {
-            _user = param2;
-            _pass = param3;
-            _rid = param5;
+            _user = username;
+            _pass = password;
+            _rid = rid;
             PlayerManager.Instance.Self.rid = _rid;
-            ConfigParaser.paras(param1,StageReferance.stage.loaderInfo,_user);
+            ConfigParaser.paras(config,StageReferance.stage.loaderInfo,_user);
             setup();
             StartupResourceLoader.Instance.addEventListener("coreSetupLoadComplete",__onCoreSetupLoadComplete);
-            StartupResourceLoader.Instance.start(param4);
+            StartupResourceLoader.Instance.start(mode);
          }
          else if(StartupResourceLoader.Instance._queueIsComplete)
          {
@@ -286,19 +290,19 @@ package ddt
          }
       }
       
-      public function startLoad(param1:XML, param2:String, param3:String, param4:int, param5:String = "") : void
+      public function startLoad(config:XML, username:String, password:String, mode:int, rid:String = "") : void
       {
          _loaded = true;
-         _user = param2;
-         _pass = param3;
-         _rid = param5;
+         _user = username;
+         _pass = password;
+         _rid = rid;
          PlayerManager.Instance.Self.rid = _rid;
-         ConfigParaser.paras(param1,StageReferance.stage.loaderInfo,_user);
+         ConfigParaser.paras(config,StageReferance.stage.loaderInfo,_user);
          setup();
-         StartupResourceLoader.Instance.start(param4);
+         StartupResourceLoader.Instance.start(mode);
       }
       
-      private function __onCoreSetupLoadComplete(param1:StartupEvent) : void
+      private function __onCoreSetupLoadComplete(event:StartupEvent) : void
       {
          StartupResourceLoader.Instance.removeEventListener("coreSetupLoadComplete",__onCoreSetupLoadComplete);
          ChatManager.Instance.setup();
@@ -319,6 +323,7 @@ package ddt
          BombTurnTableManager.instance.setup();
          CityBattleManager.instance.setup();
          BraveDoorManager.instance.setup();
+         DreamlandChallengeManager.instance.setup();
          BuriedManager.Instance.setup();
          LatentRemainTimeNotice.getInstance().init();
          FoodActivityManager.Instance.setUp();
@@ -328,6 +333,7 @@ package ddt
             FlashP2PManager.Instance.connect();
          }
          DeedManager.instance.setup();
+         TotemManager.instance.setup();
          GypsyShopManager.getInstance().setup();
          WishingTreeManager.instance.setup();
          RandomSuitCardManager.getInstance().setup();
@@ -336,9 +342,9 @@ package ddt
       
       private function setup() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var m1:* = null;
+         var m2:* = null;
+         var acc:* = null;
          if(StringUtils.isEmpty(_user))
          {
             LeavePageManager.leaveToLoginPath();
@@ -346,15 +352,15 @@ package ddt
          else
          {
             setupComponent();
-            _loc1_ = "zRSdzFcnZjOCxDMkWUbuRgiOZIQlk7frZMhElQ0a7VqZI9VgU3+lwo0ghZLU3Gg63kOY2UyJ5vFpQdwJUQydsF337ZAUJz4rwGRt/MNL70wm71nGfmdPv4ING+DyJ3ZxFawwE1zSMjMOqQtY4IV8his/HlgXuUfIHVDK87nMNLc=";
-            _loc2_ = "AQAB";
-            _loc3_ = new AccountInfo();
-            _loc3_.Account = _user;
-            _loc3_.Password = _pass;
-            _loc3_.Key = CrytoUtils.generateRsaKey(_loc1_,_loc2_);
+            m1 = "zRSdzFcnZjOCxDMkWUbuRgiOZIQlk7frZMhElQ0a7VqZI9VgU3+lwo0ghZLU3Gg63kOY2UyJ5vFpQdwJUQydsF337ZAUJz4rwGRt/MNL70wm71nGfmdPv4ING+DyJ3ZxFawwE1zSMjMOqQtY4IV8his/HlgXuUfIHVDK87nMNLc=";
+            m2 = "AQAB";
+            acc = new AccountInfo();
+            acc.Account = _user;
+            acc.Password = _pass;
+            acc.Key = CrytoUtils.generateRsaKey(m1,m2);
             WonderfulActivityManager.Instance.addWAIcon = initWonderfulIcon;
             WonderfulActivityManager.Instance.deleWAIcon = deleWAIcon;
-            PlayerManager.Instance.setup(_loc3_);
+            PlayerManager.Instance.setup(acc);
             ShowTipManager.Instance.setup();
             QueueManager.setup(StageReferance.stage);
             TimeManager.Instance.setup();
@@ -489,6 +495,10 @@ package ddt
             TeamManager.instance.setup();
             DDTKingWayManager.instance.setup();
             MarkMgr.inst.setup();
+            DevilTurnManager.instance.setup();
+            WorldcupManager.instance.setup();
+            DailyRecordControl.Instance.setup();
+            NewOldPlayerManager.instance.stup();
          }
       }
       
@@ -508,12 +518,12 @@ package ddt
          ComponentSetting.COMBOX_LIST_LAYER = LayerManager.Instance.getLayerByType(0);
          ComponentSetting.PLAY_SOUND_FUNC = SoundManager.instance.play;
          ComponentSetting.SEND_USELOG_ID = SocketManager.Instance.out.sendUseLog;
-         var _loc1_:AlertInfo = new AlertInfo();
-         _loc1_.mutiline = true;
-         _loc1_.buttonGape = 15;
-         _loc1_.autoDispose = true;
-         _loc1_.sound = "008";
-         AlertManager.Instance.setup(1,_loc1_);
+         var alertInfo:AlertInfo = new AlertInfo();
+         alertInfo.mutiline = true;
+         alertInfo.buttonGape = 15;
+         alertInfo.autoDispose = true;
+         alertInfo.sound = "008";
+         AlertManager.Instance.setup(1,alertInfo);
       }
       
       private function soundPlay() : void

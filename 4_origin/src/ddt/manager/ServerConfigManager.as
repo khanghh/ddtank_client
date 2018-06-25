@@ -192,6 +192,16 @@ package ddt.manager
       public static const ISOPENWEALTHTREE:String = "IsOpenWealthTree";
       
       public static const CHRISTMAST_GIFTS_GETTIME:String = "ChristmasGiftsGetTime";
+      
+      public static const UNREALCONTEST_BUYCOST:String = "UnrealContestBuyCost";
+      
+      public static const UNREALCONTESTLEVELLIMITS:String = "UnrealContestLevelLimits";
+      
+      public static const UNREALCONTEST_ENDDATE:String = "UnrealContestEndDate";
+      
+      public static const PETWASH_COST:String = "PetWashCost";
+      
+      public static const PET_QUALITY_CONFIG:String = "PetQualityConfig";
        
       
       private var _serverConfigInfoList:DictionaryData;
@@ -226,24 +236,23 @@ package ddt.manager
          return _instance;
       }
       
-      public function getserverConfigInfo(param1:ServerConfigAnalyz) : void
+      public function getserverConfigInfo(analyzer:ServerConfigAnalyz) : void
       {
-         var _loc4_:int = 0;
-         _serverConfigInfoList = param1.serverConfigInfoList;
+         var i:int = 0;
+         _serverConfigInfoList = analyzer.serverConfigInfoList;
          _BindMoneyMax = _serverConfigInfoList["BindMoneyMax"].Value.split("|");
          _VIPExtraBindMoneyUpper = _serverConfigInfoList["VIPExtraBindMoneyUpper"].Value.split("|");
          _activityEnterNum = _serverConfigInfoList["QXGameLimitCount"].Value;
          _dailyRewardIDForMonth = _serverConfigInfoList["DailyRewardIDForMonth"].Value.split("|");
          _christmasGiftGetTime = _serverConfigInfoList["ChristmasGiftsGetTime"].Value;
          _cryptBossOpenDay = _serverConfigInfoList["CryptBossOpenDay"].Value.split("|");
-         var _loc2_:Array = _serverConfigInfoList["ConsortiaMissionAddTime"].Value.split("|");
-         var _loc3_:int = _loc2_.length;
+         var tmp:Array = _serverConfigInfoList["ConsortiaMissionAddTime"].Value.split("|");
+         var len:int = tmp.length;
          _consortiaTaskDelayInfo = [];
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         for(i = 0; i < len; )
          {
-            _consortiaTaskDelayInfo.push(_loc2_[_loc4_].split(","));
-            _loc4_++;
+            _consortiaTaskDelayInfo.push(tmp[i].split(","));
+            i++;
          }
       }
       
@@ -274,10 +283,10 @@ package ddt.manager
       
       public function get buyCardSoulValueMoney() : Number
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("BuyCardSoulValueMoney");
-         if(_loc1_)
+         var obj:ServerConfigInfo = findInfoByName("BuyCardSoulValueMoney");
+         if(obj)
          {
-            return Number(_loc1_.Value);
+            return Number(obj.Value);
          }
          return 500;
       }
@@ -287,19 +296,19 @@ package ddt.manager
          return _serverConfigInfoList["LanternHomeVisited"].Value;
       }
       
-      public function getNeedUseLotteryKicket(param1:int) : int
+      public function getNeedUseLotteryKicket(quality:int) : int
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var temValue:* = null;
+         var temArr:* = null;
          if(_serverConfigInfoList.hasKey("TurnTableCostCountByLevel"))
          {
-            _loc3_ = _serverConfigInfoList["TurnTableCostCountByLevel"].Value;
-            _loc2_ = _loc3_.split("|");
-            if(_loc2_.length == 4 && param1 <= 3)
+            temValue = _serverConfigInfoList["TurnTableCostCountByLevel"].Value;
+            temArr = temValue.split("|");
+            if(temArr.length == 4 && quality <= 3)
             {
-               return _loc2_[param1];
+               return temArr[quality];
             }
-            return _loc2_[_loc2_.length - 1];
+            return temArr[temArr.length - 1];
          }
          return 6;
       }
@@ -349,15 +358,15 @@ package ddt.manager
          return _cryptBossOpenDay;
       }
       
-      public function getBindBidLimit(param1:int, param2:int = 0) : int
+      public function getBindBidLimit(level:int, vipLevel:int = 0) : int
       {
-         var _loc4_:int = param1 % 10 == 0?int(_BindMoneyMax[int(param1 / 10) - 1]):int(_BindMoneyMax[int(param1 / 10)]);
-         var _loc3_:int = 0;
-         if(PlayerManager.Instance.Self.IsVIP && param2 > 0)
+         var levelMax:int = level % 10 == 0?int(_BindMoneyMax[int(level / 10) - 1]):int(_BindMoneyMax[int(level / 10)]);
+         var vipLevelMax:int = 0;
+         if(PlayerManager.Instance.Self.IsVIP && vipLevel > 0)
          {
-            _loc3_ = _VIPExtraBindMoneyUpper[param2 - 1];
+            vipLevelMax = _VIPExtraBindMoneyUpper[vipLevel - 1];
          }
-         return _loc4_ + _loc3_;
+         return levelMax + vipLevelMax;
       }
       
       public function get PayAimEnergy() : int
@@ -367,8 +376,8 @@ package ddt.manager
       
       public function get VIPPayAimEnergy() : Array
       {
-         var _loc1_:Array = findInfoByName("VIPPayAimEnergy").Value.split("|");
-         return _loc1_;
+         var arr:Array = findInfoByName("VIPPayAimEnergy").Value.split("|");
+         return arr;
       }
       
       public function get weddingMoney() : Array
@@ -406,15 +415,15 @@ package ddt.manager
          return findInfoByName("HotSpringExp").Value.split(",");
       }
       
-      public function findInfoByName(param1:String) : ServerConfigInfo
+      public function findInfoByName(name:String) : ServerConfigInfo
       {
-         return _serverConfigInfoList[param1];
+         return _serverConfigInfoList[name];
       }
       
       public function get VIPStrengthenEx() : Array
       {
-         var _loc1_:Object = findInfoByName("VIPStrengthenEx");
-         if(_loc1_)
+         var obj:Object = findInfoByName("VIPStrengthenEx");
+         if(obj)
          {
             return findInfoByName("VIPStrengthenEx").Value.split("|");
          }
@@ -423,8 +432,8 @@ package ddt.manager
       
       public function ConsortiaStrengthenEx() : Array
       {
-         var _loc1_:Object = findInfoByName("ConsortiaStrengthenEx");
-         if(_loc1_)
+         var obj:Object = findInfoByName("ConsortiaStrengthenEx");
+         if(obj)
          {
             return findInfoByName("ConsortiaStrengthenEx").Value.split("|");
          }
@@ -438,50 +447,50 @@ package ddt.manager
       
       public function get VIPRenewalPrice() : Array
       {
-         var _loc1_:Object = findInfoByName("VIPRenewalPrize");
-         if(_loc1_)
+         var obj:Object = findInfoByName("VIPRenewalPrize");
+         if(obj)
          {
-            return String(_loc1_.Value).split("|");
+            return String(obj.Value).split("|");
          }
          return null;
       }
       
       public function get VIPRateForGP() : Array
       {
-         var _loc1_:Object = findInfoByName("VIPRateForGP");
-         if(_loc1_)
+         var obj:Object = findInfoByName("VIPRateForGP");
+         if(obj)
          {
-            return String(_loc1_.Value).split("|");
+            return String(obj.Value).split("|");
          }
          return null;
       }
       
       public function get VIPQuestStar() : Array
       {
-         var _loc1_:Object = findInfoByName("VIPQuestStar");
-         if(_loc1_)
+         var obj:Object = findInfoByName("VIPQuestStar");
+         if(obj)
          {
-            return String(_loc1_.Value).split("|");
+            return String(obj.Value).split("|");
          }
          return null;
       }
       
       public function get VIPLotteryCountMaxPerDay() : Array
       {
-         var _loc1_:Object = findInfoByName("VIPLotteryCountMaxPerDay");
-         if(_loc1_)
+         var obj:Object = findInfoByName("VIPLotteryCountMaxPerDay");
+         if(obj)
          {
-            return String(_loc1_.Value).split("|");
+            return String(obj.Value).split("|");
          }
          return null;
       }
       
       public function get VIPTakeCardDisCount() : Array
       {
-         var _loc1_:Object = findInfoByName("VIPTakeCardDisCount");
-         if(_loc1_)
+         var obj:Object = findInfoByName("VIPTakeCardDisCount");
+         if(obj)
          {
-            return String(_loc1_.Value).split("|");
+            return String(obj.Value).split("|");
          }
          return null;
       }
@@ -491,22 +500,22 @@ package ddt.manager
          return analyzeData("VIPQuestFinishDirect");
       }
       
-      public function analyzeData(param1:String) : Array
+      public function analyzeData(field:String) : Array
       {
-         var _loc2_:Object = findInfoByName(param1);
-         if(_loc2_)
+         var obj:Object = findInfoByName(field);
+         if(obj)
          {
-            return String(_loc2_.Value).split("|");
+            return String(obj.Value).split("|");
          }
          return null;
       }
       
-      public function getPrivilegeString(param1:int) : String
+      public function getPrivilegeString(level:int) : String
       {
-         var _loc2_:Object = findInfoByName("VIPPrivilege");
-         if(_loc2_)
+         var obj:Object = findInfoByName("VIPPrivilege");
+         if(obj)
          {
-            return String(_loc2_.Value);
+            return String(obj.Value);
          }
          return null;
       }
@@ -518,50 +527,50 @@ package ddt.manager
       
       public function get VIPRewardCryptCount() : Vector.<String>
       {
-         var _loc1_:Vector.<String> = Vector.<String>(findInfoByName("VIPRewardCryptCount").Value.split("|"));
-         return _loc1_;
+         var data:Vector.<String> = Vector.<String>(findInfoByName("VIPRewardCryptCount").Value.split("|"));
+         return data;
       }
       
-      public function getPrivilegeMinLevel(param1:String) : int
+      public function getPrivilegeMinLevel(type:String) : int
       {
-         var _loc6_:* = null;
-         var _loc2_:int = 0;
-         var _loc4_:* = null;
+         var obj:* = null;
+         var level:int = 0;
+         var arr:* = null;
          if(privileges == null)
          {
-            _loc6_ = findInfoByName("VIPPrivilege");
-            _loc2_ = 1;
-            _loc4_ = String(_loc6_.Value).split("|");
+            obj = findInfoByName("VIPPrivilege");
+            level = 1;
+            arr = String(obj.Value).split("|");
             privileges = new Dictionary();
             var _loc10_:int = 0;
-            var _loc9_:* = _loc4_;
-            for each(var _loc3_ in _loc4_)
+            var _loc9_:* = arr;
+            for each(var s in arr)
             {
                var _loc8_:int = 0;
-               var _loc7_:* = _loc3_.split(",");
-               for each(var _loc5_ in _loc3_.split(","))
+               var _loc7_:* = s.split(",");
+               for each(var p in s.split(","))
                {
-                  privileges[_loc5_] = _loc2_;
+                  privileges[p] = level;
                }
-               _loc2_++;
+               level++;
             }
          }
-         return int(privileges[param1]);
+         return int(privileges[type]);
       }
       
       public function getBeadUpgradeExp() : DictionaryData
       {
-         var _loc2_:DictionaryData = new DictionaryData();
-         var _loc4_:Array = findInfoByName("RuneLevelUpExp").Value.split("|");
-         var _loc3_:int = 1;
+         var vResultDic:DictionaryData = new DictionaryData();
+         var vArray:Array = findInfoByName("RuneLevelUpExp").Value.split("|");
+         var vLv:int = 1;
          var _loc6_:int = 0;
-         var _loc5_:* = _loc4_;
-         for each(var _loc1_ in _loc4_)
+         var _loc5_:* = vArray;
+         for each(var o in vArray)
          {
-            _loc2_.add(_loc3_,_loc1_);
-            _loc3_++;
+            vResultDic.add(vLv,o);
+            vLv++;
          }
-         return _loc2_;
+         return vResultDic;
       }
       
       public function getRequestBeadPrice() : Array
@@ -576,8 +585,8 @@ package ddt.manager
       
       public function get minOpenPetSystemLevel() : int
       {
-         var _loc1_:Object = findInfoByName("PlayerMinLevel");
-         return int(_loc1_.Value);
+         var obj:Object = findInfoByName("PlayerMinLevel");
+         return int(obj.Value);
       }
       
       public function get activityEnterNum() : int
@@ -595,9 +604,9 @@ package ddt.manager
          return _christmasGiftGetTime;
       }
       
-      public function getDragonBoatBuildStage(param1:int) : Array
+      public function getDragonBoatBuildStage(type:int) : Array
       {
-         return findInfoByName("DragonBoatBuildStage" + param1).Value.split("|");
+         return findInfoByName("DragonBoatBuildStage" + type).Value.split("|");
       }
       
       public function get dragonBoatFastTime() : int
@@ -667,21 +676,21 @@ package ddt.manager
       
       public function get pyramidTopMinMaxPoint() : Array
       {
-         var _loc1_:* = null;
-         var _loc2_:ServerConfigInfo = findInfoByName("PyramidTopPoint");
-         if(_loc2_)
+         var tempArr:* = null;
+         var obj:ServerConfigInfo = findInfoByName("PyramidTopPoint");
+         if(obj)
          {
-            _loc1_ = _loc2_.Value.split("|");
-            return new Array(_loc1_[0],_loc1_[_loc1_.length - 1]);
+            tempArr = obj.Value.split("|");
+            return new Array(tempArr[0],tempArr[tempArr.length - 1]);
          }
          return new Array(0,0);
       }
       
       public function get sevendayProgressGift() : Array
       {
-         var _loc2_:ServerConfigInfo = findInfoByName("SevenDayTargetReward");
-         var _loc1_:Array = _loc2_.Value.split("|");
-         return _loc1_;
+         var obj:ServerConfigInfo = findInfoByName("SevenDayTargetReward");
+         var temArr:Array = obj.Value.split("|");
+         return temArr;
       }
       
       public function get nationalDayDropEndDate() : String
@@ -739,6 +748,11 @@ package ddt.manager
          return _serverConfigInfoList["ThreeClearColourCleanCost"].Value;
       }
       
+      public function SanXiaoStepPrice() : String
+      {
+         return _serverConfigInfoList["ThreeCleanBuyCost"].Value;
+      }
+      
       public function get halloweenBeginDate() : String
       {
          return _serverConfigInfoList["HalloweenBeginDate"].Value.split("|");
@@ -751,57 +765,57 @@ package ddt.manager
       
       public function get depotBuyMoney() : Array
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("DepotBuyMoney");
-         if(_loc1_)
+         var info:ServerConfigInfo = findInfoByName("DepotBuyMoney");
+         if(info)
          {
-            return _loc1_.Value.split(",");
+            return info.Value.split(",");
          }
          return null;
       }
       
       public function get levelFundPrice() : Array
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("DDFundPrice");
-         if(_loc1_)
+         var info:ServerConfigInfo = findInfoByName("DDFundPrice");
+         if(info)
          {
-            return _loc1_.Value.split(",");
+            return info.Value.split(",");
          }
          return null;
       }
       
       public function get homeFightBoxIDList() : Array
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("HomeTDHomeBoxID");
-         if(_loc1_)
+         var info:ServerConfigInfo = findInfoByName("HomeTDHomeBoxID");
+         if(info)
          {
-            return _loc1_.Value.split(",");
+            return info.Value.split(",");
          }
          return null;
       }
       
       public function get homeFightSkillPrice() : Array
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("HomeTDSkillPrice");
-         if(_loc1_)
+         var info:ServerConfigInfo = findInfoByName("HomeTDSkillPrice");
+         if(info)
          {
-            return _loc1_.Value.split(",");
+            return info.Value.split(",");
          }
          return null;
       }
       
       public function entertainmentScore() : Array
       {
-         var _loc2_:ServerConfigInfo = findInfoByName("EntertainmentScore");
-         var _loc1_:Array = _loc2_.Value.split(",");
-         return _loc1_;
+         var obj:ServerConfigInfo = findInfoByName("EntertainmentScore");
+         var arr:Array = obj.Value.split(",");
+         return arr;
       }
       
       public function entertainmentPrice() : int
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("RecreationPvpRefreshPropBindMoney");
-         if(_loc1_)
+         var _info:ServerConfigInfo = findInfoByName("RecreationPvpRefreshPropBindMoney");
+         if(_info)
          {
-            return int(_loc1_.Value);
+            return int(_info.Value);
          }
          return 0;
       }
@@ -813,10 +827,10 @@ package ddt.manager
       
       public function get homeFightSkillEffect() : Array
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("HomeTDSkillEffect");
-         if(_loc1_)
+         var info:ServerConfigInfo = findInfoByName("HomeTDSkillEffect");
+         if(info)
          {
-            return _loc1_.Value.split(",");
+            return info.Value.split(",");
          }
          return null;
       }
@@ -853,29 +867,28 @@ package ddt.manager
       
       public function get homeBarCleanCDPrice() : int
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("HomeBarCleanCDPrice");
-         if(_loc1_)
+         var obj:ServerConfigInfo = findInfoByName("HomeBarCleanCDPrice");
+         if(obj)
          {
-            return int(_loc1_.Value);
+            return int(obj.Value);
          }
          return 0;
       }
       
-      public function getHouseExtendNeed(param1:int) : Array
+      public function getHouseExtendNeed(next:int) : Array
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:ServerConfigInfo = findInfoByName("HouseUpgradeUse");
-         var _loc2_:Array = _loc3_.Value.split("|");
-         _loc5_ = 0;
-         while(_loc5_ <= _loc2_.length - 1)
+         var i:int = 0;
+         var childArr:* = null;
+         var obj:ServerConfigInfo = findInfoByName("HouseUpgradeUse");
+         var arr:Array = obj.Value.split("|");
+         for(i = 0; i <= arr.length - 1; )
          {
-            _loc4_ = _loc2_[_loc5_].split(",");
-            if(parseInt(_loc4_[0]) == param1)
+            childArr = arr[i].split(",");
+            if(parseInt(childArr[0]) == next)
             {
-               return _loc4_;
+               return childArr;
             }
-            _loc5_++;
+            i++;
          }
          return [];
       }
@@ -897,25 +910,25 @@ package ddt.manager
       
       public function yearMonsterBeginDate() : Date
       {
-         var _loc1_:String = _serverConfigInfoList["YearMonsterBeginDate"].Value;
-         return DateUtils.getDateByStr(_loc1_);
+         var str:String = _serverConfigInfoList["YearMonsterBeginDate"].Value;
+         return DateUtils.getDateByStr(str);
       }
       
       public function yearMonsterEndDate() : Date
       {
-         var _loc1_:String = _serverConfigInfoList["YearMonsterEndDate"].Value;
-         return DateUtils.getDateByStr(_loc1_);
+         var str:String = _serverConfigInfoList["YearMonsterEndDate"].Value;
+         return DateUtils.getDateByStr(str);
       }
       
       public function rescueSpringBegin() : Date
       {
-         var _loc1_:String = _serverConfigInfoList["HelpGameSpringBegin"].Value;
-         return DateUtils.getDateByStr(_loc1_);
+         var str:String = _serverConfigInfoList["HelpGameSpringBegin"].Value;
+         return DateUtils.getDateByStr(str);
       }
       
-      public function getSeniorMarryMoney(param1:Boolean) : Array
+      public function getSeniorMarryMoney(isSale:Boolean) : Array
       {
-         if(param1)
+         if(isSale)
          {
             return _serverConfigInfoList["SeniorMarryActivePrice"].Value.split(",");
          }
@@ -934,21 +947,21 @@ package ddt.manager
       
       public function getChristmasGiftsGetTime() : Array
       {
-         var _loc2_:String = _serverConfigInfoList["ChristmasGiftsGetTime"].Value;
-         var _loc1_:Date = DateUtils.getDateByStr(_loc2_);
-         return [_loc1_.hours,_loc1_.minutes];
+         var str:String = _serverConfigInfoList["ChristmasGiftsGetTime"].Value;
+         var d:Date = DateUtils.getDateByStr(str);
+         return [d.hours,d.minutes];
       }
       
       public function getSeniorMarryBegin() : Date
       {
-         var _loc1_:String = _serverConfigInfoList["SeniorMarryBegin"].Value;
-         return DateUtils.getDateByStr(_loc1_);
+         var str:String = _serverConfigInfoList["SeniorMarryBegin"].Value;
+         return DateUtils.getDateByStr(str);
       }
       
       public function getSeniorMarryEnd() : Date
       {
-         var _loc1_:String = _serverConfigInfoList["SeniorMarryEnd"].Value;
-         return DateUtils.getDateByStr(_loc1_);
+         var str:String = _serverConfigInfoList["SeniorMarryEnd"].Value;
+         return DateUtils.getDateByStr(str);
       }
       
       public function get AuctionRate() : String
@@ -958,20 +971,20 @@ package ddt.manager
       
       public function getDesertFreeEnterCount() : int
       {
-         var _loc1_:int = _serverConfigInfoList["DesertFreeEnterCount"].Value;
-         return _loc1_;
+         var count:int = _serverConfigInfoList["DesertFreeEnterCount"].Value;
+         return count;
       }
       
       public function getDesertFeeEnterCount() : int
       {
-         var _loc1_:int = _serverConfigInfoList["DesertFeeEnterCount"].Value;
-         return _loc1_;
+         var count:int = _serverConfigInfoList["DesertFeeEnterCount"].Value;
+         return count;
       }
       
       public function getMagicHighFamMaxLevel() : int
       {
-         var _loc1_:int = _serverConfigInfoList["WarriorHighFamMaxLevel"].Value;
-         return _loc1_;
+         var count:int = _serverConfigInfoList["WarriorHighFamMaxLevel"].Value;
+         return count;
       }
       
       public function get firstDivorcedMoney() : String
@@ -981,8 +994,8 @@ package ddt.manager
       
       public function getWarriorHighFamMaxLevel() : int
       {
-         var _loc1_:int = _serverConfigInfoList["WarriorFamMaxLevel"].Value;
-         return _loc1_;
+         var count:int = _serverConfigInfoList["WarriorFamMaxLevel"].Value;
+         return count;
       }
       
       public function getVipIntegral() : Array
@@ -1066,19 +1079,18 @@ package ddt.manager
       
       public function get addPlayerDressModel() : Array
       {
-         var _loc3_:int = 0;
-         var _loc2_:ServerConfigInfo = findInfoByName("BuyClothGroupCost");
-         var _loc1_:Array = [];
-         if(_loc2_)
+         var i:int = 0;
+         var obj:ServerConfigInfo = findInfoByName("BuyClothGroupCost");
+         var temArr:Array = [];
+         if(obj)
          {
-            _loc3_ = 0;
-            while(_loc3_ < 3)
+            for(i = 0; i < 3; )
             {
-               _loc1_[_loc2_.Value.split("|")[_loc3_].split(",")[0]] = _loc2_.Value.split("|")[_loc3_].split(",")[1];
-               _loc3_++;
+               temArr[obj.Value.split("|")[i].split(",")[0]] = obj.Value.split("|")[i].split(",")[1];
+               i++;
             }
          }
-         return _loc1_;
+         return temArr;
       }
       
       public function get HappyLittleGameOpenList() : String
@@ -1133,41 +1145,41 @@ package ddt.manager
       
       public function getTimeControl() : Array
       {
-         var _loc2_:ServerConfigInfo = findInfoByName("DiffDimensionTimeControl");
-         var _loc1_:Array = _loc2_.Value.split("|");
-         return _loc1_;
+         var obj:ServerConfigInfo = findInfoByName("DiffDimensionTimeControl");
+         var arr:Array = obj.Value.split("|");
+         return arr;
       }
       
       public function getSpaceControl() : Array
       {
-         var _loc2_:ServerConfigInfo = findInfoByName("DiffDimensionSpaceControl");
-         var _loc1_:Array = _loc2_.Value.split("|");
-         return _loc1_;
+         var obj:ServerConfigInfo = findInfoByName("DiffDimensionSpaceControl");
+         var arr:Array = obj.Value.split("|");
+         return arr;
       }
       
       public function getLootControl() : Array
       {
-         var _loc2_:ServerConfigInfo = findInfoByName("DiffDimensionLootControl");
-         var _loc1_:Array = _loc2_.Value.split("|");
-         return _loc1_;
+         var obj:ServerConfigInfo = findInfoByName("DiffDimensionLootControl");
+         var arr:Array = obj.Value.split("|");
+         return arr;
       }
       
       public function getLevelUpItemID() : int
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("DiffDimensionLevelUpItemID");
-         if(_loc1_)
+         var obj:ServerConfigInfo = findInfoByName("DiffDimensionLevelUpItemID");
+         if(obj)
          {
-            return int(_loc1_.Value);
+            return int(obj.Value);
          }
          return 0;
       }
       
       public function getSearchPrice() : int
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("DiffDimensionRefreshPrice");
-         if(_loc1_)
+         var obj:ServerConfigInfo = findInfoByName("DiffDimensionRefreshPrice");
+         if(obj)
          {
-            return int(_loc1_.Value);
+            return int(obj.Value);
          }
          return 0;
       }
@@ -1183,30 +1195,30 @@ package ddt.manager
       
       public function get petDisappearPlaycount() : Array
       {
-         var _loc2_:ServerConfigInfo = findInfoByName("PetDisappearPlayCount");
-         var _loc1_:Array = _loc2_.Value.split("|");
-         return _loc1_;
+         var info:ServerConfigInfo = findInfoByName("PetDisappearPlayCount");
+         var arr:Array = info.Value.split("|");
+         return arr;
       }
       
       public function get petDisappearPlaySoncount() : Array
       {
-         var _loc2_:ServerConfigInfo = findInfoByName("PetDisappearPlaySonCount");
-         var _loc1_:Array = _loc2_.Value.split("|");
-         return _loc1_;
+         var info:ServerConfigInfo = findInfoByName("PetDisappearPlaySonCount");
+         var arr:Array = info.Value.split("|");
+         return arr;
       }
       
       public function get petDisappearPlayerBlood() : Array
       {
-         var _loc2_:ServerConfigInfo = findInfoByName("PetDisappearUserBlood");
-         var _loc1_:Array = _loc2_.Value.split("|");
-         return _loc1_;
+         var info:ServerConfigInfo = findInfoByName("PetDisappearUserBlood");
+         var arr:Array = info.Value.split("|");
+         return arr;
       }
       
       public function get petDisappearNPCBlood() : Array
       {
-         var _loc2_:ServerConfigInfo = findInfoByName("PetDisappearNPCBlood");
-         var _loc1_:Array = _loc2_.Value.split("|");
-         return _loc1_;
+         var info:ServerConfigInfo = findInfoByName("PetDisappearNPCBlood");
+         var arr:Array = info.Value.split("|");
+         return arr;
       }
       
       public function get petDisappearRecoverPrice() : int
@@ -1216,9 +1228,9 @@ package ddt.manager
       
       public function get petDisappearSkillMoney() : Array
       {
-         var _loc2_:ServerConfigInfo = findInfoByName("PetDisappearSkillMoney");
-         var _loc1_:Array = _loc2_.Value.split("|");
-         return _loc1_;
+         var info:ServerConfigInfo = findInfoByName("PetDisappearSkillMoney");
+         var arr:Array = info.Value.split("|");
+         return arr;
       }
       
       public function get petDisappearSkillMaxTimes() : int
@@ -1233,9 +1245,9 @@ package ddt.manager
       
       public function get petDisappearSkillTwoMoney() : Array
       {
-         var _loc2_:ServerConfigInfo = findInfoByName("PetDisappearSkillTwoMoney");
-         var _loc1_:Array = _loc2_.Value.split("|");
-         return _loc1_;
+         var info:ServerConfigInfo = findInfoByName("PetDisappearSkillTwoMoney");
+         var arr:Array = info.Value.split("|");
+         return arr;
       }
       
       public function get HorseGameEachDayMaxCount() : int
@@ -1255,9 +1267,9 @@ package ddt.manager
       
       public function get horseGameBuffConfig() : Array
       {
-         var _loc2_:ServerConfigInfo = findInfoByName("HorseGameBuffConfig");
-         var _loc1_:Array = _loc2_.Value.split("|");
-         return _loc1_;
+         var info:ServerConfigInfo = findInfoByName("HorseGameBuffConfig");
+         var arr:Array = info.Value.split("|");
+         return arr;
       }
       
       public function get petDisappearMaxLevel() : int
@@ -1277,8 +1289,8 @@ package ddt.manager
       
       public function get prayActivityConfig() : Array
       {
-         var _loc1_:Array = findInfoByName("PrayGoodsActivityConfig").Value.split("|");
-         return _loc1_;
+         var arr:Array = findInfoByName("PrayGoodsActivityConfig").Value.split("|");
+         return arr;
       }
       
       public function get kingBuffPrice() : String
@@ -1293,23 +1305,23 @@ package ddt.manager
       
       public function get localYearFoodItemsCount() : Array
       {
-         var _loc2_:ServerConfigInfo = findInfoByName("YearFoodItemsCount");
-         var _loc1_:Array = _loc2_.Value.split("|");
-         return _loc1_;
+         var info:ServerConfigInfo = findInfoByName("YearFoodItemsCount");
+         var arr:Array = info.Value.split("|");
+         return arr;
       }
       
       public function get localYearFoodItems() : Array
       {
-         var _loc2_:ServerConfigInfo = findInfoByName("YearFoodItems");
-         var _loc1_:Array = _loc2_.Value.split(",");
-         return _loc1_;
+         var info:ServerConfigInfo = findInfoByName("YearFoodItems");
+         var arr:Array = info.Value.split(",");
+         return arr;
       }
       
       public function get cityOccupationAddPrice() : Array
       {
-         var _loc2_:ServerConfigInfo = findInfoByName("CityOccupationAddPrice");
-         var _loc1_:Array = _loc2_.Value.split("|");
-         return _loc1_;
+         var info:ServerConfigInfo = findInfoByName("CityOccupationAddPrice");
+         var arr:Array = info.Value.split("|");
+         return arr;
       }
       
       public function get cityOccupationStartDate() : String
@@ -1324,67 +1336,67 @@ package ddt.manager
       
       public function get localYearFoodItemsPrices() : Array
       {
-         var _loc2_:ServerConfigInfo = findInfoByName("YearFoodItemPrices");
-         var _loc1_:Array = _loc2_.Value.split(",");
-         return _loc1_;
+         var info:ServerConfigInfo = findInfoByName("YearFoodItemPrices");
+         var arr:Array = info.Value.split(",");
+         return arr;
       }
       
       public function get getLightRiddleIsNew() : Boolean
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("LightRiddleIsNew");
-         if(_loc1_)
+         var obj:ServerConfigInfo = findInfoByName("LightRiddleIsNew");
+         if(obj)
          {
-            return _loc1_.Value.toLowerCase() != "false";
+            return obj.Value.toLowerCase() != "false";
          }
          return false;
       }
       
       public function get getIsBuyQuestEnereyNeedKingBuff() : Boolean
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("IsBuyQuestEnereyNeedKingBuff");
-         if(_loc1_)
+         var obj:ServerConfigInfo = findInfoByName("IsBuyQuestEnereyNeedKingBuff");
+         if(obj)
          {
-            return _loc1_.Value.toLowerCase() != "false";
+            return obj.Value.toLowerCase() != "false";
          }
          return false;
       }
       
       public function getDDTKingQuizPrize() : int
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("DDTKingQuizPrize");
-         if(_loc1_)
+         var obj:ServerConfigInfo = findInfoByName("DDTKingQuizPrize");
+         if(obj)
          {
-            return int(_loc1_.Value);
+            return int(obj.Value);
          }
          return 100;
       }
       
       public function getDDTKingQuizCityList() : String
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("DDTKingQuizCityList");
-         if(_loc1_)
+         var obj:ServerConfigInfo = findInfoByName("DDTKingQuizCityList");
+         if(obj)
          {
-            return _loc1_.Value;
+            return obj.Value;
          }
          return "1|2|3|4|5|6|7|8";
       }
       
       public function getDDTKingQuizPersonMaxCount() : String
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("DDTKingQuizPersonMaxCount");
-         if(_loc1_)
+         var obj:ServerConfigInfo = findInfoByName("DDTKingQuizPersonMaxCount");
+         if(obj)
          {
-            return _loc1_.Value;
+            return obj.Value;
          }
          return "1000|500|200|100";
       }
       
       public function getDDTKingQuizTeamMaxCount() : String
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("DDTKingQuizTeamMaxCount");
-         if(_loc1_)
+         var obj:ServerConfigInfo = findInfoByName("DDTKingQuizTeamMaxCount");
+         if(obj)
          {
-            return _loc1_.Value;
+            return obj.Value;
          }
          return "1000|500|200|100";
       }
@@ -1446,74 +1458,74 @@ package ddt.manager
       
       public function getLightRiddleRemoveErrorMoney() : int
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("LightRiddleRemoveErrorMoney");
-         if(_loc1_)
+         var obj:ServerConfigInfo = findInfoByName("LightRiddleRemoveErrorMoney");
+         if(obj)
          {
-            return int(_loc1_.Value);
+            return int(obj.Value);
          }
          return 0;
       }
       
       public function getDDTKingQuizLostID() : int
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("DDTKingQuizLostID");
-         if(_loc1_)
+         var obj:ServerConfigInfo = findInfoByName("DDTKingQuizLostID");
+         if(obj)
          {
-            return int(_loc1_.Value);
+            return int(obj.Value);
          }
          return 0;
       }
       
       public function getDDTKingQuizWinID() : int
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("DDTKingQuizWinID");
-         if(_loc1_)
+         var obj:ServerConfigInfo = findInfoByName("DDTKingQuizWinID");
+         if(obj)
          {
-            return int(_loc1_.Value);
+            return int(obj.Value);
          }
          return 0;
       }
       
       public function get magicStoneCostItemNum() : int
       {
-         var _loc1_:Object = findInfoByName("MagicStoneCostItem");
-         return int(_loc1_.Value);
+         var obj:Object = findInfoByName("MagicStoneCostItem");
+         return int(obj.Value);
       }
       
       public function get consortiaMatchStartTime() : Array
       {
-         var _loc2_:ServerConfigInfo = findInfoByName("ConsortiaMatchStartTime");
-         var _loc1_:Array = _loc2_.Value.split(" ")[1].toString().split(":");
-         return _loc1_;
+         var info:ServerConfigInfo = findInfoByName("ConsortiaMatchStartTime");
+         var arr:Array = info.Value.split(" ")[1].toString().split(":");
+         return arr;
       }
       
       public function get consortiaMatchEndTime() : Array
       {
-         var _loc2_:ServerConfigInfo = findInfoByName("ConsortiaMatchEndTime");
-         var _loc1_:Array = _loc2_.Value.split(" ")[1].toString().split(":");
-         return _loc1_;
+         var info:ServerConfigInfo = findInfoByName("ConsortiaMatchEndTime");
+         var arr:Array = info.Value.split(" ")[1].toString().split(":");
+         return arr;
       }
       
       public function get localConsortiaMatchDays() : Array
       {
-         var _loc2_:ServerConfigInfo = findInfoByName("LocalConsortiaMatchDays");
-         var _loc1_:Array = _loc2_.Value.split("|");
-         return _loc1_;
+         var info:ServerConfigInfo = findInfoByName("LocalConsortiaMatchDays");
+         var arr:Array = info.Value.split("|");
+         return arr;
       }
       
       public function get areaConsortiaMatchDays() : Array
       {
-         var _loc2_:ServerConfigInfo = findInfoByName("AreaConsortiaMatchDays");
-         var _loc1_:Array = _loc2_.Value.split("|");
-         return _loc1_;
+         var info:ServerConfigInfo = findInfoByName("AreaConsortiaMatchDays");
+         var arr:Array = info.Value.split("|");
+         return arr;
       }
       
       public function get getDeedPrices() : Array
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("DanDanBuffPrice");
-         if(_loc1_)
+         var info:ServerConfigInfo = findInfoByName("DanDanBuffPrice");
+         if(info)
          {
-            return _loc1_.Value.split(",");
+            return info.Value.split(",");
          }
          return [100];
       }
@@ -1530,20 +1542,20 @@ package ddt.manager
       
       public function get chickActivationIsOpen() : Boolean
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("IsChickenActiveKeyOpen");
-         if(_loc1_)
+         var obj:ServerConfigInfo = findInfoByName("IsChickenActiveKeyOpen");
+         if(obj)
          {
-            return _loc1_.Value.toLowerCase() == "true";
+            return obj.Value.toLowerCase() == "true";
          }
          return false;
       }
       
       public function get chickenActiveKeyLvAwardNeedPrestige() : Array
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("ChickenActiveKeyLvAwardNeedPrestige");
-         if(_loc1_)
+         var info:ServerConfigInfo = findInfoByName("ChickenActiveKeyLvAwardNeedPrestige");
+         if(info)
          {
-            return _loc1_.Value.split("|");
+            return info.Value.split("|");
          }
          return null;
       }
@@ -1553,18 +1565,18 @@ package ddt.manager
          return _serverConfigInfoList["ToyMachinePrice"].Value.split("|");
       }
       
-      public function getRedEnvelopeCount(param1:int) : int
+      public function getRedEnvelopeCount(type:int) : int
       {
-         var _loc2_:Array = _serverConfigInfoList["HongBaoCount"].Value.split("|");
-         return parseInt(_loc2_[param1 - 1]);
+         var arr:Array = _serverConfigInfoList["HongBaoCount"].Value.split("|");
+         return parseInt(arr[type - 1]);
       }
       
       public function get getEveryDayOpenPrice() : Array
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("EveryDayOpenPrice");
-         if(_loc1_)
+         var info:ServerConfigInfo = findInfoByName("EveryDayOpenPrice");
+         if(info)
          {
-            return _loc1_.Value.split("|");
+            return info.Value.split("|");
          }
          return [];
       }
@@ -1631,10 +1643,10 @@ package ddt.manager
       
       public function get totemSignDiscount() : Number
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("TotemPropMoneyOffset");
-         if(_loc1_)
+         var obj:ServerConfigInfo = findInfoByName("TotemPropMoneyOffset");
+         if(obj)
          {
-            return Number(_loc1_.Value);
+            return Number(obj.Value);
          }
          return 40;
       }
@@ -1661,10 +1673,10 @@ package ddt.manager
       
       public function get getDragonboatProp() : int
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("DragonBoatProp");
-         if(_loc1_)
+         var info:ServerConfigInfo = findInfoByName("DragonBoatProp");
+         if(info)
          {
-            return int(_loc1_.Value);
+            return int(info.Value);
          }
          return 11690;
       }
@@ -1681,72 +1693,72 @@ package ddt.manager
       
       public function get growthPackagePrice() : Number
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("PromotePackagePrice");
-         if(_loc1_)
+         var obj:ServerConfigInfo = findInfoByName("PromotePackagePrice");
+         if(obj)
          {
-            return Number(_loc1_.Value);
+            return Number(obj.Value);
          }
          return 0;
       }
       
       public function get growthPackageIsOpen() : Boolean
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("IsPromotePackageOpen");
-         if(_loc1_)
+         var obj:ServerConfigInfo = findInfoByName("IsPromotePackageOpen");
+         if(obj)
          {
-            return _loc1_.Value.toLowerCase() != "false";
+            return obj.Value.toLowerCase() != "false";
          }
          return false;
       }
       
       public function get wealthTreeIsOpen() : Boolean
       {
-         var _loc1_:ServerConfigInfo = findInfoByName("IsOpenWealthTree");
-         if(_loc1_)
+         var obj:ServerConfigInfo = findInfoByName("IsOpenWealthTree");
+         if(obj)
          {
-            return _loc1_.Value.toLowerCase() != "false";
+            return obj.Value.toLowerCase() != "false";
          }
          return false;
       }
       
       public function get trialBuffTipPropertyValue() : String
       {
-         var _loc1_:String = "";
+         var str:String = "";
          if(_serverConfigInfoList.hasKey("NewFairBattleProperty"))
          {
-            _loc1_ = _serverConfigInfoList["NewFairBattleProperty"].Value.toString();
+            str = _serverConfigInfoList["NewFairBattleProperty"].Value.toString();
          }
-         return _loc1_;
+         return str;
       }
       
       public function get trialfubenBuffTipPropertyValue() : String
       {
-         var _loc1_:String = "";
+         var str:String = "";
          if(_serverConfigInfoList.hasKey("NewFairPVEBattleProperty"))
          {
-            _loc1_ = _serverConfigInfoList["NewFairPVEBattleProperty"].Value.toString();
+            str = _serverConfigInfoList["NewFairPVEBattleProperty"].Value.toString();
          }
-         return _loc1_;
+         return str;
       }
       
       public function get trialBattleLevelLimit() : int
       {
-         var _loc1_:int = 0;
+         var str:int = 0;
          if(_serverConfigInfoList.hasKey("FairBattleLevelLimit"))
          {
-            _loc1_ = _serverConfigInfoList["FairBattleLevelLimit"].Value.toString();
+            str = _serverConfigInfoList["FairBattleLevelLimit"].Value.toString();
          }
-         return _loc1_;
+         return str;
       }
       
       public function get weaponShellNormalAdd() : int
       {
-         var _loc1_:int = 0;
+         var str:int = 0;
          if(_serverConfigInfoList.hasKey("WeaponShellNormalAdd"))
          {
-            _loc1_ = _serverConfigInfoList["WeaponShellNormalAdd"].Value.toString();
+            str = _serverConfigInfoList["WeaponShellNormalAdd"].Value.toString();
          }
-         return _loc1_;
+         return str;
       }
       
       public function get ddqyOfferCostMoneyArr() : Array
@@ -1755,8 +1767,8 @@ package ddt.manager
          {
             throw new Error("ServerConfig 弹弹奇缘-上供1次、10次花费未配置");
          }
-         var _loc1_:Array = _serverConfigInfoList["DdtLuckWorshipMoney"].Value.toString().split("|");
-         return _loc1_;
+         var arr:Array = _serverConfigInfoList["DdtLuckWorshipMoney"].Value.toString().split("|");
+         return arr;
       }
       
       public function get ddqyOpenTreasureboxCostMoney() : int
@@ -1765,48 +1777,48 @@ package ddt.manager
          {
             throw new Error("ServerConfig 弹弹奇缘-开启宝藏花费未配置");
          }
-         var _loc1_:int = _serverConfigInfoList["DdtLuckOpenBoxMoney"].Value.toString();
-         return _loc1_;
+         var str:int = _serverConfigInfoList["DdtLuckOpenBoxMoney"].Value.toString();
+         return str;
       }
       
       public function get angelInvestmentAllPrice() : int
       {
-         var _loc1_:int = 0;
+         var price:int = 0;
          if(_serverConfigInfoList.hasKey("MonthCardBuyAllPrice"))
          {
-            _loc1_ = _serverConfigInfoList["MonthCardBuyAllPrice"].Value;
+            price = _serverConfigInfoList["MonthCardBuyAllPrice"].Value;
          }
-         return _loc1_;
+         return price;
       }
       
       public function get angelInvestmentDiscount() : int
       {
-         var _loc1_:int = 0;
+         var discount:int = 0;
          if(_serverConfigInfoList.hasKey("MonthCardBuyAllDiscount"))
          {
-            _loc1_ = _serverConfigInfoList["MonthCardBuyAllDiscount"].Value;
+            discount = _serverConfigInfoList["MonthCardBuyAllDiscount"].Value;
          }
-         return _loc1_;
+         return discount;
       }
       
       public function get angelInvestmentDay() : int
       {
-         var _loc1_:int = 0;
+         var day:int = 0;
          if(_serverConfigInfoList.hasKey("MonthCardBuyAllDay"))
          {
-            _loc1_ = _serverConfigInfoList["MonthCardBuyAllDay"].Value;
+            day = _serverConfigInfoList["MonthCardBuyAllDay"].Value;
          }
-         return _loc1_;
+         return day;
       }
       
       public function get storeExaltRestorePrice() : int
       {
-         var _loc1_:int = 0;
+         var price:int = 0;
          if(_serverConfigInfoList.hasKey("ItemAdvanceRestoreMoney"))
          {
-            _loc1_ = _serverConfigInfoList["ItemAdvanceRestoreMoney"].Value;
+            price = _serverConfigInfoList["ItemAdvanceRestoreMoney"].Value;
          }
-         return _loc1_;
+         return price;
       }
       
       public function get wasteRecycleAwardIdList() : Array
@@ -1815,251 +1827,250 @@ package ddt.manager
          {
             throw new Error("RecycleGoodShowList is null!!!");
          }
-         var _loc1_:Array = _serverConfigInfoList["RecycleGoodShowList"].Value.toString().split("|");
-         return _loc1_;
+         var arr:Array = _serverConfigInfoList["RecycleGoodShowList"].Value.toString().split("|");
+         return arr;
       }
       
       public function get wasteRecycleLotteryScore() : int
       {
-         var _loc1_:int = 0;
+         var score:int = 0;
          if(_serverConfigInfoList.hasKey("RecycleGoodGetRewardIntegal"))
          {
-            _loc1_ = _serverConfigInfoList["RecycleGoodGetRewardIntegal"].Value;
+            score = _serverConfigInfoList["RecycleGoodGetRewardIntegal"].Value;
          }
-         return _loc1_;
+         return score;
       }
       
       public function get wasteRecycleLimit() : int
       {
-         var _loc1_:int = 0;
+         var score:int = 0;
          if(_serverConfigInfoList.hasKey("RecyGoodDayMaxTimes"))
          {
-            _loc1_ = _serverConfigInfoList["RecyGoodDayMaxTimes"].Value;
+            score = _serverConfigInfoList["RecyGoodDayMaxTimes"].Value;
          }
-         return _loc1_;
+         return score;
       }
       
       public function get fireWorksList() : Array
       {
-         var _loc1_:* = null;
+         var fireWorksListStr:* = null;
          if(_serverConfigInfoList.hasKey("FireWorksList"))
          {
-            _loc1_ = String(_serverConfigInfoList["FireWorksList"].Value);
-            return _loc1_.split("|");
+            fireWorksListStr = String(_serverConfigInfoList["FireWorksList"].Value);
+            return fireWorksListStr.split("|");
          }
          return "12549,100,5,10,3|12550,50,5,10,3|12551,200,5,20,3|12552,200,5,20,1|12553,200,5,20,3".split("|");
       }
       
       public function get maxLevelAllResetCost() : int
       {
-         var _loc1_:int = 0;
+         var price:int = 0;
          if(_serverConfigInfoList.hasKey("MaxLevelAllResetCost"))
          {
-            _loc1_ = _serverConfigInfoList["MaxLevelAllResetCost"].Value;
+            price = _serverConfigInfoList["MaxLevelAllResetCost"].Value;
          }
-         return _loc1_;
+         return price;
       }
       
       public function get maxLevelResetCost() : int
       {
-         var _loc1_:int = 0;
+         var price:int = 0;
          if(_serverConfigInfoList.hasKey("MaxLevelResetCost"))
          {
-            _loc1_ = _serverConfigInfoList["MaxLevelResetCost"].Value;
+            price = _serverConfigInfoList["MaxLevelResetCost"].Value;
          }
-         return _loc1_;
+         return price;
       }
       
       public function get rewardTaskPrice() : int
       {
-         var _loc1_:int = 0;
+         var Price:int = 0;
          if(_serverConfigInfoList.hasKey("QuestOfferRefreshQuest"))
          {
-            _loc1_ = _serverConfigInfoList["QuestOfferRefreshQuest"].Value;
+            Price = _serverConfigInfoList["QuestOfferRefreshQuest"].Value;
          }
-         return _loc1_;
+         return Price;
       }
       
       public function get rewardMultiplePrice() : int
       {
-         var _loc1_:int = 0;
+         var Price:int = 0;
          if(_serverConfigInfoList.hasKey("QuestOfferRefreshReward"))
          {
-            _loc1_ = _serverConfigInfoList["QuestOfferRefreshReward"].Value;
+            Price = _serverConfigInfoList["QuestOfferRefreshReward"].Value;
          }
-         return _loc1_;
+         return Price;
       }
       
       public function get addRewardTaskPrice() : int
       {
-         var _loc1_:int = 0;
+         var Price:int = 0;
          if(_serverConfigInfoList.hasKey("QuestOfferBuyTimes"))
          {
-            _loc1_ = _serverConfigInfoList["QuestOfferBuyTimes"].Value;
+            Price = _serverConfigInfoList["QuestOfferBuyTimes"].Value;
          }
-         return _loc1_;
+         return Price;
       }
       
       public function get taskNumber() : int
       {
-         var _loc1_:int = 0;
+         var Num:int = 0;
          if(_serverConfigInfoList.hasKey("QuestOfferCanAcceptTimes"))
          {
-            _loc1_ = _serverConfigInfoList["QuestOfferCanAcceptTimes"].Value;
+            Num = _serverConfigInfoList["QuestOfferCanAcceptTimes"].Value;
          }
-         return _loc1_;
+         return Num;
       }
       
       public function get addTaskNumPrice() : int
       {
-         var _loc1_:int = 0;
+         var Num:int = 0;
          if(_serverConfigInfoList.hasKey("QuestOfferBuyTimesAddMoney"))
          {
-            _loc1_ = _serverConfigInfoList["QuestOfferBuyTimesAddMoney"].Value;
+            Num = _serverConfigInfoList["QuestOfferBuyTimesAddMoney"].Value;
          }
-         return _loc1_;
+         return Num;
       }
       
       public function get consortiaGuardReviveRiches() : int
       {
-         var _loc1_:int = 100;
+         var Num:int = 100;
          if(_serverConfigInfoList.hasKey("GReliveCost"))
          {
-            _loc1_ = _serverConfigInfoList["GReliveCost"].Value;
+            Num = _serverConfigInfoList["GReliveCost"].Value;
          }
-         return _loc1_;
+         return Num;
       }
       
       public function get consortiaGuardOpenRiches() : int
       {
-         var _loc1_:int = 0;
+         var Num:int = 0;
          if(_serverConfigInfoList.hasKey("GOpenActiveCost"))
          {
-            _loc1_ = _serverConfigInfoList["GOpenActiveCost"].Value;
+            Num = _serverConfigInfoList["GOpenActiveCost"].Value;
          }
-         return _loc1_;
+         return Num;
       }
       
       public function get consortiaGuardReviveTime() : int
       {
-         var _loc1_:int = 10;
+         var Num:int = 10;
          if(_serverConfigInfoList.hasKey("GReliveTime"))
          {
-            _loc1_ = _serverConfigInfoList["GReliveTime"].Value;
+            Num = _serverConfigInfoList["GReliveTime"].Value;
          }
-         return _loc1_;
+         return Num;
       }
       
       public function get consortiaGuardBuyCost() : int
       {
-         var _loc1_:int = 0;
+         var Num:int = 0;
          if(_serverConfigInfoList.hasKey("GBuyBUFFCost"))
          {
-            _loc1_ = _serverConfigInfoList["GBuyBUFFCost"].Value;
+            Num = _serverConfigInfoList["GBuyBUFFCost"].Value;
          }
-         return _loc1_;
+         return Num;
       }
       
       public function get consortiaGuardBuyBuffMaxLevel() : int
       {
-         var _loc1_:int = 1;
+         var Num:int = 1;
          if(_serverConfigInfoList.hasKey("GBuyBUFFMax"))
          {
-            _loc1_ = _serverConfigInfoList["GBuyBUFFMax"].Value;
+            Num = _serverConfigInfoList["GBuyBUFFMax"].Value;
          }
-         return _loc1_;
+         return Num;
       }
       
       public function get battleDungeonLimitCount() : int
       {
-         var _loc1_:int = 1;
+         var count:int = 1;
          if(_serverConfigInfoList.hasKey("TreasureTimes"))
          {
-            _loc1_ = _serverConfigInfoList["TreasureTimes"].Value;
+            count = _serverConfigInfoList["TreasureTimes"].Value;
          }
-         return _loc1_;
+         return count;
       }
       
       public function get nightmareDungeonLimitTimes() : int
       {
-         var _loc1_:int = 5;
+         var times:int = 5;
          if(_serverConfigInfoList.hasKey("ChickOrAntTreasureTimes"))
          {
-            _loc1_ = _serverConfigInfoList["ChickOrAntTreasureTimes"].Value;
+            times = _serverConfigInfoList["ChickOrAntTreasureTimes"].Value;
          }
-         return _loc1_;
+         return times;
       }
       
       public function get nightmareDungeonLimitPower() : int
       {
-         var _loc1_:int = 500000;
+         var power:int = 500000;
          if(_serverConfigInfoList.hasKey("ChickOrAntTreasureMinFightPower"))
          {
-            _loc1_ = _serverConfigInfoList["ChickOrAntTreasureMinFightPower"].Value;
+            power = _serverConfigInfoList["ChickOrAntTreasureMinFightPower"].Value;
          }
-         return _loc1_;
+         return power;
       }
       
       public function get equipAmuletBuyDustMax() : int
       {
-         var _loc1_:int = 20;
+         var dust:int = 20;
          if(_serverConfigInfoList.hasKey("AmuletBuyDustMax"))
          {
-            _loc1_ = _serverConfigInfoList["AmuletBuyDustMax"].Value;
+            dust = _serverConfigInfoList["AmuletBuyDustMax"].Value;
          }
-         return _loc1_;
+         return dust;
       }
       
       public function get AmuletBuyDustCountAndNeedMoney() : Array
       {
-         var _loc1_:Array = [];
+         var arr:Array = [];
          if(_serverConfigInfoList.hasKey("AmuletBuyDustCountAndNeedMoney"))
          {
-            _loc1_ = _serverConfigInfoList["AmuletBuyDustCountAndNeedMoney"].Value.split("|");
+            arr = _serverConfigInfoList["AmuletBuyDustCountAndNeedMoney"].Value.split("|");
          }
-         return _loc1_;
+         return arr;
       }
       
       public function get WorshipMoonBeginDate() : String
       {
-         var _loc1_:String = "";
+         var time:String = "";
          if(_serverConfigInfoList.hasKey("WorshipMoonBeginDate"))
          {
-            _loc1_ = _serverConfigInfoList["WorshipMoonBeginDate"].Value;
+            time = _serverConfigInfoList["WorshipMoonBeginDate"].Value;
          }
-         return _loc1_;
+         return time;
       }
       
       public function get WorshipMoonEndDate() : String
       {
-         var _loc1_:String = "";
+         var time:String = "";
          if(_serverConfigInfoList.hasKey("WorshipMoonEndDate"))
          {
-            _loc1_ = _serverConfigInfoList["WorshipMoonEndDate"].Value;
+            time = _serverConfigInfoList["WorshipMoonEndDate"].Value;
          }
-         return _loc1_;
+         return time;
       }
       
       public function get batchOpenConfig() : DictionaryData
       {
-         var _loc1_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
+         var result:* = null;
+         var temConfig:* = null;
+         var itemArr:* = null;
+         var i:int = 0;
          if(_catchBatchOpen == null)
          {
             _catchBatchOpen = new DictionaryData();
-            _loc1_ = null;
+            result = null;
             if(_serverConfigInfoList.hasKey("BatchOpen"))
             {
-               _loc2_ = _serverConfigInfoList["BatchOpen"].Value;
-               _loc1_ = _loc2_.split("|");
-               _loc3_ = 0;
-               while(_loc3_ < _loc1_.length)
+               temConfig = _serverConfigInfoList["BatchOpen"].Value;
+               result = temConfig.split("|");
+               for(i = 0; i < result.length; )
                {
-                  _loc4_ = (_loc1_[_loc3_] as String).split(",");
-                  _catchBatchOpen.add(_loc4_[0],_loc4_[1]);
-                  _loc3_++;
+                  itemArr = (result[i] as String).split(",");
+                  _catchBatchOpen.add(itemArr[0],itemArr[1]);
+                  i++;
                }
             }
          }
@@ -2068,295 +2079,520 @@ package ddt.manager
       
       public function get cubeGameRow() : int
       {
-         var _loc1_:int = 11;
+         var row:int = 11;
          if(_serverConfigInfoList.hasKey("ComboSlashMaxRow"))
          {
-            _loc1_ = _serverConfigInfoList["ComboSlashMaxRow"].Value;
+            row = _serverConfigInfoList["ComboSlashMaxRow"].Value;
          }
-         return _loc1_;
+         return row;
       }
       
       public function get cubeGameColumn() : int
       {
-         var _loc1_:int = 14;
+         var column:int = 14;
          if(_serverConfigInfoList.hasKey("ComboSlashMaxColumn"))
          {
-            _loc1_ = _serverConfigInfoList["ComboSlashMaxColumn"].Value;
+            column = _serverConfigInfoList["ComboSlashMaxColumn"].Value;
          }
-         return _loc1_;
+         return column;
       }
       
       public function get strongDestroyScore() : int
       {
-         var _loc1_:int = 500;
+         var value:int = 500;
          if(_serverConfigInfoList.hasKey("ComboSlashRemoveSevevenCountAddScore"))
          {
-            _loc1_ = _serverConfigInfoList["ComboSlashRemoveSevevenCountAddScore"].Value;
+            value = _serverConfigInfoList["ComboSlashRemoveSevevenCountAddScore"].Value;
          }
-         return _loc1_;
+         return value;
       }
       
       public function get extraDestroyScore() : int
       {
-         var _loc1_:int = 1000;
+         var value:int = 1000;
          if(_serverConfigInfoList.hasKey("ComboSlashRemoveFourteenCountAddScore"))
          {
-            _loc1_ = _serverConfigInfoList["ComboSlashRemoveFourteenCountAddScore"].Value;
+            value = _serverConfigInfoList["ComboSlashRemoveFourteenCountAddScore"].Value;
          }
-         return _loc1_;
+         return value;
       }
       
       public function get emptyColumnScore() : int
       {
-         var _loc1_:int = 100;
+         var value:int = 100;
          if(_serverConfigInfoList.hasKey("ComboSlashNullCloumnScore"))
          {
-            _loc1_ = _serverConfigInfoList["ComboSlashNullCloumnScore"].Value;
+            value = _serverConfigInfoList["ComboSlashNullCloumnScore"].Value;
          }
-         return _loc1_;
+         return value;
       }
       
       public function get cubeGameCostEnergy() : int
       {
-         var _loc1_:int = 2;
+         var value:int = 2;
          if(_serverConfigInfoList.hasKey("CubeGameCostEnergy"))
          {
-            _loc1_ = _serverConfigInfoList["CubeGameCostEnergy"].Value;
+            value = _serverConfigInfoList["CubeGameCostEnergy"].Value;
          }
-         return _loc1_;
+         return value;
       }
       
       public function get nationDayGetMaxTimes() : Array
       {
-         var _loc1_:Array = [10,10,10,10];
+         var value:Array = [10,10,10,10];
          if(_serverConfigInfoList.hasKey("NationalDayExchangeTimes"))
          {
-            _loc1_ = String(_serverConfigInfoList["NationalDayExchangeTimes"].Value).split(",");
+            value = String(_serverConfigInfoList["NationalDayExchangeTimes"].Value).split(",");
          }
-         return _loc1_;
+         return value;
       }
       
       public function get pvePowerBuffLevelLimit() : int
       {
-         var _loc1_:int = 20;
+         var value:int = 20;
          if(_serverConfigInfoList.hasKey("BlessBuffOpenLv"))
          {
-            _loc1_ = _serverConfigInfoList["BlessBuffOpenLv"].Value;
+            value = _serverConfigInfoList["BlessBuffOpenLv"].Value;
          }
-         return _loc1_;
+         return value;
       }
       
       public function get pvePowerBuffRefreshPrice() : int
       {
-         var _loc1_:int = 100;
+         var value:int = 100;
          if(_serverConfigInfoList.hasKey("BlessBuffRefreshPrice"))
          {
-            _loc1_ = _serverConfigInfoList["BlessBuffRefreshPrice"].Value;
+            value = _serverConfigInfoList["BlessBuffRefreshPrice"].Value;
          }
-         return _loc1_;
+         return value;
       }
       
       public function get pvePowerBuffGetBuffPrice() : int
       {
-         var _loc1_:int = 100;
+         var value:int = 100;
          if(_serverConfigInfoList.hasKey("BlessBuffAddBuffPrice"))
          {
-            _loc1_ = _serverConfigInfoList["BlessBuffAddBuffPrice"].Value;
+            value = _serverConfigInfoList["BlessBuffAddBuffPrice"].Value;
          }
-         return _loc1_;
+         return value;
       }
       
       public function get ItemDevelopPrice() : int
       {
-         var _loc1_:int = 35;
+         var value:int = 35;
          if(_serverConfigInfoList.hasKey("ItemDevelopPrice"))
          {
-            _loc1_ = _serverConfigInfoList["ItemDevelopPrice"].Value;
+            value = _serverConfigInfoList["ItemDevelopPrice"].Value;
          }
-         return _loc1_;
+         return value;
       }
       
       public function get stockLoanRechageRate() : int
       {
-         var _loc1_:int = 10;
+         var value:int = 10;
          if(_serverConfigInfoList.hasKey("ExchangeMargin"))
          {
-            _loc1_ = _serverConfigInfoList["ExchangeMargin"].Value;
+            value = _serverConfigInfoList["ExchangeMargin"].Value;
          }
-         return _loc1_;
+         return value;
       }
       
       public function get StockOpenTime() : String
       {
-         var _loc1_:String = "9,15|16,22";
+         var value:String = "9,15|16,22";
          if(_serverConfigInfoList.hasKey("StockOpenTime"))
          {
-            _loc1_ = String(_serverConfigInfoList["StockOpenTime"].Value);
+            value = String(_serverConfigInfoList["StockOpenTime"].Value);
          }
-         return _loc1_;
+         return value;
       }
       
       public function get StockStartDate() : String
       {
-         var _loc1_:String = "2017-03-21 00:00:00";
+         var value:String = "2017-03-21 00:00:00";
          if(_serverConfigInfoList.hasKey("StockStartDate"))
          {
-            _loc1_ = String(_serverConfigInfoList["StockStartDate"].Value);
+            value = String(_serverConfigInfoList["StockStartDate"].Value);
          }
-         return _loc1_;
+         return value;
       }
       
       public function get StockEndDate() : String
       {
-         var _loc1_:String = "2017-03-26 23:59:59";
+         var value:String = "2017-03-26 23:59:59";
          if(_serverConfigInfoList.hasKey("StockEndDate"))
          {
-            _loc1_ = String(_serverConfigInfoList["StockEndDate"].Value);
+            value = String(_serverConfigInfoList["StockEndDate"].Value);
          }
-         return _loc1_;
+         return value;
       }
       
       public function get StockOverDate() : String
       {
-         var _loc1_:String = "2017-03-27 23:59:59";
+         var value:String = "2017-03-27 23:59:59";
          if(_serverConfigInfoList.hasKey("StockOverDate"))
          {
-            _loc1_ = String(_serverConfigInfoList["StockOverDate"].Value);
+            value = String(_serverConfigInfoList["StockOverDate"].Value);
          }
-         return _loc1_;
+         return value;
       }
       
       public function get StockScoreAward() : String
       {
-         var _loc1_:String = "100000,1120956|200000,1120956|300000,1120956|400000,1120956|500000,1120956";
+         var value:String = "100000,1120956|200000,1120956|300000,1120956|400000,1120956|500000,1120956";
          if(_serverConfigInfoList.hasKey("StockReward"))
          {
-            _loc1_ = String(_serverConfigInfoList["StockReward"].Value);
+            value = String(_serverConfigInfoList["StockReward"].Value);
          }
-         return _loc1_;
+         return value;
       }
       
       public function get consortionActiveTarget() : String
       {
-         var _loc1_:String = "1,30,3000,0|3,50,6000,2000|5,80,12000,4000";
+         var value:String = "1,30,3000,0|3,50,6000,2000|5,80,12000,4000";
          if(_serverConfigInfoList.hasKey("ConsortiaDayActiveCondInfo"))
          {
-            _loc1_ = String(_serverConfigInfoList["ConsortiaDayActiveCondInfo"].Value);
+            value = String(_serverConfigInfoList["ConsortiaDayActiveCondInfo"].Value);
          }
-         return _loc1_;
+         return value;
       }
       
       public function get getTeamCreateCoin() : int
       {
-         var _loc1_:int = 30000;
+         var value:int = 30000;
          if(_serverConfigInfoList.hasKey("CreateTeamMoney"))
          {
-            _loc1_ = _serverConfigInfoList["CreateTeamMoney"].Value;
+            value = _serverConfigInfoList["CreateTeamMoney"].Value;
          }
-         return _loc1_;
+         return value;
       }
       
       public function get getTeamDonatePrice() : int
       {
-         var _loc1_:int = 10;
+         var value:int = 10;
          if(_serverConfigInfoList.hasKey("MoneyRichesOffer"))
          {
-            _loc1_ = _serverConfigInfoList["MoneyRichesOffer"].Value;
+            value = _serverConfigInfoList["MoneyRichesOffer"].Value;
          }
-         return _loc1_;
+         return value;
       }
       
       public function get getOnlineArmCostEnergy() : int
       {
-         var _loc1_:int = 3;
+         var value:int = 3;
          if(_serverConfigInfoList.hasKey("OnlineArmCostEnergy"))
          {
-            _loc1_ = _serverConfigInfoList["OnlineArmCostEnergy"].Value;
+            value = _serverConfigInfoList["OnlineArmCostEnergy"].Value;
          }
-         return _loc1_;
+         return value;
       }
       
       public function get FreeInviteLevelMin() : int
       {
-         var _loc1_:int = 5;
+         var value:int = 5;
          if(_serverConfigInfoList.hasKey("FreeInviteLevelMin"))
          {
-            _loc1_ = _serverConfigInfoList["FreeInviteLevelMin"].Value;
+            value = _serverConfigInfoList["FreeInviteLevelMin"].Value;
          }
-         return _loc1_;
+         return value;
       }
       
       public function get FreeInviteLevelMax() : int
       {
-         var _loc1_:int = 15;
+         var value:int = 15;
          if(_serverConfigInfoList.hasKey("FreeInviteLevelMax"))
          {
-            _loc1_ = _serverConfigInfoList["FreeInviteLevelMax"].Value;
+            value = _serverConfigInfoList["FreeInviteLevelMax"].Value;
          }
-         return _loc1_;
+         return value;
       }
       
       public function get FreeInviteCount() : int
       {
-         var _loc1_:int = 2;
+         var value:int = 2;
          if(_serverConfigInfoList.hasKey("FreeInviteCount"))
          {
-            _loc1_ = _serverConfigInfoList["FreeInviteCount"].Value;
+            value = _serverConfigInfoList["FreeInviteCount"].Value;
          }
-         return _loc1_;
+         return value;
       }
       
       public function get markOpenLevel() : int
       {
-         var _loc1_:int = 10;
+         var value:int = 10;
          if(_serverConfigInfoList.hasKey("EngraveLimitLevel"))
          {
-            _loc1_ = _serverConfigInfoList["EngraveLimitLevel"].Value;
+            value = _serverConfigInfoList["EngraveLimitLevel"].Value;
          }
-         return _loc1_;
+         return value;
       }
       
       public function get EngraveSaleStarConfig() : int
       {
-         var _loc1_:int = 200;
+         var value:int = 200;
          if(_serverConfigInfoList.hasKey("EngraveSaleStarConfig"))
          {
-            _loc1_ = _serverConfigInfoList["EngraveSaleStarConfig"].Value;
+            value = _serverConfigInfoList["EngraveSaleStarConfig"].Value;
          }
-         return _loc1_;
+         return value;
       }
       
       public function get EngraveSaleTemperConsumeConfig() : int
       {
-         var _loc1_:int = 60;
+         var value:int = 60;
          if(_serverConfigInfoList.hasKey("EngraveSaleTemperConsumeConfig"))
          {
-            _loc1_ = _serverConfigInfoList["EngraveSaleTemperConsumeConfig"].Value;
+            value = _serverConfigInfoList["EngraveSaleTemperConsumeConfig"].Value;
          }
-         return _loc1_;
+         return value;
       }
       
       public function get getEngraveVaults() : Array
       {
-         var _loc2_:* = null;
-         var _loc1_:Array = [];
+         var temStr:* = null;
+         var arr:Array = [];
          if(_serverConfigInfoList.hasKey("EngraveVaultsConfig"))
          {
-            _loc2_ = _serverConfigInfoList["EngraveVaultsConfig"].Value;
-            _loc1_.push((_loc2_.split("|")[0] as String).split(","));
-            _loc1_.push((_loc2_.split("|")[1] as String).split(","));
+            temStr = _serverConfigInfoList["EngraveVaultsConfig"].Value;
+            arr.push((temStr.split("|")[0] as String).split(","));
+            arr.push((temStr.split("|")[1] as String).split(","));
          }
-         return _loc1_;
+         return arr;
       }
       
       public function get getEngraveVaultsFreeTimes() : int
       {
-         var _loc1_:int = 0;
+         var value:int = 0;
          if(_serverConfigInfoList.hasKey("EngraveVaultsFreeTimes"))
          {
-            _loc1_ = _serverConfigInfoList["EngraveVaultsFreeTimes"].Value;
+            value = _serverConfigInfoList["EngraveVaultsFreeTimes"].Value;
          }
-         return _loc1_;
+         return value;
+      }
+      
+      public function get devilTurnCfgBox() : Array
+      {
+         var arr:Array = [];
+         if(_serverConfigInfoList.hasKey("DevilTreasureCfgBox"))
+         {
+            arr = _serverConfigInfoList["DevilTreasureCfgBox"].Value.split("|");
+         }
+         return arr;
+      }
+      
+      public function get devilTurnTemplateID() : int
+      {
+         var value:int = 0;
+         if(_serverConfigInfoList.hasKey("DevilTreasureTemplateID"))
+         {
+            value = _serverConfigInfoList["DevilTreasureTemplateID"].Value;
+         }
+         return value;
+      }
+      
+      public function get devilTurnBeginDate() : String
+      {
+         var date:* = null;
+         if(_serverConfigInfoList.hasKey("DevilTreasureBeginDate"))
+         {
+            date = String(_serverConfigInfoList["DevilTreasureBeginDate"].Value);
+         }
+         return date;
+      }
+      
+      public function get devilTurnEndDate() : String
+      {
+         var date:* = null;
+         if(_serverConfigInfoList.hasKey("DevilTreasureEndDate"))
+         {
+            date = String(_serverConfigInfoList["DevilTreasureEndDate"].Value);
+         }
+         return date;
+      }
+      
+      public function get devilTurnLotteryOneCost() : int
+      {
+         var date:int = 0;
+         if(_serverConfigInfoList.hasKey("DevilTreasureOneCost"))
+         {
+            date = _serverConfigInfoList["DevilTreasureOneCost"].Value;
+         }
+         return date;
+      }
+      
+      public function get devilTurnLotteryTenCost() : int
+      {
+         var date:int = 0;
+         if(_serverConfigInfoList.hasKey("DevilTreasureTenCost"))
+         {
+            date = _serverConfigInfoList["DevilTreasureTenCost"].Value;
+         }
+         return date;
+      }
+      
+      public function get devilTurnTotalJackpot() : int
+      {
+         var value:int = 0;
+         if(_serverConfigInfoList.hasKey("DevilTreasurePrizePoolMax"))
+         {
+            value = _serverConfigInfoList["DevilTreasurePrizePoolMax"].Value;
+         }
+         return value;
+      }
+      
+      public function get devilTurnFreeLotteryCount() : int
+      {
+         var value:int = 0;
+         if(_serverConfigInfoList.hasKey("DevilTreasureFreeLotteryCount"))
+         {
+            value = _serverConfigInfoList["DevilTreasureFreeLotteryCount"].Value;
+         }
+         return value;
+      }
+      
+      public function get devilTurnOpenLevelLimit() : int
+      {
+         var value:int = 20;
+         if(_serverConfigInfoList.hasKey("DevilTreasLevelLimit"))
+         {
+            value = _serverConfigInfoList["DevilTreasLevelLimit"].Value;
+         }
+         return value;
+      }
+      
+      public function get consortiaTaskPriceArr() : Array
+      {
+         var arr:Array = [];
+         if(_serverConfigInfoList.hasKey("ConsortiaMissionLockPrices"))
+         {
+            arr = _serverConfigInfoList["ConsortiaMissionLockPrices"].Value.split("|");
+         }
+         return arr;
+      }
+      
+      public function get gameExitPunishTimes() : int
+      {
+         var value:int = 5;
+         if(_serverConfigInfoList.hasKey("GamePvpExitPunish"))
+         {
+            value = String(_serverConfigInfoList["GamePvpExitPunish"].Value).split(",")[3];
+         }
+         return value;
+      }
+      
+      public function get unrealContestBuyCost() : int
+      {
+         return int(findInfoByName("UnrealContestBuyCost").Value);
+      }
+      
+      public function get unrealContestLevelLimits() : Array
+      {
+         return findInfoByName("UnrealContestLevelLimits").Value.split(",");
+      }
+      
+      public function get unrealContestEndDate() : Date
+      {
+         return DateUtils.getDateByStr(findInfoByName("UnrealContestEndDate").Value);
+      }
+      
+      public function get DreamLandId() : int
+      {
+         var value:int = 3000;
+         if(_serverConfigInfoList.hasKey("UnrealContestPveID"))
+         {
+            value = _serverConfigInfoList["UnrealContestPveID"].Value;
+         }
+         return value;
+      }
+      
+      public function get petWashCost() : DictionaryData
+      {
+         var temArr:* = null;
+         var i:int = 0;
+         var costArr:Array = findInfoByName("PetWashCost").Value.split("|");
+         var result:DictionaryData = new DictionaryData();
+         for(i = 0; i < costArr.length; )
+         {
+            temArr = String(costArr[i]).split(",");
+            result.add(temArr[0],temArr[1]);
+            i++;
+         }
+         return result;
+      }
+      
+      public function get petQualityConfig() : Array
+      {
+         var qualityArr:Array = findInfoByName("PetQualityConfig").Value.split("|");
+         var result:Array = qualityArr.sort(function():*
+         {
+            var /*UnknownSlot*/:* = function(A:int, B:int):int
+            {
+               if(A >= B)
+               {
+                  return 1;
+               }
+               return -1;
+            };
+            return function(A:int, B:int):int
+            {
+               if(A >= B)
+               {
+                  return 1;
+               }
+               return -1;
+            };
+         }());
+         return result;
+      }
+      
+      public function get clearWorldcupGuessPrice() : int
+      {
+         var value:int = 500;
+         if(_serverConfigInfoList.hasKey("RussianWorldCupQuizChangeQuizPrize"))
+         {
+            value = _serverConfigInfoList["RussianWorldCupQuizChangeQuizPrize"].Value;
+         }
+         return value;
+      }
+      
+      public function get worldcupBackRate() : Array
+      {
+         var arr:Array = [1,10,20,40,60,80,100];
+         if(_serverConfigInfoList.hasKey("RussianWorldCupQuizBackRate"))
+         {
+            arr = _serverConfigInfoList["RussianWorldCupQuizBackRate"].Value.split("|");
+         }
+         return arr;
+      }
+      
+      public function get worldcupAwardCount() : Array
+      {
+         var arr:Array = [1000,5000,30000,100000,300000,500000];
+         if(_serverConfigInfoList.hasKey("RussianWorldCupQuizAwardCount"))
+         {
+            arr = _serverConfigInfoList["RussianWorldCupQuizAwardCount"].Value.split("|");
+         }
+         return arr;
+      }
+      
+      public function get MarkEquipSchemePrice() : int
+      {
+         var value:int = 100;
+         if(_serverConfigInfoList.hasKey("AddEngraveEquipSchemeCostMoney"))
+         {
+            value = _serverConfigInfoList["AddEngraveEquipSchemeCostMoney"].Value;
+         }
+         return value;
+      }
+      
+      public function get OldPlayerTaskRemainTime() : String
+      {
+         return _serverConfigInfoList["TurnZoneQuestDay"].Value;
+      }
+      
+      public function get OldPlayerActiveRemainTime() : String
+      {
+         return _serverConfigInfoList["TurnZoneValidDay"].Value;
       }
    }
 }

@@ -1,5 +1,7 @@
 package mark.data
 {
+   import ddt.data.goods.InventoryItemInfo;
+   import ddt.data.goods.ItemTemplateInfo;
    import flash.utils.Dictionary;
    import mark.MarkMgr;
    
@@ -61,135 +63,252 @@ package mark.data
          super();
       }
       
+      public static function exchangeMark(info:ItemTemplateInfo) : MarkChipData
+      {
+         var item:InventoryItemInfo = info as InventoryItemInfo;
+         var chip:MarkChipData = new MarkChipData();
+         if(!item)
+         {
+            return chip;
+         }
+         chip.itemID = item.ItemID;
+         chip.isbind = item.IsBinds;
+         chip.isShowBind = item.isShowBind;
+         chip.templateId = item.TemplateID;
+         chip.bornLv = item.StrengthenLevel;
+         chip.hammerLv = item.StrengthenExp;
+         chip.hLv = item.AttackCompose;
+         var pro1:MarkProData = new MarkProData();
+         pro1.type = item.DefendCompose;
+         pro1.value = item.AgilityCompose;
+         pro1.attachValue = item.LuckCompose;
+         chip.mainPro = pro1;
+         var pro2:MarkProData = new MarkProData();
+         pro2.type = item.Hole1;
+         pro2.value = item.Hole2;
+         pro2.attachValue = item.Hole3;
+         pro2.hummerCount = item.Hole5Exp;
+         chip.props.push(pro2);
+         var pro3:MarkProData = new MarkProData();
+         pro3.type = item.Hole4;
+         pro3.value = item.Hole5;
+         pro3.attachValue = item.Hole6;
+         pro3.hummerCount = item.Hole6Exp;
+         chip.props.push(pro3);
+         var pro4:MarkProData = new MarkProData();
+         pro4.type = item.ValidDate;
+         pro4.value = item.RefineryLevel;
+         pro4.attachValue = item.StrengthenTimes;
+         pro4.hummerCount = item.Hole5Exp;
+         chip.props.push(pro4);
+         var pro5:MarkProData = new MarkProData();
+         if(item.Skin != null && item.Skin.split("|").length >= 3)
+         {
+            pro5.type = parseInt(item.Skin.split("|")[0]);
+            pro5.value = parseInt(item.Skin.split("|")[1]);
+            pro5.attachValue = parseInt(item.Skin.split("|")[2]);
+         }
+         pro5.hummerCount = item.Hole6Level;
+         chip.props.push(pro5);
+         return chip;
+      }
+      
+      public static function exchangeItem(chip:MarkChipData) : InventoryItemInfo
+      {
+         var item:InventoryItemInfo = new InventoryItemInfo();
+         item.IsBinds = chip.isbind;
+         item.isShowBind = chip.isShowBind;
+         item.ItemID = chip.itemID;
+         item.BagType = 74;
+         item.TemplateID = chip.templateId;
+         item.StrengthenLevel = chip.bornLv;
+         item.StrengthenExp = chip.hammerLv;
+         item.AttackCompose = chip.hLv;
+         item.DefendCompose = chip.mainPro.type;
+         item.AgilityCompose = chip.mainPro.value;
+         item.LuckCompose = chip.mainPro.attachValue;
+         item.Hole1 = chip.props[0].type;
+         item.Hole2 = chip.props[0].value;
+         item.Hole3 = chip.props[0].attachValue;
+         item.Hole5Exp = chip.props[0].hummerCount;
+         item.Hole4 = chip.props[1].type;
+         item.Hole5 = chip.props[1].value;
+         item.Hole6 = chip.props[1].attachValue;
+         item.Hole6Exp = chip.props[1].hummerCount;
+         item.ValidDate = Number(chip.props[2].type);
+         item.RefineryLevel = chip.props[2].value;
+         item.StrengthenTimes = chip.props[2].attachValue;
+         item.Hole5Exp = chip.props[2].hummerCount;
+         item.Skin = String(chip.props[3].type) + "|" + String(chip.props[3].value) + "|" + String(chip.props[3].attachValue);
+         item.Hole6Level = chip.props[3].hummerCount;
+         return item;
+      }
+      
       public function get proNumInfoArr() : Array
       {
          return _proNumInfoArr;
       }
       
-      public function set proNumInfoArr(param1:Array) : void
+      public function set proNumInfoArr(value:Array) : void
       {
-         _proNumInfoArr = param1;
+         _proNumInfoArr = value;
       }
       
-      public function proIsMax(param1:MarkProData) : Boolean
+      public function proIsMax(pro:MarkProData) : Boolean
       {
-         var _loc7_:int = 0;
-         var _loc3_:Boolean = false;
-         var _loc4_:int = param1.value + param1.attachValue;
-         var _loc2_:MarkChipData = getChipById(MarkMgr.inst.model.chipItemID);
-         var _loc5_:int = _loc2_.templateId;
-         var _loc6_:int = param1.type;
-         var _loc8_:int = 0;
-         _loc7_ = 0;
-         while(_loc7_ < _proNumInfoArr.length)
+         var i:int = 0;
+         var boo:Boolean = false;
+         var totol:int = pro.value + pro.attachValue;
+         var chip:MarkChipData = getChipById(MarkMgr.inst.model.chipItemID);
+         var templeteId:int = chip.templateId;
+         var type:int = pro.type;
+         var maxValue:int = 0;
+         for(i = 0; i < _proNumInfoArr.length; )
          {
-            if((_proNumInfoArr[_loc7_] as MarkProNumData).ID == _loc5_ && (_proNumInfoArr[_loc7_] as MarkProNumData).AttributeType == param1.type)
+            if((_proNumInfoArr[i] as MarkProNumData).ID == templeteId && (_proNumInfoArr[i] as MarkProNumData).AttributeType == pro.type)
             {
-               _loc8_ = (_proNumInfoArr[_loc7_] as MarkProNumData).MaxValue;
+               maxValue = (_proNumInfoArr[i] as MarkProNumData).MaxValue;
             }
-            _loc7_++;
+            i++;
          }
-         _loc3_ = _loc4_ >= _loc8_ * (param1.hummerCount + 1)?true:false;
-         return _loc3_;
+         boo = totol >= maxValue * (pro.hummerCount + 1)?true:false;
+         return boo;
       }
       
-      public function getChipById(param1:*) : MarkChipData
+      public function getChipById(itemId:int) : MarkChipData
       {
          var _loc4_:int = 0;
          var _loc3_:* = bags;
-         for each(var _loc2_ in bags)
+         for each(var bag in bags)
          {
-            if(_loc2_.chips[param1])
+            if(bag.chips[itemId])
             {
-               return _loc2_.chips[param1];
+               return bag.chips[itemId];
             }
          }
          return null;
       }
       
-      public function getSuitData(param1:int = -1) : Dictionary
+      public function getSetById(itemId:int) : int
       {
-         param1 = param1 < 0?equip:int(param1);
-         var _loc3_:Dictionary = new Dictionary();
+         var chip:* = null;
          var _loc5_:int = 0;
-         var _loc4_:* = bags[1].chips;
-         for each(var _loc2_ in bags[1].chips)
+         var _loc4_:* = bags;
+         for each(var bag in bags)
          {
-            if(_loc2_ && _loc2_.equipType == param1)
+            if(bag.chips[itemId])
             {
-               if(!_loc3_[cfgChip[_loc2_.templateId].SetID])
-               {
-                  _loc3_[cfgChip[_loc2_.templateId].SetID] = [];
-               }
-               _loc3_[cfgChip[_loc2_.templateId].SetID].push(_loc2_);
+               chip = bag.chips[itemId];
+               return cfgChip[chip.templateId].SetID;
             }
          }
-         return _loc3_;
+         return 0;
       }
       
-      public function getSuitList(param1:int = -1) : Array
+      public function getSuitData(equipType:int = -1) : Dictionary
       {
-         param1 = param1 < 0?equip:int(param1);
-         var _loc4_:Dictionary = getSuitData(param1);
-         var _loc2_:Array = [];
+         equipType = equipType < 0?equip:int(equipType);
+         var dic:Dictionary = new Dictionary();
+         var _loc5_:int = 0;
+         var _loc4_:* = bags[1].chips;
+         for each(var chip in bags[1].chips)
+         {
+            if(chip && chip.equipType == equipType)
+            {
+               if(!dic[cfgChip[chip.templateId].SetID])
+               {
+                  dic[cfgChip[chip.templateId].SetID] = [];
+               }
+               dic[cfgChip[chip.templateId].SetID].push(chip);
+            }
+         }
+         return dic;
+      }
+      
+      public function getSuitList(equipType:int = -1) : Array
+      {
+         equipType = equipType < 0?equip:int(equipType);
+         var dic:Dictionary = getSuitData(equipType);
+         var result:Array = [];
          var _loc6_:int = 0;
          var _loc5_:* = cfgSuit;
-         for each(var _loc3_ in cfgSuit)
+         for each(var it in cfgSuit)
          {
-            if(_loc4_[_loc3_.SetId] && _loc3_.Demand <= _loc4_[_loc3_.SetId].length)
+            if(dic[it.SetId] && it.Demand <= dic[it.SetId].length)
             {
-               _loc2_.push({
-                  "id":_loc3_.Id,
-                  "cnt":_loc4_[_loc3_.SetId].length
+               result.push({
+                  "id":it.Id,
+                  "cnt":dic[it.SetId].length
                });
             }
          }
-         return _loc2_;
+         return result;
       }
       
       public function getSkillList() : Array
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:Array = [];
-         _loc3_ = 0;
-         while(_loc3_ < getSuitList().length)
+         var i:int = 0;
+         var skill:* = null;
+         var arr:Array = [];
+         for(i = 0; i < getSuitList().length; )
          {
-            _loc1_ = new MarkSuitTemplateData();
-            _loc1_.Id = getSuitList()[_loc3_].id;
-            _loc3_++;
+            skill = new MarkSuitTemplateData();
+            skill.Id = getSuitList()[i].id;
+            i++;
          }
-         return _loc2_;
+         return arr;
       }
       
-      public function getChipsByEquipType(param1:int) : Vector.<MarkChipData>
+      public function getChipsByEquipType(equipType:int) : Vector.<MarkChipData>
       {
-         var _loc3_:Vector.<MarkChipData> = new Vector.<MarkChipData>();
+         var list:Vector.<MarkChipData> = new Vector.<MarkChipData>();
          var _loc5_:int = 0;
          var _loc4_:* = bags[1].chips;
-         for each(var _loc2_ in bags[1].chips)
+         for each(var chip in bags[1].chips)
          {
-            if(_loc2_ && _loc2_.equipType == param1)
+            if(chip && chip.equipType == equipType)
             {
-               _loc3_.push(_loc2_);
+               list.push(chip);
             }
          }
-         return _loc3_;
+         return list;
       }
       
-      public function getChipsCount(param1:int) : int
+      public function getChipsJoinById() : String
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
+         var arr:Array = [];
+         for(i = 0; i < 36; )
+         {
+            arr[i] = 0;
+            var _loc5_:int = 0;
+            var _loc4_:* = bags[1].chips;
+            for each(var chip in bags[1].chips)
+            {
+               if(chip && chip.position == i + 1)
+               {
+                  arr[i] = chip.itemID;
+                  break;
+               }
+            }
+            i++;
+         }
+         return arr.join(",");
+      }
+      
+      public function getChipsCount(equipType:int) : int
+      {
+         var i:int = 0;
          var _loc5_:int = 0;
          var _loc4_:* = bags[1].chips;
-         for each(var _loc2_ in bags[1].chips)
+         for each(var chip in bags[1].chips)
          {
-            if(_loc2_ && _loc2_.equipType == param1)
+            if(chip && chip.equipType == equipType)
             {
-               _loc3_++;
+               i++;
             }
          }
-         return _loc3_;
+         return i;
       }
    }
 }

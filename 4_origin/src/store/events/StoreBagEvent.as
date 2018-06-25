@@ -21,11 +21,11 @@ package store.events
       
       public var data:InventoryItemInfo;
       
-      public function StoreBagEvent(param1:String, param2:int, param3:InventoryItemInfo, param4:Boolean = false, param5:Boolean = true)
+      public function StoreBagEvent(type:String, pos:int, data:InventoryItemInfo, bubbles:Boolean = false, cancelabel:Boolean = true)
       {
-         super(param1,param4,cancelable);
-         this.pos = param2;
-         this.data = param3;
+         super(type,bubbles,cancelable);
+         this.pos = pos;
+         this.data = data;
       }
    }
 }

@@ -19,37 +19,36 @@ package gameStarling.view.buff
       
       public function clearBuff() : void
       {
-         var _loc1_:* = null;
+         var cell:* = null;
          while(_buffCells.length)
          {
-            _loc1_ = _buffCells.shift();
-            StarlingObjectUtils.disposeObject(_loc1_);
+            cell = _buffCells.shift();
+            StarlingObjectUtils.disposeObject(cell);
          }
       }
       
-      public function update(param1:Vector.<FightBuffInfo>) : void
+      public function update(buffs:Vector.<FightBuffInfo>) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          clearBuff();
-         var _loc3_:int = param1.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var len:int = buffs.length;
+         for(i = 0; i < len; )
          {
-            if(_loc4_ + 1 > _buffCells.length)
+            if(i + 1 > _buffCells.length)
             {
-               _loc2_ = new BuffCell3D();
-               _buffCells.push(_loc2_);
+               cell = new BuffCell3D();
+               _buffCells.push(cell);
             }
             else
             {
-               _loc2_ = _buffCells[_loc4_];
+               cell = _buffCells[i];
             }
-            _loc2_.setInfo(param1[_loc4_]);
-            _loc2_.x = (_loc4_ & 3) * 24;
-            _loc2_.y = -(_loc4_ >> 2) * 24;
-            addChild(_loc2_);
-            _loc4_++;
+            cell.setInfo(buffs[i]);
+            cell.x = (i & 3) * 24;
+            cell.y = -(i >> 2) * 24;
+            addChild(cell);
+            i++;
          }
       }
       

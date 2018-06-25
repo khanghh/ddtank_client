@@ -26,16 +26,16 @@ package ddt.view.character
       
       private var _isComplete:Boolean;
       
-      public function BaseLightLayer(param1:int, param2:int = 0)
+      public function BaseLightLayer(nimbus:int, showType:int = 0)
       {
          super();
-         _nimbus = param1;
-         _type = param2;
+         _nimbus = nimbus;
+         _type = showType;
       }
       
-      public function load(param1:Function) : void
+      public function load(callBack:Function) : void
       {
-         _callBack = param1;
+         _callBack = callBack;
          initLoader();
       }
       
@@ -63,27 +63,27 @@ package ddt.view.character
          {
             return "00";
          }
-         var _loc1_:String = _nimbus.toString();
-         _loc1_ = _loc1_.substr(_loc1_.length - 2,_loc1_.length);
-         _loc1_ = Number(_loc1_).toString();
-         return _loc1_;
+         var nimbus:String = _nimbus.toString();
+         nimbus = nimbus.substr(nimbus.length - 2,nimbus.length);
+         nimbus = Number(nimbus).toString();
+         return nimbus;
       }
       
-      protected function __sourceComplete(param1:LoaderEvent = null) : void
+      protected function __sourceComplete(event:LoaderEvent = null) : void
       {
-         var _loc2_:* = null;
+         var LightClass:* = null;
          if(_loader)
          {
             _loader.removeEventListener("complete",__sourceComplete);
          }
-         if(param1 != null && !param1.loader.isSuccess)
+         if(event != null && !event.loader.isSuccess)
          {
             _light = null;
          }
          else if(getId() != "00" && getId() != "0")
          {
-            _loc2_ = ClassUtils.uiSourceDomain.getDefinition("game.crazyTank.view.light.CircleLightAsset_" + getId()) as Class;
-            _light = new _loc2_() as MovieClip;
+            LightClass = ClassUtils.uiSourceDomain.getDefinition("game.crazyTank.view.light.CircleLightAsset_" + getId()) as Class;
+            _light = new LightClass() as MovieClip;
          }
          _isComplete = true;
          if(_callBack != null && _light != null)
@@ -111,7 +111,7 @@ package ddt.view.character
          return null;
       }
       
-      public function set info(param1:ItemTemplateInfo) : void
+      public function set info(value:ItemTemplateInfo) : void
       {
       }
       
@@ -139,7 +139,7 @@ package ddt.view.character
          }
       }
       
-      public function set currentEdit(param1:int) : void
+      public function set currentEdit(n:int) : void
       {
       }
       
@@ -148,7 +148,7 @@ package ddt.view.character
          return 0;
       }
       
-      public function setColor(param1:*) : Boolean
+      public function setColor(color:*) : Boolean
       {
          return false;
       }

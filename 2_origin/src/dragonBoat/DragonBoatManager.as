@@ -72,18 +72,22 @@ package dragonBoat
       
       private var _btn:BaseButton;
       
+      public var tmpStartTime:Date;
+      
+      public var tmpEndTime:Date;
+      
       public var type:int;
       
       private var isShowed:Boolean;
       
-      public function DragonBoatManager(param1:IEventDispatcher = null)
+      public function DragonBoatManager(target:IEventDispatcher = null)
       {
          _boatExpList = [];
          _awardsListSelf = [];
          _awardsListOther = [];
          _awardsInfoSelf = {};
          _awardsInfoOther = {};
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : DragonBoatManager
@@ -102,26 +106,25 @@ package dragonBoat
       
       public function get boatCompleteStatus() : int
       {
-         var _loc1_:int = _boatCompleteExp * 100 / _boatExpList[_boatExpList.length - 1];
-         return _loc1_ > 100?100:_loc1_;
+         var tmp:int = _boatCompleteExp * 100 / _boatExpList[_boatExpList.length - 1];
+         return tmp > 100?100:tmp;
       }
       
       public function get boatInWhatStatus() : int
       {
-         var _loc3_:int = 0;
-         var _loc1_:int = _boatExpList.length;
-         var _loc2_:int = 1;
-         _loc3_ = _loc1_ - 1;
-         while(_loc3_ >= 0)
+         var i:int = 0;
+         var tmpLen:int = _boatExpList.length;
+         var tmpIndex:int = 1;
+         for(i = tmpLen - 1; i >= 0; )
          {
-            if(_boatCompleteExp >= _boatExpList[_loc3_])
+            if(_boatCompleteExp >= _boatExpList[i])
             {
-               _loc2_ = _loc3_ + 1;
+               tmpIndex = i + 1;
                break;
             }
-            _loc3_--;
+            i--;
          }
-         return _loc2_;
+         return tmpIndex;
       }
       
       public function get useableScore() : int
@@ -149,70 +152,70 @@ package dragonBoat
          return _isLoadBoatResComplete;
       }
       
-      public function templateDataSetup(param1:DragonBoatActiveDataAnalyzer) : void
+      public function templateDataSetup(analyzer:DragonBoatActiveDataAnalyzer) : void
       {
-         _activeInfo = param1.data;
-         _boatExpList = param1.dataList;
-         _awardsListSelf = param1.dataListSelf;
-         _awardsListOther = param1.dataListOther;
+         _activeInfo = analyzer.data;
+         _boatExpList = analyzer.dataList;
+         _awardsListSelf = analyzer.dataListSelf;
+         _awardsListOther = analyzer.dataListOther;
       }
       
-      public function getAwardInfoByRank(param1:int, param2:int) : Array
+      public function getAwardInfoByRank(type:int, rank:int) : Array
       {
-         var _loc5_:Array = [];
-         var _loc4_:InventoryItemInfo = new InventoryItemInfo();
-         if(param1 == 1)
+         var itemInfoArr:Array = [];
+         var itemInfo:InventoryItemInfo = new InventoryItemInfo();
+         if(type == 1)
          {
-            if(_awardsInfoSelf[param2])
+            if(_awardsInfoSelf[rank])
             {
-               return _awardsInfoSelf[param2] as Array;
+               return _awardsInfoSelf[rank] as Array;
             }
             var _loc8_:int = 0;
             var _loc7_:* = _awardsListSelf;
-            for each(var _loc3_ in _awardsListSelf)
+            for each(var _awardsInfo in _awardsListSelf)
             {
-               if(_loc3_.RandID == param2)
+               if(_awardsInfo.RandID == rank)
                {
-                  _loc5_.push(createInventoryItemInfo(_loc3_));
+                  itemInfoArr.push(createInventoryItemInfo(_awardsInfo));
                }
             }
-            _awardsInfoSelf[param2] = _loc5_;
+            _awardsInfoSelf[rank] = itemInfoArr;
          }
          else
          {
-            if(_awardsInfoOther[param2])
+            if(_awardsInfoOther[rank])
             {
-               return _awardsInfoOther[param2] as Array;
+               return _awardsInfoOther[rank] as Array;
             }
             var _loc10_:int = 0;
             var _loc9_:* = _awardsListOther;
-            for each(var _loc6_ in _awardsListOther)
+            for each(var _awardsInfo2 in _awardsListOther)
             {
-               if(_loc6_.RandID == param2)
+               if(_awardsInfo2.RandID == rank)
                {
-                  _loc5_.push(createInventoryItemInfo(_loc6_));
+                  itemInfoArr.push(createInventoryItemInfo(_awardsInfo2));
                }
             }
-            _awardsInfoOther[param2] = _loc5_;
+            _awardsInfoOther[rank] = itemInfoArr;
          }
-         _loc5_.sortOn("TemplateID",16);
-         return _loc5_;
+         itemInfoArr.sortOn("TemplateID",16);
+         return itemInfoArr;
       }
       
-      private function createInventoryItemInfo(param1:DragonBoatAwardInfo) : InventoryItemInfo
+      private function createInventoryItemInfo(tmpData:DragonBoatAwardInfo) : InventoryItemInfo
       {
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         _loc2_.TemplateID = param1.TemplateID;
-         ItemManager.fill(_loc2_);
-         _loc2_.StrengthenLevel = param1.StrengthenLevel;
-         _loc2_.AttackCompose = param1.AttackCompose;
-         _loc2_.DefendCompose = param1.DefendCompose;
-         _loc2_.LuckCompose = param1.LuckCompose;
-         _loc2_.AgilityCompose = param1.AgilityCompose;
-         _loc2_.IsBinds = param1.IsBind;
-         _loc2_.ValidDate = param1.ValidDate;
-         _loc2_.Count = param1.Count;
-         return _loc2_;
+         var itemInfo:InventoryItemInfo = new InventoryItemInfo();
+         itemInfo.TemplateID = tmpData.TemplateID;
+         ItemManager.fill(itemInfo);
+         itemInfo.StrengthenLevel = tmpData.StrengthenLevel;
+         itemInfo.AttackCompose = tmpData.AttackCompose;
+         itemInfo.DefendCompose = tmpData.DefendCompose;
+         itemInfo.LuckCompose = tmpData.LuckCompose;
+         itemInfo.AgilityCompose = tmpData.AgilityCompose;
+         itemInfo.IsBinds = tmpData.IsBind;
+         itemInfo.ValidDate = tmpData.ValidDate;
+         itemInfo.Count = tmpData.Count;
+         return itemInfo;
       }
       
       public function setup() : void
@@ -220,10 +223,10 @@ package dragonBoat
          SocketManager.Instance.addEventListener(PkgEvent.format(100),pkgHandler);
       }
       
-      public function setPlayerView(param1:HallPlayerView, param2:BaseButton) : void
+      public function setPlayerView(view:HallPlayerView, btn:BaseButton) : void
       {
-         _playerView = param1;
-         _btn = param2;
+         _playerView = view;
+         _btn = btn;
          _btn.visible = false;
          if(isStart)
          {
@@ -238,52 +241,52 @@ package dragonBoat
       
       public function updateNPCStatus() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:HallScene = StarlingMain.instance.currentScene as HallScene;
-         if(_loc2_)
+         var staticLayr:* = null;
+         var currentScene:HallScene = StarlingMain.instance.currentScene as HallScene;
+         if(currentScene)
          {
-            _loc1_ = _loc2_.playerView.staticLayer;
-            _loc1_.changeBuildNpcBtnAni("laurel","stand6");
+            staticLayr = currentScene.playerView.staticLayer;
+            staticLayr.changeBuildNpcBtnAni("laurel","stand6");
          }
       }
       
       public function addToHall() : void
       {
-         var _loc1_:* = null;
+         var staticLayr:* = null;
          if(!_playerView || !_btn || type == 7)
          {
             return;
          }
          _btn.visible = true;
-         var _loc2_:HallScene = StarlingMain.instance.currentScene as HallScene;
-         if(_loc2_)
+         var currentScene:HallScene = StarlingMain.instance.currentScene as HallScene;
+         if(currentScene)
          {
-            _loc1_ = _loc2_.playerView.staticLayer;
-            _loc1_.createNpc("laurel");
-            _loc1_.changeBuildNpcBtnAni("laurel","stand6");
+            staticLayr = currentScene.playerView.staticLayer;
+            staticLayr.createNpc("laurel");
+            staticLayr.changeBuildNpcBtnAni("laurel","stand6");
          }
       }
       
       public function removeFromHall() : void
       {
-         var _loc1_:* = null;
+         var staticLayr:* = null;
          if(_btn)
          {
             _btn.visible = false;
          }
-         var _loc2_:HallScene = StarlingMain.instance.currentScene as HallScene;
-         if(_loc2_)
+         var currentScene:HallScene = StarlingMain.instance.currentScene as HallScene;
+         if(currentScene)
          {
-            _loc1_ = _loc2_.playerView.staticLayer;
-            _loc1_.removeBuildNpcBtn("laurel");
+            staticLayr = currentScene.playerView.staticLayer;
+            staticLayr.removeBuildNpcBtn("laurel");
          }
       }
       
-      private function pkgHandler(param1:PkgEvent) : void
+      private function pkgHandler(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readByte();
-         var _loc4_:* = _loc2_;
+         var pkg:PackageIn = event.pkg;
+         var cmd:int = pkg.readByte();
+         var _loc4_:* = cmd;
          if(1 !== _loc4_)
          {
             if(2 !== _loc4_)
@@ -296,102 +299,102 @@ package dragonBoat
                      {
                         if(127 === _loc4_)
                         {
-                           StartupResourceLoader.Instance.reloadGodSyah(_loc3_);
+                           StartupResourceLoader.Instance.reloadGodSyah(pkg);
                            trace("重新加载赛亚之神 临时属性");
                         }
                      }
                      else
                      {
-                        updateOtherRank(_loc3_);
+                        updateOtherRank(pkg);
                      }
                   }
                   else
                   {
-                     updateSelfRank(_loc3_);
+                     updateSelfRank(pkg);
                   }
                }
                else
                {
-                  refreshBoatStatus(_loc3_);
+                  refreshBoatStatus(pkg);
                }
             }
             else
             {
-               buildOrDecorate(_loc3_);
+               buildOrDecorate(pkg);
             }
          }
          else
          {
-            openOrClose(_loc3_);
+            openOrClose(pkg);
          }
       }
       
-      private function updateSelfRank(param1:PackageIn) : void
+      private function updateSelfRank(pkg:PackageIn) : void
       {
-         var _loc8_:int = 0;
-         var _loc6_:* = null;
-         var _loc4_:int = param1.readInt();
-         var _loc3_:Array = [];
-         _loc8_ = 0;
-         while(_loc8_ < _loc4_)
+         var i:int = 0;
+         var obj:* = null;
+         var count:int = pkg.readInt();
+         var dataList:Array = [];
+         for(i = 0; i < count; )
          {
-            _loc6_ = {};
-            _loc6_.rank = param1.readInt();
-            _loc6_.score = param1.readInt();
-            _loc6_.name = param1.readUTF();
-            _loc6_.itemInfoArr = getAwardInfoByRank(1,_loc6_.rank);
-            _loc3_.push(_loc6_);
-            _loc8_++;
+            obj = {};
+            obj.rank = pkg.readInt();
+            obj.score = pkg.readInt();
+            obj.name = pkg.readUTF();
+            obj.itemInfoArr = getAwardInfoByRank(1,obj.rank);
+            dataList.push(obj);
+            i++;
          }
-         var _loc5_:int = param1.readInt();
-         var _loc2_:int = param1.readInt();
-         var _loc7_:DragonBoatEvent = new DragonBoatEvent("DragBoatUpdateRankInfo");
-         _loc7_.tag = 1;
-         _loc7_.data = {
-            "dataList":_loc3_,
-            "myRank":_loc5_,
-            "lessScore":_loc2_
+         var myRank:int = pkg.readInt();
+         var lessScore:int = pkg.readInt();
+         var newEvent:DragonBoatEvent = new DragonBoatEvent("DragBoatUpdateRankInfo");
+         newEvent.tag = 1;
+         newEvent.data = {
+            "dataList":dataList,
+            "myRank":myRank,
+            "lessScore":lessScore
          };
-         dispatchEvent(_loc7_);
+         dispatchEvent(newEvent);
       }
       
-      private function updateOtherRank(param1:PackageIn) : void
+      private function updateOtherRank(pkg:PackageIn) : void
       {
-         var _loc8_:int = 0;
-         var _loc6_:* = null;
-         var _loc4_:int = param1.readInt();
-         var _loc3_:Array = [];
-         _loc8_ = 0;
-         while(_loc8_ < _loc4_)
+         var i:int = 0;
+         var obj:* = null;
+         var count:int = pkg.readInt();
+         var dataList:Array = [];
+         for(i = 0; i < count; )
          {
-            _loc6_ = {};
-            _loc6_.rank = param1.readInt();
-            _loc6_.score = param1.readInt();
-            _loc6_.name = param1.readUTF();
-            _loc6_.zone = param1.readUTF();
-            _loc6_.itemInfoArr = getAwardInfoByRank(2,_loc6_.rank);
-            _loc3_.push(_loc6_);
-            _loc8_++;
+            obj = {};
+            obj.rank = pkg.readInt();
+            obj.score = pkg.readInt();
+            obj.name = pkg.readUTF();
+            obj.zone = pkg.readUTF();
+            obj.itemInfoArr = getAwardInfoByRank(2,obj.rank);
+            dataList.push(obj);
+            i++;
          }
-         var _loc5_:int = param1.readInt();
-         var _loc2_:int = param1.readInt();
-         var _loc7_:DragonBoatEvent = new DragonBoatEvent("DragBoatUpdateRankInfo");
-         _loc7_.tag = 2;
-         _loc7_.data = {
-            "dataList":_loc3_,
-            "myRank":_loc5_,
-            "lessScore":_loc2_
+         var myRank:int = pkg.readInt();
+         var lessScore:int = pkg.readInt();
+         var newEvent:DragonBoatEvent = new DragonBoatEvent("DragBoatUpdateRankInfo");
+         newEvent.tag = 2;
+         newEvent.data = {
+            "dataList":dataList,
+            "myRank":myRank,
+            "lessScore":lessScore
          };
-         dispatchEvent(_loc7_);
+         dispatchEvent(newEvent);
       }
       
-      private function openOrClose(param1:PackageIn) : void
+      private function openOrClose(pkg:PackageIn) : void
       {
-         type = param1.readInt();
-         _periodType = param1.readInt();
+         type = pkg.readInt();
+         _periodType = pkg.readInt();
          if(isStart)
          {
-            _boatCompleteExp = param1.readInt();
+            _boatCompleteExp = pkg.readInt();
+            tmpStartTime = pkg.readDate();
+            tmpEndTime = pkg.readDate();
             addToHall();
             showChat();
          }
@@ -440,17 +443,17 @@ package dragonBoat
          }
       }
       
-      private function buildOrDecorate(param1:PackageIn) : void
+      private function buildOrDecorate(pkg:PackageIn) : void
       {
-         _useableScore = param1.readInt();
-         _totalScore = param1.readInt();
+         _useableScore = pkg.readInt();
+         _totalScore = pkg.readInt();
          dispatchEvent(new Event("DragonBoatBuildOrDecorateUpdate"));
          updateNPCStatus();
       }
       
-      private function refreshBoatStatus(param1:PackageIn) : void
+      private function refreshBoatStatus(pkg:PackageIn) : void
       {
-         _boatCompleteExp = param1.readInt();
+         _boatCompleteExp = pkg.readInt();
          dispatchEvent(new Event("DragonBoatRefreshBoatStatus"));
          updateNPCStatus();
       }

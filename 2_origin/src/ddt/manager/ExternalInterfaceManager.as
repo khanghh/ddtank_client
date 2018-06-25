@@ -16,63 +16,63 @@ package ddt.manager
          super();
       }
       
-      public static function sendToAgent(param1:int, param2:int = -1, param3:String = "", param4:String = "", param5:int = -1, param6:String = "", param7:String = "") : void
+      public static function sendToAgent(op:int, userID:int = -1, nickName:String = "", serverName:String = "", num:int = -1, pName:String = "", nickName2:String = "") : void
       {
-         var _loc8_:URLRequest = new URLRequest(PathManager.solveExternalInterfacePath());
-         var _loc9_:URLVariables = new URLVariables();
-         _loc9_["op"] = param1;
-         if(param2 > -1)
+         var ur:URLRequest = new URLRequest(PathManager.solveExternalInterfacePath());
+         var variable:URLVariables = new URLVariables();
+         variable["op"] = op;
+         if(userID > -1)
          {
-            _loc9_["uid"] = param2;
+            variable["uid"] = userID;
          }
-         if(param3 != "")
+         if(nickName != "")
          {
-            _loc9_["role"] = param3;
+            variable["role"] = nickName;
          }
-         if(param4 != "")
+         if(serverName != "")
          {
-            _loc9_["ser"] = param4;
+            variable["ser"] = serverName;
          }
-         if(param5 > -1)
+         if(num > -1)
          {
-            _loc9_["num"] = param5;
+            variable["num"] = num;
          }
-         if(param6 != "")
+         if(pName != "")
          {
-            _loc9_["pn"] = param6;
+            variable["pn"] = pName;
          }
-         if(param7 != "")
+         if(nickName2 != "")
          {
-            _loc9_["role2"] = param7;
+            variable["role2"] = nickName2;
          }
-         _loc8_.data = _loc9_;
+         ur.data = variable;
       }
       
-      public static function sendTo360Agent(param1:int) : void
+      public static function sendTo360Agent(type:int) : void
       {
-         var _loc3_:* = null;
-         var _loc6_:* = null;
-         var _loc5_:String = PathManager.solveFillPage();
-         var _loc2_:Number = _loc5_.indexOf("server_id=") + 10;
-         var _loc7_:Number = _loc5_.indexOf("&uid");
-         var _loc4_:String = _loc5_.slice(_loc2_,_loc7_);
+         var ur:* = null;
+         var variable:* = null;
+         var sitePath:String = PathManager.solveFillPage();
+         var start:Number = sitePath.indexOf("server_id=") + 10;
+         var end:Number = sitePath.indexOf("&uid");
+         var serverID:String = sitePath.slice(start,end);
          if(PathManager.ExternalInterface360Enabel())
          {
-            _loc3_ = new URLRequest(PathManager.ExternalInterface360Path());
-            _loc6_ = new URLVariables();
-            _loc6_["game"] = "ddt";
-            _loc6_["server"] = _loc4_;
-            _loc6_["qid"] = PlayerManager.Instance.Account.Account;
-            _loc6_["event"] = getEvent(param1);
-            _loc6_["time"] = new Date().getTime();
-            _loc3_.data = _loc6_;
-            sendToURL(_loc3_);
+            ur = new URLRequest(PathManager.ExternalInterface360Path());
+            variable = new URLVariables();
+            variable["game"] = "ddt";
+            variable["server"] = serverID;
+            variable["qid"] = PlayerManager.Instance.Account.Account;
+            variable["event"] = getEvent(type);
+            variable["time"] = new Date().getTime();
+            ur.data = variable;
+            sendToURL(ur);
          }
       }
       
-      private static function getEvent(param1:int) : String
+      private static function getEvent(type:int) : String
       {
-         switch(int(param1))
+         switch(int(type))
          {
             case 0:
                return "pageload";

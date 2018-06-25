@@ -41,9 +41,9 @@ package consortion.view.selfConsortia
          return _present;
       }
       
-      public function set present(param1:int) : void
+      public function set present(value:int) : void
       {
-         _present = param1;
+         _present = value;
          setPage();
       }
       
@@ -52,9 +52,9 @@ package consortion.view.selfConsortia
          return _sum;
       }
       
-      public function set sum(param1:int) : void
+      public function set sum(value:int) : void
       {
-         _sum = param1 < 1?1:param1;
+         _sum = value < 1?1:value;
          if(_present > _sum)
          {
             _present = 1;
@@ -92,7 +92,7 @@ package consortion.view.selfConsortia
          _pre.removeEventListener("click",__preHanlder);
       }
       
-      private function __nextHanlder(param1:MouseEvent) : void
+      private function __nextHanlder(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          present = Number(present) + 1;
@@ -131,7 +131,7 @@ package consortion.view.selfConsortia
          }
       }
       
-      private function __preHanlder(param1:MouseEvent) : void
+      private function __preHanlder(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          present = Number(present) - 1;

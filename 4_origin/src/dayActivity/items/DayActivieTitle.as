@@ -57,22 +57,22 @@ package dayActivity.items
          _txt4.x = 494;
          _txt4.y = 100;
          addChild(_txt4);
-         var _loc2_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.corel.formLineBig");
-         _loc2_.x = 140;
-         _loc2_.y = 93;
-         addChild(_loc2_);
-         var _loc4_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.corel.formLineBig");
-         _loc4_.x = 300;
-         _loc4_.y = 93;
-         addChild(_loc4_);
-         var _loc3_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.corel.formLineBig");
-         _loc3_.x = 430;
-         _loc3_.y = 93;
-         addChild(_loc3_);
-         var _loc1_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.corel.formLineBig");
-         _loc1_.x = 620;
-         _loc1_.y = 93;
-         addChild(_loc1_);
+         var line1:Bitmap = ComponentFactory.Instance.creatBitmap("asset.corel.formLineBig");
+         line1.x = 140;
+         line1.y = 93;
+         addChild(line1);
+         var line2:Bitmap = ComponentFactory.Instance.creatBitmap("asset.corel.formLineBig");
+         line2.x = 300;
+         line2.y = 93;
+         addChild(line2);
+         var line3:Bitmap = ComponentFactory.Instance.creatBitmap("asset.corel.formLineBig");
+         line3.x = 430;
+         line3.y = 93;
+         addChild(line3);
+         var line4:Bitmap = ComponentFactory.Instance.creatBitmap("asset.corel.formLineBig");
+         line4.x = 620;
+         line4.y = 93;
+         addChild(line4);
       }
       
       public function dispose() : void

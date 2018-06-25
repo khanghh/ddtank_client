@@ -17,9 +17,9 @@ package ddt.view.character
       
       private var _needMultiFrames:Boolean = false;
       
-      public function ShowCharacterLoader(param1:PlayerInfo)
+      public function ShowCharacterLoader(info:PlayerInfo)
       {
-         super(param1);
+         super(info);
       }
       
       override protected function initLayers() : void
@@ -28,9 +28,9 @@ package ddt.view.character
          {
             var _loc3_:int = 0;
             var _loc2_:* = _layers;
-            for each(var _loc1_ in _layers)
+            for each(var layer in _layers)
             {
-               _loc1_.dispose();
+               layer.dispose();
             }
             _layers = null;
          }
@@ -48,15 +48,15 @@ package ddt.view.character
          loadPart(8);
       }
       
-      private function loadPart(param1:int) : void
+      private function loadPart(index:int) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         if(_recordStyle[param1].split("|")[0] > 0)
+         var item:* = null;
+         var color:* = null;
+         if(_recordStyle[index].split("|")[0] > 0)
          {
-            _loc3_ = ItemManager.Instance.getTemplateById(int(_recordStyle[param1].split("|")[0]));
-            _loc2_ = !!EquipType.isEditable(_loc3_)?_recordColor[param1]:"";
-            _layers.push(_layerFactory.createLayer(_loc3_,_info.Sex,_loc2_,"show",param1 == 2,_info.getHairType()));
+            item = ItemManager.Instance.getTemplateById(int(_recordStyle[index].split("|")[0]));
+            color = !!EquipType.isEditable(item)?_recordColor[index]:"";
+            _layers.push(_layerFactory.createLayer(item,_info.Sex,color,"show",index == 2,_info.getHairType()));
          }
       }
       
@@ -68,35 +68,35 @@ package ddt.view.character
          }
       }
       
-      override protected function getIndexByTemplateId(param1:String) : int
+      override protected function getIndexByTemplateId(id:String) : int
       {
-         var _loc2_:int = super.getIndexByTemplateId(param1);
-         if(_loc2_ == -1)
+         var i:int = super.getIndexByTemplateId(id);
+         if(i == -1)
          {
-            if(int(param1.charAt(0)) == 7)
+            if(int(id.charAt(0)) == 7)
             {
                return 7;
             }
             return -1;
          }
-         return _loc2_;
+         return i;
       }
       
-      public function set needMultiFrames(param1:Boolean) : void
+      public function set needMultiFrames(value:Boolean) : void
       {
-         _needMultiFrames = param1;
+         _needMultiFrames = value;
       }
       
       override protected function drawCharacter() : void
       {
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc1_:Number = 250;
-         var _loc6_:Number = 342;
+         var weapon:* = null;
+         var i:int = 0;
+         var layer:* = null;
+         var picWidth:Number = 250;
+         var picHeight:Number = 342;
          if(_needMultiFrames)
          {
-            _loc1_ = _loc1_ * 2;
+            picWidth = picWidth * 2;
          }
          if(_content)
          {
@@ -106,55 +106,54 @@ package ddt.view.character
          {
             _contentWithoutWeapon.dispose();
          }
-         _content = new BitmapData(_loc1_,_loc6_,true,0);
-         _contentWithoutWeapon = new BitmapData(_loc1_,_loc6_,true,0);
-         var _loc2_:Matrix = new Matrix();
-         _loc2_.identity();
-         _loc2_.translate(_loc1_ / 2,0);
-         _loc5_ = _layers.length - 1;
-         while(_loc5_ >= 0)
+         _content = new BitmapData(picWidth,picHeight,true,0);
+         _contentWithoutWeapon = new BitmapData(picWidth,picHeight,true,0);
+         var mt:Matrix = new Matrix();
+         mt.identity();
+         mt.translate(picWidth / 2,0);
+         for(i = _layers.length - 1; i >= 0; )
          {
             if(_info.getShowSuits())
             {
-               if(!(_loc5_ != 0 && _loc5_ != 8 && _loc5_ != 7))
+               if(!(i != 0 && i != 8 && i != 7))
                {
-                  addr93:
-                  _loc4_ = _layers[_loc5_];
-                  if(_loc4_.info.CategoryID != 7 && _loc4_.info.CategoryID != 27 && !EquipType.isArmShell(_loc4_.info))
+                  addr117:
+                  layer = _layers[i];
+                  if(layer.info.CategoryID != 7 && layer.info.CategoryID != 27 && !EquipType.isArmShell(layer.info))
                   {
-                     if(_loc4_.info.CategoryID == 15)
+                     if(layer.info.CategoryID == 15)
                      {
-                        _wing = _loc4_.getContent() as MovieClip;
+                        _wing = layer.getContent() as MovieClip;
                      }
-                     else if(_loc4_.info.CategoryID != 6 && _loc4_.info.CategoryID != 13)
+                     else if(layer.info.CategoryID != 6 && layer.info.CategoryID != 13)
                      {
-                        _contentWithoutWeapon.draw(_loc4_.getContent(),null,null,"normal");
+                        _contentWithoutWeapon.draw(layer.getContent(),null,null,"normal");
                         if(_needMultiFrames)
                         {
-                           _contentWithoutWeapon.draw(_loc4_.getContent(),_loc2_,null,"normal");
+                           _contentWithoutWeapon.draw(layer.getContent(),mt,null,"normal");
                         }
                      }
                      else
                      {
-                        _contentWithoutWeapon.draw(_loc4_.getContent(),null,null,"normal");
+                        _contentWithoutWeapon.draw(layer.getContent(),null,null,"normal");
                      }
                   }
                   else if(_info.WeaponID != 0 && _info.WeaponID != -1 && _info.WeaponID != 70016)
                   {
-                     _loc3_ = _loc4_.getContent();
+                     weapon = layer.getContent();
                   }
                }
             }
-            else if(_loc5_ != 0)
+            else if(i != 0)
             {
-               §§goto(addr93);
+               §§goto(addr117);
             }
-            _loc5_--;
+            i--;
          }
          _content.draw(_contentWithoutWeapon);
-         if(_loc3_ != null)
+         if(weapon != null)
          {
-            _content.draw(_loc3_);
+            _content.draw(weapon);
          }
       }
       

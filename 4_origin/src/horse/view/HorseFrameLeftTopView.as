@@ -15,9 +15,8 @@ package horse.view
    import flash.display.Sprite;
    import flash.events.Event;
    import flash.events.MouseEvent;
-   import flash.geom.Point;
    import horse.HorseManager;
-   import trainer.view.NewHandContainer;
+   import horse.data.HorseEvent;
    
    public class HorseFrameLeftTopView extends Sprite implements Disposeable
    {
@@ -52,7 +51,6 @@ package horse.view
          initView();
          initEvent();
          upHorseHandler(null);
-         guideHandler(null);
       }
       
       private function initView() : void
@@ -95,18 +93,9 @@ package horse.view
          _preLevelUpBtn.addEventListener("mouseOut",preLevelUpOutHandler,false,0,true);
          HorseManager.instance.addEventListener("horseChangeHorse",changeHorseHandler);
          HorseManager.instance.addEventListener("horseUpHorseStep2",upHorseHandler);
-         HorseManager.instance.addEventListener("horseGuide6To7",guideHandler);
       }
       
-      private function guideHandler(param1:Event) : void
-      {
-         if(!PlayerManager.Instance.Self.isNewOnceFinish(116) && PlayerManager.Instance.Self.isNewOnceFinish(114))
-         {
-            NewHandContainer.Instance.showArrow(129,0,new Point(226,203),"","",this);
-         }
-      }
-      
-      private function upHorseHandler(param1:Event) : void
+      private function upHorseHandler(event:Event) : void
       {
          _maxIndex = int(HorseManager.instance.curLevel / 10) + 1;
          _curIndex = _maxIndex;
@@ -119,15 +108,15 @@ package horse.view
          refreshArrowView();
       }
       
-      private function changeHorseHandler(param1:Event) : void
+      private function changeHorseHandler(event:HorseEvent) : void
       {
          refreshHorseUseView();
       }
       
-      private function refreshHorseShowView(param1:int) : void
+      private function refreshHorseShowView(index:int) : void
       {
-         _nameTxt.text = _horseNameStrList[param1 - 1];
-         _horseMc.gotoAndStop(param1);
+         _nameTxt.text = _horseNameStrList[index - 1];
+         _horseMc.gotoAndStop(index);
       }
       
       private function refreshHorseUseView() : void
@@ -164,7 +153,7 @@ package horse.view
          }
       }
       
-      private function leftArrowClickHandler(param1:MouseEvent) : void
+      private function leftArrowClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _curIndex = Number(_curIndex) - 1;
@@ -174,7 +163,7 @@ package horse.view
          refreshArrowView();
       }
       
-      private function rightArrowClickHandler(param1:MouseEvent) : void
+      private function rightArrowClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _curIndex = Number(_curIndex) + 1;
@@ -184,37 +173,29 @@ package horse.view
          refreshArrowView();
       }
       
-      private function useClickHandler(param1:MouseEvent) : void
+      private function useClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.sendHorseChangeHorse(_curIndex);
-         if(!PlayerManager.Instance.Self.isNewOnceFinish(116))
-         {
-            SocketManager.Instance.out.syncWeakStep(116);
-            if(NewHandContainer.Instance.hasArrow(129))
-            {
-               NewHandContainer.Instance.clearArrowByID(129);
-            }
-         }
       }
       
-      private function takeBackClickHandler(param1:MouseEvent) : void
+      private function takeBackClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.sendHorseChangeHorse(0);
       }
       
-      private function preLevelUpOverHandler(param1:MouseEvent) : void
+      private function preLevelUpOverHandler(event:MouseEvent) : void
       {
-         var _loc2_:int = _maxIndex + 1;
-         _loc2_ = _loc2_ > 9?9:_loc2_;
-         refreshHorseShowView(_loc2_);
+         var tmp:int = _maxIndex + 1;
+         tmp = tmp > 9?9:tmp;
+         refreshHorseShowView(tmp);
          _useBtn.visible = false;
          _takeBackBtn.visible = false;
          HorseManager.instance.dispatchEvent(new Event("horsePreNextEffect"));
       }
       
-      private function preLevelUpOutHandler(param1:MouseEvent) : void
+      private function preLevelUpOutHandler(event:MouseEvent) : void
       {
          refreshHorseShowView(_curIndex);
          refreshHorseUseView();
@@ -231,7 +212,6 @@ package horse.view
          _preLevelUpBtn.removeEventListener("mouseOut",preLevelUpOutHandler);
          HorseManager.instance.removeEventListener("horseChangeHorse",changeHorseHandler);
          HorseManager.instance.removeEventListener("horseUpHorseStep2",upHorseHandler);
-         HorseManager.instance.removeEventListener("horseGuide6To7",guideHandler);
       }
       
       public function dispose() : void

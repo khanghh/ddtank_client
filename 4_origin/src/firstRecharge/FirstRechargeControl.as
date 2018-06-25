@@ -52,33 +52,32 @@ package firstRecharge
          SocketManager.Instance.addEventListener("cumulatecharge_data",cumlatechargeData);
       }
       
-      protected function __onOpenView(param1:FirstRechageEvent) : void
+      protected function __onOpenView(event:FirstRechageEvent) : void
       {
          showView();
       }
       
-      protected function __onCloseView(param1:FirstRechageEvent) : void
+      protected function __onCloseView(event:FirstRechageEvent) : void
       {
          closeView();
       }
       
-      protected function cumlatechargeData(param1:CrazyTankSocketEvent) : void
+      protected function cumlatechargeData(event:CrazyTankSocketEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         _loc6_ = 0;
-         while(_loc6_ < _loc2_)
+         var i:int = 0;
+         var obj:* = null;
+         var type:int = 0;
+         var pkg:PackageIn = event.pkg;
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc4_ = {};
-            _loc4_.userId = _loc3_.readInt();
-            _loc5_ = _loc3_.readInt();
-            _loc4_.chargeMoney = _loc3_.readInt();
-            _loc6_++;
+            obj = {};
+            obj.userId = pkg.readInt();
+            type = pkg.readInt();
+            obj.chargeMoney = pkg.readInt();
+            i++;
          }
-         if(_loc5_ == 1)
+         if(type == 1)
          {
             _isShowFirst = true;
          }
@@ -144,21 +143,21 @@ package firstRecharge
          }
       }
       
-      public function setGoods(param1:RechargeData) : InventoryItemInfo
+      public function setGoods(data:RechargeData) : InventoryItemInfo
       {
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         _loc2_.TemplateID = param1.RewardItemID;
-         _loc2_.StrengthenLevel = param1.StrengthenLevel;
-         _loc2_.AgilityCompose = param1.AgilityCompose;
-         _loc2_.AttackCompose = param1.AttackCompose;
-         _loc2_.LuckCompose = param1.LuckCompose;
-         _loc2_.DefendCompose = param1.DefendCompose;
-         _loc2_ = ItemManager.fill(_loc2_);
-         _loc2_.CanCompose = false;
-         _loc2_.CanStrengthen = false;
-         _loc2_.ValidDate = param1.RewardItemValid;
-         _loc2_.BindType = 4;
-         return _loc2_;
+         var info:InventoryItemInfo = new InventoryItemInfo();
+         info.TemplateID = data.RewardItemID;
+         info.StrengthenLevel = data.StrengthenLevel;
+         info.AgilityCompose = data.AgilityCompose;
+         info.AttackCompose = data.AttackCompose;
+         info.LuckCompose = data.LuckCompose;
+         info.DefendCompose = data.DefendCompose;
+         info = ItemManager.fill(info);
+         info.CanCompose = false;
+         info.CanStrengthen = false;
+         info.ValidDate = data.RewardItemValid;
+         info.BindType = 4;
+         return info;
       }
    }
 }

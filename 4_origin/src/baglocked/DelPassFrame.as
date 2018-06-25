@@ -54,9 +54,9 @@ package baglocked
          super();
       }
       
-      public function __onTextEnter(param1:KeyboardEvent) : void
+      public function __onTextEnter(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(event.keyCode == 13)
          {
             if(_delBtn.enable)
             {
@@ -65,9 +65,9 @@ package baglocked
          }
       }
       
-      public function set bagLockedController(param1:BagLockedController) : void
+      public function set bagLockedController(value:BagLockedController) : void
       {
-         _bagLockedController = param1;
+         _bagLockedController = value;
       }
       
       override public function dispose() : void
@@ -151,7 +151,7 @@ package baglocked
          addEvent();
       }
       
-      private function __delBtnClick(param1:MouseEvent) : void
+      private function __delBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.leftTimes <= 0)
@@ -161,8 +161,8 @@ package baglocked
             return;
          }
          PlayerManager.Instance.Self.leftTimes--;
-         var _loc2_:String = PlayerManager.Instance.Self.leftTimes <= 0?"0":String(PlayerManager.Instance.Self.leftTimes);
-         _text6_7.text = LanguageMgr.GetTranslation("baglocked.DelPassFrame.operationAlertInfo",_loc2_);
+         var leftTimes:String = PlayerManager.Instance.Self.leftTimes <= 0?"0":String(PlayerManager.Instance.Self.leftTimes);
+         _text6_7.text = LanguageMgr.GetTranslation("baglocked.DelPassFrame.operationAlertInfo",leftTimes);
          _bagLockedController.bagLockedInfo.questionOne = _text6_3.text;
          _bagLockedController.bagLockedInfo.questionTwo = _text6_6.text;
          _bagLockedController.bagLockedInfo.answerOne = _textInput6_1.text;
@@ -179,20 +179,20 @@ package baglocked
          }
       }
       
-      private function __deselectBtn6Click(param1:MouseEvent) : void
+      private function __deselectBtn6Click(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _bagLockedController.close();
       }
       
-      private function __delPasswordHandler(param1:BagEvent) : void
+      private function __delPasswordHandler(event:BagEvent) : void
       {
          _bagLockedController.close();
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -201,7 +201,7 @@ package baglocked
          }
       }
       
-      private function __textChange(param1:Event) : void
+      private function __textChange(event:Event) : void
       {
          if(_textInput6_1.text != "" && _textInput6_2.text != "" && PlayerManager.Instance.Self.leftTimes > 0)
          {

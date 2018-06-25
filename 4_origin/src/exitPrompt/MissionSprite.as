@@ -21,45 +21,44 @@ package exitPrompt
       
       private var _arr:Array;
       
-      public function MissionSprite(param1:Array)
+      public function MissionSprite(arr:Array)
       {
          super();
-         _arr = param1;
+         _arr = arr;
          _init(_arr);
       }
       
-      private function _init(param1:Array) : void
+      private function _init(arr:Array) : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         _loc6_ = 0;
-         while(_loc6_ < param1.length)
+         var i:int = 0;
+         var textFiele0:* = null;
+         var textFiele1:* = null;
+         var line:* = null;
+         for(i = 0; i < arr.length; )
          {
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("ExitPromptFrame.MissionText0");
-            _loc2_.text = param1[_loc6_][0] as String;
-            _loc2_.y = _loc2_.height * _loc6_ * 3 / 2 - 6;
-            addChild(_loc2_);
-            _loc3_ = ComponentFactory.Instance.creatComponentByStylename("ExitPromptFrame.MissionText1");
-            _loc3_.text = param1[_loc6_][1] as String;
-            _loc3_.y = _loc3_.height * _loc6_ * 3 / 2 - 4;
-            addChild(_loc3_);
-            _loc5_ = ComponentFactory.Instance.creatComponentByStylename("ExitPromptFrame.item.line");
-            _loc5_.y = _loc2_.height * _loc6_ * 3 / 2 + 16;
-            addChild(_loc5_);
-            _loc6_++;
+            textFiele0 = ComponentFactory.Instance.creatComponentByStylename("ExitPromptFrame.MissionText0");
+            textFiele0.text = arr[i][0] as String;
+            textFiele0.y = textFiele0.height * i * 3 / 2 - 6;
+            addChild(textFiele0);
+            textFiele1 = ComponentFactory.Instance.creatComponentByStylename("ExitPromptFrame.MissionText1");
+            textFiele1.text = arr[i][1] as String;
+            textFiele1.y = textFiele1.height * i * 3 / 2 - 4;
+            addChild(textFiele1);
+            line = ComponentFactory.Instance.creatComponentByStylename("ExitPromptFrame.item.line");
+            line.y = textFiele0.height * i * 3 / 2 + 16;
+            addChild(line);
+            i++;
          }
          oldHeight = height;
-         var _loc4_:Sprite = new Sprite();
-         _loc4_.graphics.beginFill(6899489,1);
-         _loc4_.graphics.drawRoundRect(0,0,290,35,5,5);
-         _loc4_.graphics.endFill();
-         addChild(_loc4_);
-         _loc4_.x = 4;
-         _loc4_.y = -25;
-         _loc4_.height = this.height - -25;
-         setChildIndex(_loc4_,0);
+         var bg:Sprite = new Sprite();
+         bg.graphics.beginFill(6899489,1);
+         bg.graphics.drawRoundRect(0,0,290,35,5,5);
+         bg.graphics.endFill();
+         addChild(bg);
+         bg.x = 4;
+         bg.y = -25;
+         bg.height = this.height - -25;
+         setChildIndex(bg,0);
       }
       
       public function get content() : Array

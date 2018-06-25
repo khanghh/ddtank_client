@@ -56,9 +56,9 @@ package beadSystem.views
          addToContent(_textInput);
       }
       
-      public function setBeadName(param1:String) : void
+      public function setBeadName(name:String) : void
       {
-         _showInfo.htmlText = LanguageMgr.GetTranslation("ddt.beadSystem.feedBeadAlertInfo","[" + param1 + "]");
+         _showInfo.htmlText = LanguageMgr.GetTranslation("ddt.beadSystem.feedBeadAlertInfo","[" + name + "]");
       }
       
       private function initEvent() : void
@@ -71,21 +71,21 @@ package beadSystem.views
          _textInput.removeEventListener("keyDown",__onTextInputKeyDown);
       }
       
-      private function __onTextInputKeyDown(param1:KeyboardEvent) : void
+      private function __onTextInputKeyDown(event:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(event.keyCode == 13)
          {
             dispatchEvent(new FrameEvent(3));
-            param1.stopPropagation();
+            event.stopPropagation();
          }
       }
       
-      private function __confirmhandler(param1:MouseEvent) : void
+      private function __confirmhandler(event:MouseEvent) : void
       {
          dispatchEvent(new FrameEvent(3));
       }
       
-      private function __cancelHandler(param1:MouseEvent) : void
+      private function __cancelHandler(event:MouseEvent) : void
       {
          dispatchEvent(new FrameEvent(4));
       }

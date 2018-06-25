@@ -21,10 +21,10 @@ package collectionTask.view
       
       private var _model:CollectionTaskModel;
       
-      public function CollectionTaskMenuView(param1:CollectionTaskModel)
+      public function CollectionTaskMenuView(model:CollectionTaskModel)
       {
          super();
-         _model = param1;
+         _model = model;
          initView();
          addEvent();
       }
@@ -52,10 +52,10 @@ package collectionTask.view
          _menuShowPlayer.addEventListener("click",onMenuClick);
       }
       
-      private function onMenuClick(param1:MouseEvent) : void
+      private function onMenuClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = evt.currentTarget;
          if(_menuShowName !== _loc2_)
          {
             if(_menuShowPao !== _loc2_)

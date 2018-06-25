@@ -28,6 +28,8 @@ package horse
       
       public var activateAlertFrameShow:Boolean = true;
       
+      public var isActivate:Boolean;
+      
       private var _data:DictionaryData;
       
       private var _property:Array;
@@ -49,13 +51,13 @@ package horse
          return _instance;
       }
       
-      public function set viewType(param1:int) : void
+      public function set viewType(value:int) : void
       {
-         if(_viewType == param1)
+         if(_viewType == value)
          {
             return;
          }
-         _viewType = param1;
+         _viewType = value;
          dispatchEvent(new Event("change"));
       }
       
@@ -64,9 +66,9 @@ package horse
          return _viewType;
       }
       
-      public function analyzer(param1:HorseAmuletDataAnalyzer) : void
+      public function analyzer(value:HorseAmuletDataAnalyzer) : void
       {
-         _data = param1.data;
+         _data = value.data;
       }
       
       public function get data() : DictionaryData
@@ -74,86 +76,83 @@ package horse
          return _data;
       }
       
-      public function getHorseAmuletVo(param1:int) : HorseAmuletVo
+      public function getHorseAmuletVo(id:int) : HorseAmuletVo
       {
-         return _data[param1] as HorseAmuletVo;
+         return _data[id] as HorseAmuletVo;
       }
       
-      public function isHighQuality(param1:int) : Boolean
+      public function isHighQuality(id:int) : Boolean
       {
-         return getHorseAmuletVo(param1).Quality >= 4;
+         return getHorseAmuletVo(id).Quality >= 4;
       }
       
-      public function getByExtendType(param1:int) : String
+      public function getByExtendType(type:int) : String
       {
-         return _property[param1 - 1];
+         return _property[type - 1];
       }
       
-      public function canEquipAmulet(param1:int) : Boolean
+      public function canEquipAmulet(tempID:int) : Boolean
       {
-         var _loc2_:int = 0;
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc4_:int = getHorseAmuletVo(param1).ExtendType1;
-         var _loc3_:BagInfo = PlayerManager.Instance.Self.horseAmuletBag;
-         _loc6_ = 0;
-         while(_loc6_ < 9)
+         var count:int = 0;
+         var i:int = 0;
+         var info:* = null;
+         var type:int = getHorseAmuletVo(tempID).ExtendType1;
+         var bag:BagInfo = PlayerManager.Instance.Self.horseAmuletBag;
+         for(i = 0; i < 9; )
          {
-            _loc5_ = _loc3_.getItemAt(_loc6_);
-            if(_loc5_ && getHorseAmuletVo(_loc5_.TemplateID).ExtendType1 == _loc4_)
+            info = bag.getItemAt(i);
+            if(info && getHorseAmuletVo(info.TemplateID).ExtendType1 == type)
             {
-               _loc2_++;
-               if(_loc2_ >= 3)
+               count++;
+               if(count >= 3)
                {
                   return false;
                }
             }
-            _loc6_++;
+            i++;
          }
          return true;
       }
       
       public function canPutInEquipAmulet() : int
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:BagInfo = PlayerManager.Instance.Self.horseAmuletBag;
-         _loc3_ = 0;
-         while(_loc3_ < 9)
+         var i:int = 0;
+         var info:* = null;
+         var bag:BagInfo = PlayerManager.Instance.Self.horseAmuletBag;
+         for(i = 0; i < 9; )
          {
-            if(LIMIT_LEVEL[_loc3_] > HorseManager.instance.curLevel)
+            if(LIMIT_LEVEL[i] > HorseManager.instance.curLevel)
             {
                return -1;
             }
-            _loc2_ = _loc1_.getItemAt(_loc3_);
-            if(_loc2_ == null)
+            info = bag.getItemAt(i);
+            if(info == null)
             {
-               return _loc3_;
+               return i;
             }
-            _loc3_++;
+            i++;
          }
          return -1;
       }
       
       public function getHorseAmuletHp() : int
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc1_:int = 0;
-         var _loc2_:BagInfo = PlayerManager.Instance.Self.horseAmuletBag;
-         _loc5_ = 0;
-         while(_loc5_ < 9)
+         var i:int = 0;
+         var info:* = null;
+         var vo:* = null;
+         var hp:int = 0;
+         var bag:BagInfo = PlayerManager.Instance.Self.horseAmuletBag;
+         for(i = 0; i < 9; )
          {
-            _loc4_ = _loc2_.getItemAt(_loc5_) as InventoryItemInfo;
-            if(_loc4_)
+            info = bag.getItemAt(i) as InventoryItemInfo;
+            if(info)
             {
-               _loc3_ = HorseAmuletManager.instance.getHorseAmuletVo(_loc4_.TemplateID);
-               _loc1_ = _loc1_ + _loc3_.BaseType1Value;
+               vo = HorseAmuletManager.instance.getHorseAmuletVo(info.TemplateID);
+               hp = hp + vo.BaseType1Value;
             }
-            _loc5_++;
+            i++;
          }
-         return _loc1_;
+         return hp;
       }
    }
 }

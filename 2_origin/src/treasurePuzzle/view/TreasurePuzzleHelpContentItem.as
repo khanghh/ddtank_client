@@ -15,27 +15,27 @@ package treasurePuzzle.view
       
       private var contentText:FilterFrameText;
       
-      public function TreasurePuzzleHelpContentItem(param1:int, param2:String, param3:String)
+      public function TreasurePuzzleHelpContentItem(type:int, title:String, content:String)
       {
          super();
-         if(param1 == 0)
+         if(type == 0)
          {
             bg = ComponentFactory.Instance.creat("treasurePuzzle.redTitleBg");
             titleText = ComponentFactory.Instance.creatComponentByStylename("treasurePuzzle.redTitle");
          }
-         else if(param1 == 1)
+         else if(type == 1)
          {
             bg = ComponentFactory.Instance.creat("treasurePuzzle.blueTitleBg");
             titleText = ComponentFactory.Instance.creatComponentByStylename("treasurePuzzle.blueTitle");
          }
-         else if(param1 == 2)
+         else if(type == 2)
          {
             bg = ComponentFactory.Instance.creat("treasurePuzzle.yellowTitleBg");
             titleText = ComponentFactory.Instance.creatComponentByStylename("treasurePuzzle.yellowTitle");
          }
          contentText = ComponentFactory.Instance.creatComponentByStylename("treasurePuzzle.helpView.rewardContentText");
-         titleText.text = param2;
-         contentText.text = param3;
+         titleText.text = title;
+         contentText.text = content;
          addChild(bg);
          addChild(titleText);
          addChild(contentText);

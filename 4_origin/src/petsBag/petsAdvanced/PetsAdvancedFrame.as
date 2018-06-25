@@ -60,9 +60,9 @@ package petsBag.petsAdvanced
          _helpBtn = HelpFrameUtils.Instance.simpleHelpButton(this,"petsBag.button.helpBtn",null,LanguageMgr.GetTranslation("ddt.petsBag.formTitleTxt"),"asset.petsForm.helpText",404,484) as SimpleBitmapButton;
          PositionUtils.setPos(_helpBtn,"petsBag.form.helpBtnPos");
          _helpBtn.visible = true;
-         var _loc1_:Sprite = ComponentFactory.Instance.creat("petsBag.helpFrame.petBreak");
-         PositionUtils.setPos(_loc1_,"petsBag.advaced.petBreakHelpContentPos");
-         _breakHelpBtn = HelpFrameUtils.Instance.simpleHelpButton(this,"petsBag.button.helpBtn",null,LanguageMgr.GetTranslation("ddt.petsBag.breakHelpTitle"),_loc1_,404,484) as SimpleBitmapButton;
+         var breakHelpContent:Sprite = ComponentFactory.Instance.creat("petsBag.helpFrame.petBreak");
+         PositionUtils.setPos(breakHelpContent,"petsBag.advaced.petBreakHelpContentPos");
+         _breakHelpBtn = HelpFrameUtils.Instance.simpleHelpButton(this,"petsBag.button.helpBtn",null,LanguageMgr.GetTranslation("ddt.petsBag.breakHelpTitle"),breakHelpContent,404,484) as SimpleBitmapButton;
          PositionUtils.setPos(_breakHelpBtn,"petsBag.form.helpBtnPos");
          _breakHelpBtn.visible = false;
          _hBox = ComponentFactory.Instance.creatComponentByStylename("petsBag.evolution.hBox");
@@ -128,9 +128,9 @@ package petsBag.petsAdvanced
          _formBtn.enable = false;
       }
       
-      public function set enableBtn(param1:Boolean) : void
+      public function set enableBtn(value:Boolean) : void
       {
-         var _loc2_:* = param1;
+         var _loc2_:* = value;
          _awakenBtn.mouseEnabled = _loc2_;
          _loc2_ = _loc2_;
          _breakBtn.mouseEnabled = _loc2_;
@@ -141,7 +141,7 @@ package petsBag.petsAdvanced
          _loc2_ = _loc2_;
          _evolutionBtn.mouseEnabled = _loc2_;
          _ringStarBtn.mouseEnabled = _loc2_;
-         _loc2_ = param1;
+         _loc2_ = value;
          _awakenBtn.enable = _loc2_;
          _loc2_ = _loc2_;
          _eatPetsBtn.enable = _loc2_;
@@ -160,9 +160,9 @@ package petsBag.petsAdvanced
          addEventListener("response",_response);
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             if(PetsAdvancedControl.Instance.isAllMovieComplete)
             {
@@ -174,11 +174,11 @@ package petsBag.petsAdvanced
          }
       }
       
-      protected function __changeHandler(param1:Event) : void
+      protected function __changeHandler(event:Event) : void
       {
-         var _loc2_:Boolean = false;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
+         var visibleHelpBtn:Boolean = false;
+         var helpTitle:* = null;
+         var helpConten:* = null;
          SoundManager.instance.play("008");
          if(_btnGroup.selectIndex == _currentIndex)
          {
@@ -189,47 +189,47 @@ package petsBag.petsAdvanced
          switch(int(_btnGroup.selectIndex))
          {
             case 0:
-               _loc2_ = false;
+               visibleHelpBtn = false;
                _breakHelpBtn.visible = false;
                PetsAdvancedControl.Instance.currentViewType = 1;
                _view = new PetsRisingStarView();
                break;
             case 1:
-               _loc2_ = false;
+               visibleHelpBtn = false;
                _breakHelpBtn.visible = false;
                PetsAdvancedControl.Instance.currentViewType = 2;
                _view = new PetsEvolutionView();
                break;
             case 2:
-               _loc2_ = true;
+               visibleHelpBtn = true;
                _breakHelpBtn.visible = false;
                PetsAdvancedControl.Instance.currentViewType = 3;
-               _loc4_ = "ddt.petsBag.formTitleTxt";
-               _loc3_ = "asset.petsForm.helpText";
+               helpTitle = "ddt.petsBag.formTitleTxt";
+               helpConten = "asset.petsForm.helpText";
                _view = new PetsFormView();
                break;
             case 3:
-               _loc2_ = false;
+               visibleHelpBtn = false;
                _breakHelpBtn.visible = false;
                PetsAdvancedControl.Instance.currentViewType = 4;
                _view = new PetsEatView();
                break;
             case 4:
-               _loc2_ = false;
+               visibleHelpBtn = false;
                _breakHelpBtn.visible = true;
                PetsAdvancedControl.Instance.currentViewType = 5;
                _view = new PetsMaxGradeBreakView();
                PetsBagManager.instance().petBreakInfoRequire();
                break;
             case 5:
-               _loc2_ = true;
+               visibleHelpBtn = true;
                _breakHelpBtn.visible = false;
-               _loc4_ = "ddt.petsBag.petAwaken.formTitleTxt";
-               _loc3_ = "asset.petsBag.petsAwaken.helpText";
+               helpTitle = "ddt.petsBag.petAwaken.formTitleTxt";
+               helpConten = "asset.petsBag.petsAwaken.helpText";
                PetsAdvancedControl.Instance.currentViewType = 6;
                _view = new PetsAwakenView();
          }
-         createHelpBtn(_loc4_,_loc3_,_loc2_);
+         createHelpBtn(helpTitle,helpConten,visibleHelpBtn);
          _currentIndex = _btnGroup.selectIndex;
          if(_view)
          {
@@ -237,16 +237,16 @@ package petsBag.petsAdvanced
          }
       }
       
-      private function createHelpBtn(param1:String, param2:String, param3:Boolean) : void
+      private function createHelpBtn(title:String, centen:String, isVisible:Boolean) : void
       {
          if(_helpBtn)
          {
             ObjectUtils.disposeObject(_helpBtn);
          }
          _helpBtn = null;
-         if(param3)
+         if(isVisible)
          {
-            _helpBtn = HelpFrameUtils.Instance.simpleHelpButton(this,"petsBag.button.helpBtn",null,LanguageMgr.GetTranslation(param1),param2,404,484) as SimpleBitmapButton;
+            _helpBtn = HelpFrameUtils.Instance.simpleHelpButton(this,"petsBag.button.helpBtn",null,LanguageMgr.GetTranslation(title),centen,404,484) as SimpleBitmapButton;
             PositionUtils.setPos(_helpBtn,"petsBag.form.helpBtnPos");
          }
       }

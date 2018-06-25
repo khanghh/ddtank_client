@@ -49,9 +49,9 @@ package newVersionGuide
       
       private var _timer:Timer;
       
-      public function NewVersionGuideManager(param1:IEventDispatcher = null)
+      public function NewVersionGuideManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : NewVersionGuideManager
@@ -63,13 +63,13 @@ package newVersionGuide
          return _instance;
       }
       
-      public function setUp(param1:MovieClip) : void
+      public function setUp(hallView:MovieClip) : void
       {
          InviteManager.Instance.enabled = false;
          isGuiding = true;
-         _hallView = param1;
-         var _loc2_:NewVersionGuideTipView = new NewVersionGuideTipView(1);
-         LayerManager.Instance.addToLayer(_loc2_,2,true,1);
+         _hallView = hallView;
+         var guideView:NewVersionGuideTipView = new NewVersionGuideTipView(1);
+         LayerManager.Instance.addToLayer(guideView,2,true,1);
       }
       
       public function startGuide() : void
@@ -79,7 +79,7 @@ package newVersionGuide
          guide(_index);
       }
       
-      private function guide(param1:int) : void
+      private function guide(index:int) : void
       {
          if(_index >= 14)
          {
@@ -87,21 +87,21 @@ package newVersionGuide
             return;
          }
          TweenLite.killTweensOf(_hallView);
-         if(param1 < 5)
+         if(index < 5)
          {
             TweenLite.to(_hallView,2,{
-               "x":-buildingAndIconPosArr[param1].x,
+               "x":-buildingAndIconPosArr[index].x,
                "onComplete":showGuideTxt
             });
          }
-         else if(param1 < 7)
+         else if(index < 7)
          {
             showGuideTxt();
          }
          else
          {
             TweenLite.to(_hallView,2,{
-               "x":-npcPosArr[param1 - 7].x,
+               "x":-npcPosArr[index - 7].x,
                "onComplete":showGuideTxt
             });
          }
@@ -156,14 +156,13 @@ package newVersionGuide
       
       private function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          TweenLite.killTweensOf(_hallView);
          _hallView.x = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _arrowTypeArr.length)
+         for(i = 0; i < _arrowTypeArr.length; )
          {
-            NewHandContainer.Instance.clearArrowByID(_arrowTypeArr[_loc1_]);
-            _loc1_++;
+            NewHandContainer.Instance.clearArrowByID(_arrowTypeArr[i]);
+            i++;
          }
          NewHandContainer.Instance.hideGuideCover();
          ObjectUtils.disposeObject(_npcTxt);
@@ -185,11 +184,11 @@ package newVersionGuide
       {
          InviteManager.Instance.enabled = true;
          isGuiding = false;
-         var _loc1_:NewVersionGuideTipView = new NewVersionGuideTipView(2,completeGuideFunc);
-         LayerManager.Instance.addToLayer(_loc1_,2,true,1);
+         var guideView:NewVersionGuideTipView = new NewVersionGuideTipView(2,completeGuideFunc);
+         LayerManager.Instance.addToLayer(guideView,2,true,1);
       }
       
-      protected function __guideNextHanlder(param1:TimerEvent) : void
+      protected function __guideNextHanlder(event:TimerEvent) : void
       {
          if(_timer)
          {

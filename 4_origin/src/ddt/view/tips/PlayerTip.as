@@ -223,7 +223,7 @@ package ddt.view.tips
          _friendGroup.addEventListener("addedToStage",__groupAddToStage);
       }
       
-      protected function __groupAddToStage(param1:Event) : void
+      protected function __groupAddToStage(event:Event) : void
       {
          PositionUtils.setPos(_friendGroup,"groupTip.pos");
          if(this.y + 211 + _friendGroup.height > StageReferance.stageHeight)
@@ -232,24 +232,24 @@ package ddt.view.tips
          }
       }
       
-      protected function __friendClickHandler(param1:MouseEvent) : void
+      protected function __friendClickHandler(event:MouseEvent) : void
       {
          removeChild(_friendGroup);
          _timer.stop();
          hide();
       }
       
-      protected function __friendOverHandler(param1:MouseEvent) : void
+      protected function __friendOverHandler(event:MouseEvent) : void
       {
          _friendOver = true;
       }
       
-      protected function __friendOutHandler(param1:MouseEvent) : void
+      protected function __friendOutHandler(event:MouseEvent) : void
       {
          _friendOver = false;
       }
       
-      protected function __timerHandler(param1:TimerEvent) : void
+      protected function __timerHandler(event:TimerEvent) : void
       {
          if(!_friendOver)
          {
@@ -258,14 +258,14 @@ package ddt.view.tips
          }
       }
       
-      protected function __overHandler(param1:MouseEvent) : void
+      protected function __overHandler(event:MouseEvent) : void
       {
          _friendGroup.update(_info.NickName);
          addChild(_friendGroup);
          _timer.stop();
       }
       
-      protected function __outHandler(param1:MouseEvent) : void
+      protected function __outHandler(event:MouseEvent) : void
       {
          _timer.reset();
          _timer.start();
@@ -290,25 +290,25 @@ package ddt.view.tips
          return _info;
       }
       
-      public function set playerInfo(param1:BasePlayer) : void
+      public function set playerInfo(value:BasePlayer) : void
       {
          if(_info)
          {
             _info.removeEventListener("propertychange",__onPropChange);
          }
-         _info = param1;
+         _info = value;
          _info.addEventListener("propertychange",__onPropChange);
          update();
       }
       
-      public function proposeEnable(param1:Boolean) : void
+      public function proposeEnable(b:Boolean) : void
       {
-         _btnPropose.enable = param1;
+         _btnPropose.enable = b;
       }
       
-      public function setSelfDisable(param1:Boolean) : void
+      public function setSelfDisable(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             var _loc2_:* = false;
             _btnPresentGift.enable = _loc2_;
@@ -378,12 +378,12 @@ package ddt.view.tips
          return false;
       }
       
-      public function show(param1:int) : void
+      public function show(yOffset:int) : void
       {
          LayerManager.Instance.addToLayer(this,3);
-         var _loc2_:Point = new Point(StageReferance.stage.mouseX,StageReferance.stage.mouseY);
-         x = _loc2_.x - _bg.width;
-         y = param1 - _bg.height - (!!_bottomBtnsContainer.visible?_bottomBg.height:0);
+         var pos:Point = new Point(StageReferance.stage.mouseX,StageReferance.stage.mouseY);
+         x = pos.x - _bg.width;
+         y = yOffset - _bg.height - (!!_bottomBtnsContainer.visible?_bottomBg.height:0);
          if(x < 10)
          {
             x = 10;
@@ -397,8 +397,8 @@ package ddt.view.tips
       
       public function update() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var __info:* = null;
+         var tInfo:* = null;
          if(_headPhoto != null)
          {
             ObjectUtils.disposeObject(_headPhoto);
@@ -412,9 +412,9 @@ package ddt.view.tips
                {
                   _headPhoto = new PlayerPortraitView("left",true);
                }
-               _loc2_ = new PlayerInfo();
-               ObjectUtils.copyProperties(_loc2_,_info);
-               _headPhoto.info = _loc2_;
+               __info = new PlayerInfo();
+               ObjectUtils.copyProperties(__info,_info);
+               _headPhoto.info = __info;
                _headPhoto.x = 95;
                _headPhoto.y = 53;
                addChild(_headPhoto);
@@ -422,16 +422,16 @@ package ddt.view.tips
             _nameTxt.text = _info.NickName;
             if(_info.ID == PlayerManager.Instance.Self.ID)
             {
-               _loc1_ = PlayerManager.Instance.Self;
+               tInfo = PlayerManager.Instance.Self;
             }
             else
             {
-               _loc1_ = _info;
+               tInfo = _info;
             }
-            if(_loc1_.IsVIP)
+            if(tInfo.IsVIP)
             {
                ObjectUtils.disposeObject(_vipName);
-               _vipName = VipController.instance.getVipNameTxt(138,_loc1_.typeVIP);
+               _vipName = VipController.instance.getVipNameTxt(138,tInfo.typeVIP);
                _vipName.x = _nameTxt.x;
                _vipName.y = _nameTxt.y;
                _vipName.text = _nameTxt.text;
@@ -443,10 +443,10 @@ package ddt.view.tips
                addChild(_nameTxt);
                DisplayUtils.removeDisplay(_vipName);
             }
-            if(_loc1_.ID == PlayerManager.Instance.Self.ID || _loc1_.IsVIP)
+            if(tInfo.ID == PlayerManager.Instance.Self.ID || tInfo.IsVIP)
             {
-               _vipIcon.setInfo(_loc1_);
-               if(_loc1_.IsVIP || PlayerManager.Instance.Self.IsVIP)
+               _vipIcon.setInfo(tInfo);
+               if(tInfo.IsVIP || PlayerManager.Instance.Self.IsVIP)
                {
                   _vipIcon.filters = null;
                }
@@ -460,7 +460,7 @@ package ddt.view.tips
             {
                removeChild(_vipIcon);
             }
-            _clubTxt.text = LanguageMgr.GetTranslation("tank.menu.ClubName") + (!!_loc1_.ConsortiaName?_loc1_.ConsortiaName:"");
+            _clubTxt.text = LanguageMgr.GetTranslation("tank.menu.ClubName") + (!!tInfo.ConsortiaName?tInfo.ConsortiaName:"");
          }
          else
          {
@@ -470,7 +470,7 @@ package ddt.view.tips
             _vipName.text = _loc3_;
             _nameTxt.text = _loc3_;
          }
-         if(_loc1_.ID == PlayerManager.Instance.Self.ID || _loc1_.Grade < 5 || PlayerManager.Instance.Self.Grade < 5)
+         if(tInfo.ID == PlayerManager.Instance.Self.ID || tInfo.Grade < 5 || PlayerManager.Instance.Self.Grade < 5)
          {
             _One_one_chat.enable = false;
             _One_one_chat.alpha = 0.7;
@@ -480,7 +480,7 @@ package ddt.view.tips
             _One_one_chat.enable = true;
             _One_one_chat.alpha = 1;
          }
-         if(_loc1_.ID == PlayerManager.Instance.Self.ID)
+         if(tInfo.ID == PlayerManager.Instance.Self.ID)
          {
             btnChallenge.enable = false;
          }
@@ -506,16 +506,16 @@ package ddt.view.tips
             _transferFriend.enable = false;
             _transferFriend.alpha = 0.7;
          }
-         if(_loc1_ && _loc1_.DutyLevel > PlayerManager.Instance.Self.DutyLevel && _loc1_.ID != PlayerManager.Instance.Self.ID)
+         if(tInfo && tInfo.DutyLevel > PlayerManager.Instance.Self.DutyLevel && tInfo.ID != PlayerManager.Instance.Self.ID)
          {
-            if(_loc1_.ConsortiaID != 0 && _loc1_.ConsortiaID == PlayerManager.Instance.Self.ConsortiaID)
+            if(tInfo.ConsortiaID != 0 && tInfo.ConsortiaID == PlayerManager.Instance.Self.ConsortiaID)
             {
                _btnExpel.visible = ConsortiaDutyManager.GetRight(PlayerManager.Instance.Self.Right,32);
                _btnExpel.enable = true;
                _btnPromote.visible = ConsortiaDutyManager.GetRight(PlayerManager.Instance.Self.Right,2048);
-               _btnPromote.enable = _loc1_.DutyLevel > PlayerManager.Instance.Self.DutyLevel + 1;
+               _btnPromote.enable = tInfo.DutyLevel > PlayerManager.Instance.Self.DutyLevel + 1;
                _btnDemote.visible = ConsortiaDutyManager.GetRight(PlayerManager.Instance.Self.Right,2048);
-               _btnDemote.enable = _loc1_.DutyLevel != 5;
+               _btnDemote.enable = tInfo.DutyLevel != 5;
                _btnInvite.visible = false;
             }
             else
@@ -532,13 +532,13 @@ package ddt.view.tips
             _btnDemote.visible = false;
             _btnExpel.visible = false;
             _bottomBtnsContainer.visible = false;
-            if(_loc1_.ConsortiaID == 0 && PlayerManager.Instance.Self.ConsortiaID != 0 && _loc1_.ConsortiaName == "" && _loc1_.ID != PlayerManager.Instance.Self.ID)
+            if(tInfo.ConsortiaID == 0 && PlayerManager.Instance.Self.ConsortiaID != 0 && tInfo.ConsortiaName == "" && tInfo.ID != PlayerManager.Instance.Self.ID)
             {
-               _btnInvite.visible = ConsortiaDutyManager.GetRight(PlayerManager.Instance.Self.Right,2) && _loc1_.ConsortiaID == 0;
+               _btnInvite.visible = ConsortiaDutyManager.GetRight(PlayerManager.Instance.Self.Right,2) && tInfo.ConsortiaID == 0;
                _bottomBtnsContainer.visible = _btnInvite.visible;
             }
          }
-         if((_loc1_.apprenticeshipState == 0 || _loc1_.apprenticeshipState == 2) && _loc1_.ID != PlayerManager.Instance.Self.ID && _loc1_.ID != PlayerManager.Instance.Self.masterID && _loc1_.Grade >= 8)
+         if((tInfo.apprenticeshipState == 0 || tInfo.apprenticeshipState == 2) && tInfo.ID != PlayerManager.Instance.Self.ID && tInfo.ID != PlayerManager.Instance.Self.masterID && tInfo.Grade >= 8)
          {
             _btnAcademy.enable = true;
             _btnAcademy.alpha = 1;
@@ -556,7 +556,7 @@ package ddt.view.tips
                PositionUtils.setPos(_photo,"playerTip.PhotoPos");
                addChild(_photo);
             }
-            _photo.userID = String(_loc1_.LoginName);
+            _photo.userID = String(tInfo.LoginName);
          }
          if(IMManager.isInIM)
          {
@@ -587,13 +587,13 @@ package ddt.view.tips
          IMManager.isInIM = false;
       }
       
-      private function __buttonsClick(param1:MouseEvent) : void
+      private function __buttonsClick(event:MouseEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var alert:* = null;
+         var markFrame:* = null;
          if(_info)
          {
-            var _loc4_:* = param1.currentTarget;
+            var _loc4_:* = event.currentTarget;
             if(_btnPromote !== _loc4_)
             {
                if(_btnDemote !== _loc4_)
@@ -658,8 +658,8 @@ package ddt.view.tips
                                  else
                                  {
                                     hide();
-                                    _loc2_ = ComponentFactory.Instance.creatComponentByStylename("IM.markFrame");
-                                    LayerManager.Instance.addToLayer(_loc2_,7,true,1);
+                                    markFrame = ComponentFactory.Instance.creatComponentByStylename("IM.markFrame");
+                                    LayerManager.Instance.addToLayer(markFrame,7,true,1);
                                  }
                               }
                               else
@@ -702,8 +702,8 @@ package ddt.view.tips
                         BaglockedManager.Instance.show();
                         return;
                      }
-                     _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.DeleteMemberFrame.titleText"),LanguageMgr.GetTranslation("tank.menu.fireConfirm",_info.NickName),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
-                     _loc3_.addEventListener("response",__frameEventHandler);
+                     alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.DeleteMemberFrame.titleText"),LanguageMgr.GetTranslation("tank.menu.fireConfirm",_info.NickName),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+                     alert.addEventListener("response",__frameEventHandler);
                   }
                }
                else
@@ -746,30 +746,30 @@ package ddt.view.tips
          }
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         switch(int(param1.responseCode) - 2)
+         var frame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         switch(int(e.responseCode) - 2)
          {
             case 0:
             case 1:
                SocketManager.Instance.out.sendConsortiaOut(_info.ID);
          }
-         _loc2_.dispose();
-         _loc2_ = null;
+         frame.dispose();
+         frame = null;
       }
       
-      private function __mouseClick(param1:Event) : void
+      private function __mouseClick(event:Event) : void
       {
          hide();
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
       }
       
-      private function __onPropChange(param1:PlayerPropertyEvent) : void
+      private function __onPropChange(e:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["DutyLevel"])
+         if(e.changedProperties["DutyLevel"])
          {
             _btnPromote.enable = _info.DutyLevel != 2;
             _btnDemote.enable = _info.DutyLevel != 5;
@@ -777,12 +777,12 @@ package ddt.view.tips
          }
       }
       
-      private function __sendBandChat(param1:MouseEvent) : void
+      private function __sendBandChat(e:MouseEvent) : void
       {
          SocketManager.Instance.out.sendForbidSpeak(_info.ID,true);
       }
       
-      private function __sendNoBandChat(param1:MouseEvent) : void
+      private function __sendNoBandChat(e:MouseEvent) : void
       {
          SocketManager.Instance.out.sendForbidSpeak(_info.ID,false);
       }

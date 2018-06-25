@@ -124,9 +124,9 @@ package starling.scene.consortiaGuard
          _aStarPathFinder = new AStarPathFinder();
          _aStarPathFinder.init(_sceneMapGridData);
          _playerPos = new Point(743,1044);
-         var _loc1_:SpriteLayer = LayerManager.Instance.getLayerByType(5);
+         var senceLayer:SpriteLayer = LayerManager.Instance.getLayerByType(5);
          _clickBossLayer = new ConsortiaGuardSceneClick();
-         _loc1_.addChild(_clickBossLayer);
+         senceLayer.addChild(_clickBossLayer);
          initEvent();
       }
       
@@ -190,22 +190,22 @@ package starling.scene.consortiaGuard
          StateManager.getInGame_Step_8 = true;
       }
       
-      private function __onClickBossIcon(param1:ConsortiaGuardEvent) : void
+      private function __onClickBossIcon(event:ConsortiaGuardEvent) : void
       {
-         setSelfPlayerPos(Point(param1.data));
+         setSelfPlayerPos(Point(event.data));
       }
       
       public function initPlayerView() : void
       {
          var _loc3_:int = 0;
          var _loc2_:* = ConsortiaGuardControl.Instance.model.playerList;
-         for each(var _loc1_ in ConsortiaGuardControl.Instance.model.playerList)
+         for each(var vo in ConsortiaGuardControl.Instance.model.playerList)
          {
-            addPlayerInfo(_loc1_);
+            addPlayerInfo(vo);
          }
       }
       
-      private function __startLoading(param1:flash.events.Event) : void
+      private function __startLoading(e:flash.events.Event) : void
       {
          StateManager.getInGame_Step_6 = true;
          ChatManager.Instance.input.faceEnabled = false;
@@ -214,45 +214,45 @@ package starling.scene.consortiaGuard
          StateManager.getInGame_Step_7 = true;
       }
       
-      private function __onAddPlayer(param1:ConsortiaGuardEvent) : void
+      private function __onAddPlayer(e:ConsortiaGuardEvent) : void
       {
-         var _loc2_:FightPlayerVo = ConsortiaGuardControl.Instance.model.playerList[int(param1.data)];
-         addPlayerInfo(_loc2_);
+         var vo:FightPlayerVo = ConsortiaGuardControl.Instance.model.playerList[int(e.data)];
+         addPlayerInfo(vo);
       }
       
-      private function __onUpdatePlayerState(param1:ConsortiaGuardEvent) : void
+      private function __onUpdatePlayerState(e:ConsortiaGuardEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:int = param1.data as int;
-         if(_loc2_ == PlayerManager.Instance.Self.ID)
+         var player:* = null;
+         var id:int = e.data as int;
+         if(id == PlayerManager.Instance.Self.ID)
          {
-            _loc3_ = _selfPlayer;
+            player = _selfPlayer;
          }
          else
          {
-            _loc3_ = _friendPlayerDic[_loc2_];
+            player = _friendPlayerDic[id];
          }
-         _loc3_.fightPlayerVo.stateType = "consortiaGuard";
-         _loc3_.updatePlayerState();
-         if(_loc2_ == PlayerManager.Instance.Self.ID)
+         player.fightPlayerVo.stateType = "consortiaGuard";
+         player.updatePlayerState();
+         if(id == PlayerManager.Instance.Self.ID)
          {
             checkPlayerRevive();
          }
       }
       
-      private function __onRemovePlayer(param1:ConsortiaGuardEvent) : void
+      private function __onRemovePlayer(e:ConsortiaGuardEvent) : void
       {
-         removePlayerByID(int(param1.data));
+         removePlayerByID(int(e.data));
       }
       
-      private function __onUpdatePlayerView(param1:ConsortiaGuardEvent) : void
+      private function __onUpdatePlayerView(e:ConsortiaGuardEvent) : void
       {
          updateAllPlayerShow();
       }
       
-      private function startLoadOtherPlayer(param1:Boolean = true) : void
+      private function startLoadOtherPlayer(flag:Boolean = true) : void
       {
-         if(param1 && !this.hasEventListener("enterFrame"))
+         if(flag && !this.hasEventListener("enterFrame"))
          {
             addEventListener("enterFrame",__updateFrame);
          }
@@ -262,19 +262,19 @@ package starling.scene.consortiaGuard
          }
       }
       
-      protected function __onloadPlayerRes(param1:TimerEvent) : void
+      protected function __onloadPlayerRes(event:TimerEvent) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _loadPlayerDic;
-         for(var _loc2_ in _loadPlayerDic)
+         for(var id in _loadPlayerDic)
          {
-            if(_loadPlayerDic[_loc2_])
+            if(_loadPlayerDic[id])
             {
-               addPlayerInfo(_loadPlayerDic[_loc2_]);
-               delete _loadPlayerDic[_loc2_];
+               addPlayerInfo(_loadPlayerDic[id]);
+               delete _loadPlayerDic[id];
             }
          }
-         if(_loc2_ == null)
+         if(id == null)
          {
             _loadTimer.stop();
             _loadTimer.reset();
@@ -291,12 +291,12 @@ package starling.scene.consortiaGuard
             _mouseMovie.touchable = false;
             addChild(_mouseMovie);
          }
-         var _loc1_:FightPlayerVo = PlayerManager.Instance.fightVo;
-         if(_friendPlayerDic[_loc1_.playerInfo.ID])
+         var selfPlayerVO:FightPlayerVo = PlayerManager.Instance.fightVo;
+         if(_friendPlayerDic[selfPlayerVO.playerInfo.ID])
          {
-            removePlayerByID(_loc1_.playerInfo.ID);
+            removePlayerByID(selfPlayerVO.playerInfo.ID);
          }
-         _selfPlayer = new FightPlayer(_loc1_);
+         _selfPlayer = new FightPlayer(selfPlayerVO);
          _selfPlayer.updatePlayerState();
          checkPlayerRevive();
          _selfPlayer.playerPoint = _playerPos;
@@ -319,69 +319,69 @@ package starling.scene.consortiaGuard
       
       private function checkPlayerRevive() : void
       {
-         var _loc1_:* = null;
+         var view:* = null;
          if(_selfPlayer.fightPlayerVo.isDie)
          {
-            _loc1_ = new ConsortiaGuardReviveView();
-            _loc1_.show(_selfPlayer.fightPlayerVo);
+            view = new ConsortiaGuardReviveView();
+            view.show(_selfPlayer.fightPlayerVo);
          }
       }
       
-      private function addPlayerInfo(param1:FightPlayerVo) : void
+      private function addPlayerInfo(friendVo:FightPlayerVo) : void
       {
-         var _loc2_:* = null;
-         if(param1.playerInfo.ID != PlayerManager.Instance.Self.ID)
+         var friendPlayer:* = null;
+         if(friendVo.playerInfo.ID != PlayerManager.Instance.Self.ID)
          {
-            if(_friendPlayerDic[param1.playerInfo.ID])
+            if(_friendPlayerDic[friendVo.playerInfo.ID])
             {
-               removePlayerByID(param1.playerInfo.ID);
+               removePlayerByID(friendVo.playerInfo.ID);
             }
-            _loc2_ = new FightPlayer(param1);
-            _loc2_.fightPlayerVo.stateType = "consortiaGuard";
-            _loc2_.showPlayer = ConsortiaGuardControl.Instance.showPlayer;
-            _loc2_.updatePlayerState();
-            _loc2_.playerPoint = getRomdonPos();
-            _friendPlayerDic[_loc2_.playerVO.playerInfo.ID] = _loc2_;
-            _disObjSortView.addDisplayObject(_loc2_);
+            friendPlayer = new FightPlayer(friendVo);
+            friendPlayer.fightPlayerVo.stateType = "consortiaGuard";
+            friendPlayer.showPlayer = ConsortiaGuardControl.Instance.showPlayer;
+            friendPlayer.updatePlayerState();
+            friendPlayer.playerPoint = getRomdonPos();
+            _friendPlayerDic[friendPlayer.playerVO.playerInfo.ID] = friendPlayer;
+            _disObjSortView.addDisplayObject(friendPlayer);
          }
       }
       
-      private function removePlayerByID(param1:int = 0) : void
+      private function removePlayerByID(id:int = 0) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
-         if(param1 != 0)
+         var hallPlayer:* = null;
+         var index:int = 0;
+         if(id != 0)
          {
-            if(_friendPlayerDic[param1])
+            if(_friendPlayerDic[id])
             {
-               _loc3_ = _friendPlayerDic[param1];
-               if(_disObjSortView.indexOfDisplayObject(_loc3_) != -1)
+               hallPlayer = _friendPlayerDic[id];
+               if(_disObjSortView.indexOfDisplayObject(hallPlayer) != -1)
                {
-                  _disObjSortView.removeDisplayObject(_loc3_,false);
+                  _disObjSortView.removeDisplayObject(hallPlayer,false);
                }
-               _loc2_ = getPlayerIndexById(_loc3_.playerVO.playerInfo.ID);
-               if(_loc2_ != -1)
+               index = getPlayerIndexById(hallPlayer.playerVO.playerInfo.ID);
+               if(index != -1)
                {
-                  _playerArray.splice(_loc2_,1);
+                  _playerArray.splice(index,1);
                }
-               delete _friendPlayerDic[param1];
-               _loc3_.dispose();
-               _loc3_ = null;
+               delete _friendPlayerDic[id];
+               hallPlayer.dispose();
+               hallPlayer = null;
             }
          }
          else
          {
             var _loc6_:int = 0;
             var _loc5_:* = _friendPlayerDic;
-            for(var _loc4_ in _friendPlayerDic)
+            for(var key in _friendPlayerDic)
             {
-               _loc3_ = _friendPlayerDic[_loc4_];
-               if(_disObjSortView.indexOfDisplayObject(_loc3_) != -1)
+               hallPlayer = _friendPlayerDic[key];
+               if(_disObjSortView.indexOfDisplayObject(hallPlayer) != -1)
                {
-                  _disObjSortView.removeDisplayObject(_loc3_,false);
+                  _disObjSortView.removeDisplayObject(hallPlayer,false);
                }
-               _loc3_.dispose();
-               _loc3_ = null;
+               hallPlayer.dispose();
+               hallPlayer = null;
             }
             _playerArray.splice(0,_playerArray.length);
             if(_selfPlayer)
@@ -392,57 +392,56 @@ package starling.scene.consortiaGuard
          }
       }
       
-      public function set type(param1:String) : void
+      public function set type(value:String) : void
       {
-         _selfPlayer.sceneCharacterActionState = param1;
+         _selfPlayer.sceneCharacterActionState = value;
       }
       
-      protected function __updateFrame(param1:starling.events.Event) : void
+      protected function __updateFrame(event:starling.events.Event) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = undefined;
-         var _loc3_:Number = NaN;
+         var i:int = 0;
+         var obj:* = undefined;
+         var dis:Number = NaN;
          if(!_playerArray)
          {
             return;
          }
          _disObjSortView.sortDisplayObjectLayer();
-         var _loc2_:Array = _disObjSortView.disObjArr;
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_.length)
+         var entityArr:Array = _disObjSortView.disObjArr;
+         for(i = 0; i < entityArr.length; )
          {
-            _loc4_ = _loc2_[_loc5_];
-            if(_loc4_)
+            obj = entityArr[i];
+            if(obj)
             {
-               if(_loc4_ is FightPlayer)
+               if(obj is FightPlayer)
                {
-                  _loc4_.updatePlayer();
+                  obj.updatePlayer();
                }
-               if(_loc4_ != _selfPlayer)
+               if(obj != _selfPlayer)
                {
-                  _loc3_ = (_selfPlayer.x - _loc4_.x) * (_selfPlayer.x - _loc4_.x) + (_selfPlayer.y - _loc4_.y) * (_selfPlayer.y - _loc4_.y);
-                  if(_loc4_.y > _selfPlayer.y && _loc3_ < 10000)
+                  dis = (_selfPlayer.x - obj.x) * (_selfPlayer.x - obj.x) + (_selfPlayer.y - obj.y) * (_selfPlayer.y - obj.y);
+                  if(obj.y > _selfPlayer.y && dis < 10000)
                   {
-                     _loc4_.alpha = 0.5;
+                     obj.alpha = 0.5;
                   }
                   else
                   {
-                     _loc4_.alpha = 1;
+                     obj.alpha = 1;
                   }
                }
             }
-            _loc5_++;
+            i++;
          }
       }
       
-      protected function __onPlayerClick(param1:TouchEvent) : void
+      protected function __onPlayerClick(event:TouchEvent) : void
       {
-         var _loc5_:Number = NaN;
-         var _loc4_:* = null;
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:Touch = param1.getTouch(Starling.current.stage,"ended");
-         if(!_loc2_ || !this.touchable || LayerManager.Instance.backGroundInParent || _nativeStageClickFilter.isTypeOf([Bitmap,TextField,Component]) || ObjectUtils.getDisplayObjectSuperParent(_nativeStageClickFilter.nativeStageClickDisplayObj,ChatView,Starling.current.nativeStage) || ObjectUtils.getDisplayObjectSuperParent(_nativeStageClickFilter.nativeStageClickDisplayObj,ConsortiaGuardBossBar,Starling.current.nativeStage) || ObjectUtils.getDisplayObjectSuperParent(_nativeStageClickFilter.nativeStageClickDisplayObj,ConsortiaGuardSubBossRank,Starling.current.nativeStage))
+         var clickInterval:Number = NaN;
+         var touchDisplayObject:* = null;
+         var touchDisplayObjectP:* = null;
+         var targetPoint:* = null;
+         var touch:Touch = event.getTouch(Starling.current.stage,"ended");
+         if(!touch || !this.touchable || LayerManager.Instance.backGroundInParent || _nativeStageClickFilter.isTypeOf([Bitmap,TextField,Component]) || ObjectUtils.getDisplayObjectSuperParent(_nativeStageClickFilter.nativeStageClickDisplayObj,ChatView,Starling.current.nativeStage) || ObjectUtils.getDisplayObjectSuperParent(_nativeStageClickFilter.nativeStageClickDisplayObj,ConsortiaGuardBossBar,Starling.current.nativeStage) || ObjectUtils.getDisplayObjectSuperParent(_nativeStageClickFilter.nativeStageClickDisplayObj,ConsortiaGuardSubBossRank,Starling.current.nativeStage))
          {
             return;
          }
@@ -453,72 +452,72 @@ package starling.scene.consortiaGuard
          PlayerManager.Instance.dispatchEvent(new NewHallEvent("newhallsetplayertippos",[null]));
          if(_selfPlayer)
          {
-            _loc5_ = 200;
-            if(getTimer() - _lastClick > _loc5_)
+            clickInterval = 200;
+            if(getTimer() - _lastClick > clickInterval)
             {
-               _loc4_ = _loc2_.target;
-               _loc6_ = _loc4_.parent;
-               _loc3_ = _loc2_.getLocation(this);
+               touchDisplayObject = touch.target;
+               touchDisplayObjectP = touchDisplayObject.parent;
+               targetPoint = touch.getLocation(this);
                if(_nativeStageClickFilter.isTypeOf([ConsortiaGuardBoss]))
                {
                   _fightTarget = ObjectUtils.getDisplayObjectSuperParent(_nativeStageClickFilter.nativeStageClickDisplayObj,ConsortiaGuardBoss,Starling.current.nativeStage);
                   trace("click----- ",_fightTarget.index);
-                  _loc3_ = _fightTarget.location;
+                  targetPoint = _fightTarget.location;
                }
                else
                {
                   _fightTarget = null;
                }
                _lastClick = getTimer();
-               setSelfPlayerPos(_loc3_);
+               setSelfPlayerPos(targetPoint);
             }
          }
       }
       
-      protected function __onSetSelfPlayerPos(param1:NewHallEvent) : void
+      protected function __onSetSelfPlayerPos(event:NewHallEvent) : void
       {
          PlayerManager.Instance.dispatchEvent(new NewHallEvent("newhallsetplayertippos",[null]));
-         var _loc2_:Point = this.globalToLocal(new Point(param1.data[0].stageX,param1.data[0].stageY));
-         setSelfPlayerPos(_loc2_,true);
+         var targetPoint:Point = this.globalToLocal(new Point(event.data[0].stageX,event.data[0].stageY));
+         setSelfPlayerPos(targetPoint,true);
       }
       
-      public function setSelfPlayerPos(param1:Point, param2:Boolean = true) : Boolean
+      public function setSelfPlayerPos(pos:Point, mouseFlag:Boolean = true) : Boolean
       {
-         var _loc3_:int = 0;
-         if(_aStarPathFinder && !_aStarPathFinder.hit(param1) && !_selfPlayer.fightPlayerVo.isFight && !_selfPlayer.fightPlayerVo.isDie)
+         var currClickTime:int = 0;
+         if(_aStarPathFinder && !_aStarPathFinder.hit(pos) && !_selfPlayer.fightPlayerVo.isFight && !_selfPlayer.fightPlayerVo.isDie)
          {
-            param1 = setPlayerBorderPos(param1);
-            _mouseMovie.visible = param2;
-            _mouseMovie.x = param1.x;
-            _mouseMovie.y = param1.y;
+            pos = setPlayerBorderPos(pos);
+            _mouseMovie.visible = mouseFlag;
+            _mouseMovie.x = pos.x;
+            _mouseMovie.y = pos.y;
             _mouseMovie.play("stand");
-            _playerPos = param1;
-            _selfPlayer.playerVO.walkPath = _aStarPathFinder.searchPath(_selfPlayer.playerPoint,param1);
+            _playerPos = pos;
+            _selfPlayer.playerVO.walkPath = _aStarPathFinder.searchPath(_selfPlayer.playerPoint,pos);
             _selfPlayer.playerVO.currentWalkStartPoint = _selfPlayer.currentWalkStartPoint;
-            _loc3_ = getTimer();
-            if(_loc3_ - _lastClickTime > 1000)
+            currClickTime = getTimer();
+            if(currClickTime - _lastClickTime > 1000)
             {
-               _lastClickTime = _loc3_;
+               _lastClickTime = currClickTime;
             }
             return true;
          }
          return false;
       }
       
-      public function setPlayerBorderPos(param1:Point) : Point
+      public function setPlayerBorderPos(pos:Point) : Point
       {
-         if(param1.x < 73)
+         if(pos.x < 73)
          {
-            param1.x = 73;
+            pos.x = 73;
          }
-         if(param1.x > _sceneMapGridData.bgImageW - 73)
+         if(pos.x > _sceneMapGridData.bgImageW - 73)
          {
-            param1.x = _sceneMapGridData.bgImageW - 73;
+            pos.x = _sceneMapGridData.bgImageW - 73;
          }
-         return param1;
+         return pos;
       }
       
-      protected function __onFishWalk(param1:NewHallEventStarling) : void
+      protected function __onFishWalk(event:NewHallEventStarling) : void
       {
          _mouseMovie.stop();
          _mouseMovie.visible = false;
@@ -534,59 +533,59 @@ package starling.scene.consortiaGuard
          _selfPlayer.addEventListener("characterMovement",setCenter);
       }
       
-      public function setCenter(param1:SceneCharacterEvent = null) : void
+      public function setCenter(event:SceneCharacterEvent = null) : void
       {
-         var _loc7_:int = 0;
-         var _loc3_:int = 0;
-         var _loc6_:int = StageReferance.stageWidth;
-         var _loc2_:int = StageReferance.defaultHeight;
+         var xf:int = 0;
+         var yf:int = 0;
+         var width:int = StageReferance.stageWidth;
+         var height:int = StageReferance.defaultHeight;
          if(_selfPlayer)
          {
-            _loc7_ = -(_selfPlayer.x - _loc6_ / 2);
-            _loc3_ = -(_selfPlayer.y - _loc2_ / 2) + 50;
+            xf = -(_selfPlayer.x - width / 2);
+            yf = -(_selfPlayer.y - height / 2) + 50;
          }
-         if(_loc7_ > 0)
+         if(xf > 0)
          {
-            _loc7_ = 0;
+            xf = 0;
          }
-         if(_loc7_ < _loc6_ - _sceneMapGridData.bgImageW)
+         if(xf < width - _sceneMapGridData.bgImageW)
          {
-            _loc7_ = _loc6_ - _sceneMapGridData.bgImageW;
+            xf = width - _sceneMapGridData.bgImageW;
          }
-         if(_loc3_ > 0)
+         if(yf > 0)
          {
-            _loc3_ = 0;
+            yf = 0;
          }
-         if(_loc3_ < _loc2_ - _sceneMapGridData.bgImageH)
+         if(yf < height - _sceneMapGridData.bgImageH)
          {
-            _loc3_ = _loc2_ - _sceneMapGridData.bgImageH;
+            yf = height - _sceneMapGridData.bgImageH;
          }
-         var _loc8_:* = _loc7_;
+         var _loc8_:* = xf;
          _clickBossLayer.x = _loc8_;
          this.x = _loc8_;
-         _loc8_ = _loc3_;
+         _loc8_ = yf;
          _clickBossLayer.y = _loc8_;
          this.y = _loc8_;
-         _staticLayer.setPos(-_loc7_,-_loc3_);
+         _staticLayer.setPos(-xf,-yf);
          _staticLayer.setCenter();
          if(!_hidFlag)
          {
             var _loc10_:int = 0;
             var _loc9_:* = _unLoadPlayerDic;
-            for(var _loc5_ in _unLoadPlayerDic)
+            for(var id1 in _unLoadPlayerDic)
             {
-               if(_unLoadPlayerDic[_loc5_] && _unLoadPlayerDic[_loc5_].currentWalkStartPoint)
+               if(_unLoadPlayerDic[id1] && _unLoadPlayerDic[id1].currentWalkStartPoint)
                {
-                  _loadPlayerDic[_unLoadPlayerDic[_loc5_].playerInfo.ID] = _unLoadPlayerDic[_loc5_];
-                  delete _unLoadPlayerDic[_loc5_];
+                  _loadPlayerDic[_unLoadPlayerDic[id1].playerInfo.ID] = _unLoadPlayerDic[id1];
+                  delete _unLoadPlayerDic[id1];
                }
             }
          }
          var _loc12_:int = 0;
          var _loc11_:* = _loadPlayerDic;
-         for(var _loc4_ in _loadPlayerDic)
+         for(var id2 in _loadPlayerDic)
          {
-            if(_loadPlayerDic[_loc4_])
+            if(_loadPlayerDic[id2])
             {
                startLoadOtherPlayer(false);
                break;
@@ -603,123 +602,118 @@ package starling.scene.consortiaGuard
          return new Point(_playerPos.x,_playerPos.y);
       }
       
-      private function getPlayerIndexById(param1:int) : int
+      private function getPlayerIndexById(id:int) : int
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = -1;
-         _loc3_ = 0;
-         while(_loc3_ < _playerArray.length)
+         var i:int = 0;
+         var index:* = -1;
+         for(i = 0; i < _playerArray.length; )
          {
-            if(_playerArray[_loc3_].playerVO.playerInfo.ID == param1)
+            if(_playerArray[i].playerVO.playerInfo.ID == id)
             {
-               _loc2_ = _loc3_;
+               index = i;
                break;
             }
-            _loc3_++;
+            i++;
          }
-         return _loc2_;
+         return index;
       }
       
       private function updateAllPlayerShow() : void
       {
          var _loc3_:int = 0;
          var _loc2_:* = _friendPlayerDic;
-         for each(var _loc1_ in _friendPlayerDic)
+         for each(var player in _friendPlayerDic)
          {
-            if(!_loc1_.fightPlayerVo.playerInfo.isSelf)
+            if(!player.fightPlayerVo.playerInfo.isSelf)
             {
-               _loc1_.showPlayer = ConsortiaGuardControl.Instance.showPlayer;
+               player.showPlayer = ConsortiaGuardControl.Instance.showPlayer;
             }
          }
       }
       
-      private function initFriendVo(param1:PlayerVO) : void
+      private function initFriendVo(friendVo:PlayerVO) : void
       {
-         var _loc4_:int = 2 * 1 * Math.random();
-         var _loc3_:int = getEndPointIndex(_loc4_);
-         param1.randomStartPointIndex = _loc4_;
-         param1.randomEndPointIndex = _loc3_;
-         var _loc2_:Array = getPointPath(_loc4_,_loc3_);
-         param1.currentWalkStartPoint = _loc2_[0];
-         _loc2_.unshift();
-         param1.walkPath = _loc2_;
+         var startPointIndex:int = 2 * 1 * Math.random();
+         var endPointIndex:int = getEndPointIndex(startPointIndex);
+         friendVo.randomStartPointIndex = startPointIndex;
+         friendVo.randomEndPointIndex = endPointIndex;
+         var walkPath:Array = getPointPath(startPointIndex,endPointIndex);
+         friendVo.currentWalkStartPoint = walkPath[0];
+         walkPath.unshift();
+         friendVo.walkPath = walkPath;
       }
       
-      private function getPointPath(param1:int, param2:int) : Array
+      private function getPointPath(newStartPointIndex:int, newEndPointIndex:int) : Array
       {
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:Array = [];
-         if(param1 < param2)
+         var path:* = null;
+         var i:int = 0;
+         var pointPath:Array = [];
+         if(newStartPointIndex < newEndPointIndex)
          {
-            _loc4_ = randomPathMap[param1 + "_" + param2];
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_.length / 2)
+            path = randomPathMap[newStartPointIndex + "_" + newEndPointIndex];
+            for(i = 0; i < path.length / 2; )
             {
-               _loc3_.push(new Point(_loc4_[_loc5_ * 2],_loc4_[_loc5_ * 2 + 1]));
-               _loc5_++;
+               pointPath.push(new Point(path[i * 2],path[i * 2 + 1]));
+               i++;
             }
          }
          else
          {
-            _loc4_ = randomPathMap[param2 + "_" + param1];
-            _loc5_ = _loc4_.length / 2 - 1;
-            while(_loc5_ > -1)
+            path = randomPathMap[newEndPointIndex + "_" + newStartPointIndex];
+            for(i = path.length / 2 - 1; i > -1; )
             {
-               _loc3_.push(new Point(_loc4_[_loc5_ * 2],_loc4_[_loc5_ * 2 + 1]));
-               _loc5_--;
+               pointPath.push(new Point(path[i * 2],path[i * 2 + 1]));
+               i--;
             }
          }
-         return _loc3_;
+         return pointPath;
       }
       
-      private function getEndPointIndex(param1:int) : int
+      private function getEndPointIndex(startPointIndex:int) : int
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = param1 / 1;
-         if(_loc2_ == 2 - 1)
+         var dir:int = 0;
+         var col:int = startPointIndex / 1;
+         if(col == 2 - 1)
          {
-            _loc3_ = -1;
+            dir = -1;
          }
-         else if(_loc2_ == 0)
+         else if(col == 0)
          {
-            _loc3_ = 1;
+            dir = 1;
          }
          else
          {
-            _loc3_ = Math.random() > 0.5?1:-1;
+            dir = Math.random() > 0.5?1:-1;
          }
-         var _loc4_:int = (_loc2_ + _loc3_) * 1 + int(Math.random() * 1);
-         return _loc4_;
+         var newEndPointIndex:int = (col + dir) * 1 + int(Math.random() * 1);
+         return newEndPointIndex;
       }
       
       public function getRomdonPos() : Point
       {
-         var _loc2_:* = null;
-         var _loc7_:int = 0;
-         var _loc1_:int = 0;
-         var _loc4_:Grid = _aStarPathFinder.grid;
-         var _loc5_:int = _loc4_.numRows;
-         var _loc8_:int = _loc4_.numCols;
-         var _loc3_:Array = [];
-         _loc7_ = 0;
-         while(_loc7_ < _loc5_)
+         var node:* = null;
+         var row:int = 0;
+         var col:int = 0;
+         var grid:Grid = _aStarPathFinder.grid;
+         var numRows:int = grid.numRows;
+         var numCols:int = grid.numCols;
+         var nodeArr:Array = [];
+         for(row = 0; row < numRows; )
          {
-            _loc1_ = 0;
-            while(_loc1_ < _loc8_)
+            for(col = 0; col < numCols; )
             {
-               _loc2_ = _loc4_.getNode(_loc1_,_loc7_);
-               if(_loc2_.walkable)
+               node = grid.getNode(col,row);
+               if(node.walkable)
                {
-                  _loc3_.push(_loc2_);
+                  nodeArr.push(node);
                }
-               _loc1_++;
+               col++;
             }
-            _loc7_++;
+            row++;
          }
-         var _loc6_:int = Math.random() * _loc3_.length;
-         _loc2_ = _loc3_[_loc6_];
-         return new Point(_loc2_.x * _loc4_.nodeW,_loc2_.y * _loc4_.nodeH);
+         var randomIndex:int = Math.random() * nodeArr.length;
+         node = nodeArr[randomIndex];
+         return new Point(node.x * grid.nodeW,node.y * grid.nodeH);
       }
       
       override public function dispose() : void

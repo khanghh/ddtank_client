@@ -95,7 +95,7 @@ package store.fineStore.view.pageBringUp.evolution
       
       private var lastinfo:InventoryItemInfo;
       
-      public function FineEvolutionView(param1:StoreController)
+      public function FineEvolutionView(con:StoreController)
       {
          super();
          _leftBg = ComponentFactory.Instance.creat("asset.store.evolution.leftBg");
@@ -142,7 +142,7 @@ package store.fineStore.view.pageBringUp.evolution
          addChild(_one_button_evolution);
          _evolutionBtn = ComponentFactory.Instance.creatComponentByStylename("evolution.Btn");
          addChild(_evolutionBtn);
-         _controller = new StoreBagController(param1.Model);
+         _controller = new StoreBagController(con.Model);
          _view = _controller.getView(StoreModel.EVOLUTION_BAG);
          addChild(_view);
          FineEvolutionManager.Instance.CallBack = changeEatState;
@@ -154,14 +154,14 @@ package store.fineStore.view.pageBringUp.evolution
          return _isEatStatus;
       }
       
-      public function set isEatStatus(param1:Boolean) : void
+      public function set isEatStatus(value:Boolean) : void
       {
-         _isEatStatus = param1;
+         _isEatStatus = value;
       }
       
-      private function changeEatState(param1:Boolean) : void
+      private function changeEatState(value:Boolean) : void
       {
-         _isEatStatus = param1;
+         _isEatStatus = value;
          FineEvolutionManager.Instance.canClickBagList = !isEatStatus;
       }
       
@@ -198,16 +198,16 @@ package store.fineStore.view.pageBringUp.evolution
          SocketManager.Instance.addEventListener(PkgEvent.format(384),__socketEvolutionHander);
       }
       
-      private function __socketEvolutionHander(param1:PkgEvent) : void
+      private function __socketEvolutionHander(e:PkgEvent) : void
       {
-         var _loc2_:Boolean = param1.pkg.readBoolean();
-         if(_loc2_)
+         var value:Boolean = e.pkg.readBoolean();
+         if(value)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.evolution.success"));
          }
       }
       
-      private function __lockClickHandler(param1:MouseEvent) : void
+      private function __lockClickHandler(evt:MouseEvent) : void
       {
          if(!_usingEatMouse)
          {
@@ -242,21 +242,21 @@ package store.fineStore.view.pageBringUp.evolution
          }
       }
       
-      protected function onLockMouseClick(param1:MouseEvent) : void
+      protected function onLockMouseClick(e:MouseEvent) : void
       {
-         var _loc2_:StoreBagCell = param1.target as StoreBagCell;
-         if(param1.target is StoreBagCell)
+         var cell:StoreBagCell = e.target as StoreBagCell;
+         if(e.target is StoreBagCell)
          {
             lockStatusChange();
          }
-         else if(param1.target is IconLayer)
+         else if(e.target is IconLayer)
          {
-            _loc2_ = (param1.target as IconLayer).parent.parent as StoreBagCell;
-            if(_loc2_ && _loc2_.info)
+            cell = (e.target as IconLayer).parent.parent as StoreBagCell;
+            if(cell && cell.info)
             {
-               _loc2_.cellLocked = !_loc2_.cellLocked;
-               (_loc2_.info as InventoryItemInfo).cellLocked = _loc2_.cellLocked;
-               GameInSocketOut.sendBringUpLockStatusUpdate(_loc2_.bagType,(_loc2_.info as InventoryItemInfo).Place,_loc2_.cellLocked);
+               cell.cellLocked = !cell.cellLocked;
+               (cell.info as InventoryItemInfo).cellLocked = cell.cellLocked;
+               GameInSocketOut.sendBringUpLockStatusUpdate(cell.bagType,(cell.info as InventoryItemInfo).Place,cell.cellLocked);
             }
             else
             {
@@ -265,7 +265,7 @@ package store.fineStore.view.pageBringUp.evolution
          }
       }
       
-      private function __evolutionAllHandler(param1:MouseEvent) : void
+      private function __evolutionAllHandler(evt:MouseEvent) : void
       {
          if(!_usingEatMouse && !FineBringUpController.getInstance().usingLock)
          {
@@ -273,12 +273,12 @@ package store.fineStore.view.pageBringUp.evolution
          }
       }
       
-      private function __evolutionHandler(param1:MouseEvent) : void
+      private function __evolutionHandler(evt:MouseEvent) : void
       {
          if(!FineBringUpController.getInstance().usingLock)
          {
             isEatStatus = true;
-            param1.stopImmediatePropagation();
+            evt.stopImmediatePropagation();
             eatStatusChange();
          }
       }
@@ -318,23 +318,23 @@ package store.fineStore.view.pageBringUp.evolution
          }
       }
       
-      protected function onEatMouseClick(param1:MouseEvent) : void
+      protected function onEatMouseClick(e:MouseEvent) : void
       {
-         var _loc2_:* = null;
-         if(param1.target is IconLayer)
+         var cell:* = null;
+         if(e.target is IconLayer)
          {
-            _loc2_ = param1.target.parent.parent as StoreBagCell;
-            if(_loc2_ && _loc2_.info)
+            cell = e.target.parent.parent as StoreBagCell;
+            if(cell && cell.info)
             {
-               if(_loc2_.info == this._evolutionUpCell.info)
+               if(cell.info == this._evolutionUpCell.info)
                {
                   eatStatusChange();
                }
                else
                {
-                  if(_loc2_.cellLocked)
+                  if(cell.cellLocked)
                   {
-                     if(_loc2_.info.TemplateID == 12572)
+                     if(cell.info.TemplateID == 12572)
                      {
                         MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.bagII.bringup.canNotEatLockedCellIIII"),0,true,1);
                      }
@@ -344,7 +344,7 @@ package store.fineStore.view.pageBringUp.evolution
                      }
                      return;
                   }
-                  onEatClick(_loc2_.info as InventoryItemInfo);
+                  onEatClick(cell.info as InventoryItemInfo);
                   _usingEatMouse = false;
                   StageReferance.stage.removeEventListener("click",onEatMouseClick);
                   Mouse.show();
@@ -363,11 +363,11 @@ package store.fineStore.view.pageBringUp.evolution
          }
       }
       
-      private function onEatClick(param1:InventoryItemInfo) : void
+      private function onEatClick($info:InventoryItemInfo) : void
       {
          if(_evolutionUpCell && _evolutionUpCell.info)
          {
-            FineEvolutionManager.Instance.eatBeHaviour(_evolutionUpCell.info as InventoryItemInfo,param1);
+            FineEvolutionManager.Instance.eatBeHaviour(_evolutionUpCell.info as InventoryItemInfo,$info);
             eatStatusChange();
          }
          else
@@ -408,7 +408,7 @@ package store.fineStore.view.pageBringUp.evolution
          _upgrade.play();
       }
       
-      private function __enterFrameHandler(param1:Event) : void
+      private function __enterFrameHandler(e:Event) : void
       {
          if(_upgrade && _upgrade.currentFrame == _upgrade.totalFrames)
          {
@@ -417,41 +417,41 @@ package store.fineStore.view.pageBringUp.evolution
          }
       }
       
-      private function __updateInventorySlot(param1:BagEvent) : void
+      private function __updateInventorySlot(e:BagEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var data:* = null;
+         var event:* = null;
          if(FineBringUpController.getInstance().onSending)
          {
             return;
          }
-         var _loc4_:InventoryItemInfo = PlayerManager.Instance.Self.getBag(12).getItemAt(0);
-         if(_loc4_ != null)
+         var __info:InventoryItemInfo = PlayerManager.Instance.Self.getBag(12).getItemAt(0);
+         if(__info != null)
          {
-            if(lastinfo && lastinfo.ItemID == _loc4_.ItemID)
+            if(lastinfo && lastinfo.ItemID == __info.ItemID)
             {
-               _loc3_ = FineEvolutionManager.Instance.GetNextEvolutionDataByEXP(int(lastinfo.curExp));
-               if(_loc3_ && _loc4_.curExp >= _loc3_.Exp)
+               data = FineEvolutionManager.Instance.GetNextEvolutionDataByEXP(int(lastinfo.curExp));
+               if(data && __info.curExp >= data.Exp)
                {
                   playerGradeMc();
                }
             }
-            _evolutionUpCell.info = _loc4_;
-            lastinfo = ItemManager.copy(_loc4_);
-            _loc3_ = FineEvolutionManager.Instance.GetNextEvolutionDataByEXP(int(_loc4_.curExp));
-            if(_loc3_)
+            _evolutionUpCell.info = __info;
+            lastinfo = ItemManager.copy(__info);
+            data = FineEvolutionManager.Instance.GetNextEvolutionDataByEXP(int(__info.curExp));
+            if(data)
             {
-               _progressTxt.text = _loc4_.curExp + "/" + _loc3_.Exp;
-               upDataDisTxt(_loc4_);
+               _progressTxt.text = __info.curExp + "/" + data.Exp;
+               upDataDisTxt(__info);
             }
             return;
          }
          if(_evolutionUpCell.info)
          {
-            _loc2_ = new LatentEnergyEvent("latentEnergy_equip_move2");
-            _loc2_.info = _evolutionUpCell.info as InventoryItemInfo;
-            _loc2_.moveType = 2;
-            FineBringUpController.getInstance().dispatchEvent(_loc2_);
+            event = new LatentEnergyEvent("latentEnergy_equip_move2");
+            event.info = _evolutionUpCell.info as InventoryItemInfo;
+            event.moveType = 2;
+            FineBringUpController.getInstance().dispatchEvent(event);
          }
          _progressTxt.text = "0/0";
          this._disI.text = "";
@@ -459,130 +459,153 @@ package store.fineStore.view.pageBringUp.evolution
          _lvTxt.text = "";
       }
       
-      private function upDataDisTxt(param1:InventoryItemInfo) : void
+      private function upDataDisTxt(info:InventoryItemInfo) : void
       {
-         var _loc2_:* = null;
-         var _loc6_:EvolutionData = FineEvolutionManager.Instance.GetEvolutionDataByExp(param1.curExp);
-         var _loc3_:Boolean = false;
-         var _loc9_:* = 0;
-         var _loc8_:* = 0;
-         var _loc7_:int = 0;
-         if(_loc6_)
+         var nextData:* = null;
+         var data:EvolutionData = FineEvolutionManager.Instance.GetEvolutionDataByExp(info.curExp);
+         var isMax:Boolean = false;
+         var currentValue:* = 0;
+         var nextValue:* = 0;
+         var lv:int = 0;
+         if(data)
          {
-            _loc3_ = _loc6_.isMax;
-            if(!_loc3_)
+            isMax = data.isMax;
+            if(!isMax)
             {
-               _loc2_ = FineEvolutionManager.Instance.EvolutionDataByLv(_loc6_.Level + 1);
+               nextData = FineEvolutionManager.Instance.EvolutionDataByLv(data.Level + 1);
             }
-            if(param1.Property3 == "32")
+            if(info.Property3 == "32")
             {
-               _loc9_ = Number(_loc6_.AddBlood / 10);
-               if(_loc2_)
+               currentValue = Number(data.AddBlood / 10);
+               if(nextData)
                {
-                  _loc8_ = Number(_loc2_.AddBlood / 10);
+                  nextValue = Number(nextData.AddBlood / 10);
+               }
+            }
+            else if(info.Property3 == "132")
+            {
+               currentValue = Number(data.ReduceDander / 10);
+               if(nextData)
+               {
+                  nextValue = Number(nextData.ReduceDander / 10);
                }
             }
             else
             {
-               _loc9_ = Number(_loc6_.ReduceDamage / 10);
-               if(_loc2_)
+               currentValue = Number(data.ReduceDamage / 10);
+               if(nextData)
                {
-                  _loc8_ = Number(_loc2_.ReduceDamage / 10);
+                  nextValue = Number(nextData.ReduceDamage / 10);
                }
             }
-            _loc7_ = _loc6_.Level;
+            lv = data.Level;
          }
          else
          {
-            _loc2_ = FineEvolutionManager.Instance.EvolutionDataByLv(1);
-            if(param1.Property3 == "32")
+            nextData = FineEvolutionManager.Instance.EvolutionDataByLv(1);
+            if(info.Property3 == "32")
             {
-               if(_loc2_)
+               if(nextData)
                {
-                  _loc8_ = Number(_loc2_.AddBlood / 10);
+                  nextValue = Number(nextData.AddBlood / 10);
                }
             }
-            else if(_loc2_)
+            else if(info.Property3 == "132")
             {
-               _loc8_ = Number(_loc2_.ReduceDamage / 10);
+               if(nextData)
+               {
+                  nextValue = Number(nextData.ReduceDander / 10);
+               }
+            }
+            else if(nextData)
+            {
+               nextValue = Number(nextData.ReduceDamage / 10);
             }
          }
-         var _loc4_:String = LanguageMgr.GetTranslation("store.evolution.disTxt");
-         var _loc5_:String = LanguageMgr.GetTranslation("store.evolution.disTxtII");
+         var str:String = LanguageMgr.GetTranslation("store.evolution.disTxt");
+         var next:String = LanguageMgr.GetTranslation("store.evolution.disTxtII");
          this._disI.text = "";
          this._disII.text = "";
-         _lvTxt.text = _loc7_.toString();
-         if(param1.Property3 == "32")
+         _lvTxt.text = lv.toString();
+         if(info.Property3 == "32")
          {
-            _loc4_ = _loc4_ + LanguageMgr.GetTranslation("store.evolution.addblood",_loc9_.toFixed(2) + "%");
-            if(_loc3_ == false)
+            str = str + LanguageMgr.GetTranslation("store.evolution.addblood",currentValue.toFixed(2) + "%");
+            if(isMax == false)
             {
-               _loc5_ = _loc5_ + LanguageMgr.GetTranslation("store.evolution.addblood",_loc8_.toFixed(2) + "%");
+               next = next + LanguageMgr.GetTranslation("store.evolution.addblood",nextValue.toFixed(2) + "%");
+            }
+         }
+         else if(info.Property3 == "132")
+         {
+            str = str + LanguageMgr.GetTranslation("store.evolution.reduceRander",currentValue.toFixed(2) + "%");
+            if(isMax == false)
+            {
+               next = next + LanguageMgr.GetTranslation("store.evolution.reduceRander",nextValue.toFixed(2) + "%");
             }
          }
          else
          {
-            _loc4_ = _loc4_ + LanguageMgr.GetTranslation("store.evolution.ReduceDamage",_loc9_.toFixed(2) + "%");
-            if(_loc3_ == false)
+            str = str + LanguageMgr.GetTranslation("store.evolution.ReduceDamage",currentValue.toFixed(2) + "%");
+            if(isMax == false)
             {
-               _loc5_ = _loc5_ + LanguageMgr.GetTranslation("store.evolution.ReduceDamage",_loc8_.toFixed(2) + "%");
+               next = next + LanguageMgr.GetTranslation("store.evolution.ReduceDamage",nextValue.toFixed(2) + "%");
             }
          }
-         if(_loc3_)
+         if(isMax)
          {
-            _loc5_ = LanguageMgr.GetTranslation("store.EvolutionItemCell.up");
+            next = LanguageMgr.GetTranslation("store.EvolutionItemCell.up");
          }
-         this._disI.text = _loc4_;
-         this._disII.text = _loc5_;
+         this._disI.text = str;
+         this._disII.text = next;
       }
       
-      private function __cellDoubleClick(param1:CellEvent) : void
+      private function __cellDoubleClick(evt:CellEvent) : void
       {
-         param1.stopImmediatePropagation();
+         evt.stopImmediatePropagation();
          if(PlayerManager.Instance.Self.bagLocked)
          {
             SoundManager.instance.play("008");
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:BagCell = param1.data as StoreBagCell;
-         dragDrop(_loc2_);
+         var sourceCell:BagCell = evt.data as StoreBagCell;
+         dragDrop(sourceCell);
       }
       
-      public function dragDrop(param1:BagCell) : void
+      public function dragDrop(source:BagCell) : void
       {
-         var _loc2_:* = null;
-         if(param1)
+         var itemInfo:* = null;
+         if(source)
          {
-            _loc2_ = param1.itemInfo;
-            if(_loc2_ && _loc2_.TemplateID != 12572)
+            itemInfo = source.itemInfo;
+            if(itemInfo && itemInfo.TemplateID != 12572)
             {
-               SocketManager.Instance.out.sendMoveGoods(_loc2_.BagType,_loc2_.Place,12,0);
+               SocketManager.Instance.out.sendMoveGoods(itemInfo.BagType,itemInfo.Place,12,0);
             }
          }
       }
       
-      private function cellClickHandler(param1:CellEvent) : void
+      private function cellClickHandler(event:CellEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:StoreBagCell = param1.data as StoreBagCell;
-         _loc2_.dragStart();
+         var cell:StoreBagCell = event.data as StoreBagCell;
+         cell.dragStart();
       }
       
-      private function startShine(param1:StoreDargEvent) : void
+      private function startShine(evt:StoreDargEvent) : void
       {
       }
       
-      private function stopShine(param1:StoreDargEvent) : void
+      private function stopShine(evt:StoreDargEvent) : void
       {
       }
       
-      public function update(param1:Object) : void
+      public function update(data:Object) : void
       {
-         var _loc2_:int = FineEvolutionManager.Instance.progress(param1 as InventoryItemInfo);
-         if(_progressBar.totalFrames >= _loc2_)
+         var percent:int = FineEvolutionManager.Instance.progress(data as InventoryItemInfo);
+         if(_progressBar.totalFrames >= percent)
          {
-            _progressBar && _progressBar.gotoAndStop(_loc2_);
+            _progressBar && _progressBar.gotoAndStop(percent);
             _progressTxt && _loc3_;
          }
          else

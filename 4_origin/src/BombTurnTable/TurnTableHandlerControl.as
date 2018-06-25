@@ -41,18 +41,18 @@ package BombTurnTable
       
       public var _backFun:Function;
       
-      public function TurnTableHandlerControl(param1:Function)
+      public function TurnTableHandlerControl(backFun:Function)
       {
          super();
-         _backFun = param1;
+         _backFun = backFun;
          init();
       }
       
-      public function setData(param1:BaseTurnTable, param2:int, param3:String = null, param4:DictionaryData = null) : void
+      public function setData(obj:BaseTurnTable, winIndex:int, winName:String = null, meed:DictionaryData = null) : void
       {
-         _turnTable = param1;
-         _winIndex = param2 - 1;
-         _meedList = param4;
+         _turnTable = obj;
+         _winIndex = winIndex - 1;
+         _meedList = meed;
          _curTurnTableAngle = _turnTable.turnTable.rotation;
          _curSpeed = 0;
          _accelerate = true;
@@ -75,9 +75,9 @@ package BombTurnTable
          _timer.addEventListener("timer",_frameRotation_Handler);
       }
       
-      private function _frameRotation_Handler(param1:TimerEvent) : void
+      private function _frameRotation_Handler(evt:TimerEvent) : void
       {
-         var _loc2_:Number = NaN;
+         var temSpeed:Number = NaN;
          if(_accelerate)
          {
             if(_curSpeed < _maxSpeed)
@@ -91,8 +91,8 @@ package BombTurnTable
          }
          else
          {
-            _loc2_ = (_totalAngle - _curTurnTableAngle) * _obstruct;
-            _curSpeed = _loc2_ > _maxSpeed?_maxSpeed:Number(_loc2_);
+            temSpeed = (_totalAngle - _curTurnTableAngle) * _obstruct;
+            _curSpeed = temSpeed > _maxSpeed?_maxSpeed:Number(temSpeed);
             if(_curSpeed < 0.1 || _curTurnTableAngle >= _totalAngle)
             {
                _timer.stop();

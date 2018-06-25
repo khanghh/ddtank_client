@@ -73,9 +73,9 @@ package ddt.view.chat
          super();
       }
       
-      public function set receiver(param1:String) : void
+      public function set receiver(str:String) : void
       {
-         _receiver = param1;
+         _receiver = str;
       }
       
       public function get receiver() : String
@@ -85,10 +85,10 @@ package ddt.view.chat
       
       public function clone() : ChatData
       {
-         var _loc1_:ChatData = new ChatData();
-         Helpers.copyProperty(this,_loc1_,["channel","htmlMessage","msg","receiver","receiverID","sender","senderID","zoneID","type"]);
-         _loc1_.link = [].concat(link);
-         return _loc1_;
+         var re_chatdata:ChatData = new ChatData();
+         Helpers.copyProperty(this,re_chatdata,["channel","htmlMessage","msg","receiver","receiverID","sender","senderID","zoneID","type"]);
+         re_chatdata.link = [].concat(link);
+         return re_chatdata;
       }
    }
 }

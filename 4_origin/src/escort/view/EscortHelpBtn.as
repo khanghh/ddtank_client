@@ -20,10 +20,10 @@ package escort.view
       
       private var _btn:SimpleBitmapButton;
       
-      public function EscortHelpBtn(param1:Boolean = true)
+      public function EscortHelpBtn(isInGame:Boolean = true)
       {
          super();
-         if(param1)
+         if(isInGame)
          {
             _btn = ComponentFactory.Instance.creatComponentByStylename("escort.HelpButton");
          }
@@ -35,27 +35,27 @@ package escort.view
          _btn.addEventListener("click",clickHandler,false,0,true);
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
          UIModuleLoader.Instance.addEventListener("uiModuleComplete",loadIconCompleteHandler);
          UIModuleLoader.Instance.addUIModuleImp("sevendoubleicon");
       }
       
-      private function loadIconCompleteHandler(param1:UIModuleEvent) : void
+      private function loadIconCompleteHandler(event:UIModuleEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         if(param1.module == "sevendoubleicon")
+         var helpBd:* = null;
+         var helpPage:* = null;
+         if(event.module == "sevendoubleicon")
          {
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",loadIconCompleteHandler);
-            _loc2_ = ComponentFactory.Instance.creat("escort.HelpPrompt");
-            _loc3_ = ComponentFactory.Instance.creat("escort.HelpFrame");
-            _loc3_.setView(_loc2_);
-            _loc3_.titleText = LanguageMgr.GetTranslation("store.view.HelpButtonText");
-            _loc3_.changeSubmitButtonY(29);
-            LayerManager.Instance.addToLayer(_loc3_,3,true,1);
+            helpBd = ComponentFactory.Instance.creat("escort.HelpPrompt");
+            helpPage = ComponentFactory.Instance.creat("escort.HelpFrame");
+            helpPage.setView(helpBd);
+            helpPage.titleText = LanguageMgr.GetTranslation("store.view.HelpButtonText");
+            helpPage.changeSubmitButtonY(29);
+            LayerManager.Instance.addToLayer(helpPage,3,true,1);
          }
       }
       

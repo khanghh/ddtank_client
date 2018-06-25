@@ -79,7 +79,7 @@ package ddt.view.academyCommon.academyRequest
          }
       }
       
-      protected function __onInpotClick(param1:MouseEvent) : void
+      protected function __onInpotClick(event:MouseEvent) : void
       {
          if(!_isSelection)
          {
@@ -93,15 +93,15 @@ package ddt.view.academyCommon.academyRequest
          }
       }
       
-      public function setInfo(param1:BasePlayer) : void
+      public function setInfo(info:BasePlayer) : void
       {
-         _playerInfo = param1;
+         _playerInfo = info;
       }
       
-      protected function __onResponse(param1:FrameEvent) : void
+      protected function __onResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

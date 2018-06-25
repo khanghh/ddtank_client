@@ -9,9 +9,9 @@ package braveDoor.view
       
       private var _info:DuplicateInfo;
       
-      public function duplicateIconButton(param1:DuplicateInfo)
+      public function duplicateIconButton(info:DuplicateInfo)
       {
-         _info = param1;
+         _info = info;
          super();
       }
       

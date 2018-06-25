@@ -13,9 +13,9 @@ package DDPlay
          super();
       }
       
-      override public function set currentValue(param1:Number) : void
+      override public function set currentValue(value:Number) : void
       {
-         .super.currentValue = param1;
+         .super.currentValue = value;
          refreshBtnState();
       }
       

@@ -25,19 +25,19 @@ package ddtKingWay.view
          addChild(_item);
       }
       
-      public function set showitem(param1:Boolean) : void
+      public function set showitem(value:Boolean) : void
       {
-         _item.visible = param1;
+         _item.visible = value;
       }
       
-      public function set info(param1:ItemTemplateInfo) : void
+      public function set info(value:ItemTemplateInfo) : void
       {
-         _cell.info = param1;
+         _cell.info = value;
       }
       
-      public function setCount(param1:*) : void
+      public function setCount(num:*) : void
       {
-         _cell.setCount(param1);
+         _cell.setCount(num);
       }
       
       public function dispose() : void

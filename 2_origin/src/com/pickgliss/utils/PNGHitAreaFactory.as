@@ -21,78 +21,74 @@ package com.pickgliss.utils
          super();
       }
       
-      public static function drawHitArea(param1:BitmapData) : Sprite
+      public static function drawHitArea(bmd:BitmapData) : Sprite
       {
-         var _loc5_:int = 0;
-         getPointAroundImage(param1);
+         var k:int = 0;
+         getPointAroundImage(bmd);
          var _loc8_:int = 0;
          var _loc7_:* = points1;
-         for each(var _loc6_ in points1)
+         for each(var i in points1)
          {
-            coord.push(_loc6_.x);
-            coord.push(_loc6_.y);
+            coord.push(i.x);
+            coord.push(i.y);
          }
          var _loc10_:int = 0;
          var _loc9_:* = points2;
-         for each(var _loc4_ in points2)
+         for each(var j in points2)
          {
-            coord.push(_loc4_.x);
-            coord.push(_loc4_.y);
+            coord.push(j.x);
+            coord.push(j.y);
          }
-         var _loc3_:uint = points1.length + points2.length;
+         var len:uint = points1.length + points2.length;
          commands.push(1);
-         _loc5_ = 1;
-         while(_loc5_ < _loc3_)
+         for(k = 1; k < len; )
          {
             commands.push(2);
-            _loc5_++;
+            k++;
          }
-         var _loc2_:Sprite = new Sprite();
-         _loc2_.graphics.beginFill(16711680);
-         _loc2_.graphics.drawPath(commands,coord);
-         _loc2_.graphics.endFill();
-         return _loc2_;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16711680);
+         sp.graphics.drawPath(commands,coord);
+         sp.graphics.endFill();
+         return sp;
       }
       
-      private static function getPointAroundImage(param1:BitmapData) : void
+      private static function getPointAroundImage(bm:BitmapData) : void
       {
-         var _loc8_:int = 0;
-         var _loc5_:int = 0;
-         var _loc6_:* = 0;
-         var _loc4_:* = 0;
-         var _loc3_:* = 0;
+         var i:int = 0;
+         var j:int = 0;
+         var k:* = 0;
+         var alphaValue:* = 0;
+         var alphaValue1:* = 0;
          points1 = new Vector.<Point>();
          points2 = new Vector.<Point>();
          commands = new Vector.<int>();
          coord = new Vector.<Number>();
-         var _loc2_:int = param1.width;
-         var _loc7_:int = param1.height;
-         _loc8_ = 1;
-         while(_loc8_ <= _loc2_)
+         var w:int = bm.width;
+         var h:int = bm.height;
+         for(i = 1; i <= w; )
          {
-            _loc5_ = 1;
-            while(_loc5_ <= _loc7_)
+            for(j = 1; j <= h; )
             {
-               _loc4_ = uint(param1.getPixel32(_loc8_,_loc5_) >> 24 & 255);
-               if(_loc4_ != 0)
+               alphaValue = uint(bm.getPixel32(i,j) >> 24 & 255);
+               if(alphaValue != 0)
                {
-                  points1.push(new Point(_loc8_,_loc5_));
+                  points1.push(new Point(i,j));
                   break;
                }
-               _loc5_++;
+               j++;
             }
-            _loc6_ = _loc7_;
-            while(_loc6_ > 0)
+            for(k = h; k > 0; )
             {
-               _loc3_ = uint(param1.getPixel32(_loc8_,_loc6_) >> 24 & 255);
-               if(_loc3_ != 0 && _loc8_ != _loc6_)
+               alphaValue1 = uint(bm.getPixel32(i,k) >> 24 & 255);
+               if(alphaValue1 != 0 && i != k)
                {
-                  points2.unshift(new Point(_loc8_,_loc6_));
+                  points2.unshift(new Point(i,k));
                   break;
                }
-               _loc6_--;
+               k--;
             }
-            _loc8_++;
+            i++;
          }
       }
    }

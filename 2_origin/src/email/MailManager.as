@@ -66,37 +66,37 @@ package email
       
       public function getAllEmailLoader() : BaseLoader
       {
-         var _loc1_:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
          if(PlayerManager.Instance.Self.consortiaInfo.ChairmanID)
          {
-            _loc1_["chairmanID"] = PlayerManager.Instance.Self.consortiaInfo.ChairmanID;
+            args["chairmanID"] = PlayerManager.Instance.Self.consortiaInfo.ChairmanID;
          }
          else
          {
-            _loc1_["chairmanID"] = SelectListManager.Instance.currentLoginRole.ChairmanID;
+            args["chairmanID"] = SelectListManager.Instance.currentLoginRole.ChairmanID;
          }
          if(MailManager.Instance.Model.lastTime)
          {
-            _loc1_["lastTime"] = MailManager.Instance.Model.lastTime;
+            args["lastTime"] = MailManager.Instance.Model.lastTime;
          }
-         var _loc2_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoadUserMail.ashx"),7,_loc1_);
-         _loc2_.loadErrorMessage = LanguageMgr.GetTranslation("tank.view.emailII.LoadMailAllInfoError");
-         _loc2_.analyzer = new AllEmailAnalyzer(stepAllEmail);
-         return _loc2_;
+         var _loaderAll:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("LoadUserMail.ashx"),7,args);
+         _loaderAll.loadErrorMessage = LanguageMgr.GetTranslation("tank.view.emailII.LoadMailAllInfoError");
+         _loaderAll.analyzer = new AllEmailAnalyzer(stepAllEmail);
+         return _loaderAll;
       }
       
       public function getSendedEmailLoader() : BaseLoader
       {
-         var _loc2_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MailSenderList.ashx"),7,_loc2_);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("tank.view.emailII.LoadSendInfoError");
-         _loc1_.analyzer = new SendedEmailAnalyze(stepSendedEmails);
-         return _loc1_;
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         var _loaderSended:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("MailSenderList.ashx"),7,args);
+         _loaderSended.loadErrorMessage = LanguageMgr.GetTranslation("tank.view.emailII.LoadSendInfoError");
+         _loaderSended.analyzer = new SendedEmailAnalyze(stepSendedEmails);
+         return _loaderSended;
       }
       
-      public function loadMail(param1:uint) : void
+      public function loadMail(type:uint) : void
       {
-         switch(int(param1) - 1)
+         switch(int(type) - 1)
          {
             case 0:
                LoadResourceManager.Instance.startLoad(getAllEmailLoader());
@@ -116,140 +116,139 @@ package email
          return _isShow;
       }
       
-      public function set isShow(param1:Boolean) : void
+      public function set isShow(value:Boolean) : void
       {
-         _isShow = param1;
+         _isShow = value;
       }
       
-      public function isSelecteMarkTip(param1:MarkChipData) : Boolean
+      public function isSelecteMarkTip(info:MarkChipData) : Boolean
       {
-         if(param1.mainPro.type <= 0 || param1.mainPro.value <= 0)
+         if(info.mainPro.type <= 0 || info.mainPro.value <= 0)
          {
             return false;
          }
-         if(param1.bornLv > 1)
+         if(info.bornLv > 1)
          {
-            if(param1.props[0].type <= 0 && param1.props[1].type <= 0 && param1.props[2].type <= 0 && param1.props[3].type <= 0)
+            if(info.props[0].type <= 0 && info.props[1].type <= 0 && info.props[2].type <= 0 && info.props[3].type <= 0)
             {
                return false;
             }
          }
-         if(param1.hLv >= 3 && param1.props[0].type <= 0)
+         if(info.hLv >= 3 && info.props[0].type <= 0)
          {
             return false;
          }
-         if(param1.hLv >= 6 && param1.props[1].type <= 0)
+         if(info.hLv >= 6 && info.props[1].type <= 0)
          {
             return false;
          }
-         if(param1.hLv >= 9 && param1.props[2].type <= 0)
+         if(info.hLv >= 9 && info.props[2].type <= 0)
          {
             return false;
          }
-         if(param1.hLv >= 12 && param1.props[3].type <= 0)
+         if(info.hLv >= 12 && info.props[3].type <= 0)
          {
             return false;
          }
          return true;
       }
       
-      public function stepAllEmail(param1:AllEmailAnalyzer) : void
+      public function stepAllEmail(analyzer:AllEmailAnalyzer) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:Array = param1.list;
-         _loc2_ = _model.emails.concat(_loc2_);
-         var _loc3_:DictionaryData = new DictionaryData();
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_.length)
+         var i:int = 0;
+         var info:* = null;
+         var dataList:Array = analyzer.list;
+         dataList = _model.emails.concat(dataList);
+         var dataDic:DictionaryData = new DictionaryData();
+         for(i = 0; i < dataList.length; )
          {
-            _loc4_ = _loc2_[_loc5_] as EmailInfo;
-            _loc3_.add(_loc4_.ID,_loc4_);
-            _loc5_++;
+            info = dataList[i] as EmailInfo;
+            dataDic.add(info.ID,info);
+            i++;
          }
-         _model.emails = _loc3_.list;
+         _model.emails = dataDic.list;
          changeSelected(null);
       }
       
-      public function findEmailInfoByDataSet(param1:Array, param2:int) : Boolean
+      public function findEmailInfoByDataSet(arr:Array, id:int) : Boolean
       {
-         var _loc3_:Boolean = false;
+         var bool:Boolean = false;
          var _loc6_:int = 0;
-         var _loc5_:* = param1;
-         for each(var _loc4_ in param1)
+         var _loc5_:* = arr;
+         for each(var info in arr)
          {
-            if(_loc4_.ID == param2)
+            if(info.ID == id)
             {
-               _loc3_ = true;
+               bool = true;
                break;
             }
          }
-         return _loc3_;
+         return bool;
       }
       
-      private function stepSendedEmails(param1:SendedEmailAnalyze) : void
+      private function stepSendedEmails(analyzer:SendedEmailAnalyze) : void
       {
-         _model.sendedMails = param1.list;
+         _model.sendedMails = analyzer.list;
       }
       
-      public function changeSelected(param1:EmailInfo) : void
+      public function changeSelected(info:EmailInfo) : void
       {
-         _model.selectEmail = param1;
+         _model.selectEmail = info;
       }
       
-      private function __getMailToBag(param1:PkgEvent) : void
+      private function __getMailToBag(event:PkgEvent) : void
       {
-         var _loc7_:* = 0;
-         var _loc6_:int = 0;
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc5_.readInt();
-         var _loc3_:int = _loc5_.readInt();
-         var _loc4_:EmailInfo = _model.getMailByID(_loc2_);
-         if(!_loc4_)
+         var i:* = 0;
+         var type:int = 0;
+         var pkg:PackageIn = event.pkg;
+         var id:int = pkg.readInt();
+         var count:int = pkg.readInt();
+         var currentMail:EmailInfo = _model.getMailByID(id);
+         if(!currentMail)
          {
             return;
          }
-         if(_loc4_.Type > 100 && _loc4_.Money > 0)
+         if(currentMail.Type > 100 && currentMail.Money > 0)
          {
-            _loc4_.ValidDate = 72;
-            _loc4_.Money = 0;
+            currentMail.ValidDate = 72;
+            currentMail.Money = 0;
          }
-         _loc7_ = uint(0);
-         while(_loc7_ < _loc3_)
+         i = uint(0);
+         while(i < count)
          {
-            _loc6_ = _loc5_.readInt();
-            deleteMailDiamond(_loc4_,_loc6_);
-            _loc7_++;
+            type = pkg.readInt();
+            deleteMailDiamond(currentMail,type);
+            i++;
          }
-         _model.changeEmail(_loc4_);
+         _model.changeEmail(currentMail);
       }
       
-      private function deleteMailDiamond(param1:EmailInfo, param2:int) : void
+      private function deleteMailDiamond(mail:EmailInfo, type:int) : void
       {
-         var _loc3_:int = 0;
-         switch(int(param2) - 6)
+         var i:int = 0;
+         switch(int(type) - 6)
          {
             case 0:
-               param1.Gold = 0;
+               mail.Gold = 0;
                break;
             case 1:
-               param1.Money = 0;
+               mail.Money = 0;
                break;
             case 2:
-               param1.BindMoney = 0;
+               mail.BindMoney = 0;
                break;
             case 3:
-               param1.Medal = 0;
+               mail.Medal = 0;
          }
       }
       
-      private function __deleteMail(param1:PkgEvent) : void
+      private function __deleteMail(event:PkgEvent) : void
       {
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc3_:Boolean = param1.pkg.readBoolean();
-         if(_loc3_)
+         var id:int = event.pkg.readInt();
+         var isSuccess:Boolean = event.pkg.readBoolean();
+         if(isSuccess)
          {
-            _model.removeEmail(_model.getMailByID(_loc2_));
+            _model.removeEmail(_model.getMailByID(id));
             changeSelected(null);
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.manager.MailManager.delete"));
          }
@@ -259,10 +258,10 @@ package email
          }
       }
       
-      private function __mailCancel(param1:PkgEvent) : void
+      private function __mailCancel(event:PkgEvent) : void
       {
-         var _loc2_:int = param1.pkg.readInt();
-         if(param1.pkg.readBoolean())
+         var cancelID:int = event.pkg.readInt();
+         if(event.pkg.readBoolean())
          {
             _model.removeEmail(_model.selectEmail);
             changeSelected(null);
@@ -274,66 +273,66 @@ package email
          }
       }
       
-      private function __responseMail(param1:PkgEvent) : void
+      private function __responseMail(event:PkgEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc5_:int = param1.pkg.readInt();
-         if(_loc5_ == 4)
+         var args:* = null;
+         var loader:* = null;
+         var id:int = event.pkg.readInt();
+         var type:int = event.pkg.readInt();
+         if(type == 4)
          {
             SocketManager.Instance.out.sendReloadGift();
-            _loc5_ = 1;
+            type = 1;
          }
-         loadMail(_loc5_);
-         if(_loc5_ == 5)
+         loadMail(type);
+         if(type == 5)
          {
-            _loc4_ = RequestVairableCreater.creatWidthKey(true);
-            _loc4_["timeTick"] = Math.random();
-            _loc3_ = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ShopItemList.xml"),5,_loc4_);
-            _loc3_.analyzer = new ShopItemAnalyzer(ShopManager.Instance.updateShopGoods);
-            LoadResourceManager.Instance.startLoad(_loc3_);
+            args = RequestVairableCreater.creatWidthKey(true);
+            args["timeTick"] = Math.random();
+            loader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ShopItemList.xml"),5,args);
+            loader.analyzer = new ShopItemAnalyzer(ShopManager.Instance.updateShopGoods);
+            LoadResourceManager.Instance.startLoad(loader);
          }
       }
       
-      public function calculateRemainTime(param1:String, param2:Number) : Number
+      public function calculateRemainTime(startTime:String, validHours:Number) : Number
       {
-         var _loc5_:* = param1;
-         var _loc3_:Date = new Date(Number(_loc5_.substr(0,4)),_loc5_.substr(5,2) - 1,Number(_loc5_.substr(8,2)),Number(_loc5_.substr(11,2)),Number(_loc5_.substr(14,2)),Number(_loc5_.substr(17,2)));
-         var _loc6_:Date = TimeManager.Instance.Now();
-         var _loc4_:Number = param2 - (_loc6_.time - _loc3_.time) / 3600000;
-         if(_loc4_ < 0)
+         var str:* = startTime;
+         var startDate:Date = new Date(Number(str.substr(0,4)),str.substr(5,2) - 1,Number(str.substr(8,2)),Number(str.substr(11,2)),Number(str.substr(14,2)),Number(str.substr(17,2)));
+         var nowDate:Date = TimeManager.Instance.Now();
+         var remain:Number = validHours - (nowDate.time - startDate.time) / 3600000;
+         if(remain < 0)
          {
             return -1;
          }
-         return _loc4_;
+         return remain;
       }
       
-      public function readingViewLinkHandler(param1:Array) : void
+      public function readingViewLinkHandler(arr:Array) : void
       {
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:String = param1[0];
-         var _loc6_:* = _loc3_;
+         var churchRoomId:int = 0;
+         var type:int = 0;
+         var type1:int = 0;
+         var name:String = arr[0];
+         var _loc6_:* = name;
          if("marrytype" === _loc6_)
          {
-            _loc4_ = param1[1];
-            _loc5_ = param1[2];
-            if(_loc5_ == 0)
+            churchRoomId = arr[1];
+            type = arr[2];
+            if(type == 0)
             {
-               _loc2_ = 1;
+               type1 = 1;
             }
-            else if(_loc5_ == 4)
+            else if(type == 4)
             {
-               _loc2_ = 3;
+               type1 = 3;
             }
             else
             {
-               _loc2_ = 2;
+               type1 = 2;
             }
-            SocketManager.Instance.out.sendEnterRoom(_loc4_,"",_loc2_);
-            linkChurchRoomId = _loc4_;
+            SocketManager.Instance.out.sendEnterRoom(churchRoomId,"",type1);
+            linkChurchRoomId = churchRoomId;
          }
       }
       
@@ -356,9 +355,9 @@ package email
          dispatchEvent(new MailEvent("emailOpenView"));
       }
       
-      public function showWriting(param1:String) : void
+      public function showWriting(name:String) : void
       {
-         dispatchEvent(new MailEvent("emailShowWriting",param1));
+         dispatchEvent(new MailEvent("emailShowWriting",name));
       }
       
       public function hide() : void

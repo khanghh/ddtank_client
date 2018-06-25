@@ -43,9 +43,9 @@ package catchInsect.componets
       
       private var _type:int;
       
-      public function CatchInsectRankCell(param1:int)
+      public function CatchInsectRankCell(type:int)
       {
-         _type = param1;
+         _type = type;
          super();
          initView();
       }
@@ -83,9 +83,9 @@ package catchInsect.componets
          }
       }
       
-      public function setData(param1:CatchInsectRankInfo) : void
+      public function setData(info:CatchInsectRankInfo) : void
       {
-         _info = param1;
+         _info = info;
          _bg.setFrame(_info.place % 2 + 1);
          if(_info.titleNum)
          {
@@ -123,25 +123,25 @@ package catchInsect.componets
          }
       }
       
-      private function setRankNum(param1:int) : void
+      private function setRankNum(num:int) : void
       {
-         if(param1 <= 3)
+         if(num <= 3)
          {
             _placeTxt.visible = false;
             _topThreeIcon.visible = true;
-            _topThreeIcon.setFrame(param1);
+            _topThreeIcon.setFrame(num);
          }
          else
          {
             _placeTxt.visible = true;
             _topThreeIcon.visible = false;
-            _placeTxt.text = param1 + "th";
+            _placeTxt.text = num + "th";
          }
       }
       
       private function addNickName() : void
       {
-         var _loc1_:* = null;
+         var textFormat:* = null;
          if(_vipName)
          {
             _vipName.dispose();
@@ -151,10 +151,10 @@ package catchInsect.componets
          if(_info.isVIP)
          {
             _vipName = VipController.instance.getVipNameTxt(1,1);
-            _loc1_ = new TextFormat();
-            _loc1_.align = "center";
-            _loc1_.bold = true;
-            _vipName.textField.defaultTextFormat = _loc1_;
+            textFormat = new TextFormat();
+            textFormat.align = "center";
+            textFormat.bold = true;
+            _vipName.textField.defaultTextFormat = textFormat;
             _vipName.textSize = 16;
             _vipName.textField.width = _nameTxt.width;
             _vipName.x = _nameTxt.x;

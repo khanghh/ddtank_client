@@ -8,40 +8,39 @@ package sanXiao.model
       
       public var list:Array;
       
-      public function SanXiaoScoreRewardAnalyzer(param1:Function)
+      public function SanXiaoScoreRewardAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:XML = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var xml:XML = new XML(data);
          list = [];
-         if(_loc2_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc3_ = _loc2_..Item;
-            _loc5_ = 0;
-            while(_loc5_ < _loc3_.length())
+            xmllist = xml..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc4_ = new SXRewardItemData();
-               _loc4_.id = int(_loc3_[_loc5_].@ID);
-               _loc4_.TempleteID = int(_loc3_[_loc5_].@ItemID);
-               _loc4_.count = int(_loc3_[_loc5_].@Count);
-               _loc4_.point = int(_loc3_[_loc5_].@Point);
-               _loc4_.Valid = int(_loc3_[_loc5_].@Valid);
-               _loc4_.isBind = _loc3_[_loc5_].@IsBind == "true"?true:false;
-               _loc4_.gained = false;
-               list.push(_loc4_);
-               _loc5_++;
+               info = new SXRewardItemData();
+               info.id = int(xmllist[i].@ID);
+               info.TempleteID = int(xmllist[i].@ItemID);
+               info.count = int(xmllist[i].@Count);
+               info.point = int(xmllist[i].@Point);
+               info.Valid = int(xmllist[i].@Valid);
+               info.isBind = xmllist[i].@IsBind == "true"?true:false;
+               info.gained = false;
+               list.push(info);
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc2_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }

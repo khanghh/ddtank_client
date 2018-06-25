@@ -41,7 +41,7 @@ package prayIndiana
       
       public var showBuyCountFram3:Boolean = true;
       
-      public function PrayIndianaManager(param1:PrivateClass)
+      public function PrayIndianaManager(pct:PrivateClass)
       {
          super();
       }
@@ -61,136 +61,134 @@ package prayIndiana
          SocketManager.Instance.addEventListener("pray_indiana",__pkgHandler);
       }
       
-      private function __pkgHandler(param1:CrazyTankSocketEvent) : void
+      private function __pkgHandler(e:CrazyTankSocketEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = param1._cmd;
-         var _loc3_:CrazyTankSocketEvent = null;
-         switch(int(_loc2_) - 170)
+         var pkg:PackageIn = e.pkg;
+         var cmd:int = e._cmd;
+         var event:CrazyTankSocketEvent = null;
+         switch(int(cmd) - 170)
          {
             case 0:
-               activityOpen(_loc4_);
+               activityOpen(pkg);
                break;
             case 1:
-               prayEnter(_loc4_);
+               prayEnter(pkg);
                break;
             case 2:
-               prayGoodsRefresh(_loc4_);
+               prayGoodsRefresh(pkg);
                break;
             case 3:
-               prayExtract(_loc4_);
+               prayExtract(pkg);
                break;
             case 4:
-               prayProbabiliy(_loc4_);
+               prayProbabiliy(pkg);
          }
       }
       
-      private function activityOpen(param1:PackageIn = null) : void
+      private function activityOpen(pkg:PackageIn = null) : void
       {
-         _model.isOpen = param1.readBoolean();
-         var _loc4_:Date = param1.readDate();
-         var _loc2_:Date = param1.readDate();
-         var _loc3_:String = _loc4_.getFullYear() + "/" + (_loc4_.getMonth() + 1) + "/" + _loc4_.getDate() + " - " + _loc2_.getFullYear() + "/" + (_loc2_.getMonth() + 1) + "/" + _loc2_.getDate();
-         _model.gameTimes = LanguageMgr.GetTranslation("prayIndianaMangaer.gameTimes") + _loc3_;
+         _model.isOpen = pkg.readBoolean();
+         var startT:Date = pkg.readDate();
+         var endT:Date = pkg.readDate();
+         var str:String = startT.getFullYear() + "/" + (startT.getMonth() + 1) + "/" + startT.getDate() + " - " + endT.getFullYear() + "/" + (endT.getMonth() + 1) + "/" + endT.getDate();
+         _model.gameTimes = LanguageMgr.GetTranslation("prayIndianaMangaer.gameTimes") + str;
          _model.prayInfo = ServerConfigManager.instance.prayActivityConfig;
          showPrayIndianaIcon(_model.isOpen);
       }
       
-      private function prayEnter(param1:PackageIn) : void
+      private function prayEnter(pkg:PackageIn) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:int = param1.readInt();
-         if(_loc2_ < 1)
+         var i:int = 0;
+         var obj:* = null;
+         var length:int = pkg.readInt();
+         if(length < 1)
          {
             return;
          }
          _model.goodsAll = [];
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_)
+         for(i = 0; i < length; )
          {
-            _loc3_ = {};
-            _loc3_.Position = param1.readInt();
-            _loc3_.TemplateID = param1.readInt();
-            _loc3_.StrengthLevel = param1.readInt();
-            _loc3_.Count = param1.readInt();
-            _loc3_.ValidDate = param1.readInt();
-            _loc3_.AttackCompose = param1.readInt();
-            _loc3_.DefendCompose = param1.readInt();
-            _loc3_.AgilityCompose = param1.readInt();
-            _loc3_.LuckCompose = param1.readInt();
-            _loc3_.IsBind = param1.readBoolean();
-            _loc3_.Quality = param1.readInt();
-            _loc3_.IsSelect = param1.readBoolean();
-            _model.goodsAll.push(_loc3_);
-            _loc4_++;
+            obj = {};
+            obj.Position = pkg.readInt();
+            obj.TemplateID = pkg.readInt();
+            obj.StrengthLevel = pkg.readInt();
+            obj.Count = pkg.readInt();
+            obj.ValidDate = pkg.readInt();
+            obj.AttackCompose = pkg.readInt();
+            obj.DefendCompose = pkg.readInt();
+            obj.AgilityCompose = pkg.readInt();
+            obj.LuckCompose = pkg.readInt();
+            obj.IsBind = pkg.readBoolean();
+            obj.Quality = pkg.readInt();
+            obj.IsSelect = pkg.readBoolean();
+            _model.goodsAll.push(obj);
+            i++;
          }
-         _model.probabilityNum = param1.readInt();
-         _model.PrayGoodsCount = param1.readInt();
-         _model.UpdateRateCount = param1.readInt();
-         _model.PrayLotteryGoodsCount = param1.readInt();
+         _model.probabilityNum = pkg.readInt();
+         _model.PrayGoodsCount = pkg.readInt();
+         _model.UpdateRateCount = pkg.readInt();
+         _model.PrayLotteryGoodsCount = pkg.readInt();
          if(StateManager.currentStateType == "main" && _model.isOpen)
          {
             LoaderClass.Instance.loadUIModule(showPrayIndianaView,null,"prayIndiana");
          }
       }
       
-      private function prayExtract(param1:PackageIn) : void
+      private function prayExtract(pkg:PackageIn) : void
       {
-         _model.position = param1.readInt();
-         _model.templateID = param1.readInt();
-         _model.probabilityNum = param1.readInt();
-         _model.PrayGoodsCount = param1.readInt();
-         _model.UpdateRateCount = param1.readInt();
-         _model.PrayLotteryGoodsCount = param1.readInt();
+         _model.position = pkg.readInt();
+         _model.templateID = pkg.readInt();
+         _model.probabilityNum = pkg.readInt();
+         _model.PrayGoodsCount = pkg.readInt();
+         _model.UpdateRateCount = pkg.readInt();
+         _model.PrayLotteryGoodsCount = pkg.readInt();
          dispatchEvent(new Event("updatelottery"));
       }
       
-      private function prayGoodsRefresh(param1:PackageIn) : void
+      private function prayGoodsRefresh(pkg:PackageIn) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:int = param1.readInt();
-         if(_loc2_ < 1)
+         var i:int = 0;
+         var obj:* = null;
+         var length:int = pkg.readInt();
+         if(length < 1)
          {
             return;
          }
          _model.goodsAll = [];
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_)
+         for(i = 0; i < length; )
          {
-            _loc3_ = {};
-            _loc3_.Position = param1.readInt();
-            _loc3_.TemplateID = param1.readInt();
-            _loc3_.StrengthLevel = param1.readInt();
-            _loc3_.Count = param1.readInt();
-            _loc3_.ValidDate = param1.readInt();
-            _loc3_.AttackCompose = param1.readInt();
-            _loc3_.DefendCompose = param1.readInt();
-            _loc3_.AgilityCompose = param1.readInt();
-            _loc3_.LuckCompose = param1.readInt();
-            _loc3_.IsBind = param1.readBoolean();
-            _loc3_.Quality = param1.readInt();
-            _loc3_.IsSelect = param1.readBoolean();
-            _model.goodsAll.push(_loc3_);
-            _loc4_++;
+            obj = {};
+            obj.Position = pkg.readInt();
+            obj.TemplateID = pkg.readInt();
+            obj.StrengthLevel = pkg.readInt();
+            obj.Count = pkg.readInt();
+            obj.ValidDate = pkg.readInt();
+            obj.AttackCompose = pkg.readInt();
+            obj.DefendCompose = pkg.readInt();
+            obj.AgilityCompose = pkg.readInt();
+            obj.LuckCompose = pkg.readInt();
+            obj.IsBind = pkg.readBoolean();
+            obj.Quality = pkg.readInt();
+            obj.IsSelect = pkg.readBoolean();
+            _model.goodsAll.push(obj);
+            i++;
          }
-         _model.probabilityNum = param1.readInt();
-         _model.PrayGoodsCount = param1.readInt();
-         _model.UpdateRateCount = param1.readInt();
-         _model.PrayLotteryGoodsCount = param1.readInt();
+         _model.probabilityNum = pkg.readInt();
+         _model.PrayGoodsCount = pkg.readInt();
+         _model.UpdateRateCount = pkg.readInt();
+         _model.PrayLotteryGoodsCount = pkg.readInt();
          dispatchEvent(new Event("updateLotterynumber"));
          dispatchEvent(new Event("updateGoods"));
       }
       
-      private function prayProbabiliy(param1:PackageIn) : void
+      private function prayProbabiliy(pkg:PackageIn) : void
       {
-         _model.type = param1.readInt();
-         _model.IsPray = param1.readBoolean();
-         _model.probabilityNum = param1.readInt();
-         _model.PrayGoodsCount = param1.readInt();
-         _model.UpdateRateCount = param1.readInt();
-         _model.PrayLotteryGoodsCount = param1.readInt();
+         _model.type = pkg.readInt();
+         _model.IsPray = pkg.readBoolean();
+         _model.probabilityNum = pkg.readInt();
+         _model.PrayGoodsCount = pkg.readInt();
+         _model.UpdateRateCount = pkg.readInt();
+         _model.PrayLotteryGoodsCount = pkg.readInt();
          if(_model.IsPray == true)
          {
             if(_model.type == 1)
@@ -205,9 +203,9 @@ package prayIndiana
          }
       }
       
-      public function showPrayIndianaIcon(param1:Boolean) : void
+      public function showPrayIndianaIcon($isOpen:Boolean) : void
       {
-         HallIconManager.instance.updateSwitchHandler("prayIndiana",param1);
+         HallIconManager.instance.updateSwitchHandler("prayIndiana",$isOpen);
          dispatchEvent(new Event("prayindianaDispose"));
       }
       
@@ -231,9 +229,9 @@ package prayIndiana
          return _model;
       }
       
-      public function set model(param1:PrayIndianaModel) : void
+      public function set model(value:PrayIndianaModel) : void
       {
-         _model = param1;
+         _model = value;
       }
    }
 }

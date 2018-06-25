@@ -154,10 +154,10 @@ package gameCommon.model
       
       public var isFeignDeath:Boolean;
       
-      public function Player(param1:PlayerInfo, param2:int, param3:int, param4:int, param5:int = 0)
+      public function Player(info:PlayerInfo, id:int, team:int, maxBlood:int, templeId:int = 0)
       {
-         _info = param1;
-         super(param2,param3,param4,param5);
+         _info = info;
+         super(id,team,maxBlood,templeId);
          setWeaponInfo();
          setDeputyWeaponInfo();
          webSpeedInfo = new WebSpeedInfo(_info.webSpeed);
@@ -169,9 +169,9 @@ package gameCommon.model
          return _currentMap;
       }
       
-      public function set currentMap(param1:MapView) : void
+      public function set currentMap(value:MapView) : void
       {
-         _currentMap = param1;
+         _currentMap = value;
       }
       
       public function get currentMap3D() : MapView3D
@@ -179,9 +179,9 @@ package gameCommon.model
          return _currentMap3D;
       }
       
-      public function set currentMap3D(param1:MapView3D) : void
+      public function set currentMap3D(value:MapView3D) : void
       {
-         _currentMap3D = param1;
+         _currentMap3D = value;
       }
       
       public function get BossCardCount() : int
@@ -189,9 +189,9 @@ package gameCommon.model
          return _bossCardCount;
       }
       
-      public function set BossCardCount(param1:int) : void
+      public function set BossCardCount(value:int) : void
       {
-         _bossCardCount = param1;
+         _bossCardCount = value;
       }
       
       private function initEvent() : void
@@ -252,9 +252,9 @@ package gameCommon.model
          return _movie;
       }
       
-      public function set movie(param1:IGameCharacter) : void
+      public function set movie(value:IGameCharacter) : void
       {
-         _movie = param1;
+         _movie = value;
       }
       
       public function get isWin() : Boolean
@@ -262,22 +262,22 @@ package gameCommon.model
          return _isWin;
       }
       
-      public function set isWin(param1:Boolean) : void
+      public function set isWin(value:Boolean) : void
       {
-         _isWin = param1;
+         _isWin = value;
       }
       
-      public function set MP(param1:int) : void
+      public function set MP(value:int) : void
       {
          if(currentPet)
          {
-            currentPet.MP = param1;
+            currentPet.MP = value;
          }
       }
       
-      public function set expObj(param1:Object) : void
+      public function set expObj(value:Object) : void
       {
-         _expObj = param1;
+         _expObj = value;
       }
       
       public function get expObj() : Object
@@ -285,9 +285,9 @@ package gameCommon.model
          return _expObj;
       }
       
-      public function playerMoveTo(param1:Number, param2:Point, param3:Number, param4:Boolean, param5:Array = null, param6:Function = null) : void
+      public function playerMoveTo(type:Number, target:Point, dir:Number, isLiving:Boolean, acts:Array = null, finishedFun:Function = null) : void
       {
-         dispatchEvent(new LivingEvent("playerMoveto",0,0,param1,param2,param3,param4,param5,param6));
+         dispatchEvent(new LivingEvent("playerMoveto",0,0,type,target,dir,isLiving,acts,finishedFun));
       }
       
       public function beginShoot() : void
@@ -295,19 +295,19 @@ package gameCommon.model
          dispatchEvent(new LivingEvent("beginShoot"));
       }
       
-      public function useItem(param1:ItemTemplateInfo) : void
+      public function useItem(info:ItemTemplateInfo) : void
       {
-         dispatchEvent(new LivingEvent("usingItem",0,0,param1));
+         dispatchEvent(new LivingEvent("usingItem",0,0,info));
       }
       
-      public function useItemByIcon(param1:DisplayObject) : void
+      public function useItemByIcon(dis:DisplayObject) : void
       {
-         dispatchEvent(new LivingEvent("usingItem",0,0,param1));
+         dispatchEvent(new LivingEvent("usingItem",0,0,dis));
       }
       
-      public function useItemByIcon3D(param1:CellContent3D) : void
+      public function useItemByIcon3D(dis:CellContent3D) : void
       {
-         dispatchEvent(new LivingEvent("usingItem",0,0,param1));
+         dispatchEvent(new LivingEvent("usingItem",0,0,dis));
       }
       
       public function get maxForce() : int
@@ -315,11 +315,11 @@ package gameCommon.model
          return _maxForce;
       }
       
-      public function set maxForce(param1:int) : void
+      public function set maxForce(val:int) : void
       {
-         if(_maxForce != param1)
+         if(_maxForce != val)
          {
-            _maxForce = param1;
+            _maxForce = val;
             dispatchEvent(new LivingEvent("maxforceChanged",_maxForce));
          }
       }
@@ -329,9 +329,9 @@ package gameCommon.model
          return _powerRatio / 100;
       }
       
-      public function set powerRatio(param1:Number) : void
+      public function set powerRatio(value:Number) : void
       {
-         _powerRatio = param1;
+         _powerRatio = value;
       }
       
       public function get skill() : int
@@ -339,9 +339,9 @@ package gameCommon.model
          return _skill;
       }
       
-      public function set skill(param1:int) : void
+      public function set skill(val:int) : void
       {
-         _skill = param1;
+         _skill = val;
          if(_skill >= 0)
          {
             dispatchEvent(new LivingEvent("usingSpecialSkill"));
@@ -353,12 +353,12 @@ package gameCommon.model
          return _isSpecialSkill;
       }
       
-      public function set isSpecialSkill(param1:Boolean) : void
+      public function set isSpecialSkill(value:Boolean) : void
       {
-         if(_isSpecialSkill != param1)
+         if(_isSpecialSkill != value)
          {
-            _isSpecialSkill = param1;
-            if(param1)
+            _isSpecialSkill = value;
+            if(value)
             {
                dispatchEvent(new LivingEvent("usingSpecialSkill"));
             }
@@ -370,13 +370,13 @@ package gameCommon.model
          return _dander;
       }
       
-      public function set dander(param1:int) : void
+      public function set dander(value:int) : void
       {
          if(RoomManager.Instance.current && RoomManager.Instance.current.gameMode == 8)
          {
             return;
          }
-         if(_dander == param1 || !_isLiving)
+         if(_dander == value || !_isLiving)
          {
             return;
          }
@@ -386,14 +386,14 @@ package gameCommon.model
          }
          else
          {
-            _dander = param1 > 200?200:int(param1);
+            _dander = value > 200?200:int(value);
          }
          dispatchEvent(new LivingEvent("danderChanged",_dander));
       }
       
-      public function reduceDander(param1:int) : void
+      public function reduceDander(value:int) : void
       {
-         if(_dander == param1)
+         if(_dander == value)
          {
             return;
          }
@@ -403,7 +403,7 @@ package gameCommon.model
          }
          else
          {
-            _dander = param1 > 200?200:int(param1);
+            _dander = value > 200?200:int(value);
          }
          dispatchEvent(new LivingEvent("danderChanged",_dander));
       }
@@ -413,9 +413,9 @@ package gameCommon.model
          return _currentWeapInfo;
       }
       
-      public function set currentWeapInfo(param1:WeaponInfo) : void
+      public function set currentWeapInfo(value:WeaponInfo) : void
       {
-         _currentWeapInfo = param1;
+         _currentWeapInfo = value;
       }
       
       public function get currentBomb() : int
@@ -423,13 +423,13 @@ package gameCommon.model
          return _currentBomb;
       }
       
-      public function set currentBomb(param1:int) : void
+      public function set currentBomb(value:int) : void
       {
-         if(param1 == _currentBomb)
+         if(value == _currentBomb)
          {
             return;
          }
-         _currentBomb = param1;
+         _currentBomb = value;
          dispatchEvent(new LivingEvent("bombChanged",_currentBomb,0));
       }
       
@@ -441,7 +441,7 @@ package gameCommon.model
          gemDefense = false;
       }
       
-      override public function die(param1:Boolean = true) : void
+      override public function die(widthAction:Boolean = true) : void
       {
          if(isLiving)
          {
@@ -456,9 +456,9 @@ package gameCommon.model
          }
       }
       
-      public function doAction(param1:*) : void
+      public function doAction(type:*) : void
       {
-         dispatchEvent(new LivingEvent("playerDoAction",0,0,param1));
+         dispatchEvent(new LivingEvent("playerDoAction",0,0,type));
       }
       
       override public function isPlayer() : Boolean
@@ -476,23 +476,23 @@ package gameCommon.model
          {
             playerInfo.WeaponID = 70016;
          }
-         var _loc1_:InventoryItemInfo = new InventoryItemInfo();
-         _loc1_.TemplateID = playerInfo.WeaponID;
-         ItemManager.fill(_loc1_);
+         var iteminfo:InventoryItemInfo = new InventoryItemInfo();
+         iteminfo.TemplateID = playerInfo.WeaponID;
+         ItemManager.fill(iteminfo);
          if(_currentWeapInfo)
          {
             _currentWeapInfo.dispose();
          }
-         _currentWeapInfo = new WeaponInfo(_loc1_);
+         _currentWeapInfo = new WeaponInfo(iteminfo);
          currentBomb = _currentWeapInfo.commonBall;
       }
       
       public function setDeputyWeaponInfo() : void
       {
-         var _loc1_:InventoryItemInfo = new InventoryItemInfo();
-         _loc1_.TemplateID = _info.DeputyWeaponID;
-         ItemManager.fill(_loc1_);
-         _currentDeputyWeaponInfo = new DeputyWeaponInfo(_loc1_);
+         var iteminfo:InventoryItemInfo = new InventoryItemInfo();
+         iteminfo.TemplateID = _info.DeputyWeaponID;
+         ItemManager.fill(iteminfo);
+         _currentDeputyWeaponInfo = new DeputyWeaponInfo(iteminfo);
       }
       
       public function get currentDeputyWeaponInfo() : DeputyWeaponInfo
@@ -505,17 +505,17 @@ package gameCommon.model
          return _info != null && _info.DeputyWeaponID > 0;
       }
       
-      private function __playerPropChanged(param1:PlayerPropertyEvent) : void
+      private function __playerPropChanged(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["WeaponID"])
+         if(event.changedProperties["WeaponID"])
          {
             setWeaponInfo();
          }
-         else if(param1.changedProperties["DeputyWeaponID"])
+         else if(event.changedProperties["DeputyWeaponID"])
          {
             setDeputyWeaponInfo();
          }
-         if(param1.changedProperties["Grade"] && StateManager.currentStateType != "missionResult")
+         if(event.changedProperties["Grade"] && StateManager.currentStateType != "missionResult")
          {
             isUpGrade = _info.IsUpGrade;
             if(isSelf)
@@ -530,14 +530,14 @@ package gameCommon.model
          return _isReady;
       }
       
-      public function set isReady(param1:Boolean) : void
+      public function set isReady(value:Boolean) : void
       {
-         _isReady = param1;
+         _isReady = value;
       }
       
-      override public function updateBlood(param1:Number, param2:int, param3:int = 0) : void
+      override public function updateBlood(value:Number, type:int, addVlaue:int = 0) : void
       {
-         super.updateBlood(param1,param2,param3);
+         super.updateBlood(value,type,addVlaue);
          if(_movie == null)
          {
             return;
@@ -552,7 +552,7 @@ package gameCommon.model
          }
          if(blood != maxBlood)
          {
-            _movie.isLackHp = param2 != 0 && param3 >= maxBlood * 0.1;
+            _movie.isLackHp = type != 0 && addVlaue >= maxBlood * 0.1;
          }
       }
       
@@ -561,9 +561,9 @@ package gameCommon.model
          return _turnTime;
       }
       
-      public function set turnTime(param1:int) : void
+      public function set turnTime(val:int) : void
       {
-         _turnTime = param1;
+         _turnTime = val;
       }
       
       public function get reverse() : int
@@ -575,9 +575,9 @@ package gameCommon.model
          return _reverse;
       }
       
-      public function set reverse(param1:int) : void
+      public function set reverse(val:int) : void
       {
-         _reverse = param1;
+         _reverse = val;
          dispatchEvent(new LivingEvent("reverseChanged",0,0,reverse));
       }
       
@@ -591,13 +591,13 @@ package gameCommon.model
          return _isAutoGuide;
       }
       
-      public function set isAutoGuide(param1:Boolean) : void
+      public function set isAutoGuide(value:Boolean) : void
       {
-         if(_isAutoGuide == param1)
+         if(_isAutoGuide == value)
          {
             return;
          }
-         _isAutoGuide = param1;
+         _isAutoGuide = value;
       }
       
       public function get currentPet() : Pet
@@ -605,53 +605,53 @@ package gameCommon.model
          return _pet;
       }
       
-      public function set currentPet(param1:Pet) : void
+      public function set currentPet(val:Pet) : void
       {
-         _pet = param1;
+         _pet = val;
       }
       
-      private function onUsePetSkill(param1:LivingEvent) : void
+      private function onUsePetSkill(event:LivingEvent) : void
       {
-         dispatchEvent(new LivingEvent(param1.type,param1.value,0,param1.paras[0]));
+         dispatchEvent(new LivingEvent(event.type,event.value,0,event.paras[0]));
       }
       
-      public function usePetSkill(param1:int, param2:Boolean) : void
+      public function usePetSkill(skillID:int, isUsed:Boolean) : void
       {
-         var _loc3_:PetSkillTemplateInfo = PetSkillManager.getSkillByID(param1);
-         if(_loc3_ && param2)
+         var skill:PetSkillTemplateInfo = PetSkillManager.getSkillByID(skillID);
+         if(skill && isUsed)
          {
-            currentPet.useSkill(param1,param2);
+            currentPet.useSkill(skillID,isUsed);
          }
-         dispatchEvent(new LivingEvent("usePetSkill",param1,0,param2));
+         dispatchEvent(new LivingEvent("usePetSkill",skillID,0,isUsed));
       }
       
-      public function useHorseSkill(param1:int, param2:Boolean, param3:int) : void
+      public function useHorseSkill(skillID:int, isUsed:Boolean, restCount:int) : void
       {
-         dispatchEvent(new LivingEvent("horseSkillUse",0,0,param1,param2,param3));
+         dispatchEvent(new LivingEvent("horseSkillUse",0,0,skillID,isUsed,restCount));
       }
       
-      public function petBeat(param1:String, param2:Point, param3:Array) : void
+      public function petBeat(act:String, pt:Point, targets:Array) : void
       {
-         dispatchEvent(new LivingEvent("petBeat",0,0,param1,param2,param3));
+         dispatchEvent(new LivingEvent("petBeat",0,0,act,pt,targets));
       }
       
-      public function clone(param1:int = 0) : Player
+      public function clone(livingId:int = 0) : Player
       {
-         var _loc2_:* = null;
-         var _loc3_:PlayerInfo = _info.clone();
-         var _loc4_:Player = new Player(_loc3_,param1,this.team,this.maxBlood);
-         ObjectUtils.copyProperties(_loc4_,this);
-         var _loc5_:Vector.<FightBuffInfo> = new Vector.<FightBuffInfo>();
+         var temInfo:* = null;
+         var tempPlayerInfo:PlayerInfo = _info.clone();
+         var temPlayer:Player = new Player(tempPlayerInfo,livingId,this.team,this.maxBlood);
+         ObjectUtils.copyProperties(temPlayer,this);
+         var temBuff:Vector.<FightBuffInfo> = new Vector.<FightBuffInfo>();
          var _loc8_:* = 0;
          var _loc7_:* = turnBuffs;
-         for each(var _loc6_ in turnBuffs)
+         for each(var info in turnBuffs)
          {
-            _loc5_.push(_loc6_.clone());
+            temBuff.push(info.clone());
          }
-         _loc8_ = _loc5_;
-         _loc4_.outTurnBuffs = _loc8_;
-         _loc4_.turnBuffs = _loc8_;
-         return _loc4_;
+         _loc8_ = temBuff;
+         temPlayer.outTurnBuffs = _loc8_;
+         temPlayer.turnBuffs = _loc8_;
+         return temPlayer;
       }
    }
 }

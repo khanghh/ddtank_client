@@ -9,51 +9,50 @@ package luckStar.model
       private static const MAX_LIST:int = 5;
        
       
-      public function LuckStarRankAnalyzer(param1:Function)
+      public function LuckStarRankAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc3_:* = undefined;
-         var _loc7_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc8_:int = 0;
-         var _loc6_:* = null;
-         var _loc5_:XML = XML(param1);
-         if(_loc5_.@value == "true")
+         var rankList:* = undefined;
+         var xmllist:* = null;
+         var rank:* = null;
+         var itme:* = null;
+         var i:int = 0;
+         var selfInfo:* = null;
+         var xml:XML = XML(data);
+         if(xml.@value == "true")
          {
-            _loc7_ = _loc5_..rankInfo;
-            _loc2_ = [];
-            _loc8_ = 0;
-            while(_loc8_ < _loc7_.length())
+            xmllist = xml..rankInfo;
+            rank = [];
+            for(i = 0; i < xmllist.length(); )
             {
-               if(_loc8_ % 5 == 0 || _loc8_ == 0)
+               if(i % 5 == 0 || i == 0)
                {
-                  _loc3_ = new Vector.<LuckStarPlayerInfo>();
-                  _loc2_.push(_loc3_);
+                  rankList = new Vector.<LuckStarPlayerInfo>();
+                  rank.push(rankList);
                }
-               _loc4_ = new LuckStarPlayerInfo();
-               _loc4_.name = String(_loc7_[_loc8_].@nickName);
-               _loc4_.rank = int(_loc7_[_loc8_].@rank);
-               _loc4_.starNum = int(_loc7_[_loc8_].@useStarNum);
-               _loc4_.isVip = int(_loc7_[_loc8_].@isVip) != 0;
-               _loc3_.push(_loc4_);
-               _loc8_++;
+               itme = new LuckStarPlayerInfo();
+               itme.name = String(xmllist[i].@nickName);
+               itme.rank = int(xmllist[i].@rank);
+               itme.starNum = int(xmllist[i].@useStarNum);
+               itme.isVip = int(xmllist[i].@isVip) != 0;
+               rankList.push(itme);
+               i++;
             }
-            _loc6_ = new LuckStarPlayerInfo();
-            _loc6_.rank = int(_loc5_.myRank.@rank);
-            _loc6_.starNum = int(_loc5_.myRank.@useStarNum);
-            LuckStarManager.Instance.model.selfInfo = _loc6_;
-            LuckStarManager.Instance.model.lastDate = String(_loc5_.@lastUpdateTime);
-            LuckStarManager.Instance.model.rank = _loc2_;
+            selfInfo = new LuckStarPlayerInfo();
+            selfInfo.rank = int(xml.myRank.@rank);
+            selfInfo.starNum = int(xml.myRank.@useStarNum);
+            LuckStarManager.Instance.model.selfInfo = selfInfo;
+            LuckStarManager.Instance.model.lastDate = String(xml.@lastUpdateTime);
+            LuckStarManager.Instance.model.rank = rank;
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc5_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }

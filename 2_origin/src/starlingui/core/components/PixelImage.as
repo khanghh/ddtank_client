@@ -12,29 +12,29 @@ package starlingui.core.components
       
       private var _bitmapData:BitmapData;
       
-      public function PixelImage(param1:Texture, param2:BitmapData)
+      public function PixelImage(texture:Texture, bitmapData:BitmapData)
       {
-         super(param1);
-         if(param2 == null)
+         super(texture);
+         if(bitmapData == null)
          {
             throw new ArgumentError("BitmapData cannot be null");
          }
-         _bitmapData = param2;
+         _bitmapData = bitmapData;
       }
       
-      override public function hitTest(param1:Point, param2:Boolean = false) : DisplayObject
+      override public function hitTest(localPoint:Point, forTouch:Boolean = false) : DisplayObject
       {
-         if(param2 && (!visible || !touchable))
+         if(forTouch && (!visible || !touchable))
          {
             return null;
          }
-         if(mask && !hitTestMask(param1))
+         if(mask && !hitTestMask(localPoint))
          {
             return null;
          }
-         var _loc3_:uint = _bitmapData.getPixel32(param1.x,param1.y);
-         var _loc4_:uint = _loc3_ >> 24;
-         if(_loc4_ > 1)
+         var color:uint = _bitmapData.getPixel32(localPoint.x,localPoint.y);
+         var alpha:uint = color >> 24;
+         if(alpha > 1)
          {
             return this;
          }

@@ -43,22 +43,22 @@ package littleGame.character
       
       private var _currentSoundPlayed:Boolean;
       
-      public function LittleGameCharacter(param1:PlayerInfo, param2:int = 1)
+      public function LittleGameCharacter(playerInfo:PlayerInfo, littleGameId:int = 1)
       {
-         _playerInfo = param1;
-         var _loc3_:Array = _playerInfo.Colors.split(",");
-         hasFaceColor = Boolean(_loc3_[5]);
-         hasClothColor = Boolean(_loc3_[4]);
-         _loader = new LittleGameCharaterLoader(_playerInfo,param2);
+         _playerInfo = playerInfo;
+         var recordColor:Array = _playerInfo.Colors.split(",");
+         hasFaceColor = Boolean(recordColor[5]);
+         hasClothColor = Boolean(recordColor[4]);
+         _loader = new LittleGameCharaterLoader(_playerInfo,littleGameId);
          _loader.load(onComplete);
          super(null,null,"",230,175);
       }
       
       public static function setup() : void
       {
-         onXmlComplete = function(param1:Event):void
+         onXmlComplete = function(event:Event):void
          {
-            param1.currentTarget.removeEventListener("complete",onXmlComplete);
+            event.currentTarget.removeEventListener("complete",onXmlComplete);
             DEFINE = XML(loader.data);
          };
          var loader:URLLoader = new URLLoader();
@@ -71,53 +71,53 @@ package littleGame.character
          return _isComplete;
       }
       
-      public function set isComplete(param1:Boolean) : void
+      public function set isComplete(value:Boolean) : void
       {
-         _isComplete = param1;
+         _isComplete = value;
       }
       
-      override public function doAction(param1:String) : void
+      override public function doAction(action:String) : void
       {
          play();
-         var _loc3_:ComplexBitmapAction = _actionSet.getAction(param1) as ComplexBitmapAction;
-         if(_loc3_)
+         var a:ComplexBitmapAction = _actionSet.getAction(action) as ComplexBitmapAction;
+         if(a)
          {
             if(_currentAction == null)
             {
-               currentAction = _loc3_;
+               currentAction = a;
             }
-            else if(_loc3_.priority >= _currentAction.priority)
+            else if(a.priority >= _currentAction.priority)
             {
                var _loc5_:int = 0;
                var _loc4_:* = _currentAction.assets;
-               for each(var _loc2_ in _currentAction.assets)
+               for each(var item in _currentAction.assets)
                {
-                  _loc2_.stop();
-                  removeItem(_loc2_);
+                  item.stop();
+                  removeItem(item);
                }
                _currentAction.reset();
-               currentAction = _loc3_;
-               if(param1.indexOf("back") != -1)
+               currentAction = a;
+               if(action.indexOf("back") != -1)
                {
                   _items.reverse();
                }
             }
          }
-         _currentAct = param1;
+         _currentAct = action;
       }
       
-      override protected function set currentAction(param1:ComplexBitmapAction) : void
+      override protected function set currentAction(action:ComplexBitmapAction) : void
       {
-         _currentAction = param1;
+         _currentAction = action;
          _autoStop = _currentAction.endStop;
          var _loc4_:int = 0;
          var _loc3_:* = _currentAction.assets;
-         for each(var _loc2_ in _currentAction.assets)
+         for each(var item1 in _currentAction.assets)
          {
-            _loc2_.play();
-            addItem(_loc2_);
+            item1.play();
+            addItem(item1);
          }
-         if(!StringUtils.isEmpty(_currentAction.sound) && _soundEnabled && (_currentAct != param1.name || !_currentSoundPlayed))
+         if(!StringUtils.isEmpty(_currentAction.sound) && _soundEnabled && (_currentAct != action.name || !_currentSoundPlayed))
          {
             SoundManager.instance.play(_currentAction.sound);
             _currentSoundPlayed = true;
@@ -133,12 +133,12 @@ package littleGame.character
       {
          _headBmd = _loader.getContent()[0];
          _bodyBmd = _loader.getContent()[1];
-         var _loc1_:Dictionary = new Dictionary();
-         _loc1_["head"] = _headBmd;
-         _loc1_["body"] = _bodyBmd;
-         _loc1_["effect"] = _loader.getContent()[2];
-         _loc1_["specialHead"] = _loader.getContent()[4];
-         assets = _loc1_;
+         var bmds:Dictionary = new Dictionary();
+         bmds["head"] = _headBmd;
+         bmds["body"] = _bodyBmd;
+         bmds["effect"] = _loader.getContent()[2];
+         bmds["specialHead"] = _loader.getContent()[4];
+         assets = bmds;
          headBmds = new Vector.<BitmapData>();
          headBmds.push(_loader.getContent()[3],_loader.getContent()[4],_loader.getContent()[5]);
          .super.description = DEFINE;
@@ -155,35 +155,35 @@ package littleGame.character
          return _actionSet.actions;
       }
       
-      private function updateRenderSource(param1:String, param2:BitmapData) : void
+      private function updateRenderSource(resource:String, renderData:BitmapData) : void
       {
          var _loc5_:int = 0;
          var _loc4_:* = _bitmapRendItems;
-         for each(var _loc3_ in _bitmapRendItems)
+         for each(var item in _bitmapRendItems)
          {
-            if(_loc3_.sourceName == param1)
+            if(item.sourceName == resource)
             {
-               _loc3_.source = param2;
-               if(_loc3_ is CrossFrameItem)
+               item.source = renderData;
+               if(item is CrossFrameItem)
                {
-                  CrossFrameItem(_loc3_).frames = CrossFrameItem(_loc3_).frames;
+                  CrossFrameItem(item).frames = CrossFrameItem(item).frames;
                }
             }
          }
       }
       
-      public function setFunnyHead(param1:uint = 0) : void
+      public function setFunnyHead(type:uint = 0) : void
       {
-         if(headBmds == null || param1 > headBmds.length - 1)
+         if(headBmds == null || type > headBmds.length - 1)
          {
             return;
          }
-         updateRenderSource("specialHead",headBmds[param1]);
+         updateRenderSource("specialHead",headBmds[type]);
       }
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(assets)
          {
             assets["head"] = null;
@@ -209,14 +209,13 @@ package littleGame.character
          }
          if(hasFaceColor && headBmds)
          {
-            _loc1_ = 0;
-            while(_loc1_ < headBmds.length)
+            for(i = 0; i < headBmds.length; )
             {
-               if(headBmds[_loc1_])
+               if(headBmds[i])
                {
-                  headBmds[_loc1_].dispose();
+                  headBmds[i].dispose();
                }
-               _loc1_++;
+               i++;
             }
          }
          headBmds = null;

@@ -13,10 +13,10 @@ package magicHouse
       
       public var sourceInfo:ItemTemplateInfo;
       
-      public function MagicHouseDragEvent(param1:ItemTemplateInfo, param2:String, param3:Boolean = false, param4:Boolean = false)
+      public function MagicHouseDragEvent(source:ItemTemplateInfo, type:String, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         this.sourceInfo = param1;
-         super(param2,param3,param4);
+         this.sourceInfo = source;
+         super(type,bubbles,cancelable);
       }
    }
 }

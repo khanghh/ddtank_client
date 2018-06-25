@@ -190,9 +190,9 @@ package wonderfulActivity
          return _activityInitData;
       }
       
-      public function set activityInitData(param1:Dictionary) : void
+      public function set activityInitData(value:Dictionary) : void
       {
-         _activityInitData = param1;
+         _activityInitData = value;
       }
       
       public function setup() : void
@@ -220,119 +220,115 @@ package wonderfulActivity
          SocketManager.Instance.addEventListener(PkgEvent.format(286),rookieRankHandler);
       }
       
-      protected function rookieRankHandler(param1:PkgEvent) : void
+      protected function rookieRankHandler(event:PkgEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         var _loc7_:* = null;
-         var _loc9_:int = 0;
-         var _loc8_:* = null;
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc4_:int = _loc5_.readInt();
-         _loc6_ = 0;
-         while(_loc6_ < _loc4_)
+         var k:int = 0;
+         var actId:* = null;
+         var count:int = 0;
+         var rookieRankInfoArr:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var pkg:PackageIn = event.pkg;
+         var actCount:int = pkg.readInt();
+         for(k = 0; k < actCount; )
          {
-            _loc2_ = _loc5_.readUTF();
-            _loc3_ = _loc5_.readInt();
-            _loc7_ = [];
-            _loc9_ = 0;
-            while(_loc9_ < _loc3_)
+            actId = pkg.readUTF();
+            count = pkg.readInt();
+            rookieRankInfoArr = [];
+            for(i = 0; i < count; )
             {
-               _loc8_ = new RookieRankInfo();
-               _loc8_.userId = _loc5_.readInt();
-               _loc8_.rank = _loc5_.readInt();
-               _loc8_.playerName = _loc5_.readUTF();
-               _loc8_.fightPower = _loc5_.readInt();
-               _loc7_.push(_loc8_);
-               _loc9_++;
+               info = new RookieRankInfo();
+               info.userId = pkg.readInt();
+               info.rank = pkg.readInt();
+               info.playerName = pkg.readUTF();
+               info.fightPower = pkg.readInt();
+               rookieRankInfoArr.push(info);
+               i++;
             }
-            if(_loc7_.length > 10)
+            if(rookieRankInfoArr.length > 10)
             {
-               _loc7_ = _loc7_.slice(0,10);
+               rookieRankInfoArr = rookieRankInfoArr.slice(0,10);
             }
-            _loc7_.sortOn("rank",16);
-            rankActDic[_loc2_] = _loc7_;
-            _loc6_++;
+            rookieRankInfoArr.sortOn("rank",16);
+            rankActDic[actId] = rookieRankInfoArr;
+            k++;
          }
       }
       
-      private function activityInitHandler(param1:PkgEvent) : void
+      private function activityInitHandler(event:PkgEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:PackageIn = param1.pkg;
-         _loc3_ = _loc2_.readInt();
-         if(_loc3_ == 0)
+         var updateInfoType:int = 0;
+         var pkg:PackageIn = event.pkg;
+         updateInfoType = pkg.readInt();
+         if(updateInfoType == 0)
          {
             updateNewActivityXml();
             SocketManager.Instance.out.requestWonderfulActInit(2);
             SocketManager.Instance.out.requestWonderfulActInit(3);
          }
-         else if(_loc3_ == 1)
+         else if(updateInfoType == 1)
          {
-            activityInit(_loc2_);
+            activityInit(pkg);
             checkActivity();
             initFrame(isSkipFromHall,skipType);
             SocketManager.Instance.out.updateConsumeRank();
             SocketManager.Instance.out.updateRechargeRank();
             SocketManager.Instance.out.sendWonderfulActivity(0,-1);
          }
-         else if(_loc3_ == 2)
+         else if(updateInfoType == 2)
          {
-            activityInit(_loc2_);
-            checkActivity(_loc3_);
+            activityInit(pkg);
+            checkActivity(updateInfoType);
             dispatchEvent(new WonderfulActivityEvent("refresh"));
          }
-         else if(_loc3_ == 3)
+         else if(updateInfoType == 3)
          {
-            refreshSingleActivity(_loc2_);
+            refreshSingleActivity(pkg);
             dispatchEvent(new WonderfulActivityEvent("refresh"));
          }
       }
       
-      private function refreshSingleActivity(param1:PackageIn) : void
+      private function refreshSingleActivity(pkg:PackageIn) : void
       {
-         var _loc8_:int = 0;
-         var _loc6_:* = null;
-         var _loc10_:int = 0;
-         var _loc3_:* = null;
-         var _loc11_:* = null;
-         var _loc7_:int = param1.readInt();
-         if(_loc7_ == 0)
+         var j:int = 0;
+         var playerStatus:* = null;
+         var k:int = 0;
+         var giftCurInfo:* = null;
+         var key:* = null;
+         var actCount:int = pkg.readInt();
+         if(actCount == 0)
          {
             return;
          }
-         var _loc5_:String = param1.readUTF();
-         var _loc12_:int = param1.readInt();
-         var _loc9_:Array = [];
-         _loc8_ = 0;
-         while(_loc8_ <= _loc12_ - 1)
+         var actID:String = pkg.readUTF();
+         var statusCount:int = pkg.readInt();
+         var statusArr:Array = [];
+         for(j = 0; j <= statusCount - 1; )
          {
-            _loc6_ = new PlayerCurInfo();
-            _loc6_.statusID = param1.readInt();
-            _loc6_.statusValue = param1.readInt();
-            _loc9_.push(_loc6_);
-            _loc8_++;
+            playerStatus = new PlayerCurInfo();
+            playerStatus.statusID = pkg.readInt();
+            playerStatus.statusValue = pkg.readInt();
+            statusArr.push(playerStatus);
+            j++;
          }
-         var _loc4_:int = param1.readInt();
-         var _loc2_:Dictionary = new Dictionary();
-         _loc10_ = 0;
-         while(_loc10_ <= _loc4_ - 1)
+         var giftInfoCount:int = pkg.readInt();
+         var giftInfoDic:Dictionary = new Dictionary();
+         for(k = 0; k <= giftInfoCount - 1; )
          {
-            _loc3_ = new GiftCurInfo();
-            _loc11_ = param1.readUTF();
-            _loc3_.times = param1.readInt();
-            _loc3_.allGiftGetTimes = param1.readInt();
-            _loc2_[_loc11_] = _loc3_;
-            _loc10_++;
+            giftCurInfo = new GiftCurInfo();
+            key = pkg.readUTF();
+            giftCurInfo.times = pkg.readInt();
+            giftCurInfo.allGiftGetTimes = pkg.readInt();
+            giftInfoDic[key] = giftCurInfo;
+            k++;
          }
-         activityInitData[_loc5_] = {
-            "statusArr":_loc9_,
-            "giftInfoDic":_loc2_
+         activityInitData[actID] = {
+            "statusArr":statusArr,
+            "giftInfoDic":giftInfoDic
          };
-         if(!leftViewInfoDic[_loc5_] && !exchangeActLeftViewInfoDic[_loc5_])
+         if(!leftViewInfoDic[actID] && !exchangeActLeftViewInfoDic[actID])
          {
-            _loc5_ = _mutilIdMapping[_loc5_];
+            actID = _mutilIdMapping[actID];
          }
          if(currentView && currentView.hasOwnProperty("updateAwardState"))
          {
@@ -342,138 +338,134 @@ package wonderfulActivity
       
       private function updateNewActivityXml() : void
       {
-         var _loc1_:BaseLoader = LoaderCreate.Instance.loadWonderfulActivityXml();
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         var loader:BaseLoader = LoaderCreate.Instance.loadWonderfulActivityXml();
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      private function activityInit(param1:PackageIn) : void
+      private function activityInit(pkg:PackageIn) : void
       {
-         var _loc9_:int = 0;
-         var _loc3_:* = null;
-         var _loc12_:int = 0;
-         var _loc6_:* = null;
-         var _loc7_:int = 0;
-         var _loc5_:* = null;
-         var _loc4_:int = 0;
-         var _loc10_:* = null;
-         var _loc8_:int = 0;
-         var _loc2_:* = null;
-         var _loc13_:* = null;
-         var _loc11_:int = param1.readInt();
-         _loc9_ = 0;
-         while(_loc9_ <= _loc11_ - 1)
+         var i:int = 0;
+         var actID:* = null;
+         var statusCount:int = 0;
+         var statusArr:* = null;
+         var j:int = 0;
+         var playerStatus:* = null;
+         var giftInfoCount:int = 0;
+         var giftInfoDic:* = null;
+         var k:int = 0;
+         var giftCurInfo:* = null;
+         var key:* = null;
+         var actCount:int = pkg.readInt();
+         for(i = 0; i <= actCount - 1; )
          {
-            _loc3_ = param1.readUTF();
-            _loc12_ = param1.readInt();
-            _loc6_ = [];
-            _loc7_ = 0;
-            while(_loc7_ <= _loc12_ - 1)
+            actID = pkg.readUTF();
+            statusCount = pkg.readInt();
+            statusArr = [];
+            for(j = 0; j <= statusCount - 1; )
             {
-               _loc5_ = new PlayerCurInfo();
-               _loc5_.statusID = param1.readInt();
-               _loc5_.statusValue = param1.readInt();
-               _loc6_.push(_loc5_);
-               _loc7_++;
+               playerStatus = new PlayerCurInfo();
+               playerStatus.statusID = pkg.readInt();
+               playerStatus.statusValue = pkg.readInt();
+               statusArr.push(playerStatus);
+               j++;
             }
-            _loc4_ = param1.readInt();
-            _loc10_ = new Dictionary();
-            _loc8_ = 0;
-            while(_loc8_ <= _loc4_ - 1)
+            giftInfoCount = pkg.readInt();
+            giftInfoDic = new Dictionary();
+            for(k = 0; k <= giftInfoCount - 1; )
             {
-               _loc2_ = new GiftCurInfo();
-               _loc13_ = param1.readUTF();
-               _loc2_.times = param1.readInt();
-               _loc2_.allGiftGetTimes = param1.readInt();
-               _loc10_[_loc13_] = _loc2_;
-               _loc8_++;
+               giftCurInfo = new GiftCurInfo();
+               key = pkg.readUTF();
+               giftCurInfo.times = pkg.readInt();
+               giftCurInfo.allGiftGetTimes = pkg.readInt();
+               giftInfoDic[key] = giftCurInfo;
+               k++;
             }
-            activityInitData[_loc3_] = {
-               "statusArr":_loc6_,
-               "giftInfoDic":_loc10_
+            activityInitData[actID] = {
+               "statusArr":statusArr,
+               "giftInfoDic":giftInfoDic
             };
-            _loc9_++;
+            i++;
          }
       }
       
-      private function rechargeReturnHander(param1:PkgEvent) : void
+      private function rechargeReturnHander(e:PkgEvent) : void
       {
-         var _loc8_:int = 0;
-         var _loc2_:int = 0;
-         var _loc9_:* = null;
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc7_:int = 0;
-         var _loc13_:int = 0;
-         var _loc10_:int = 0;
-         var _loc11_:int = 0;
-         var _loc12_:* = null;
-         var _loc5_:int = param1.pkg.readByte();
-         if(_loc5_ == 2)
+         var id:int = 0;
+         var count:int = 0;
+         var startTime:* = null;
+         var endTime:* = null;
+         var loader:* = null;
+         var data:* = null;
+         var i:int = 0;
+         var activityType:int = 0;
+         var t:int = 0;
+         var tt:int = 0;
+         var nowDate:* = null;
+         var type:int = e.pkg.readByte();
+         if(type == 2)
          {
             if(StateManager.currentStateType == "main" || frameFlag)
             {
-               _loc3_ = LoaderCreate.Instance.firstRechargeLoader();
-               LoadResourceManager.Instance.startLoad(_loc3_);
+               loader = LoaderCreate.Instance.firstRechargeLoader();
+               LoadResourceManager.Instance.startLoad(loader);
             }
          }
-         else if(_loc5_ == 0)
+         else if(type == 0)
          {
-            _loc2_ = param1.pkg.readInt();
-            _loc7_ = 0;
-            while(_loc7_ < _loc2_)
+            count = e.pkg.readInt();
+            for(i = 0; i < count; )
             {
-               _loc13_ = -1;
-               _loc4_ = new CanGetData();
-               _loc4_.id = param1.pkg.readInt();
-               var _loc14_:* = _loc4_.id;
+               activityType = -1;
+               data = new CanGetData();
+               data.id = e.pkg.readInt();
+               var _loc14_:* = data.id;
                if(2001 !== _loc14_)
                {
                   if(3001 !== _loc14_)
                   {
                      if(4001 !== _loc14_)
                      {
-                        _loc11_ = param1.pkg.readInt();
+                        tt = e.pkg.readInt();
                      }
                      else
                      {
-                        _loc13_ = 4001;
-                        xiaoFeiScore = param1.pkg.readInt();
+                        activityType = 4001;
+                        xiaoFeiScore = e.pkg.readInt();
                      }
                   }
                   else
                   {
-                     _loc13_ = 3001;
-                     chongZhiScore = param1.pkg.readInt();
+                     activityType = 3001;
+                     chongZhiScore = e.pkg.readInt();
                   }
                }
                else
                {
-                  _loc13_ = 2001;
-                  _loc10_ = param1.pkg.readInt();
+                  activityType = 2001;
+                  t = e.pkg.readInt();
                }
-               _loc4_.num = param1.pkg.readInt();
-               _loc9_ = param1.pkg.readDate();
-               _loc6_ = param1.pkg.readDate();
-               setActivityTime(_loc4_.id,_loc9_,_loc6_);
-               updateStateList(_loc4_);
-               if(_loc13_ != -1)
+               data.num = e.pkg.readInt();
+               startTime = e.pkg.readDate();
+               endTime = e.pkg.readDate();
+               setActivityTime(data.id,startTime,endTime);
+               updateStateList(data);
+               if(activityType != -1)
                {
-                  _loc12_ = TimeManager.Instance.Now();
-                  if(_loc12_.getTime() > _loc9_.getTime() && _loc12_.getTime() < _loc6_.getTime() && _loc4_.num != -2)
+                  nowDate = TimeManager.Instance.Now();
+                  if(nowDate.getTime() > startTime.getTime() && nowDate.getTime() < endTime.getTime() && data.num != -2)
                   {
-                     addElement(_loc13_);
+                     addElement(activityType);
                   }
                   else
                   {
-                     removeElement(_loc13_);
+                     removeElement(activityType);
                   }
                }
-               _loc7_++;
+               i++;
             }
-            if(_loc2_ == 1)
+            if(count == 1)
             {
-               if(!_loc4_)
+               if(!data)
                {
                }
             }
@@ -482,8 +474,8 @@ package wonderfulActivity
       
       public function updateChargeActiveTemplateXml() : void
       {
-         var _loc1_:BaseLoader = LoaderCreate.Instance.creatWondActiveLoader();
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         var loader:BaseLoader = LoaderCreate.Instance.creatWondActiveLoader();
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
       private function dispatchCheckEvent() : void
@@ -494,56 +486,54 @@ package wonderfulActivity
          }
       }
       
-      private function updateStateList(param1:CanGetData) : void
+      private function updateStateList(data:CanGetData) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = _stateList.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var i:int = 0;
+         var len:int = _stateList.length;
+         for(i = 0; i < len; )
          {
-            if(param1.id == _stateList[_loc3_].id)
+            if(data.id == _stateList[i].id)
             {
-               _stateList[_loc3_] = param1;
+               _stateList[i] = data;
                return;
             }
-            _loc3_++;
+            i++;
          }
-         _stateList.push(param1);
+         _stateList.push(data);
       }
       
       private function endRequest() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:Number = NaN;
-         var _loc2_:Date = TimeManager.Instance.Now();
-         _loc4_ = 0;
-         while(_loc4_ <= endRequestArr.length - 1)
+         var i:int = 0;
+         var endDate:* = null;
+         var diff:Number = NaN;
+         var nowDate:Date = TimeManager.Instance.Now();
+         for(i = 0; i <= endRequestArr.length - 1; )
          {
-            _loc3_ = DateUtils.getDateByStr(endRequestArr[_loc4_]);
-            _loc1_ = Math.round((_loc3_.getTime() - _loc2_.getTime()) / 1000);
-            if(_loc1_ <= 0)
+            endDate = DateUtils.getDateByStr(endRequestArr[i]);
+            diff = Math.round((endDate.getTime() - nowDate.getTime()) / 1000);
+            if(diff <= 0)
             {
-               endRequestArr.splice(_loc4_,1);
+               endRequestArr.splice(i,1);
                SocketManager.Instance.out.requestWonderfulActInit(2);
             }
-            _loc4_++;
+            i++;
          }
       }
       
-      private function timerHander(param1:TimerEvent) : void
+      private function timerHander(event:TimerEvent) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _timerHanderFun;
-         for each(var _loc2_ in _timerHanderFun)
+         for each(var timerHander in _timerHanderFun)
          {
-            _loc2_();
+            timerHander();
          }
       }
       
-      public function addTimerFun(param1:String, param2:Function) : void
+      public function addTimerFun(key:String, fun:Function) : void
       {
-         _timerHanderFun[param1] = param2;
+         _timerHanderFun[key] = fun;
          if(!_timer)
          {
             _timer = new Timer(1000);
@@ -552,11 +542,11 @@ package wonderfulActivity
          }
       }
       
-      public function delTimerFun(param1:String) : void
+      public function delTimerFun(key:String) : void
       {
-         if(_timerHanderFun[param1])
+         if(_timerHanderFun[key])
          {
-            delete _timerHanderFun[param1];
+            delete _timerHanderFun[key];
          }
          if(isEmptyDictionary(_timerHanderFun))
          {
@@ -569,13 +559,13 @@ package wonderfulActivity
          }
       }
       
-      private function isEmptyDictionary(param1:Dictionary) : Boolean
+      private function isEmptyDictionary(dic:Dictionary) : Boolean
       {
          var _loc4_:int = 0;
-         var _loc3_:* = param1;
-         for(var _loc2_ in param1)
+         var _loc3_:* = dic;
+         for(var str in dic)
          {
-            if(_loc2_)
+            if(str)
             {
                return false;
             }
@@ -583,100 +573,100 @@ package wonderfulActivity
          return true;
       }
       
-      public function getTimeDiff(param1:Date, param2:Date) : String
+      public function getTimeDiff(endDate:Date, nowDate:Date) : String
       {
-         var _loc3_:* = 0;
-         var _loc7_:* = 0;
-         var _loc6_:* = 0;
-         var _loc4_:* = 0;
-         var _loc5_:Number = Math.round((param1.getTime() - param2.getTime()) / 1000);
-         if(_loc5_ >= 0)
+         var d:* = 0;
+         var h:* = 0;
+         var m:* = 0;
+         var s:* = 0;
+         var diff:Number = Math.round((endDate.getTime() - nowDate.getTime()) / 1000);
+         if(diff >= 0)
          {
-            _loc3_ = uint(Math.floor(_loc5_ / 60 / 60 / 24));
-            _loc5_ = _loc5_ % 86400;
-            _loc7_ = uint(Math.floor(_loc5_ / 60 / 60));
-            _loc5_ = _loc5_ % 3600;
-            _loc6_ = uint(Math.floor(_loc5_ / 60));
-            _loc4_ = uint(_loc5_ % 60);
-            if(_loc3_ > 0)
+            d = uint(Math.floor(diff / 60 / 60 / 24));
+            diff = diff % 86400;
+            h = uint(Math.floor(diff / 60 / 60));
+            diff = diff % 3600;
+            m = uint(Math.floor(diff / 60));
+            s = uint(diff % 60);
+            if(d > 0)
             {
-               return _loc3_ + LanguageMgr.GetTranslation("wonderfulActivityManager.d");
+               return d + LanguageMgr.GetTranslation("wonderfulActivityManager.d");
             }
-            if(_loc7_ > 0)
+            if(h > 0)
             {
-               return fixZero(_loc7_) + LanguageMgr.GetTranslation("wonderfulActivityManager.h");
+               return fixZero(h) + LanguageMgr.GetTranslation("wonderfulActivityManager.h");
             }
-            if(_loc6_ > 0)
+            if(m > 0)
             {
-               return fixZero(_loc6_) + LanguageMgr.GetTranslation("wonderfulActivityManager.m");
+               return fixZero(m) + LanguageMgr.GetTranslation("wonderfulActivityManager.m");
             }
-            if(_loc4_ > 0)
+            if(s > 0)
             {
-               return fixZero(_loc4_) + LanguageMgr.GetTranslation("wonderfulActivityManager.s");
+               return fixZero(s) + LanguageMgr.GetTranslation("wonderfulActivityManager.s");
             }
          }
          return "0";
       }
       
-      private function fixZero(param1:uint) : String
+      private function fixZero(num:uint) : String
       {
-         return param1 < 10?String(param1):String(param1);
+         return num < 10?String(num):String(num);
       }
       
-      private function setActivityTime(param1:int, param2:Date, param3:Date) : void
+      private function setActivityTime(id:int, start:Date, end:Date) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         if(param1 == 2001)
+         var i:int = 0;
+         var j:int = 0;
+         if(id == 2001)
          {
             if(activityFighterList.length == 0)
             {
                return;
             }
-            activityFighterList[0].StartTime = param2;
-            activityFighterList[0].EndTime = param3;
+            activityFighterList[0].StartTime = start;
+            activityFighterList[0].EndTime = end;
          }
-         else if(param1 >= 3001 && param1 < 4001)
+         else if(id >= 3001 && id < 4001)
          {
             if(activityRechargeList.length == 0)
             {
                return;
             }
-            _loc5_ = 0;
-            while(_loc5_ < activityRechargeList.length)
+            i = 0;
+            while(i < activityRechargeList.length)
             {
-               if(param1 == activityRechargeList[_loc5_].ID)
+               if(id == activityRechargeList[i].ID)
                {
-                  activityRechargeList[_loc5_].StartTime = param2;
-                  activityRechargeList[_loc5_].EndTime = param3;
+                  activityRechargeList[i].StartTime = start;
+                  activityRechargeList[i].EndTime = end;
                   break;
                }
-               _loc5_++;
+               i++;
             }
          }
-         else if(param1 >= 4001)
+         else if(id >= 4001)
          {
             if(activityExpList.length == 0)
             {
                return;
             }
-            _loc4_ = 0;
-            while(_loc4_ < activityExpList.length)
+            j = 0;
+            while(j < activityExpList.length)
             {
-               if(param1 == activityExpList[_loc5_].ID)
+               if(id == activityExpList[i].ID)
                {
-                  activityExpList[_loc5_].StartTime = param2;
-                  activityExpList[_loc5_].EndTime = param3;
+                  activityExpList[i].StartTime = start;
+                  activityExpList[i].EndTime = end;
                   break;
                }
-               _loc4_++;
+               j++;
             }
          }
       }
       
-      public function wonderfulGMActiveInfo(param1:WonderfulGMActAnalyer) : void
+      public function wonderfulGMActiveInfo(analyer:WonderfulGMActAnalyer) : void
       {
-         activityData = param1.ActivityData;
+         activityData = analyer.ActivityData;
          updateRealEndTime();
          FlowerGivingManager.instance.checkOpen();
          FoodActivityManager.Instance.checkOpen();
@@ -685,40 +675,39 @@ package wonderfulActivity
          SocketManager.Instance.out.requestWonderfulActInit(2);
       }
       
-      public function wonderfulActiveType(param1:WonderfulActAnalyer) : void
+      public function wonderfulActiveType(analy:WonderfulActAnalyer) : void
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          activityFighterList = new Vector.<ActivityTypeData>();
          activityExpList = new Vector.<ActivityTypeData>();
          activityRechargeList = new Vector.<ActivityTypeData>();
-         activityTypeList = param1.itemList;
-         var _loc2_:int = activityTypeList.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         activityTypeList = analy.itemList;
+         var len:int = activityTypeList.length;
+         for(i = 0; i < len; )
          {
-            activityTypeList[_loc3_].StartTime = new Date();
-            activityTypeList[_loc3_].EndTime = new Date();
-            if(activityTypeList[_loc3_].ID == 2001)
+            activityTypeList[i].StartTime = new Date();
+            activityTypeList[i].EndTime = new Date();
+            if(activityTypeList[i].ID == 2001)
             {
-               activityFighterList.push(activityTypeList[_loc3_]);
+               activityFighterList.push(activityTypeList[i]);
             }
-            else if(activityTypeList[_loc3_].ID >= 3001 && activityTypeList[_loc3_].ID < 4001)
+            else if(activityTypeList[i].ID >= 3001 && activityTypeList[i].ID < 4001)
             {
-               activityRechargeList.push(activityTypeList[_loc3_]);
+               activityRechargeList.push(activityTypeList[i]);
             }
             else
             {
-               activityExpList.push(activityTypeList[_loc3_]);
+               activityExpList.push(activityTypeList[i]);
             }
-            _loc3_++;
+            i++;
          }
          SocketManager.Instance.out.sendWonderfulActivity(0,-1);
       }
       
-      private function initFrame(param1:Boolean = false, param2:String = "0") : void
+      private function initFrame(SkipFromHall:Boolean = false, type:String = "0") : void
       {
-         isSkipFromHall = param1;
-         skipType = param2;
+         isSkipFromHall = SkipFromHall;
+         skipType = type;
          leftUnitViewType = !!leftViewInfoDic[skipType]?leftViewInfoDic[skipType].unitIndex:2;
          loadResouce();
       }
@@ -727,6 +716,7 @@ package wonderfulActivity
       {
          AssetModuleLoader.addModelLoader("ddtcalendar",6);
          AssetModuleLoader.addModelLoader("wonderfulactivity",6);
+         AssetModuleLoader.addModelLoader("mark",7);
          AssetModuleLoader.startCodeLoader(loadComplete);
       }
       
@@ -736,12 +726,12 @@ package wonderfulActivity
          dispatchEvent(new WonderfulActivityEvent("wonderfulActivityOpenView"));
       }
       
-      public function addElement(param1:*) : void
+      public function addElement(activityID:*) : void
       {
-         param1 = String(param1);
-         if(_actList.indexOf(param1) == -1)
+         activityID = String(activityID);
+         if(_actList.indexOf(activityID) == -1)
          {
-            _actList.unshift(param1);
+            _actList.unshift(activityID);
          }
          if(_actList.length > 0)
          {
@@ -753,15 +743,15 @@ package wonderfulActivity
          dispatchEvent(new WonderfulActivityEvent("wonderfulActivityAddEment"));
       }
       
-      public function removeElement(param1:*) : void
+      public function removeElement(activityID:*) : void
       {
-         param1 = String(param1);
-         var _loc2_:int = _actList.indexOf(param1);
-         if(_loc2_ == -1)
+         activityID = String(activityID);
+         var index:int = _actList.indexOf(activityID);
+         if(index == -1)
          {
             return;
          }
-         _actList.splice(_loc2_,1);
+         _actList.splice(index,1);
          dispatchEvent(new WonderfulActivityEvent("wonderfulActivityAddEment"));
          if(_actList.length == 0)
          {
@@ -770,7 +760,7 @@ package wonderfulActivity
          }
          if(_actList.length > 0)
          {
-            if(currView == param1)
+            if(currView == activityID)
             {
                currView = _actList[0];
             }
@@ -805,53 +795,53 @@ package wonderfulActivity
       
       public function updateRealEndTime() : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var endTime:* = null;
+         var endShowTime:* = null;
          if(PlayerManager.Instance.Self.createPlayerDate == null)
          {
             return;
          }
          var _loc5_:int = 0;
          var _loc4_:* = activityData;
-         for each(var _loc1_ in activityData)
+         for each(var item in activityData)
          {
-            if(_loc1_.activityType == 39 && PlayerManager.Instance.Self.createPlayerDate)
+            if(item.activityType == 39 && PlayerManager.Instance.Self.createPlayerDate)
             {
-               _loc1_.beginTime = DateUtils.dateFormat3(PlayerManager.Instance.Self.createPlayerDate);
-               _loc1_.beginShowTime = DateUtils.dateFormat3(PlayerManager.Instance.Self.createPlayerDate);
-               _loc3_ = new Date(PlayerManager.Instance.Self.createPlayerDate.time + (_loc1_.remain1 - 1) * 86400000);
-               _loc2_ = new Date(PlayerManager.Instance.Self.createPlayerDate.time + (_loc1_.remain2 - 1) * 86400000);
-               _loc1_.endShowTime = DateUtils.dateFormat4(_loc2_);
-               _loc1_.endTime = DateUtils.dateFormat4(_loc3_);
+               item.beginTime = DateUtils.dateFormat3(PlayerManager.Instance.Self.createPlayerDate);
+               item.beginShowTime = DateUtils.dateFormat3(PlayerManager.Instance.Self.createPlayerDate);
+               endTime = new Date(PlayerManager.Instance.Self.createPlayerDate.time + (item.remain1 - 1) * 86400000);
+               endShowTime = new Date(PlayerManager.Instance.Self.createPlayerDate.time + (item.remain2 - 1) * 86400000);
+               item.endShowTime = DateUtils.dateFormat4(endShowTime);
+               item.endTime = DateUtils.dateFormat4(endTime);
                break;
             }
          }
       }
       
-      private function checkActivity(param1:int = 0) : void
+      private function checkActivity(_type:int = 0) : void
       {
-         var _loc4_:Boolean = false;
-         var _loc14_:int = 0;
-         var _loc9_:Boolean = false;
-         var _loc10_:Boolean = false;
-         var _loc8_:int = 0;
+         var isHeroExist:Boolean = false;
+         var temp:int = 0;
+         var isRookieExist:Boolean = false;
+         var isGiftExist:Boolean = false;
+         var i:int = 0;
          rankFlag = false;
-         var _loc3_:Array = [];
-         var _loc12_:Date = TimeManager.Instance.Now();
+         var tmpArr:Array = [];
+         var now:Date = TimeManager.Instance.Now();
          RoleRechargeMgr.instance.isOpen = false;
          SignActivityMgr.instance.isOpen = false;
          ConRechargeManager.instance.isOpen = false;
          var _loc22_:int = 0;
          var _loc21_:* = activityData;
-         for each(var _loc13_ in activityData)
+         for each(var item in activityData)
          {
-            if(!(_loc12_.time < Date.parse(_loc13_.beginTime) || _loc12_.time > Date.parse(_loc13_.endShowTime)))
+            if(!(now.time < Date.parse(item.beginTime) || now.time > Date.parse(item.endShowTime)))
             {
-               if(endRequestArr.indexOf(_loc13_.endShowTime) < 0)
+               if(endRequestArr.indexOf(item.endShowTime) < 0)
                {
-                  endRequestArr.push(_loc13_.endShowTime);
+                  endRequestArr.push(item.endShowTime);
                }
-               var _loc16_:* = _loc13_.activityType;
+               var _loc16_:* = item.activityType;
                if(0 !== _loc16_)
                {
                   if(1 !== _loc16_)
@@ -910,266 +900,266 @@ package wonderfulActivity
                                                                                                 {
                                                                                                    if(62 === _loc16_)
                                                                                                    {
-                                                                                                      leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(101,"· " + _loc13_.activityName,_loc13_.icon);
-                                                                                                      CondiscountManager.instance.model.giftbagArray = _loc13_.giftbagArray;
-                                                                                                      CondiscountManager.instance.model.beginTime = _loc13_.beginTime;
-                                                                                                      CondiscountManager.instance.model.endTime = _loc13_.endTime;
-                                                                                                      CondiscountManager.instance.model.actId = _loc13_.activityId;
-                                                                                                      CondiscountManager.instance.model.isOpen = DateUtils.checkTime(_loc13_.beginTime,_loc13_.endTime,TimeManager.Instance.Now());
+                                                                                                      leftViewInfoDic[item.activityId] = new LeftViewInfoVo(101,"· " + item.activityName,item.icon);
+                                                                                                      CondiscountManager.instance.model.giftbagArray = item.giftbagArray;
+                                                                                                      CondiscountManager.instance.model.beginTime = item.beginTime;
+                                                                                                      CondiscountManager.instance.model.endTime = item.endTime;
+                                                                                                      CondiscountManager.instance.model.actId = item.activityId;
+                                                                                                      CondiscountManager.instance.model.isOpen = DateUtils.checkTime(item.beginTime,item.endTime,TimeManager.Instance.Now());
                                                                                                    }
                                                                                                 }
                                                                                                 else
                                                                                                 {
-                                                                                                   leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(51,"· " + _loc13_.activityName,_loc13_.icon);
-                                                                                                   addElement(_loc13_.activityId);
-                                                                                                   _loc3_.push(_loc13_.activityId);
+                                                                                                   leftViewInfoDic[item.activityId] = new LeftViewInfoVo(51,"· " + item.activityName,item.icon);
+                                                                                                   addElement(item.activityId);
+                                                                                                   tmpArr.push(item.activityId);
                                                                                                 }
                                                                                              }
                                                                                              else
                                                                                              {
-                                                                                                leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(52,"· " + _loc13_.activityName,_loc13_.icon);
-                                                                                                addElement(_loc13_.activityId);
-                                                                                                _loc3_.push(_loc13_.activityId);
+                                                                                                leftViewInfoDic[item.activityId] = new LeftViewInfoVo(52,"· " + item.activityName,item.icon);
+                                                                                                addElement(item.activityId);
+                                                                                                tmpArr.push(item.activityId);
                                                                                              }
                                                                                           }
                                                                                           else
                                                                                           {
-                                                                                             leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(49,"· " + _loc13_.activityName,_loc13_.icon);
-                                                                                             addElement(_loc13_.activityId);
-                                                                                             _loc3_.push(_loc13_.activityId);
+                                                                                             leftViewInfoDic[item.activityId] = new LeftViewInfoVo(49,"· " + item.activityName,item.icon);
+                                                                                             addElement(item.activityId);
+                                                                                             tmpArr.push(item.activityId);
                                                                                           }
                                                                                        }
                                                                                        else
                                                                                        {
-                                                                                          leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(48,"· " + _loc13_.activityName,_loc13_.icon);
-                                                                                          addElement(_loc13_.activityId);
-                                                                                          _loc3_.push(_loc13_.activityId);
+                                                                                          leftViewInfoDic[item.activityId] = new LeftViewInfoVo(48,"· " + item.activityName,item.icon);
+                                                                                          addElement(item.activityId);
+                                                                                          tmpArr.push(item.activityId);
                                                                                        }
                                                                                     }
                                                                                     else
                                                                                     {
-                                                                                       leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(47,"· " + _loc13_.activityName,_loc13_.icon);
-                                                                                       addElement(_loc13_.activityId);
-                                                                                       _loc3_.push(_loc13_.activityId);
+                                                                                       leftViewInfoDic[item.activityId] = new LeftViewInfoVo(47,"· " + item.activityName,item.icon);
+                                                                                       addElement(item.activityId);
+                                                                                       tmpArr.push(item.activityId);
                                                                                     }
                                                                                  }
                                                                                  else
                                                                                  {
-                                                                                    leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(46,"· " + _loc13_.activityName,_loc13_.icon);
-                                                                                    addElement(_loc13_.activityId);
-                                                                                    _loc3_.push(_loc13_.activityId);
+                                                                                    leftViewInfoDic[item.activityId] = new LeftViewInfoVo(46,"· " + item.activityName,item.icon);
+                                                                                    addElement(item.activityId);
+                                                                                    tmpArr.push(item.activityId);
                                                                                  }
                                                                               }
                                                                               else
                                                                               {
-                                                                                 leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(45,"· " + _loc13_.activityName,_loc13_.icon);
-                                                                                 addElement(_loc13_.activityId);
-                                                                                 _loc3_.push(_loc13_.activityId);
+                                                                                 leftViewInfoDic[item.activityId] = new LeftViewInfoVo(45,"· " + item.activityName,item.icon);
+                                                                                 addElement(item.activityId);
+                                                                                 tmpArr.push(item.activityId);
                                                                               }
                                                                            }
                                                                            else
                                                                            {
-                                                                              leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(44,"· " + _loc13_.activityName,_loc13_.icon);
-                                                                              addElement(_loc13_.activityId);
-                                                                              _loc3_.push(_loc13_.activityId);
+                                                                              leftViewInfoDic[item.activityId] = new LeftViewInfoVo(44,"· " + item.activityName,item.icon);
+                                                                              addElement(item.activityId);
+                                                                              tmpArr.push(item.activityId);
                                                                            }
                                                                         }
                                                                         else
                                                                         {
-                                                                           leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(43,"· " + _loc13_.activityName,_loc13_.icon);
-                                                                           addElement(_loc13_.activityId);
-                                                                           _loc3_.push(_loc13_.activityId);
+                                                                           leftViewInfoDic[item.activityId] = new LeftViewInfoVo(43,"· " + item.activityName,item.icon);
+                                                                           addElement(item.activityId);
+                                                                           tmpArr.push(item.activityId);
                                                                         }
                                                                      }
                                                                      else
                                                                      {
-                                                                        leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(42,"· " + _loc13_.activityName,_loc13_.icon);
-                                                                        addElement(_loc13_.activityId);
-                                                                        _loc3_.push(_loc13_.activityId);
+                                                                        leftViewInfoDic[item.activityId] = new LeftViewInfoVo(42,"· " + item.activityName,item.icon);
+                                                                        addElement(item.activityId);
+                                                                        tmpArr.push(item.activityId);
                                                                      }
                                                                   }
                                                                   else
                                                                   {
-                                                                     ConRechargeManager.instance.giftbagArray = _loc13_.giftbagArray;
-                                                                     ConRechargeManager.instance.beginTime = _loc13_.beginShowTime;
-                                                                     ConRechargeManager.instance.endTime = _loc13_.endShowTime;
-                                                                     ConRechargeManager.instance.actId = _loc13_.activityId;
+                                                                     ConRechargeManager.instance.giftbagArray = item.giftbagArray;
+                                                                     ConRechargeManager.instance.beginTime = item.beginShowTime;
+                                                                     ConRechargeManager.instance.endTime = item.endShowTime;
+                                                                     ConRechargeManager.instance.actId = item.activityId;
                                                                      ConRechargeManager.instance.isOpen = true;
                                                                   }
                                                                }
                                                                else
                                                                {
-                                                                  leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(100,"· " + _loc13_.activityName,_loc13_.icon);
-                                                                  SignActivityMgr.instance.model.giftbagArray = _loc13_.giftbagArray;
-                                                                  SignActivityMgr.instance.model.beginTime = _loc13_.beginShowTime.split(" ")[0];
-                                                                  SignActivityMgr.instance.model.endTime = _loc13_.endShowTime.split(" ")[0];
-                                                                  SignActivityMgr.instance.model.actId = _loc13_.activityId;
+                                                                  leftViewInfoDic[item.activityId] = new LeftViewInfoVo(100,"· " + item.activityName,item.icon);
+                                                                  SignActivityMgr.instance.model.giftbagArray = item.giftbagArray;
+                                                                  SignActivityMgr.instance.model.beginTime = item.beginShowTime.split(" ")[0];
+                                                                  SignActivityMgr.instance.model.endTime = item.endShowTime.split(" ")[0];
+                                                                  SignActivityMgr.instance.model.actId = item.activityId;
                                                                   SignActivityMgr.instance.isOpen = true;
                                                                }
                                                             }
                                                             else
                                                             {
-                                                               leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(88,"· " + _loc13_.activityName,_loc13_.icon);
-                                                               RoleRechargeMgr.instance.model.giftbagArray = _loc13_.giftbagArray;
-                                                               RoleRechargeMgr.instance.model.beginTime = _loc13_.beginShowTime.split(" ")[0];
-                                                               RoleRechargeMgr.instance.model.endTime = _loc13_.endShowTime.split(" ")[0];
-                                                               RoleRechargeMgr.instance.model.actId = _loc13_.activityId;
+                                                               leftViewInfoDic[item.activityId] = new LeftViewInfoVo(88,"· " + item.activityName,item.icon);
+                                                               RoleRechargeMgr.instance.model.giftbagArray = item.giftbagArray;
+                                                               RoleRechargeMgr.instance.model.beginTime = item.beginShowTime.split(" ")[0];
+                                                               RoleRechargeMgr.instance.model.endTime = item.endShowTime.split(" ")[0];
+                                                               RoleRechargeMgr.instance.model.actId = item.activityId;
                                                                RoleRechargeMgr.instance.isOpen = true;
                                                             }
                                                          }
                                                          else
                                                          {
-                                                            rankDic[_loc13_.activityChildType] = _loc13_;
+                                                            rankDic[item.activityChildType] = item;
                                                             rankFlag = true;
-                                                            RankManager.instance.model.beginTime = _loc13_.beginTime;
-                                                            RankManager.instance.model.endTime = _loc13_.endTime;
+                                                            RankManager.instance.model.beginTime = item.beginTime;
+                                                            RankManager.instance.model.endTime = item.endTime;
                                                          }
                                                       }
-                                                      else if(_loc13_.activityChildType == 2 || _loc13_.activityChildType == 1 || _loc13_.activityChildType == 4 || _loc13_.activityChildType == 3 || _loc13_.activityChildType == 0)
+                                                      else if(item.activityChildType == 2 || item.activityChildType == 1 || item.activityChildType == 4 || item.activityChildType == 3 || item.activityChildType == 0)
                                                       {
                                                          var _loc20_:int = 0;
                                                          var _loc19_:* = leftViewInfoDic;
-                                                         for each(var _loc6_ in leftViewInfoDic)
+                                                         for each(var viewInfoVo in leftViewInfoDic)
                                                          {
-                                                            if(_loc6_.viewType == 39)
+                                                            if(viewInfoVo.viewType == 39)
                                                             {
-                                                               _loc10_ = true;
+                                                               isGiftExist = true;
                                                                break;
                                                             }
                                                          }
-                                                         if(!_loc10_)
+                                                         if(!isGiftExist)
                                                          {
-                                                            leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(39,"· " + _loc13_.activityName,_loc13_.icon);
-                                                            addElement(_loc13_.activityId);
-                                                            _existentId = _loc13_.activityId;
+                                                            leftViewInfoDic[item.activityId] = new LeftViewInfoVo(39,"· " + item.activityName,item.icon);
+                                                            addElement(item.activityId);
+                                                            _existentId = item.activityId;
                                                          }
                                                          else
                                                          {
-                                                            _mutilIdMapping[_loc13_.activityId] = _existentId;
+                                                            _mutilIdMapping[item.activityId] = _existentId;
                                                          }
-                                                         if(_loc3_.indexOf(_loc13_.activityId) == -1)
+                                                         if(tmpArr.indexOf(item.activityId) == -1)
                                                          {
-                                                            _loc3_.push(_loc13_.activityId);
+                                                            tmpArr.push(item.activityId);
                                                          }
                                                       }
                                                    }
                                                    else
                                                    {
-                                                      leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(38,"· " + _loc13_.activityName,_loc13_.icon);
-                                                      addElement(_loc13_.activityId);
-                                                      _loc3_.push(_loc13_.activityId);
+                                                      leftViewInfoDic[item.activityId] = new LeftViewInfoVo(38,"· " + item.activityName,item.icon);
+                                                      addElement(item.activityId);
+                                                      tmpArr.push(item.activityId);
                                                    }
                                                 }
                                                 else
                                                 {
-                                                   leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(37,"· " + _loc13_.activityName,_loc13_.icon);
-                                                   addElement(_loc13_.activityId);
-                                                   _loc3_.push(_loc13_.activityId);
+                                                   leftViewInfoDic[item.activityId] = new LeftViewInfoVo(37,"· " + item.activityName,item.icon);
+                                                   addElement(item.activityId);
+                                                   tmpArr.push(item.activityId);
                                                 }
                                              }
-                                             else if(_loc13_.activityChildType == 0)
+                                             else if(item.activityChildType == 0)
                                              {
-                                                leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(41,"· " + _loc13_.activityName,_loc13_.icon);
-                                                addElement(_loc13_.activityId);
-                                                _loc3_.push(_loc13_.activityId);
+                                                leftViewInfoDic[item.activityId] = new LeftViewInfoVo(41,"· " + item.activityName,item.icon);
+                                                addElement(item.activityId);
+                                                tmpArr.push(item.activityId);
                                              }
                                           }
-                                          else if(_loc13_.activityChildType == 0)
+                                          else if(item.activityChildType == 0)
                                           {
-                                             leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(24,"· " + _loc13_.activityName,_loc13_.icon);
-                                             addElement(_loc13_.activityId);
-                                             _loc3_.push(_loc13_.activityId);
+                                             leftViewInfoDic[item.activityId] = new LeftViewInfoVo(24,"· " + item.activityName,item.icon);
+                                             addElement(item.activityId);
+                                             tmpArr.push(item.activityId);
                                           }
-                                          else if(_loc13_.activityChildType == 1)
+                                          else if(item.activityChildType == 1)
                                           {
-                                             leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(25,"· " + _loc13_.activityName,_loc13_.icon);
-                                             addElement(_loc13_.activityId);
-                                             _loc3_.push(_loc13_.activityId);
+                                             leftViewInfoDic[item.activityId] = new LeftViewInfoVo(25,"· " + item.activityName,item.icon);
+                                             addElement(item.activityId);
+                                             tmpArr.push(item.activityId);
                                           }
                                        }
                                        else
                                        {
-                                          switch(int(_loc13_.activityChildType) - 1)
+                                          switch(int(item.activityChildType) - 1)
                                           {
                                              case 0:
-                                                _loc14_ = 26;
+                                                temp = 26;
                                                 break;
                                              case 1:
-                                                _loc14_ = 27;
+                                                temp = 27;
                                                 break;
                                              case 2:
-                                                _loc14_ = 28;
+                                                temp = 28;
                                                 break;
                                              case 3:
                                                 var _loc18_:int = 0;
                                                 var _loc17_:* = leftViewInfoDic;
-                                                for each(var _loc5_ in leftViewInfoDic)
+                                                for each(var leftViewInfoVo in leftViewInfoDic)
                                                 {
-                                                   if(_loc5_.viewType == 29)
+                                                   if(leftViewInfoVo.viewType == 29)
                                                    {
-                                                      _loc9_ = true;
+                                                      isRookieExist = true;
                                                       break;
                                                    }
                                                 }
-                                                if(!_loc9_)
+                                                if(!isRookieExist)
                                                 {
-                                                   _loc14_ = 29;
-                                                   _existentId = _loc13_.activityId;
+                                                   temp = 29;
+                                                   _existentId = item.activityId;
                                                 }
                                                 else
                                                 {
-                                                   _loc14_ = 0;
-                                                   _mutilIdMapping[_loc13_.activityId] = _existentId;
+                                                   temp = 0;
+                                                   _mutilIdMapping[item.activityId] = _existentId;
                                                 }
                                                 break;
                                              case 4:
-                                                _loc14_ = 30;
+                                                temp = 30;
                                                 break;
                                              case 5:
-                                                _loc14_ = 31;
+                                                temp = 31;
                                                 break;
                                              case 6:
-                                                _loc14_ = 32;
+                                                temp = 32;
                                                 break;
                                              case 7:
-                                                _loc14_ = 33;
+                                                temp = 33;
                                                 break;
                                              case 8:
-                                                _loc14_ = 34;
+                                                temp = 34;
                                                 break;
                                              case 9:
-                                                _loc14_ = 35;
+                                                temp = 35;
                                                 break;
                                              case 10:
                                              case 11:
-                                                _loc14_ = 36;
+                                                temp = 36;
                                           }
-                                          if(_loc14_ != 0)
+                                          if(temp != 0)
                                           {
-                                             leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(_loc14_,"· " + _loc13_.activityName,_loc13_.icon);
-                                             addElement(_loc13_.activityId);
+                                             leftViewInfoDic[item.activityId] = new LeftViewInfoVo(temp,"· " + item.activityName,item.icon);
+                                             addElement(item.activityId);
                                           }
-                                          if(_loc3_.indexOf(_loc13_.activityId) == -1)
+                                          if(tmpArr.indexOf(item.activityId) == -1)
                                           {
-                                             _loc3_.push(_loc13_.activityId);
+                                             tmpArr.push(item.activityId);
                                           }
                                        }
                                     }
-                                    else if(_loc13_.activityChildType == 1 || _loc13_.activityChildType == 2)
+                                    else if(item.activityChildType == 1 || item.activityChildType == 2)
                                     {
-                                       leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(22,"· " + _loc13_.activityName,_loc13_.icon);
-                                       addElement(_loc13_.activityId);
-                                       _loc3_.push(_loc13_.activityId);
+                                       leftViewInfoDic[item.activityId] = new LeftViewInfoVo(22,"· " + item.activityName,item.icon);
+                                       addElement(item.activityId);
+                                       tmpArr.push(item.activityId);
                                     }
-                                    else if(_loc13_.activityChildType == 3)
+                                    else if(item.activityChildType == 3)
                                     {
-                                       _info = _loc13_;
+                                       _info = item;
                                        if(_sendGiftFrame && activityInitData[_info.activityId] && activityInitData[_info.activityId].giftInfoDic[_info.giftbagArray[0].giftbagId].times != 0 && _sendGiftFrame.nowId == _info.activityId)
                                        {
                                           _sendGiftFrame.setBtnFalse();
                                           return;
                                        }
-                                       if(param1 == 2)
+                                       if(_type == 2)
                                        {
                                           if(PlayerManager.Instance.Self.Grade > 2 && !sendGiftIsOut && activityInitData[_info.activityId] && activityInitData[_info.activityId].giftInfoDic[_info.giftbagArray[0].giftbagId].times == 0 && !_sendGiftFrame)
                                           {
@@ -1184,155 +1174,154 @@ package wonderfulActivity
                                        }
                                     }
                                  }
-                                 else if(_loc13_.activityChildType == 2)
+                                 else if(item.activityChildType == 2)
                                  {
-                                    leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(21,"· " + _loc13_.activityName,_loc13_.icon);
-                                    addElement(_loc13_.activityId);
-                                    _loc3_.push(_loc13_.activityId);
+                                    leftViewInfoDic[item.activityId] = new LeftViewInfoVo(21,"· " + item.activityName,item.icon);
+                                    addElement(item.activityId);
+                                    tmpArr.push(item.activityId);
                                  }
                               }
-                              else if(_loc13_.activityChildType == 0)
+                              else if(item.activityChildType == 0)
                               {
-                                 exchangeActLeftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(20,"· " + _loc13_.activityName,_loc13_.icon);
-                                 addElement(_loc13_.activityId);
-                                 _loc3_.push(_loc13_.activityId);
+                                 exchangeActLeftViewInfoDic[item.activityId] = new LeftViewInfoVo(20,"· " + item.activityName,item.icon);
+                                 addElement(item.activityId);
+                                 tmpArr.push(item.activityId);
                               }
                            }
-                           else if(_loc13_.activityChildType == 0)
+                           else if(item.activityChildType == 0)
                            {
-                              leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(15,"· " + _loc13_.activityName,_loc13_.icon);
-                              addElement(_loc13_.activityId);
-                              _loc3_.push(_loc13_.activityId);
+                              leftViewInfoDic[item.activityId] = new LeftViewInfoVo(15,"· " + item.activityName,item.icon);
+                              addElement(item.activityId);
+                              tmpArr.push(item.activityId);
                            }
                         }
-                        else if(_loc13_.activityChildType == 1)
+                        else if(item.activityChildType == 1)
                         {
-                           leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(14,"· " + _loc13_.activityName,_loc13_.icon);
-                           addElement(_loc13_.activityId);
-                           _loc3_.push(_loc13_.activityId);
+                           leftViewInfoDic[item.activityId] = new LeftViewInfoVo(14,"· " + item.activityName,item.icon);
+                           addElement(item.activityId);
+                           tmpArr.push(item.activityId);
                         }
                      }
-                     else if(_loc13_.activityChildType == 0 || _loc13_.activityChildType == 1)
+                     else if(item.activityChildType == 0 || item.activityChildType == 1)
                      {
                         _loc16_ = 0;
                         var _loc15_:* = leftViewInfoDic;
-                        for each(var _loc11_ in leftViewInfoDic)
+                        for each(var leftViewInfo in leftViewInfoDic)
                         {
-                           if(_loc11_.viewType == 10)
+                           if(leftViewInfo.viewType == 10)
                            {
-                              _loc4_ = true;
+                              isHeroExist = true;
                               break;
                            }
                         }
-                        if(!_loc4_)
+                        if(!isHeroExist)
                         {
-                           leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(10,"· " + _loc13_.activityName,_loc13_.icon);
-                           addElement(_loc13_.activityId);
-                           _existentId = _loc13_.activityId;
+                           leftViewInfoDic[item.activityId] = new LeftViewInfoVo(10,"· " + item.activityName,item.icon);
+                           addElement(item.activityId);
+                           _existentId = item.activityId;
                         }
                         else
                         {
-                           _mutilIdMapping[_loc13_.activityId] = _existentId;
+                           _mutilIdMapping[item.activityId] = _existentId;
                         }
-                        if(_loc3_.indexOf(_loc13_.activityId) == -1)
+                        if(tmpArr.indexOf(item.activityId) == -1)
                         {
-                           _loc3_.push(_loc13_.activityId);
+                           tmpArr.push(item.activityId);
                         }
                      }
                   }
                   else
                   {
-                     switch(int(_loc13_.activityChildType))
+                     switch(int(item.activityChildType))
                      {
                         case 0:
-                           leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(21,"· " + _loc13_.activityName,_loc13_.icon);
-                           addElement(_loc13_.activityId);
-                           _loc3_.push(_loc13_.activityId);
+                           leftViewInfoDic[item.activityId] = new LeftViewInfoVo(21,"· " + item.activityName,item.icon);
+                           addElement(item.activityId);
+                           tmpArr.push(item.activityId);
                            break;
                         case 1:
-                           leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(19,"· " + _loc13_.activityName,_loc13_.icon);
-                           addElement(_loc13_.activityId);
-                           _loc3_.push(_loc13_.activityId);
+                           leftViewInfoDic[item.activityId] = new LeftViewInfoVo(19,"· " + item.activityName,item.icon);
+                           addElement(item.activityId);
+                           tmpArr.push(item.activityId);
                            break;
                         case 2:
-                           leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(21,"· " + _loc13_.activityName,_loc13_.icon);
-                           addElement(_loc13_.activityId);
-                           _loc3_.push(_loc13_.activityId);
+                           leftViewInfoDic[item.activityId] = new LeftViewInfoVo(21,"· " + item.activityName,item.icon);
+                           addElement(item.activityId);
+                           tmpArr.push(item.activityId);
                      }
                   }
                }
                else
                {
-                  switch(int(_loc13_.activityChildType))
+                  switch(int(item.activityChildType))
                   {
                      case 0:
                         break;
                      case 1:
-                        leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(21,"· " + _loc13_.activityName,_loc13_.icon);
-                        addElement(_loc13_.activityId);
-                        _loc3_.push(_loc13_.activityId);
+                        leftViewInfoDic[item.activityId] = new LeftViewInfoVo(21,"· " + item.activityName,item.icon);
+                        addElement(item.activityId);
+                        tmpArr.push(item.activityId);
                         break;
                      case 2:
-                        leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(17,"· " + _loc13_.activityName,_loc13_.icon);
-                        addElement(_loc13_.activityId);
-                        _loc3_.push(_loc13_.activityId);
+                        leftViewInfoDic[item.activityId] = new LeftViewInfoVo(17,"· " + item.activityName,item.icon);
+                        addElement(item.activityId);
+                        tmpArr.push(item.activityId);
                         break;
                      case 3:
-                        leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(12,"· " + _loc13_.activityName,_loc13_.icon);
-                        addElement(_loc13_.activityId);
-                        _loc3_.push(_loc13_.activityId);
+                        leftViewInfoDic[item.activityId] = new LeftViewInfoVo(12,"· " + item.activityName,item.icon);
+                        addElement(item.activityId);
+                        tmpArr.push(item.activityId);
                         break;
                      default:
-                        leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(12,"· " + _loc13_.activityName,_loc13_.icon);
-                        addElement(_loc13_.activityId);
-                        _loc3_.push(_loc13_.activityId);
+                        leftViewInfoDic[item.activityId] = new LeftViewInfoVo(12,"· " + item.activityName,item.icon);
+                        addElement(item.activityId);
+                        tmpArr.push(item.activityId);
                         break;
                      case 5:
-                        leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(9,"· " + _loc13_.activityName,_loc13_.icon);
-                        addElement(_loc13_.activityId);
-                        _loc3_.push(_loc13_.activityId);
+                        leftViewInfoDic[item.activityId] = new LeftViewInfoVo(9,"· " + item.activityName,item.icon);
+                        addElement(item.activityId);
+                        tmpArr.push(item.activityId);
                         break;
                      case 6:
-                        leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(18,"· " + _loc13_.activityName,_loc13_.icon);
-                        addElement(_loc13_.activityId);
-                        _loc3_.push(_loc13_.activityId);
+                        leftViewInfoDic[item.activityId] = new LeftViewInfoVo(18,"· " + item.activityName,item.icon);
+                        addElement(item.activityId);
+                        tmpArr.push(item.activityId);
                         break;
                      case 7:
-                        leftViewInfoDic[_loc13_.activityId] = new LeftViewInfoVo(40,"· " + _loc13_.activityName,_loc13_.icon);
-                        addElement(_loc13_.activityId);
-                        _loc3_.push(_loc13_.activityId);
+                        leftViewInfoDic[item.activityId] = new LeftViewInfoVo(40,"· " + item.activityName,item.icon);
+                        addElement(item.activityId);
+                        tmpArr.push(item.activityId);
                   }
                }
             }
          }
-         var _loc2_:int = -1;
-         _loc8_ = 0;
-         while(_loc8_ <= _loc3_.length - 1)
+         var index:int = -1;
+         for(i = 0; i <= tmpArr.length - 1; )
          {
-            _loc2_ = lastActList.indexOf(_loc3_[_loc8_]);
-            if(_loc2_ >= 0)
+            index = lastActList.indexOf(tmpArr[i]);
+            if(index >= 0)
             {
-               lastActList.splice(_loc2_,1);
+               lastActList.splice(index,1);
             }
-            _loc8_++;
+            i++;
          }
          var _loc24_:int = 0;
          var _loc23_:* = lastActList;
-         for each(var _loc7_ in lastActList)
+         for each(var type in lastActList)
          {
-            if(leftViewInfoDic[_loc7_])
+            if(leftViewInfoDic[type])
             {
-               leftViewInfoDic[_loc7_] = null;
-               delete leftViewInfoDic[_loc7_];
+               leftViewInfoDic[type] = null;
+               delete leftViewInfoDic[type];
             }
-            else if(exchangeActLeftViewInfoDic[_loc7_])
+            else if(exchangeActLeftViewInfoDic[type])
             {
-               exchangeActLeftViewInfoDic[_loc7_] = null;
-               delete exchangeActLeftViewInfoDic[_loc7_];
+               exchangeActLeftViewInfoDic[type] = null;
+               delete exchangeActLeftViewInfoDic[type];
             }
-            removeElement(_loc7_);
+            removeElement(type);
          }
-         lastActList = _loc3_;
+         lastActList = tmpArr;
          if(endRequestArr.length > 0)
          {
             addTimerFun("endRequest",endRequest);
@@ -1361,9 +1350,9 @@ package wonderfulActivity
          {
             var _loc3_:int = 0;
             var _loc2_:* = stateDic;
-            for(var _loc1_ in stateDic)
+            for(var viewType in stateDic)
             {
-               if(stateDic[_loc1_])
+               if(stateDic[viewType])
                {
                   _wonderfulIcon.setFrame(2);
                   return;
@@ -1373,17 +1362,17 @@ package wonderfulActivity
          }
       }
       
-      public function getActIdWithViewId(param1:int) : String
+      public function getActIdWithViewId(viewId:int) : String
       {
-         var _loc2_:* = null;
+         var leftViewInfo:* = null;
          var _loc5_:int = 0;
          var _loc4_:* = leftViewInfoDic;
-         for(var _loc3_ in leftViewInfoDic)
+         for(var key in leftViewInfoDic)
          {
-            _loc2_ = leftViewInfoDic[_loc3_];
-            if(_loc2_.viewType == param1)
+            leftViewInfo = leftViewInfoDic[key];
+            if(leftViewInfo.viewType == viewId)
             {
-               return _loc3_;
+               return key;
             }
          }
          return "";
@@ -1391,142 +1380,142 @@ package wonderfulActivity
       
       private function checkActState() : void
       {
-         var _loc11_:* = null;
-         var _loc119_:* = null;
-         var _loc86_:* = null;
-         var _loc69_:* = null;
-         var _loc23_:Number = NaN;
-         var _loc153_:int = 0;
-         var _loc66_:int = 0;
-         var _loc126_:int = 0;
-         var _loc46_:int = 0;
-         var _loc128_:int = 0;
-         var _loc42_:int = 0;
-         var _loc54_:int = 0;
-         var _loc134_:int = 0;
-         var _loc20_:int = 0;
-         var _loc87_:int = 0;
-         var _loc3_:int = 0;
-         var _loc157_:int = 0;
-         var _loc95_:int = 0;
-         var _loc75_:int = 0;
-         var _loc26_:int = 0;
-         var _loc125_:int = 0;
-         var _loc150_:int = 0;
-         var _loc116_:int = 0;
-         var _loc1_:int = 0;
-         var _loc135_:int = 0;
-         var _loc7_:int = 0;
-         var _loc57_:int = 0;
-         var _loc131_:int = 0;
-         var _loc144_:int = 0;
-         var _loc19_:int = 0;
-         var _loc118_:int = 0;
-         var _loc18_:int = 0;
-         var _loc67_:* = null;
-         var _loc147_:* = null;
-         var _loc91_:int = 0;
-         var _loc156_:int = 0;
-         var _loc25_:* = null;
-         var _loc60_:int = 0;
-         var _loc28_:int = 0;
-         var _loc146_:int = 0;
-         var _loc117_:int = 0;
-         var _loc70_:int = 0;
-         var _loc16_:int = 0;
-         var _loc2_:int = 0;
-         var _loc5_:int = 0;
-         var _loc49_:int = 0;
-         var _loc41_:int = 0;
-         var _loc61_:Boolean = false;
-         var _loc109_:Boolean = false;
-         var _loc132_:Boolean = false;
-         var _loc110_:int = 0;
-         var _loc102_:int = 0;
-         var _loc55_:int = 0;
-         var _loc77_:int = 0;
-         var _loc106_:int = 0;
-         var _loc136_:int = 0;
-         var _loc120_:int = 0;
-         var _loc36_:int = 0;
-         var _loc112_:int = 0;
-         var _loc24_:int = 0;
-         var _loc92_:Boolean = false;
-         var _loc123_:Boolean = false;
-         var _loc29_:Boolean = false;
-         var _loc27_:Boolean = false;
-         var _loc140_:Boolean = false;
-         var _loc43_:int = 0;
-         var _loc78_:int = 0;
-         var _loc17_:int = 0;
-         var _loc138_:int = 0;
-         var _loc48_:int = 0;
-         var _loc12_:int = 0;
-         var _loc79_:int = 0;
-         var _loc65_:int = 0;
-         var _loc93_:int = 0;
-         var _loc72_:int = 0;
-         var _loc40_:int = 0;
-         var _loc127_:Boolean = false;
-         var _loc148_:Boolean = false;
-         var _loc39_:Boolean = false;
-         var _loc21_:Boolean = false;
-         var _loc80_:Boolean = false;
-         var _loc52_:* = null;
-         var _loc130_:* = null;
-         var _loc155_:int = 0;
-         var _loc37_:int = 0;
-         var _loc13_:int = 0;
-         var _loc64_:int = 0;
-         var _loc14_:int = 0;
-         var _loc141_:int = 0;
-         var _loc154_:int = 0;
-         var _loc6_:int = 0;
-         var _loc151_:int = 0;
-         var _loc63_:* = null;
-         var _loc139_:* = null;
-         var _loc121_:int = 0;
-         var _loc85_:int = 0;
-         var _loc145_:int = 0;
-         var _loc62_:int = 0;
-         var _loc101_:int = 0;
-         var _loc84_:int = 0;
-         var _loc38_:int = 0;
-         var _loc100_:int = 0;
-         var _loc47_:int = 0;
-         var _loc31_:int = 0;
-         var _loc82_:int = 0;
-         var _loc103_:int = 0;
-         var _loc34_:int = 0;
-         var _loc35_:Boolean = false;
-         var _loc107_:int = 0;
-         var _loc81_:int = 0;
-         var _loc44_:int = 0;
-         var _loc97_:int = 0;
-         var _loc33_:int = 0;
-         var _loc108_:int = 0;
-         var _loc129_:int = 0;
-         var _loc113_:int = 0;
-         var _loc58_:int = 0;
-         var _loc89_:int = 0;
-         var _loc32_:int = 0;
-         var _loc111_:int = 0;
-         var _loc152_:int = 0;
-         var _loc53_:int = 0;
-         var _loc30_:int = 0;
+         var leftViewInfo:* = null;
+         var giftInfoDic:* = null;
+         var statusArr:* = null;
+         var item:* = null;
+         var nowTime:Number = NaN;
+         var alreadyGet:int = 0;
+         var remain:int = 0;
+         var alreadyGet2:int = 0;
+         var remain2:int = 0;
+         var alreadyGet3:int = 0;
+         var remain4:int = 0;
+         var grade:int = 0;
+         var currentGrade:int = 0;
+         var reallyHorseGrade:int = 0;
+         var i_mountGrade:int = 0;
+         var horseSkillType:int = 0;
+         var horseSkillGrade:int = 0;
+         var i_mountSkill:int = 0;
+         var skillGrade:int = 0;
+         var currentSkillGrade:int = 0;
+         var grade1:int = 0;
+         var currentGrade1:int = 0;
+         var reallyHorseGrade1:int = 0;
+         var i_mountGrade1:int = 0;
+         var currentCondtion:int = 0;
+         var carnivalMountGrade:int = 0;
+         var carnivalMountCurrentGrade:int = 0;
+         var condtion:int = 0;
+         var sumCount:int = 0;
+         var playerAlreadyGetCount:int = 0;
+         var allGiftAlreadyGetCount:int = 0;
+         var i_carnival:int = 0;
+         var rookieCurInfo:* = null;
+         var rookieItemArr:* = null;
+         var power:int = 0;
+         var rank1:int = 0;
+         var now:* = null;
+         var rookie:int = 0;
+         var fightPower:int = 0;
+         var fightPowerRankOne:int = 0;
+         var fightPowerRankTwo:int = 0;
+         var rookieSumCount:int = 0;
+         var rookieTimes:int = 0;
+         var i_rookie:int = 0;
+         var selfNeedPetNum:int = 0;
+         var personNeedPetNum:int = 0;
+         var addedNeedPetNum:int = 0;
+         var _addedIsSuperPet:Boolean = false;
+         var _personIsSuperPet:Boolean = false;
+         var _selfIsSuperPet:Boolean = false;
+         var selfNeedPetStar:int = 0;
+         var personNeedPetStar:int = 0;
+         var addedNeedPetStar:int = 0;
+         var getCount:int = 0;
+         var addedNum:int = 0;
+         var personNum:int = 0;
+         var selfNum:int = 0;
+         var wholePetTimes:int = 0;
+         var j_wholePet:int = 0;
+         var i_wholePet:int = 0;
+         var addedBoolean:Boolean = false;
+         var personBoolean:Boolean = false;
+         var selfBoolean:Boolean = false;
+         var timeBoolean:Boolean = false;
+         var canGet:Boolean = false;
+         var condition_selfGrade:int = 0;
+         var condition_personNum:int = 0;
+         var condition_addedNum:int = 0;
+         var condition_vipGd:int = 0;
+         var condition_addedVipGd:int = 0;
+         var vipGetCount:int = 0;
+         var vipAddedNum:int = 0;
+         var vipPersonNum:int = 0;
+         var vipSelfGrade:int = 0;
+         var vipTimes:int = 0;
+         var i_wholeVip:int = 0;
+         var vip_addedBoolean:Boolean = false;
+         var vip_personBoolean:Boolean = false;
+         var vip_selfBoolean:Boolean = false;
+         var vip_timeBoolean:Boolean = false;
+         var vip_canGet:Boolean = false;
+         var dailyGiftCurInfo:* = null;
+         var dailyGiftItemArr:* = null;
+         var _count:int = 0;
+         var _temId:int = 0;
+         var _getGoodsType:int = 0;
+         var _beadGrade:int = 0;
+         var _magicStoneQuality:int = 0;
+         var _actType:int = 0;
+         var dailyGiftTimes:int = 0;
+         var dailyGift:int = 0;
+         var i_dailyGift:int = 0;
+         var magicStoneInfo:* = null;
+         var beadInfo:* = null;
+         var getTimes:int = 0;
+         var condtion1:int = 0;
+         var curCondition1:int = 0;
+         var i:int = 0;
+         var getTimes1:int = 0;
+         var condtion2:int = 0;
+         var startGrage:int = 0;
+         var curGrade:int = 0;
+         var conditionGrade:int = 0;
+         var i5:int = 0;
+         var condtion3:int = 0;
+         var getTimes2:int = 0;
+         var i2:int = 0;
+         var isReceive:Boolean = false;
+         var getTimes3:int = 0;
+         var condtion4:int = 0;
+         var remain3:int = 0;
+         var condtion4Value:int = 0;
+         var i3:int = 0;
+         var getTimes4:int = 0;
+         var conIndex:int = 0;
+         var propId:int = 0;
+         var useCount:int = 0;
+         var curUseCount:int = 0;
+         var i4:int = 0;
+         var getTimes6:int = 0;
+         var condtion7:int = 0;
+         var currentCondtion7:int = 0;
+         var i6:int = 0;
          var _loc228_:int = 0;
          var _loc227_:* = leftViewInfoDic;
-         for(var _loc99_ in leftViewInfoDic)
+         for(var key in leftViewInfoDic)
          {
-            stateDic[leftViewInfoDic[_loc99_].viewType] = false;
-            if(!(!activityData[_loc99_] || !activityInitData[_loc99_]))
+            stateDic[leftViewInfoDic[key].viewType] = false;
+            if(!(!activityData[key] || !activityInitData[key]))
             {
-               _loc11_ = leftViewInfoDic[_loc99_];
-               _loc119_ = activityInitData[_loc99_].giftInfoDic;
-               _loc86_ = activityInitData[_loc99_].statusArr;
-               _loc69_ = activityData[_loc99_];
-               _loc23_ = TimeManager.Instance.Now().time;
-               var _loc160_:* = _loc11_.viewType;
+               leftViewInfo = leftViewInfoDic[key];
+               giftInfoDic = activityInitData[key].giftInfoDic;
+               statusArr = activityInitData[key].statusArr;
+               item = activityData[key];
+               nowTime = TimeManager.Instance.Now().time;
+               var _loc160_:* = leftViewInfo.viewType;
                if(16 !== _loc160_)
                {
                   if(18 !== _loc160_)
@@ -1588,34 +1577,33 @@ package wonderfulActivity
                                                                                                       if(48 === _loc160_)
                                                                                                       {
                                                                                                          var _loc226_:int = 0;
-                                                                                                         var _loc225_:* = _loc69_.giftbagArray;
-                                                                                                         for each(var _loc68_ in _loc69_.giftbagArray)
+                                                                                                         var _loc225_:* = item.giftbagArray;
+                                                                                                         for each(var giftinfo6 in item.giftbagArray)
                                                                                                          {
-                                                                                                            if(_loc119_[_loc68_.giftbagId])
+                                                                                                            if(giftInfoDic[giftinfo6.giftbagId])
                                                                                                             {
-                                                                                                               _loc111_ = _loc119_[_loc68_.giftbagId].times;
-                                                                                                               _loc30_ = 0;
-                                                                                                               while(_loc30_ < _loc68_.giftConditionArr.length)
+                                                                                                               getTimes6 = giftInfoDic[giftinfo6.giftbagId].times;
+                                                                                                               for(i6 = 0; i6 < giftinfo6.giftConditionArr.length; )
                                                                                                                {
-                                                                                                                  if(_loc68_.giftConditionArr[_loc30_].conditionIndex == 0)
+                                                                                                                  if(giftinfo6.giftConditionArr[i6].conditionIndex == 0)
                                                                                                                   {
-                                                                                                                     _loc152_ = _loc68_.giftConditionArr[_loc30_].conditionValue;
+                                                                                                                     condtion7 = giftinfo6.giftConditionArr[i6].conditionValue;
                                                                                                                   }
-                                                                                                                  _loc30_++;
+                                                                                                                  i6++;
                                                                                                                }
                                                                                                                var _loc224_:int = 0;
-                                                                                                               var _loc223_:* = _loc86_;
-                                                                                                               for each(var _loc90_ in _loc86_)
+                                                                                                               var _loc223_:* = statusArr;
+                                                                                                               for each(var info6 in statusArr)
                                                                                                                {
-                                                                                                                  if(_loc90_.statusID == _loc152_)
+                                                                                                                  if(info6.statusID == condtion7)
                                                                                                                   {
-                                                                                                                     _loc53_ = _loc90_.statusValue;
+                                                                                                                     currentCondtion7 = info6.statusValue;
                                                                                                                      break;
                                                                                                                   }
                                                                                                                }
-                                                                                                               if(_loc23_ >= Date.parse(_loc69_.beginShowTime) && _loc23_ <= Date.parse(_loc69_.endShowTime) && _loc53_ > 0 && _loc111_ == 0)
+                                                                                                               if(nowTime >= Date.parse(item.beginShowTime) && nowTime <= Date.parse(item.endShowTime) && currentCondtion7 > 0 && getTimes6 == 0)
                                                                                                                {
-                                                                                                                  stateDic[_loc11_.viewType] = true;
+                                                                                                                  stateDic[leftViewInfo.viewType] = true;
                                                                                                                   break;
                                                                                                                }
                                                                                                                continue;
@@ -1627,36 +1615,35 @@ package wonderfulActivity
                                                                                                    else
                                                                                                    {
                                                                                                       var _loc222_:int = 0;
-                                                                                                      var _loc221_:* = _loc69_.giftbagArray;
-                                                                                                      for each(var _loc71_ in _loc69_.giftbagArray)
+                                                                                                      var _loc221_:* = item.giftbagArray;
+                                                                                                      for each(var giftinfo5 in item.giftbagArray)
                                                                                                       {
-                                                                                                         if(_loc119_[_loc71_.giftbagId])
+                                                                                                         if(giftInfoDic[giftinfo5.giftbagId])
                                                                                                          {
-                                                                                                            _loc108_ = _loc119_[_loc71_.giftbagId].times;
-                                                                                                            _loc32_ = 0;
-                                                                                                            while(_loc32_ < _loc71_.giftConditionArr.length)
+                                                                                                            getTimes4 = giftInfoDic[giftinfo5.giftbagId].times;
+                                                                                                            for(i4 = 0; i4 < giftinfo5.giftConditionArr.length; )
                                                                                                             {
-                                                                                                               _loc129_ = _loc71_.giftConditionArr[_loc32_].conditionIndex;
-                                                                                                               if(_loc129_ > 50 && _loc129_ < 100)
+                                                                                                               conIndex = giftinfo5.giftConditionArr[i4].conditionIndex;
+                                                                                                               if(conIndex > 50 && conIndex < 100)
                                                                                                                {
-                                                                                                                  _loc113_ = _loc71_.giftConditionArr[_loc32_].conditionValue;
-                                                                                                                  _loc58_ = _loc71_.giftConditionArr[_loc32_].remain1;
+                                                                                                                  propId = giftinfo5.giftConditionArr[i4].conditionValue;
+                                                                                                                  useCount = giftinfo5.giftConditionArr[i4].remain1;
                                                                                                                }
-                                                                                                               _loc32_++;
+                                                                                                               i4++;
                                                                                                             }
                                                                                                             var _loc220_:int = 0;
-                                                                                                            var _loc219_:* = _loc86_;
-                                                                                                            for each(var _loc94_ in _loc86_)
+                                                                                                            var _loc219_:* = statusArr;
+                                                                                                            for each(var info5 in statusArr)
                                                                                                             {
-                                                                                                               if(_loc94_.statusID == _loc113_)
+                                                                                                               if(info5.statusID == propId)
                                                                                                                {
-                                                                                                                  _loc89_ = _loc94_.statusValue;
+                                                                                                                  curUseCount = info5.statusValue;
                                                                                                                   break;
                                                                                                                }
                                                                                                             }
-                                                                                                            if(_loc23_ >= Date.parse(_loc69_.beginShowTime) && _loc23_ <= Date.parse(_loc69_.endShowTime) && _loc89_ >= _loc58_ && _loc108_ == 0)
+                                                                                                            if(nowTime >= Date.parse(item.beginShowTime) && nowTime <= Date.parse(item.endShowTime) && curUseCount >= useCount && getTimes4 == 0)
                                                                                                             {
-                                                                                                               stateDic[_loc11_.viewType] = true;
+                                                                                                               stateDic[leftViewInfo.viewType] = true;
                                                                                                                break;
                                                                                                             }
                                                                                                             continue;
@@ -1668,34 +1655,33 @@ package wonderfulActivity
                                                                                                 else
                                                                                                 {
                                                                                                    var _loc218_:int = 0;
-                                                                                                   var _loc217_:* = _loc69_.giftbagArray;
-                                                                                                   for each(var _loc73_ in _loc69_.giftbagArray)
+                                                                                                   var _loc217_:* = item.giftbagArray;
+                                                                                                   for each(var giftinfo4 in item.giftbagArray)
                                                                                                    {
-                                                                                                      if(_loc119_[_loc73_.giftbagId])
+                                                                                                      if(giftInfoDic[giftinfo4.giftbagId])
                                                                                                       {
-                                                                                                         _loc107_ = _loc119_[_loc73_.giftbagId].times;
-                                                                                                         _loc33_ = 0;
-                                                                                                         while(_loc33_ < _loc73_.giftConditionArr.length)
+                                                                                                         getTimes3 = giftInfoDic[giftinfo4.giftbagId].times;
+                                                                                                         for(i3 = 0; i3 < giftinfo4.giftConditionArr.length; )
                                                                                                          {
-                                                                                                            if(_loc73_.giftConditionArr[_loc33_].conditionIndex == 0)
+                                                                                                            if(giftinfo4.giftConditionArr[i3].conditionIndex == 0)
                                                                                                             {
-                                                                                                               _loc81_ = _loc73_.giftConditionArr[_loc33_].conditionValue;
-                                                                                                               _loc44_ = _loc73_.giftConditionArr[_loc33_].remain1;
+                                                                                                               condtion4 = giftinfo4.giftConditionArr[i3].conditionValue;
+                                                                                                               remain3 = giftinfo4.giftConditionArr[i3].remain1;
                                                                                                             }
-                                                                                                            _loc33_++;
+                                                                                                            i3++;
                                                                                                          }
                                                                                                          var _loc216_:int = 0;
-                                                                                                         var _loc215_:* = _loc86_;
-                                                                                                         for each(var _loc96_ in _loc86_)
+                                                                                                         var _loc215_:* = statusArr;
+                                                                                                         for each(var info4 in statusArr)
                                                                                                          {
-                                                                                                            if(_loc96_.statusID == _loc81_)
+                                                                                                            if(info4.statusID == condtion4)
                                                                                                             {
-                                                                                                               _loc97_ = _loc96_.statusValue;
+                                                                                                               condtion4Value = info4.statusValue;
                                                                                                             }
                                                                                                          }
-                                                                                                         if(_loc23_ >= Date.parse(_loc69_.beginShowTime) && _loc23_ <= Date.parse(_loc69_.endShowTime) && _loc97_ >= _loc44_ && _loc107_ == 0)
+                                                                                                         if(nowTime >= Date.parse(item.beginShowTime) && nowTime <= Date.parse(item.endShowTime) && condtion4Value >= remain3 && getTimes3 == 0)
                                                                                                          {
-                                                                                                            stateDic[_loc11_.viewType] = true;
+                                                                                                            stateDic[leftViewInfo.viewType] = true;
                                                                                                             break;
                                                                                                          }
                                                                                                          continue;
@@ -1707,38 +1693,37 @@ package wonderfulActivity
                                                                                              else
                                                                                              {
                                                                                                 var _loc214_:int = 0;
-                                                                                                var _loc213_:* = _loc69_.giftbagArray;
-                                                                                                for each(var _loc74_ in _loc69_.giftbagArray)
+                                                                                                var _loc213_:* = item.giftbagArray;
+                                                                                                for each(var giftinfo2 in item.giftbagArray)
                                                                                                 {
-                                                                                                   if(_loc119_[_loc74_.giftbagId])
+                                                                                                   if(giftInfoDic[giftinfo2.giftbagId])
                                                                                                    {
-                                                                                                      _loc103_ = _loc119_[_loc74_.giftbagId].times;
-                                                                                                      _loc34_ = 0;
-                                                                                                      while(_loc34_ < _loc74_.giftConditionArr.length)
+                                                                                                      getTimes2 = giftInfoDic[giftinfo2.giftbagId].times;
+                                                                                                      for(i2 = 0; i2 < giftinfo2.giftConditionArr.length; )
                                                                                                       {
-                                                                                                         if(_loc74_.giftConditionArr[_loc34_].conditionIndex == 0)
+                                                                                                         if(giftinfo2.giftConditionArr[i2].conditionIndex == 0)
                                                                                                          {
-                                                                                                            _loc82_ = _loc74_.giftConditionArr[_loc34_].conditionValue;
+                                                                                                            condtion3 = giftinfo2.giftConditionArr[i2].conditionValue;
                                                                                                          }
-                                                                                                         _loc34_++;
+                                                                                                         i2++;
                                                                                                       }
-                                                                                                      _loc35_ = false;
+                                                                                                      isReceive = false;
                                                                                                       var _loc212_:int = 0;
-                                                                                                      var _loc211_:* = _loc86_;
-                                                                                                      for each(var _loc98_ in _loc86_)
+                                                                                                      var _loc211_:* = statusArr;
+                                                                                                      for each(var info3 in statusArr)
                                                                                                       {
-                                                                                                         if(_loc98_.statusID == _loc82_)
+                                                                                                         if(info3.statusID == condtion3)
                                                                                                          {
-                                                                                                            if(_loc98_.statusValue > 0)
+                                                                                                            if(info3.statusValue > 0)
                                                                                                             {
-                                                                                                               _loc35_ = true;
+                                                                                                               isReceive = true;
                                                                                                                break;
                                                                                                             }
                                                                                                          }
                                                                                                       }
-                                                                                                      if(_loc23_ >= Date.parse(_loc69_.beginShowTime) && _loc23_ <= Date.parse(_loc69_.endShowTime) && _loc35_ && _loc103_ == 0)
+                                                                                                      if(nowTime >= Date.parse(item.beginShowTime) && nowTime <= Date.parse(item.endShowTime) && isReceive && getTimes2 == 0)
                                                                                                       {
-                                                                                                         stateDic[_loc11_.viewType] = true;
+                                                                                                         stateDic[leftViewInfo.viewType] = true;
                                                                                                          break;
                                                                                                       }
                                                                                                       continue;
@@ -1750,37 +1735,36 @@ package wonderfulActivity
                                                                                           else
                                                                                           {
                                                                                              var _loc210_:int = 0;
-                                                                                             var _loc209_:* = _loc69_.giftbagArray;
-                                                                                             for each(var _loc76_ in _loc69_.giftbagArray)
+                                                                                             var _loc209_:* = item.giftbagArray;
+                                                                                             for each(var giftinfo1 in item.giftbagArray)
                                                                                              {
-                                                                                                if(_loc119_[_loc76_.giftbagId])
+                                                                                                if(giftInfoDic[giftinfo1.giftbagId])
                                                                                                 {
-                                                                                                   _loc101_ = _loc119_[_loc76_.giftbagId].times;
-                                                                                                   _loc31_ = 0;
-                                                                                                   while(_loc31_ < _loc76_.giftConditionArr.length)
+                                                                                                   getTimes1 = giftInfoDic[giftinfo1.giftbagId].times;
+                                                                                                   for(i5 = 0; i5 < giftinfo1.giftConditionArr.length; )
                                                                                                    {
-                                                                                                      if(_loc76_.giftConditionArr[_loc31_].conditionIndex == 0)
+                                                                                                      if(giftinfo1.giftConditionArr[i5].conditionIndex == 0)
                                                                                                       {
-                                                                                                         _loc84_ = _loc76_.giftConditionArr[_loc31_].remain1;
+                                                                                                         condtion2 = giftinfo1.giftConditionArr[i5].remain1;
                                                                                                       }
-                                                                                                      _loc31_++;
+                                                                                                      i5++;
                                                                                                    }
                                                                                                    var _loc208_:int = 0;
-                                                                                                   var _loc207_:* = _loc86_;
-                                                                                                   for each(var _loc9_ in _loc86_)
+                                                                                                   var _loc207_:* = statusArr;
+                                                                                                   for each(var info in statusArr)
                                                                                                    {
-                                                                                                      if(_loc9_.statusID == 0)
+                                                                                                      if(info.statusID == 0)
                                                                                                       {
-                                                                                                         _loc38_ = _loc9_.statusValue;
+                                                                                                         startGrage = info.statusValue;
                                                                                                       }
-                                                                                                      else if(_loc9_.statusID == 1)
+                                                                                                      else if(info.statusID == 1)
                                                                                                       {
-                                                                                                         _loc100_ = _loc9_.statusValue;
+                                                                                                         curGrade = info.statusValue;
                                                                                                       }
                                                                                                    }
-                                                                                                   if(_loc23_ >= Date.parse(_loc69_.beginShowTime) && _loc23_ <= Date.parse(_loc69_.endShowTime) && _loc38_ < _loc84_ && _loc84_ <= _loc100_ && _loc101_ == 0)
+                                                                                                   if(nowTime >= Date.parse(item.beginShowTime) && nowTime <= Date.parse(item.endShowTime) && startGrage < condtion2 && condtion2 <= curGrade && getTimes1 == 0)
                                                                                                    {
-                                                                                                      stateDic[_loc11_.viewType] = true;
+                                                                                                      stateDic[leftViewInfo.viewType] = true;
                                                                                                       break;
                                                                                                    }
                                                                                                    continue;
@@ -1791,27 +1775,26 @@ package wonderfulActivity
                                                                                           continue;
                                                                                        }
                                                                                     }
-                                                                                    addr2599:
+                                                                                    addr3245:
                                                                                     var _loc206_:int = 0;
-                                                                                    var _loc205_:* = _loc69_.giftbagArray;
-                                                                                    for each(var _loc88_ in _loc69_.giftbagArray)
+                                                                                    var _loc205_:* = item.giftbagArray;
+                                                                                    for each(var giftinfo in item.giftbagArray)
                                                                                     {
-                                                                                       if(_loc119_[_loc88_.giftbagId])
+                                                                                       if(giftInfoDic[giftinfo.giftbagId])
                                                                                        {
-                                                                                          _loc121_ = _loc119_[_loc88_.giftbagId].times;
-                                                                                          _loc62_ = 0;
-                                                                                          while(_loc62_ < _loc88_.giftConditionArr.length)
+                                                                                          getTimes = giftInfoDic[giftinfo.giftbagId].times;
+                                                                                          for(i = 0; i < giftinfo.giftConditionArr.length; )
                                                                                           {
-                                                                                             if(_loc88_.giftConditionArr[_loc62_].conditionIndex == 0)
+                                                                                             if(giftinfo.giftConditionArr[i].conditionIndex == 0)
                                                                                              {
-                                                                                                _loc85_ = _loc88_.giftConditionArr[_loc62_].conditionValue;
+                                                                                                condtion1 = giftinfo.giftConditionArr[i].conditionValue;
                                                                                              }
-                                                                                             _loc62_++;
+                                                                                             i++;
                                                                                           }
-                                                                                          _loc145_ = _loc86_[0].statusValue;
-                                                                                          if(_loc23_ >= Date.parse(_loc69_.beginShowTime) && _loc23_ <= Date.parse(_loc69_.endShowTime) && _loc121_ == 0 && _loc145_ >= _loc85_)
+                                                                                          curCondition1 = statusArr[0].statusValue;
+                                                                                          if(nowTime >= Date.parse(item.beginShowTime) && nowTime <= Date.parse(item.endShowTime) && getTimes == 0 && curCondition1 >= condtion1)
                                                                                           {
-                                                                                             stateDic[_loc11_.viewType] = true;
+                                                                                             stateDic[leftViewInfo.viewType] = true;
                                                                                              break;
                                                                                           }
                                                                                           continue;
@@ -1820,123 +1803,121 @@ package wonderfulActivity
                                                                                     }
                                                                                     continue;
                                                                                  }
-                                                                                 §§goto(addr2599);
+                                                                                 §§goto(addr3245);
                                                                               }
                                                                               else
                                                                               {
-                                                                                 _loc130_ = [];
+                                                                                 dailyGiftItemArr = [];
                                                                                  var _loc200_:int = 0;
                                                                                  var _loc199_:* = activityData;
-                                                                                 for each(var _loc59_ in activityData)
+                                                                                 for each(var item_dailyGift in activityData)
                                                                                  {
-                                                                                    if(_loc59_.activityType == 18)
+                                                                                    if(item_dailyGift.activityType == 18)
                                                                                     {
-                                                                                       _loc130_.push(_loc59_);
+                                                                                       dailyGiftItemArr.push(item_dailyGift);
                                                                                     }
                                                                                  }
-                                                                                 _loc155_ = 0;
-                                                                                 _loc37_ = 0;
-                                                                                 _loc13_ = 0;
-                                                                                 _loc64_ = 0;
-                                                                                 _loc14_ = 0;
-                                                                                 _loc6_ = 0;
-                                                                                 while(_loc6_ < _loc130_.length)
+                                                                                 _count = 0;
+                                                                                 _temId = 0;
+                                                                                 _getGoodsType = 0;
+                                                                                 _beadGrade = 0;
+                                                                                 _magicStoneQuality = 0;
+                                                                                 for(dailyGift = 0; dailyGift < dailyGiftItemArr.length; )
                                                                                  {
                                                                                     var _loc204_:int = 0;
-                                                                                    var _loc203_:* = _loc130_[_loc6_].giftbagArray;
-                                                                                    for each(var _loc122_ in _loc130_[_loc6_].giftbagArray)
+                                                                                    var _loc203_:* = dailyGiftItemArr[dailyGift].giftbagArray;
+                                                                                    for each(var giftInfo_dailyGift in dailyGiftItemArr[dailyGift].giftbagArray)
                                                                                     {
-                                                                                       if(activityInitData[_loc130_[_loc6_].activityId].giftInfoDic[_loc122_.giftbagId])
+                                                                                       if(activityInitData[dailyGiftItemArr[dailyGift].activityId].giftInfoDic[giftInfo_dailyGift.giftbagId])
                                                                                        {
-                                                                                          _loc52_ = activityInitData[_loc130_[_loc6_].activityId].giftInfoDic[_loc122_.giftbagId];
-                                                                                          if(_loc122_.rewardMark != 100)
+                                                                                          dailyGiftCurInfo = activityInitData[dailyGiftItemArr[dailyGift].activityId].giftInfoDic[giftInfo_dailyGift.giftbagId];
+                                                                                          if(giftInfo_dailyGift.rewardMark != 100)
                                                                                           {
-                                                                                             _loc154_ = _loc52_.times;
-                                                                                             _loc151_ = 0;
-                                                                                             while(_loc151_ < _loc122_.giftConditionArr.length)
+                                                                                             dailyGiftTimes = dailyGiftCurInfo.times;
+                                                                                             for(i_dailyGift = 0; i_dailyGift < giftInfo_dailyGift.giftConditionArr.length; )
                                                                                              {
-                                                                                                if(_loc122_.giftConditionArr[_loc151_].conditionIndex == 0)
+                                                                                                if(giftInfo_dailyGift.giftConditionArr[i_dailyGift].conditionIndex == 0)
                                                                                                 {
-                                                                                                   _loc141_ = 1;
+                                                                                                   _actType = 1;
                                                                                                 }
-                                                                                                else if(_loc122_.giftConditionArr[_loc151_].conditionIndex == 1)
+                                                                                                else if(giftInfo_dailyGift.giftConditionArr[i_dailyGift].conditionIndex == 1)
                                                                                                 {
-                                                                                                   _loc141_ = 2;
-                                                                                                   _loc155_ = _loc122_.giftConditionArr[_loc151_].remain1;
-                                                                                                   _loc13_ = _loc122_.giftConditionArr[_loc151_].remain2;
-                                                                                                   if(_loc13_ == 2)
+                                                                                                   _actType = 2;
+                                                                                                   _count = giftInfo_dailyGift.giftConditionArr[i_dailyGift].remain1;
+                                                                                                   _getGoodsType = giftInfo_dailyGift.giftConditionArr[i_dailyGift].remain2;
+                                                                                                   if(_getGoodsType == 2)
                                                                                                    {
-                                                                                                      _loc64_ = _loc122_.giftConditionArr[_loc151_].conditionValue;
+                                                                                                      _beadGrade = giftInfo_dailyGift.giftConditionArr[i_dailyGift].conditionValue;
                                                                                                    }
                                                                                                    else
                                                                                                    {
-                                                                                                      _loc14_ = _loc122_.giftConditionArr[_loc151_].conditionValue;
+                                                                                                      _magicStoneQuality = giftInfo_dailyGift.giftConditionArr[i_dailyGift].conditionValue;
                                                                                                    }
                                                                                                 }
-                                                                                                else if(_loc122_.giftConditionArr[_loc151_].conditionIndex == 2)
+                                                                                                else if(giftInfo_dailyGift.giftConditionArr[i_dailyGift].conditionIndex == 2)
                                                                                                 {
-                                                                                                   _loc141_ = 3;
+                                                                                                   _actType = 3;
                                                                                                 }
-                                                                                                else if(_loc122_.giftConditionArr[_loc151_].conditionIndex != 3)
+                                                                                                else if(giftInfo_dailyGift.giftConditionArr[i_dailyGift].conditionIndex != 3)
                                                                                                 {
-                                                                                                   if(_loc122_.giftConditionArr[_loc151_].conditionIndex > 50 && _loc122_.giftConditionArr[_loc151_].conditionIndex < 100)
+                                                                                                   if(giftInfo_dailyGift.giftConditionArr[i_dailyGift].conditionIndex > 50 && giftInfo_dailyGift.giftConditionArr[i_dailyGift].conditionIndex < 100)
                                                                                                    {
-                                                                                                      _loc37_ = _loc122_.giftConditionArr[_loc151_].conditionValue;
-                                                                                                      _loc155_ = _loc122_.giftConditionArr[_loc151_].remain1;
+                                                                                                      _temId = giftInfo_dailyGift.giftConditionArr[i_dailyGift].conditionValue;
+                                                                                                      _count = giftInfo_dailyGift.giftConditionArr[i_dailyGift].remain1;
                                                                                                    }
                                                                                                 }
-                                                                                                _loc151_++;
+                                                                                                i_dailyGift++;
                                                                                              }
                                                                                              var _loc202_:int = 0;
-                                                                                             var _loc201_:* = activityInitData[_loc130_[_loc6_].activityId].statusArr;
-                                                                                             for each(var _loc124_ in activityInitData[_loc130_[_loc6_].activityId].statusArr)
+                                                                                             var _loc201_:* = activityInitData[dailyGiftItemArr[dailyGift].activityId].statusArr;
+                                                                                             for each(var info_dailyGift in activityInitData[dailyGiftItemArr[dailyGift].activityId].statusArr)
                                                                                              {
-                                                                                                if(_loc141_ == 1 || _loc141_ == 3)
+                                                                                                if(_actType == 1 || _actType == 3)
                                                                                                 {
-                                                                                                   if(_loc124_.statusID == _loc37_)
+                                                                                                   if(info_dailyGift.statusID == _temId)
                                                                                                    {
-                                                                                                      if(_loc23_ >= Date.parse(_loc69_.beginShowTime) && _loc23_ <= Date.parse(_loc69_.endShowTime) && _loc154_ == 0 && _loc124_.statusValue >= _loc155_)
+                                                                                                      if(nowTime >= Date.parse(item.beginShowTime) && nowTime <= Date.parse(item.endShowTime) && dailyGiftTimes == 0 && info_dailyGift.statusValue >= _count)
                                                                                                       {
-                                                                                                         stateDic[_loc11_.viewType] = true;
+                                                                                                         stateDic[leftViewInfo.viewType] = true;
                                                                                                          break;
                                                                                                       }
                                                                                                    }
                                                                                                 }
-                                                                                                else if(_loc13_ == 3)
+                                                                                                else if(_getGoodsType == 3)
                                                                                                 {
-                                                                                                   if(_loc124_.statusID == _loc14_)
+                                                                                                   if(info_dailyGift.statusID == _magicStoneQuality)
                                                                                                    {
-                                                                                                      _loc63_ = _loc124_;
+                                                                                                      magicStoneInfo = info_dailyGift;
                                                                                                    }
                                                                                                 }
-                                                                                                else if(_loc13_ == 2)
+                                                                                                else if(_getGoodsType == 2)
                                                                                                 {
-                                                                                                   if(_loc124_.statusID == _loc64_)
+                                                                                                   if(info_dailyGift.statusID == _beadGrade)
                                                                                                    {
-                                                                                                      _loc139_ = _loc124_;
+                                                                                                      beadInfo = info_dailyGift;
                                                                                                    }
                                                                                                 }
-                                                                                                else if(_loc23_ >= Date.parse(_loc69_.beginShowTime) && _loc23_ <= Date.parse(_loc69_.endShowTime) && _loc154_ == 0 && _loc124_.statusValue >= _loc155_)
+                                                                                                else if(nowTime >= Date.parse(item.beginShowTime) && nowTime <= Date.parse(item.endShowTime) && dailyGiftTimes == 0 && info_dailyGift.statusValue >= _count)
                                                                                                 {
-                                                                                                   stateDic[_loc11_.viewType] = true;
+                                                                                                   stateDic[leftViewInfo.viewType] = true;
                                                                                                    break;
                                                                                                 }
                                                                                              }
-                                                                                             if(_loc141_ == 2)
+                                                                                             if(_actType == 2)
                                                                                              {
-                                                                                                if(_loc13_ == 3)
+                                                                                                if(_getGoodsType == 3)
                                                                                                 {
-                                                                                                   if(_loc23_ >= Date.parse(_loc69_.beginShowTime) && _loc23_ <= Date.parse(_loc69_.endShowTime) && _loc63_?_loc154_ == 0 && _loc63_.statusValue >= _loc155_:false)
+                                                                                                   if(nowTime >= Date.parse(item.beginShowTime) && nowTime <= Date.parse(item.endShowTime) && magicStoneInfo?dailyGiftTimes == 0 && magicStoneInfo.statusValue >= _count:false)
                                                                                                    {
-                                                                                                      stateDic[_loc11_.viewType] = true;
+                                                                                                      stateDic[leftViewInfo.viewType] = true;
                                                                                                       break;
                                                                                                    }
                                                                                                 }
-                                                                                                else if(_loc13_ == 2)
+                                                                                                else if(_getGoodsType == 2)
                                                                                                 {
-                                                                                                   if(_loc23_ >= Date.parse(_loc69_.beginShowTime) && _loc23_ <= Date.parse(_loc69_.endShowTime) && _loc139_?_loc154_ == 0 && _loc139_.statusValue >= _loc155_:false)
+                                                                                                   if(nowTime >= Date.parse(item.beginShowTime) && nowTime <= Date.parse(item.endShowTime) && beadInfo?dailyGiftTimes == 0 && beadInfo.statusValue >= _count:false)
                                                                                                    {
-                                                                                                      stateDic[_loc11_.viewType] = true;
+                                                                                                      stateDic[leftViewInfo.viewType] = true;
                                                                                                       break;
                                                                                                    }
                                                                                                 }
@@ -1946,7 +1927,7 @@ package wonderfulActivity
                                                                                        }
                                                                                        break;
                                                                                     }
-                                                                                    _loc6_++;
+                                                                                    dailyGift++;
                                                                                  }
                                                                                  continue;
                                                                               }
@@ -1955,84 +1936,83 @@ package wonderfulActivity
                                                                            {
                                                                               if(PlayerManager.Instance.Self.snapVip)
                                                                               {
-                                                                                 stateDic[_loc11_.viewType] = false;
+                                                                                 stateDic[leftViewInfo.viewType] = false;
                                                                               }
                                                                               else
                                                                               {
                                                                                  var _loc198_:int = 0;
-                                                                                 var _loc197_:* = _loc69_.giftbagArray;
-                                                                                 for each(var _loc4_ in _loc69_.giftbagArray)
+                                                                                 var _loc197_:* = item.giftbagArray;
+                                                                                 for each(var giftInfo_wholeVip in item.giftbagArray)
                                                                                  {
-                                                                                    if(_loc119_[_loc4_.giftbagId])
+                                                                                    if(giftInfoDic[giftInfo_wholeVip.giftbagId])
                                                                                     {
-                                                                                       if(_loc4_.rewardMark != 100)
+                                                                                       if(giftInfo_wholeVip.rewardMark != 100)
                                                                                        {
-                                                                                          _loc43_ = -1;
-                                                                                          _loc78_ = -1;
-                                                                                          _loc17_ = -1;
-                                                                                          _loc138_ = 0;
-                                                                                          _loc48_ = 0;
-                                                                                          _loc12_ = 0;
-                                                                                          _loc79_ = 0;
-                                                                                          _loc65_ = 0;
-                                                                                          _loc93_ = 0;
-                                                                                          _loc72_ = _loc119_[_loc4_.giftbagId].times;
-                                                                                          _loc40_ = 0;
-                                                                                          while(_loc40_ < _loc4_.giftConditionArr.length)
+                                                                                          condition_selfGrade = -1;
+                                                                                          condition_personNum = -1;
+                                                                                          condition_addedNum = -1;
+                                                                                          condition_vipGd = 0;
+                                                                                          condition_addedVipGd = 0;
+                                                                                          vipGetCount = 0;
+                                                                                          vipAddedNum = 0;
+                                                                                          vipPersonNum = 0;
+                                                                                          vipSelfGrade = 0;
+                                                                                          vipTimes = giftInfoDic[giftInfo_wholeVip.giftbagId].times;
+                                                                                          for(i_wholeVip = 0; i_wholeVip < giftInfo_wholeVip.giftConditionArr.length; )
                                                                                           {
-                                                                                             if(_loc4_.giftConditionArr[_loc40_].conditionIndex == 0)
+                                                                                             if(giftInfo_wholeVip.giftConditionArr[i_wholeVip].conditionIndex == 0)
                                                                                              {
-                                                                                                _loc43_ = _loc4_.giftConditionArr[_loc40_].conditionValue;
+                                                                                                condition_selfGrade = giftInfo_wholeVip.giftConditionArr[i_wholeVip].conditionValue;
                                                                                              }
-                                                                                             else if(_loc4_.giftConditionArr[_loc40_].conditionIndex == 1)
+                                                                                             else if(giftInfo_wholeVip.giftConditionArr[i_wholeVip].conditionIndex == 1)
                                                                                              {
-                                                                                                _loc138_ = _loc4_.giftConditionArr[_loc40_].conditionValue;
-                                                                                                _loc78_ = _loc4_.giftConditionArr[_loc40_].remain1;
+                                                                                                condition_vipGd = giftInfo_wholeVip.giftConditionArr[i_wholeVip].conditionValue;
+                                                                                                condition_personNum = giftInfo_wholeVip.giftConditionArr[i_wholeVip].remain1;
                                                                                              }
-                                                                                             else if(_loc4_.giftConditionArr[_loc40_].conditionIndex == 2)
+                                                                                             else if(giftInfo_wholeVip.giftConditionArr[i_wholeVip].conditionIndex == 2)
                                                                                              {
-                                                                                                _loc48_ = _loc4_.giftConditionArr[_loc40_].conditionValue;
-                                                                                                _loc17_ = _loc4_.giftConditionArr[_loc40_].remain1;
+                                                                                                condition_addedVipGd = giftInfo_wholeVip.giftConditionArr[i_wholeVip].conditionValue;
+                                                                                                condition_addedNum = giftInfo_wholeVip.giftConditionArr[i_wholeVip].remain1;
                                                                                              }
-                                                                                             else if(_loc4_.giftConditionArr[_loc40_].conditionIndex == 3)
+                                                                                             else if(giftInfo_wholeVip.giftConditionArr[i_wholeVip].conditionIndex == 3)
                                                                                              {
-                                                                                                _loc12_ = _loc4_.giftConditionArr[_loc40_].conditionValue;
+                                                                                                vipGetCount = giftInfo_wholeVip.giftConditionArr[i_wholeVip].conditionValue;
                                                                                              }
-                                                                                             _loc40_++;
+                                                                                             i_wholeVip++;
                                                                                           }
                                                                                           var _loc196_:int = 0;
-                                                                                          var _loc195_:* = _loc86_;
-                                                                                          for each(var _loc149_ in _loc86_)
+                                                                                          var _loc195_:* = statusArr;
+                                                                                          for each(var info_wholeVip in statusArr)
                                                                                           {
-                                                                                             if(_loc149_.statusID == 0)
+                                                                                             if(info_wholeVip.statusID == 0)
                                                                                              {
-                                                                                                _loc93_ = _loc149_.statusValue;
+                                                                                                vipSelfGrade = info_wholeVip.statusValue;
                                                                                              }
-                                                                                             else if(_loc149_.statusID == _loc138_)
+                                                                                             else if(info_wholeVip.statusID == condition_vipGd)
                                                                                              {
-                                                                                                _loc65_ = _loc149_.statusValue;
+                                                                                                vipPersonNum = info_wholeVip.statusValue;
                                                                                              }
-                                                                                             else if(_loc149_.statusID == _loc48_)
+                                                                                             else if(info_wholeVip.statusID == condition_addedVipGd)
                                                                                              {
-                                                                                                _loc79_ = _loc149_.statusValue;
+                                                                                                vipAddedNum = info_wholeVip.statusValue;
                                                                                              }
                                                                                           }
-                                                                                          _loc127_ = _loc17_ != -1?int(_loc79_ / _loc17_) > _loc72_:true;
-                                                                                          _loc148_ = _loc78_ != -1?_loc65_ >= _loc78_:true;
-                                                                                          _loc39_ = _loc43_ != -1?_loc93_ >= _loc43_:true;
-                                                                                          _loc21_ = _loc12_ == 0?true:_loc72_ < _loc12_;
-                                                                                          _loc80_ = _loc23_ >= Date.parse(_loc69_.beginShowTime) && _loc23_ <= Date.parse(_loc69_.endShowTime) && _loc127_ && _loc148_ && _loc39_ && _loc21_;
-                                                                                          if(_loc17_ != -1)
+                                                                                          vip_addedBoolean = condition_addedNum != -1?int(vipAddedNum / condition_addedNum) > vipTimes:true;
+                                                                                          vip_personBoolean = condition_personNum != -1?vipPersonNum >= condition_personNum:true;
+                                                                                          vip_selfBoolean = condition_selfGrade != -1?vipSelfGrade >= condition_selfGrade:true;
+                                                                                          vip_timeBoolean = vipGetCount == 0?true:vipTimes < vipGetCount;
+                                                                                          vip_canGet = nowTime >= Date.parse(item.beginShowTime) && nowTime <= Date.parse(item.endShowTime) && vip_addedBoolean && vip_personBoolean && vip_selfBoolean && vip_timeBoolean;
+                                                                                          if(condition_addedNum != -1)
                                                                                           {
-                                                                                             if(_loc80_ && int(_loc79_ / _loc17_) - _loc72_ >= 1)
+                                                                                             if(vip_canGet && int(vipAddedNum / condition_addedNum) - vipTimes >= 1)
                                                                                              {
-                                                                                                stateDic[_loc11_.viewType] = true;
+                                                                                                stateDic[leftViewInfo.viewType] = true;
                                                                                                 break;
                                                                                              }
                                                                                           }
-                                                                                          else if(_loc80_ && _loc72_ == 0)
+                                                                                          else if(vip_canGet && vipTimes == 0)
                                                                                           {
-                                                                                             stateDic[_loc11_.viewType] = true;
+                                                                                             stateDic[leftViewInfo.viewType] = true;
                                                                                              break;
                                                                                           }
                                                                                        }
@@ -2047,101 +2027,99 @@ package wonderfulActivity
                                                                         else
                                                                         {
                                                                            var _loc194_:int = 0;
-                                                                           var _loc193_:* = _loc69_.giftbagArray;
-                                                                           for each(var _loc137_ in _loc69_.giftbagArray)
+                                                                           var _loc193_:* = item.giftbagArray;
+                                                                           for each(var giftInfo_wholePet in item.giftbagArray)
                                                                            {
-                                                                              if(_loc119_[_loc137_.giftbagId])
+                                                                              if(giftInfoDic[giftInfo_wholePet.giftbagId])
                                                                               {
-                                                                                 if(_loc137_.rewardMark != 100)
+                                                                                 if(giftInfo_wholePet.rewardMark != 100)
                                                                                  {
-                                                                                    _loc5_ = -1;
-                                                                                    _loc49_ = -1;
-                                                                                    _loc41_ = -1;
-                                                                                    _loc61_ = false;
-                                                                                    _loc109_ = false;
-                                                                                    _loc132_ = false;
-                                                                                    _loc110_ = 0;
-                                                                                    _loc102_ = 0;
-                                                                                    _loc55_ = 0;
-                                                                                    _loc77_ = 0;
-                                                                                    _loc106_ = 0;
-                                                                                    _loc136_ = 0;
-                                                                                    _loc120_ = 0;
-                                                                                    _loc36_ = _loc119_[_loc137_.giftbagId].times;
-                                                                                    _loc112_ = 0;
-                                                                                    while(_loc112_ < _loc137_.giftConditionArr.length)
+                                                                                    selfNeedPetNum = -1;
+                                                                                    personNeedPetNum = -1;
+                                                                                    addedNeedPetNum = -1;
+                                                                                    _addedIsSuperPet = false;
+                                                                                    _personIsSuperPet = false;
+                                                                                    _selfIsSuperPet = false;
+                                                                                    selfNeedPetStar = 0;
+                                                                                    personNeedPetStar = 0;
+                                                                                    addedNeedPetStar = 0;
+                                                                                    getCount = 0;
+                                                                                    addedNum = 0;
+                                                                                    personNum = 0;
+                                                                                    selfNum = 0;
+                                                                                    wholePetTimes = giftInfoDic[giftInfo_wholePet.giftbagId].times;
+                                                                                    for(j_wholePet = 0; j_wholePet < giftInfo_wholePet.giftConditionArr.length; )
                                                                                     {
-                                                                                       if(_loc137_.giftConditionArr[_loc112_].conditionIndex == 4)
+                                                                                       if(giftInfo_wholePet.giftConditionArr[j_wholePet].conditionIndex == 4)
                                                                                        {
-                                                                                          _loc132_ = true;
+                                                                                          _selfIsSuperPet = true;
                                                                                        }
-                                                                                       else if(_loc137_.giftConditionArr[_loc112_].conditionIndex == 5)
+                                                                                       else if(giftInfo_wholePet.giftConditionArr[j_wholePet].conditionIndex == 5)
                                                                                        {
-                                                                                          _loc109_ = true;
+                                                                                          _personIsSuperPet = true;
                                                                                        }
-                                                                                       else if(_loc137_.giftConditionArr[_loc112_].conditionIndex == 6)
+                                                                                       else if(giftInfo_wholePet.giftConditionArr[j_wholePet].conditionIndex == 6)
                                                                                        {
-                                                                                          _loc61_ = true;
+                                                                                          _addedIsSuperPet = true;
                                                                                        }
-                                                                                       _loc112_++;
+                                                                                       j_wholePet++;
                                                                                     }
-                                                                                    _loc24_ = 0;
-                                                                                    while(_loc24_ < _loc137_.giftConditionArr.length)
+                                                                                    for(i_wholePet = 0; i_wholePet < giftInfo_wholePet.giftConditionArr.length; )
                                                                                     {
-                                                                                       if(_loc137_.giftConditionArr[_loc24_].conditionIndex == (!!_loc132_?4:0))
+                                                                                       if(giftInfo_wholePet.giftConditionArr[i_wholePet].conditionIndex == (!!_selfIsSuperPet?4:0))
                                                                                        {
-                                                                                          _loc110_ = _loc137_.giftConditionArr[_loc24_].conditionValue;
-                                                                                          _loc5_ = _loc137_.giftConditionArr[_loc24_].remain1;
+                                                                                          selfNeedPetStar = giftInfo_wholePet.giftConditionArr[i_wholePet].conditionValue;
+                                                                                          selfNeedPetNum = giftInfo_wholePet.giftConditionArr[i_wholePet].remain1;
                                                                                        }
-                                                                                       else if(_loc137_.giftConditionArr[_loc24_].conditionIndex == (!!_loc109_?5:1))
+                                                                                       else if(giftInfo_wholePet.giftConditionArr[i_wholePet].conditionIndex == (!!_personIsSuperPet?5:1))
                                                                                        {
-                                                                                          _loc102_ = _loc137_.giftConditionArr[_loc24_].conditionValue;
-                                                                                          _loc49_ = _loc137_.giftConditionArr[_loc24_].remain1;
+                                                                                          personNeedPetStar = giftInfo_wholePet.giftConditionArr[i_wholePet].conditionValue;
+                                                                                          personNeedPetNum = giftInfo_wholePet.giftConditionArr[i_wholePet].remain1;
                                                                                        }
-                                                                                       else if(_loc137_.giftConditionArr[_loc24_].conditionIndex == (!!_loc61_?6:2))
+                                                                                       else if(giftInfo_wholePet.giftConditionArr[i_wholePet].conditionIndex == (!!_addedIsSuperPet?6:2))
                                                                                        {
-                                                                                          _loc55_ = _loc137_.giftConditionArr[_loc24_].conditionValue;
-                                                                                          _loc41_ = _loc137_.giftConditionArr[_loc24_].remain1;
+                                                                                          addedNeedPetStar = giftInfo_wholePet.giftConditionArr[i_wholePet].conditionValue;
+                                                                                          addedNeedPetNum = giftInfo_wholePet.giftConditionArr[i_wholePet].remain1;
                                                                                        }
-                                                                                       else if(_loc137_.giftConditionArr[_loc24_].conditionIndex == 3)
+                                                                                       else if(giftInfo_wholePet.giftConditionArr[i_wholePet].conditionIndex == 3)
                                                                                        {
-                                                                                          _loc77_ = _loc137_.giftConditionArr[_loc24_].conditionValue;
+                                                                                          getCount = giftInfo_wholePet.giftConditionArr[i_wholePet].conditionValue;
                                                                                        }
-                                                                                       _loc24_++;
+                                                                                       i_wholePet++;
                                                                                     }
                                                                                     var _loc192_:int = 0;
-                                                                                    var _loc191_:* = _loc86_;
-                                                                                    for each(var _loc158_ in _loc86_)
+                                                                                    var _loc191_:* = statusArr;
+                                                                                    for each(var info_wholePet in statusArr)
                                                                                     {
-                                                                                       if(_loc158_.statusID >= _loc110_ + (!!_loc132_?200:0) && _loc158_.statusID < 50 + (!!_loc132_?200:0))
+                                                                                       if(info_wholePet.statusID >= selfNeedPetStar + (!!_selfIsSuperPet?200:0) && info_wholePet.statusID < 50 + (!!_selfIsSuperPet?200:0))
                                                                                        {
-                                                                                          _loc120_ = _loc120_ + _loc158_.statusValue;
+                                                                                          selfNum = selfNum + info_wholePet.statusValue;
                                                                                        }
-                                                                                       else if(_loc158_.statusID == _loc102_ + (!!_loc109_?300:100))
+                                                                                       else if(info_wholePet.statusID == personNeedPetStar + (!!_personIsSuperPet?300:100))
                                                                                        {
-                                                                                          _loc136_ = _loc158_.statusValue;
+                                                                                          personNum = info_wholePet.statusValue;
                                                                                        }
-                                                                                       else if(_loc158_.statusID == _loc55_ + (!!_loc61_?300:100))
+                                                                                       else if(info_wholePet.statusID == addedNeedPetStar + (!!_addedIsSuperPet?300:100))
                                                                                        {
-                                                                                          _loc106_ = _loc158_.statusValue;
+                                                                                          addedNum = info_wholePet.statusValue;
                                                                                        }
                                                                                     }
-                                                                                    _loc92_ = _loc41_ != -1?int(_loc106_ / _loc41_) > _loc36_:true;
-                                                                                    _loc123_ = _loc49_ != -1?_loc136_ >= _loc49_:true;
-                                                                                    _loc29_ = _loc5_ != -1?_loc120_ >= _loc5_:true;
-                                                                                    _loc27_ = _loc77_ == 0?true:_loc36_ < _loc77_;
-                                                                                    _loc140_ = _loc23_ >= Date.parse(_loc69_.beginShowTime) && _loc23_ <= Date.parse(_loc69_.endShowTime) && _loc92_ && _loc123_ && _loc29_ && _loc27_;
-                                                                                    if(_loc41_ != -1)
+                                                                                    addedBoolean = addedNeedPetNum != -1?int(addedNum / addedNeedPetNum) > wholePetTimes:true;
+                                                                                    personBoolean = personNeedPetNum != -1?personNum >= personNeedPetNum:true;
+                                                                                    selfBoolean = selfNeedPetNum != -1?selfNum >= selfNeedPetNum:true;
+                                                                                    timeBoolean = getCount == 0?true:wholePetTimes < getCount;
+                                                                                    canGet = nowTime >= Date.parse(item.beginShowTime) && nowTime <= Date.parse(item.endShowTime) && addedBoolean && personBoolean && selfBoolean && timeBoolean;
+                                                                                    if(addedNeedPetNum != -1)
                                                                                     {
-                                                                                       if(_loc140_ && int(_loc106_ / _loc41_) - _loc36_ >= 1)
+                                                                                       if(canGet && int(addedNum / addedNeedPetNum) - wholePetTimes >= 1)
                                                                                        {
-                                                                                          stateDic[_loc11_.viewType] = true;
+                                                                                          stateDic[leftViewInfo.viewType] = true;
                                                                                           break;
                                                                                        }
                                                                                     }
-                                                                                    else if(_loc140_ && _loc36_ == 0)
+                                                                                    else if(canGet && wholePetTimes == 0)
                                                                                     {
-                                                                                       stateDic[_loc11_.viewType] = true;
+                                                                                       stateDic[leftViewInfo.viewType] = true;
                                                                                        break;
                                                                                     }
                                                                                  }
@@ -2154,80 +2132,78 @@ package wonderfulActivity
                                                                      }
                                                                      else
                                                                      {
-                                                                        _loc147_ = [];
+                                                                        rookieItemArr = [];
                                                                         var _loc186_:int = 0;
                                                                         var _loc185_:* = activityData;
-                                                                        for each(var _loc104_ in activityData)
+                                                                        for each(var item_rookie in activityData)
                                                                         {
-                                                                           if(_loc104_.activityType == 15 && (_loc104_.activityChildType == 4 || _loc104_.activityChildType == 12))
+                                                                           if(item_rookie.activityType == 15 && (item_rookie.activityChildType == 4 || item_rookie.activityChildType == 12))
                                                                            {
-                                                                              _loc147_.push(_loc104_);
+                                                                              rookieItemArr.push(item_rookie);
                                                                            }
                                                                         }
-                                                                        _loc91_ = 0;
-                                                                        _loc156_ = 0;
+                                                                        power = 0;
+                                                                        rank1 = 0;
                                                                         var _loc188_:int = 0;
-                                                                        var _loc187_:* = _loc86_;
-                                                                        for each(var _loc15_ in _loc86_)
+                                                                        var _loc187_:* = statusArr;
+                                                                        for each(var info_rookie in statusArr)
                                                                         {
-                                                                           if(_loc15_.statusID == 0)
+                                                                           if(info_rookie.statusID == 0)
                                                                            {
-                                                                              _loc91_ = _loc15_.statusValue;
+                                                                              power = info_rookie.statusValue;
                                                                            }
                                                                            else
                                                                            {
-                                                                              _loc156_ = _loc15_.statusValue;
+                                                                              rank1 = info_rookie.statusValue;
                                                                            }
                                                                         }
-                                                                        _loc25_ = TimeManager.Instance.Now();
-                                                                        _loc60_ = 0;
-                                                                        while(_loc60_ < _loc147_.length)
+                                                                        now = TimeManager.Instance.Now();
+                                                                        for(rookie = 0; rookie < rookieItemArr.length; )
                                                                         {
-                                                                           if(!(_loc25_.time < Date.parse(_loc147_[_loc60_].beginTime) || _loc25_.time > Date.parse(_loc147_[_loc60_].endShowTime)))
+                                                                           if(!(now.time < Date.parse(rookieItemArr[rookie].beginTime) || now.time > Date.parse(rookieItemArr[rookie].endShowTime)))
                                                                            {
-                                                                              _loc28_ = -1;
-                                                                              _loc146_ = -1;
-                                                                              _loc117_ = -1;
-                                                                              _loc16_ = 0;
+                                                                              fightPower = -1;
+                                                                              fightPowerRankOne = -1;
+                                                                              fightPowerRankTwo = -1;
+                                                                              rookieTimes = 0;
                                                                               var _loc190_:int = 0;
-                                                                              var _loc189_:* = _loc147_[_loc60_].giftbagArray;
-                                                                              for each(var _loc115_ in _loc147_[_loc60_].giftbagArray)
+                                                                              var _loc189_:* = rookieItemArr[rookie].giftbagArray;
+                                                                              for each(var giftInfo_rookie in rookieItemArr[rookie].giftbagArray)
                                                                               {
-                                                                                 if(activityInitData[_loc147_[_loc60_].activityId].giftInfoDic[_loc115_.giftbagId])
+                                                                                 if(activityInitData[rookieItemArr[rookie].activityId].giftInfoDic[giftInfo_rookie.giftbagId])
                                                                                  {
-                                                                                    _loc67_ = activityInitData[_loc147_[_loc60_].activityId].giftInfoDic[_loc115_.giftbagId];
-                                                                                    if(_loc115_.rewardMark != 100)
+                                                                                    rookieCurInfo = activityInitData[rookieItemArr[rookie].activityId].giftInfoDic[giftInfo_rookie.giftbagId];
+                                                                                    if(giftInfo_rookie.rewardMark != 100)
                                                                                     {
-                                                                                       _loc16_ = _loc67_.times;
-                                                                                       _loc2_ = 0;
-                                                                                       while(_loc2_ < _loc115_.giftConditionArr.length)
+                                                                                       rookieTimes = rookieCurInfo.times;
+                                                                                       for(i_rookie = 0; i_rookie < giftInfo_rookie.giftConditionArr.length; )
                                                                                        {
-                                                                                          if(_loc115_.giftConditionArr[_loc2_].conditionIndex == 0)
+                                                                                          if(giftInfo_rookie.giftConditionArr[i_rookie].conditionIndex == 0)
                                                                                           {
-                                                                                             _loc28_ = _loc115_.giftConditionArr[_loc2_].conditionValue;
+                                                                                             fightPower = giftInfo_rookie.giftConditionArr[i_rookie].conditionValue;
                                                                                           }
-                                                                                          else if(_loc115_.giftConditionArr[_loc2_].conditionIndex == 1)
+                                                                                          else if(giftInfo_rookie.giftConditionArr[i_rookie].conditionIndex == 1)
                                                                                           {
-                                                                                             _loc146_ = _loc115_.giftConditionArr[_loc2_].conditionValue;
-                                                                                             _loc117_ = _loc115_.giftConditionArr[_loc2_].remain1;
+                                                                                             fightPowerRankOne = giftInfo_rookie.giftConditionArr[i_rookie].conditionValue;
+                                                                                             fightPowerRankTwo = giftInfo_rookie.giftConditionArr[i_rookie].remain1;
                                                                                           }
-                                                                                          else if(_loc115_.giftConditionArr[_loc2_].conditionIndex == 100)
+                                                                                          else if(giftInfo_rookie.giftConditionArr[i_rookie].conditionIndex == 100)
                                                                                           {
-                                                                                             _loc70_ = _loc115_.giftConditionArr[_loc2_].conditionValue;
+                                                                                             rookieSumCount = giftInfo_rookie.giftConditionArr[i_rookie].conditionValue;
                                                                                           }
-                                                                                          _loc2_++;
+                                                                                          i_rookie++;
                                                                                        }
-                                                                                       if(_loc28_ != -1)
+                                                                                       if(fightPower != -1)
                                                                                        {
-                                                                                          if(_loc23_ >= Date.parse(_loc69_.beginShowTime) && _loc23_ <= Date.parse(_loc69_.endShowTime) && _loc16_ == 0 && _loc91_ >= _loc28_)
+                                                                                          if(nowTime >= Date.parse(item.beginShowTime) && nowTime <= Date.parse(item.endShowTime) && rookieTimes == 0 && power >= fightPower)
                                                                                           {
-                                                                                             stateDic[_loc11_.viewType] = true;
+                                                                                             stateDic[leftViewInfo.viewType] = true;
                                                                                              break;
                                                                                           }
                                                                                        }
-                                                                                       else if(_loc23_ >= Date.parse(_loc69_.endTime) && _loc23_ <= Date.parse(_loc69_.endShowTime) && _loc16_ == 0 && _loc156_ >= _loc146_ && _loc156_ <= _loc117_)
+                                                                                       else if(nowTime >= Date.parse(item.endTime) && nowTime <= Date.parse(item.endShowTime) && rookieTimes == 0 && rank1 >= fightPowerRankOne && rank1 <= fightPowerRankTwo)
                                                                                        {
-                                                                                          stateDic[_loc11_.viewType] = true;
+                                                                                          stateDic[leftViewInfo.viewType] = true;
                                                                                           break;
                                                                                        }
                                                                                     }
@@ -2236,66 +2212,65 @@ package wonderfulActivity
                                                                                  break;
                                                                               }
                                                                            }
-                                                                           _loc60_++;
+                                                                           rookie++;
                                                                         }
                                                                         continue;
                                                                      }
                                                                   }
                                                                }
-                                                               addr960:
-                                                               _loc135_ = _loc86_[0].statusValue;
-                                                               _loc7_ = 0;
-                                                               _loc57_ = 0;
-                                                               if(_loc11_.viewType == 35)
+                                                               addr1267:
+                                                               currentCondtion = statusArr[0].statusValue;
+                                                               carnivalMountGrade = 0;
+                                                               carnivalMountCurrentGrade = 0;
+                                                               if(leftViewInfo.viewType == 35)
                                                                {
                                                                   var _loc182_:int = 0;
-                                                                  var _loc181_:* = _loc86_;
-                                                                  for each(var _loc83_ in _loc86_)
+                                                                  var _loc181_:* = statusArr;
+                                                                  for each(var info_carnivalMount in statusArr)
                                                                   {
-                                                                     if(_loc83_.statusID == 0)
+                                                                     if(info_carnivalMount.statusID == 0)
                                                                      {
-                                                                        _loc7_ = _loc83_.statusValue;
+                                                                        carnivalMountGrade = info_carnivalMount.statusValue;
                                                                      }
-                                                                     else if(_loc83_.statusID == 1)
+                                                                     else if(info_carnivalMount.statusID == 1)
                                                                      {
-                                                                        _loc57_ = _loc83_.statusValue;
+                                                                        carnivalMountCurrentGrade = info_carnivalMount.statusValue;
                                                                      }
                                                                   }
                                                                }
                                                                var _loc184_:int = 0;
-                                                               var _loc183_:* = _loc69_.giftbagArray;
-                                                               for each(var _loc10_ in _loc69_.giftbagArray)
+                                                               var _loc183_:* = item.giftbagArray;
+                                                               for each(var giftInfo_carnival in item.giftbagArray)
                                                                {
-                                                                  if(_loc119_[_loc10_.giftbagId])
+                                                                  if(giftInfoDic[giftInfo_carnival.giftbagId])
                                                                   {
-                                                                     if(_loc10_.rewardMark != 100)
+                                                                     if(giftInfo_carnival.rewardMark != 100)
                                                                      {
-                                                                        _loc19_ = _loc119_[_loc10_.giftbagId].times;
-                                                                        _loc118_ = _loc119_[_loc10_.giftbagId].allGiftGetTimes;
-                                                                        _loc18_ = 0;
-                                                                        while(_loc18_ < _loc10_.giftConditionArr.length)
+                                                                        playerAlreadyGetCount = giftInfoDic[giftInfo_carnival.giftbagId].times;
+                                                                        allGiftAlreadyGetCount = giftInfoDic[giftInfo_carnival.giftbagId].allGiftGetTimes;
+                                                                        for(i_carnival = 0; i_carnival < giftInfo_carnival.giftConditionArr.length; )
                                                                         {
-                                                                           if(_loc10_.giftConditionArr[_loc18_].conditionIndex == 0)
+                                                                           if(giftInfo_carnival.giftConditionArr[i_carnival].conditionIndex == 0)
                                                                            {
-                                                                              _loc131_ = _loc10_.giftConditionArr[_loc18_].conditionValue;
+                                                                              condtion = giftInfo_carnival.giftConditionArr[i_carnival].conditionValue;
                                                                            }
-                                                                           else if(_loc10_.giftConditionArr[_loc18_].conditionIndex == 100)
+                                                                           else if(giftInfo_carnival.giftConditionArr[i_carnival].conditionIndex == 100)
                                                                            {
-                                                                              _loc144_ = _loc10_.giftConditionArr[_loc18_].conditionValue;
+                                                                              sumCount = giftInfo_carnival.giftConditionArr[i_carnival].conditionValue;
                                                                            }
-                                                                           _loc18_++;
+                                                                           i_carnival++;
                                                                         }
-                                                                        if(_loc11_.viewType == 35)
+                                                                        if(leftViewInfo.viewType == 35)
                                                                         {
-                                                                           if(_loc23_ >= Date.parse(_loc69_.beginShowTime) && _loc23_ <= Date.parse(_loc69_.endShowTime) && _loc19_ == 0 && _loc131_ > _loc7_ && _loc131_ <= _loc57_ && (_loc144_ == 0 || _loc144_ - _loc118_ > 0))
+                                                                           if(nowTime >= Date.parse(item.beginShowTime) && nowTime <= Date.parse(item.endShowTime) && playerAlreadyGetCount == 0 && condtion > carnivalMountGrade && condtion <= carnivalMountCurrentGrade && (sumCount == 0 || sumCount - allGiftAlreadyGetCount > 0))
                                                                            {
-                                                                              stateDic[_loc11_.viewType] = true;
+                                                                              stateDic[leftViewInfo.viewType] = true;
                                                                               break;
                                                                            }
                                                                         }
-                                                                        else if(_loc23_ >= Date.parse(_loc69_.beginShowTime) && _loc23_ <= Date.parse(_loc69_.endShowTime) && _loc19_ == 0 && _loc135_ >= _loc131_ && (_loc144_ == 0 || _loc144_ - _loc118_ > 0))
+                                                                        else if(nowTime >= Date.parse(item.beginShowTime) && nowTime <= Date.parse(item.endShowTime) && playerAlreadyGetCount == 0 && currentCondtion >= condtion && (sumCount == 0 || sumCount - allGiftAlreadyGetCount > 0))
                                                                         {
-                                                                           stateDic[_loc11_.viewType] = true;
+                                                                           stateDic[leftViewInfo.viewType] = true;
                                                                            break;
                                                                         }
                                                                      }
@@ -2305,68 +2280,67 @@ package wonderfulActivity
                                                                }
                                                                continue;
                                                             }
-                                                            addr959:
-                                                            §§goto(addr960);
+                                                            addr1266:
+                                                            §§goto(addr1267);
                                                          }
-                                                         addr958:
-                                                         §§goto(addr959);
+                                                         addr1265:
+                                                         §§goto(addr1266);
                                                       }
-                                                      addr957:
-                                                      §§goto(addr958);
+                                                      addr1264:
+                                                      §§goto(addr1265);
                                                    }
-                                                   addr956:
-                                                   §§goto(addr957);
+                                                   addr1263:
+                                                   §§goto(addr1264);
                                                 }
-                                                addr955:
-                                                §§goto(addr956);
+                                                addr1262:
+                                                §§goto(addr1263);
                                              }
-                                             addr954:
-                                             §§goto(addr955);
+                                             addr1261:
+                                             §§goto(addr1262);
                                           }
-                                          addr953:
-                                          §§goto(addr954);
+                                          addr1260:
+                                          §§goto(addr1261);
                                        }
-                                       §§goto(addr953);
+                                       §§goto(addr1260);
                                     }
                                     else
                                     {
                                        var _loc178_:int = 0;
-                                       var _loc177_:* = _loc86_;
-                                       for each(var _loc133_ in _loc86_)
+                                       var _loc177_:* = statusArr;
+                                       for each(var info_mountGrade1 in statusArr)
                                        {
-                                          if(_loc133_.statusID == 0)
+                                          if(info_mountGrade1.statusID == 0)
                                           {
-                                             _loc125_ = _loc133_.statusValue;
+                                             grade1 = info_mountGrade1.statusValue;
                                           }
-                                          else if(_loc133_.statusID == 1)
+                                          else if(info_mountGrade1.statusID == 1)
                                           {
-                                             _loc150_ = _loc133_.statusValue;
+                                             currentGrade1 = info_mountGrade1.statusValue;
                                           }
                                        }
                                        var _loc180_:int = 0;
-                                       var _loc179_:* = _loc69_.giftbagArray;
-                                       for each(var _loc56_ in _loc69_.giftbagArray)
+                                       var _loc179_:* = item.giftbagArray;
+                                       for each(var giftInfo_mountGrade1 in item.giftbagArray)
                                        {
-                                          if(_loc119_[_loc56_.giftbagId])
+                                          if(!giftInfoDic[giftInfo_mountGrade1.giftbagId])
                                           {
-                                             _loc1_ = 0;
-                                             while(_loc1_ < _loc56_.giftConditionArr.length)
+                                             break;
+                                          }
+                                          i_mountGrade1 = 0;
+                                          while(i_mountGrade1 < giftInfo_mountGrade1.giftConditionArr.length)
+                                          {
+                                             if(giftInfo_mountGrade1.giftConditionArr[i_mountGrade1].conditionIndex == 0)
                                              {
-                                                if(_loc56_.giftConditionArr[_loc1_].conditionIndex == 0)
-                                                {
-                                                   _loc116_ = _loc56_.giftConditionArr[_loc1_].remain1;
-                                                   break;
-                                                }
-                                                _loc1_++;
-                                             }
-                                             if(_loc23_ >= Date.parse(_loc69_.beginShowTime) && _loc23_ <= Date.parse(_loc69_.endShowTime) && _loc119_[_loc56_.giftbagId].times == 0 && _loc116_ > _loc125_ && _loc116_ <= _loc150_)
-                                             {
-                                                stateDic[_loc11_.viewType] = true;
+                                                reallyHorseGrade1 = giftInfo_mountGrade1.giftConditionArr[i_mountGrade1].remain1;
                                                 break;
                                              }
-                                             continue;
+                                             i_mountGrade1++;
                                           }
-                                          break;
+                                          if(nowTime >= Date.parse(item.beginShowTime) && nowTime <= Date.parse(item.endShowTime) && giftInfoDic[giftInfo_mountGrade1.giftbagId].times == 0 && reallyHorseGrade1 > grade1 && reallyHorseGrade1 <= currentGrade1)
+                                          {
+                                             stateDic[leftViewInfo.viewType] = true;
+                                             break;
+                                          }
                                        }
                                        continue;
                                     }
@@ -2374,47 +2348,46 @@ package wonderfulActivity
                                  else
                                  {
                                     var _loc176_:int = 0;
-                                    var _loc175_:* = _loc69_.giftbagArray;
-                                    for each(var _loc22_ in _loc69_.giftbagArray)
+                                    var _loc175_:* = item.giftbagArray;
+                                    for each(var giftInfo_mountSkill in item.giftbagArray)
                                     {
-                                       if(_loc119_[_loc22_.giftbagId])
+                                       if(!giftInfoDic[giftInfo_mountSkill.giftbagId])
                                        {
-                                          _loc95_ = 0;
-                                          while(_loc95_ < _loc22_.giftConditionArr.length)
-                                          {
-                                             if(_loc22_.giftConditionArr[_loc95_].conditionIndex == 0)
-                                             {
-                                                _loc3_ = _loc22_.giftConditionArr[_loc95_].conditionValue;
-                                             }
-                                             else
-                                             {
-                                                _loc157_ = _loc22_.giftConditionArr[_loc95_].conditionValue;
-                                             }
-                                             _loc95_++;
-                                          }
-                                          _loc75_ = 0;
-                                          _loc26_ = 0;
-                                          var _loc174_:int = 0;
-                                          var _loc173_:* = _loc86_;
-                                          for each(var _loc50_ in _loc86_)
-                                          {
-                                             if(_loc50_.statusID == _loc3_)
-                                             {
-                                                _loc75_ = _loc50_.statusValue;
-                                             }
-                                             else if(_loc50_.statusID == 100 + _loc3_)
-                                             {
-                                                _loc26_ = _loc50_.statusValue;
-                                             }
-                                          }
-                                          if(_loc23_ >= Date.parse(_loc69_.beginShowTime) && _loc23_ <= Date.parse(_loc69_.endShowTime) && _loc119_[_loc22_.giftbagId].times == 0 && _loc157_ > _loc75_ && _loc157_ <= _loc26_)
-                                          {
-                                             stateDic[_loc11_.viewType] = true;
-                                             break;
-                                          }
-                                          continue;
+                                          break;
                                        }
-                                       break;
+                                       i_mountSkill = 0;
+                                       while(i_mountSkill < giftInfo_mountSkill.giftConditionArr.length)
+                                       {
+                                          if(giftInfo_mountSkill.giftConditionArr[i_mountSkill].conditionIndex == 0)
+                                          {
+                                             horseSkillType = giftInfo_mountSkill.giftConditionArr[i_mountSkill].conditionValue;
+                                          }
+                                          else
+                                          {
+                                             horseSkillGrade = giftInfo_mountSkill.giftConditionArr[i_mountSkill].conditionValue;
+                                          }
+                                          i_mountSkill++;
+                                       }
+                                       skillGrade = 0;
+                                       currentSkillGrade = 0;
+                                       var _loc174_:int = 0;
+                                       var _loc173_:* = statusArr;
+                                       for each(var info_mountSkill in statusArr)
+                                       {
+                                          if(info_mountSkill.statusID == horseSkillType)
+                                          {
+                                             skillGrade = info_mountSkill.statusValue;
+                                          }
+                                          else if(info_mountSkill.statusID == 100 + horseSkillType)
+                                          {
+                                             currentSkillGrade = info_mountSkill.statusValue;
+                                          }
+                                       }
+                                       if(nowTime >= Date.parse(item.beginShowTime) && nowTime <= Date.parse(item.endShowTime) && giftInfoDic[giftInfo_mountSkill.giftbagId].times == 0 && horseSkillGrade > skillGrade && horseSkillGrade <= currentSkillGrade)
+                                       {
+                                          stateDic[leftViewInfo.viewType] = true;
+                                          break;
+                                       }
                                     }
                                     continue;
                                  }
@@ -2422,42 +2395,41 @@ package wonderfulActivity
                               else
                               {
                                  var _loc170_:int = 0;
-                                 var _loc169_:* = _loc86_;
-                                 for each(var _loc8_ in _loc86_)
+                                 var _loc169_:* = statusArr;
+                                 for each(var info_mountGrade in statusArr)
                                  {
-                                    if(_loc8_.statusID == 0)
+                                    if(info_mountGrade.statusID == 0)
                                     {
-                                       _loc54_ = _loc8_.statusValue;
+                                       grade = info_mountGrade.statusValue;
                                     }
-                                    else if(_loc8_.statusID == 1)
+                                    else if(info_mountGrade.statusID == 1)
                                     {
-                                       _loc134_ = _loc8_.statusValue;
+                                       currentGrade = info_mountGrade.statusValue;
                                     }
                                  }
                                  var _loc172_:int = 0;
-                                 var _loc171_:* = _loc69_.giftbagArray;
-                                 for each(var _loc45_ in _loc69_.giftbagArray)
+                                 var _loc171_:* = item.giftbagArray;
+                                 for each(var giftInfo_mountGrade in item.giftbagArray)
                                  {
-                                    if(_loc119_[_loc45_.giftbagId])
+                                    if(!giftInfoDic[giftInfo_mountGrade.giftbagId])
                                     {
-                                       _loc87_ = 0;
-                                       while(_loc87_ < _loc45_.giftConditionArr.length)
+                                       break;
+                                    }
+                                    i_mountGrade = 0;
+                                    while(i_mountGrade < giftInfo_mountGrade.giftConditionArr.length)
+                                    {
+                                       if(giftInfo_mountGrade.giftConditionArr[i_mountGrade].conditionIndex == 0)
                                        {
-                                          if(_loc45_.giftConditionArr[_loc87_].conditionIndex == 0)
-                                          {
-                                             _loc20_ = _loc45_.giftConditionArr[_loc87_].remain1;
-                                             break;
-                                          }
-                                          _loc87_++;
-                                       }
-                                       if(_loc23_ >= Date.parse(_loc69_.beginShowTime) && _loc23_ <= Date.parse(_loc69_.endShowTime) && _loc119_[_loc45_.giftbagId].times == 0 && _loc20_ > _loc54_ && _loc20_ <= _loc134_)
-                                       {
-                                          stateDic[_loc11_.viewType] = true;
+                                          reallyHorseGrade = giftInfo_mountGrade.giftConditionArr[i_mountGrade].remain1;
                                           break;
                                        }
-                                       continue;
+                                       i_mountGrade++;
                                     }
-                                    break;
+                                    if(nowTime >= Date.parse(item.beginShowTime) && nowTime <= Date.parse(item.endShowTime) && giftInfoDic[giftInfo_mountGrade.giftbagId].times == 0 && reallyHorseGrade > grade && reallyHorseGrade <= currentGrade)
+                                    {
+                                       stateDic[leftViewInfo.viewType] = true;
+                                       break;
+                                    }
                                  }
                                  continue;
                               }
@@ -2465,32 +2437,32 @@ package wonderfulActivity
                            else
                            {
                               var _loc168_:int = 0;
-                              var _loc167_:* = _loc69_.giftbagArray;
-                              for each(var _loc143_ in _loc69_.giftbagArray)
+                              var _loc167_:* = item.giftbagArray;
+                              for each(var giftInfo3 in item.giftbagArray)
                               {
-                                 if(_loc119_[_loc143_.giftbagId])
+                                 if(giftInfoDic[giftInfo3.giftbagId])
                                  {
-                                    _loc128_ = _loc119_[_loc143_.giftbagId].times;
+                                    alreadyGet3 = giftInfoDic[giftInfo3.giftbagId].times;
                                     var _loc166_:int = 0;
-                                    var _loc165_:* = _loc86_;
-                                    for each(var _loc105_ in _loc86_)
+                                    var _loc165_:* = statusArr;
+                                    for each(var playerStatus1 in statusArr)
                                     {
-                                       if(_loc105_.statusID == _loc143_.giftConditionArr[0].conditionValue)
+                                       if(playerStatus1.statusID == giftInfo3.giftConditionArr[0].conditionValue)
                                        {
-                                          _loc42_ = _loc105_.statusValue - _loc128_;
+                                          remain4 = playerStatus1.statusValue - alreadyGet3;
                                        }
                                     }
-                                    if(_loc143_.giftConditionArr[0].conditionValue == 0)
+                                    if(giftInfo3.giftConditionArr[0].conditionValue == 0)
                                     {
-                                       if(_loc42_ > 0)
+                                       if(remain4 > 0)
                                        {
-                                          stateDic[_loc11_.viewType] = true;
+                                          stateDic[leftViewInfo.viewType] = true;
                                           break;
                                        }
                                     }
-                                    else if(_loc128_ == 0 && _loc42_ > 0)
+                                    else if(alreadyGet3 == 0 && remain4 > 0)
                                     {
-                                       stateDic[_loc11_.viewType] = true;
+                                       stateDic[leftViewInfo.viewType] = true;
                                        break;
                                     }
                                     continue;
@@ -2503,32 +2475,32 @@ package wonderfulActivity
                         else
                         {
                            var _loc164_:int = 0;
-                           var _loc163_:* = _loc69_.giftbagArray;
-                           for each(var _loc142_ in _loc69_.giftbagArray)
+                           var _loc163_:* = item.giftbagArray;
+                           for each(var giftInfo2 in item.giftbagArray)
                            {
-                              if(_loc119_[_loc142_.giftbagId])
+                              if(giftInfoDic[giftInfo2.giftbagId])
                               {
-                                 _loc126_ = _loc119_[_loc142_.giftbagId].times;
+                                 alreadyGet2 = giftInfoDic[giftInfo2.giftbagId].times;
                                  var _loc162_:int = 0;
-                                 var _loc161_:* = _loc86_;
-                                 for each(var _loc114_ in _loc86_)
+                                 var _loc161_:* = statusArr;
+                                 for each(var playerStatus in statusArr)
                                  {
-                                    if(_loc114_.statusID == _loc142_.giftConditionArr[0].conditionValue)
+                                    if(playerStatus.statusID == giftInfo2.giftConditionArr[0].conditionValue)
                                     {
-                                       _loc46_ = _loc114_.statusValue - _loc126_;
+                                       remain2 = playerStatus.statusValue - alreadyGet2;
                                     }
                                  }
-                                 if(_loc142_.giftConditionArr[2].conditionValue == 0)
+                                 if(giftInfo2.giftConditionArr[2].conditionValue == 0)
                                  {
-                                    if(_loc46_ > 0)
+                                    if(remain2 > 0)
                                     {
-                                       stateDic[_loc11_.viewType] = true;
+                                       stateDic[leftViewInfo.viewType] = true;
                                        break;
                                     }
                                  }
-                                 else if(_loc126_ == 0 && _loc46_ > 0)
+                                 else if(alreadyGet2 == 0 && remain2 > 0)
                                  {
-                                    stateDic[_loc11_.viewType] = true;
+                                    stateDic[leftViewInfo.viewType] = true;
                                     break;
                                  }
                                  continue;
@@ -2540,24 +2512,24 @@ package wonderfulActivity
                      }
                   }
                   _loc160_ = 0;
-                  var _loc159_:* = _loc69_.giftbagArray;
-                  for each(var _loc51_ in _loc69_.giftbagArray)
+                  var _loc159_:* = item.giftbagArray;
+                  for each(var giftInfo in item.giftbagArray)
                   {
-                     if(_loc119_[_loc51_.giftbagId])
+                     if(giftInfoDic[giftInfo.giftbagId])
                      {
-                        _loc153_ = _loc119_[_loc51_.giftbagId].times;
-                        if(_loc51_.giftConditionArr[2].conditionValue == 0)
+                        alreadyGet = giftInfoDic[giftInfo.giftbagId].times;
+                        if(giftInfo.giftConditionArr[2].conditionValue == 0)
                         {
-                           _loc66_ = int(Math.floor(_loc86_[0].statusValue / _loc51_.giftConditionArr[0].conditionValue)) - _loc153_;
-                           if(_loc66_ > 0)
+                           remain = int(Math.floor(statusArr[0].statusValue / giftInfo.giftConditionArr[0].conditionValue)) - alreadyGet;
+                           if(remain > 0)
                            {
-                              stateDic[_loc11_.viewType] = true;
+                              stateDic[leftViewInfo.viewType] = true;
                               break;
                            }
                         }
-                        else if(_loc153_ == 0 && Math.floor(_loc86_[0].statusValue / _loc51_.giftConditionArr[0].conditionValue) > 0)
+                        else if(alreadyGet == 0 && Math.floor(statusArr[0].statusValue / giftInfo.giftConditionArr[0].conditionValue) > 0)
                         {
-                           stateDic[_loc11_.viewType] = true;
+                           stateDic[leftViewInfo.viewType] = true;
                            break;
                         }
                         continue;
@@ -2571,14 +2543,14 @@ package wonderfulActivity
          dispatchCheckEvent();
       }
       
-      public function currentItem(param1:IShineableCell) : void
+      public function currentItem(item:IShineableCell) : void
       {
-         _currentItem = param1;
+         _currentItem = item;
       }
       
-      private function typeNeedShine(param1:int) : Boolean
+      private function typeNeedShine(type:int) : Boolean
       {
-         switch(int(param1) - 2)
+         switch(int(type) - 2)
          {
             case 0:
                return true;
@@ -2589,9 +2561,9 @@ package wonderfulActivity
          }
       }
       
-      public function useBattleCompanion(param1:InventoryItemInfo) : void
+      public function useBattleCompanion(info:InventoryItemInfo) : void
       {
-         _battleCompanionInfo = param1;
+         _battleCompanionInfo = info;
          _giveFriendOpenFrame = ComponentFactory.Instance.creatComponentByStylename("core.ddtshop.ShopPresentClearingFrame");
          _giveFriendOpenFrame.nameInput.enable = false;
          _giveFriendOpenFrame.onlyFriendSelectView();
@@ -2600,9 +2572,9 @@ package wonderfulActivity
          _giveFriendOpenFrame.addEventListener("response",__responseHandler2,false,0,true);
       }
       
-      private function __responseHandler2(param1:FrameEvent) : void
+      private function __responseHandler2(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1 || param1.responseCode == 4)
+         if(event.responseCode == 0 || event.responseCode == 1 || event.responseCode == 4)
          {
             removeBattleCompanion();
             _giveFriendOpenFrame = null;
@@ -2622,16 +2594,16 @@ package wonderfulActivity
          _battleCompanionInfo = null;
       }
       
-      private function __presentBtnClick(param1:MouseEvent) : void
+      private function __presentBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:String = _giveFriendOpenFrame.nameInput.text;
-         if(_loc2_ == "")
+         var name:String = _giveFriendOpenFrame.nameInput.text;
+         if(name == "")
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.ShopIIPresentView.give"));
             return;
          }
-         if(FilterWordManager.IsNullorEmpty(_loc2_))
+         if(FilterWordManager.IsNullorEmpty(name))
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.ShopIIPresentView.space"));
             return;
@@ -2644,22 +2616,21 @@ package wonderfulActivity
       
       private function getTodayList() : Array
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:Array = [];
-         var _loc3_:int = CalendarManager.getInstance().eventActives.length;
-         var _loc1_:Date = TimeManager.Instance.Now();
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_)
+         var i:int = 0;
+         var info:* = null;
+         var arr:Array = [];
+         var len:int = CalendarManager.getInstance().eventActives.length;
+         var now:Date = TimeManager.Instance.Now();
+         for(i = 0; i < len; )
          {
-            _loc4_ = CalendarManager.getInstance().eventActives[_loc5_];
-            if(_loc1_.time > _loc4_.start.time && _loc1_.time < _loc4_.end.time)
+            info = CalendarManager.getInstance().eventActives[i];
+            if(now.time > info.start.time && now.time < info.end.time)
             {
-               _loc2_.push(_loc4_);
+               arr.push(info);
             }
-            _loc5_++;
+            i++;
          }
-         return _loc2_;
+         return arr;
       }
       
       public function get eventsActiveDic() : Dictionary
@@ -2667,43 +2638,43 @@ package wonderfulActivity
          return _eventsActiveDic;
       }
       
-      public function getActiveEventsInfoByID(param1:int) : ActiveEventsInfo
+      public function getActiveEventsInfoByID(id:int) : ActiveEventsInfo
       {
-         return _eventsActiveDic[param1];
+         return _eventsActiveDic[id];
       }
       
-      public function setLimitActivities(param1:Array) : void
+      public function setLimitActivities(activities:Array) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:int = 10000;
+         var idStr:* = null;
+         var tagId:int = 10000;
          _eventsActiveDic = new Dictionary();
-         var _loc2_:Date = TimeManager.Instance.Now();
+         var now:Date = TimeManager.Instance.Now();
          var _loc7_:int = 0;
-         var _loc6_:* = param1;
-         for each(var _loc5_ in param1)
+         var _loc6_:* = activities;
+         for each(var info in activities)
          {
-            if(_loc5_.ActiveType != 6)
+            if(info.ActiveType != 6)
             {
-               if(_loc2_.time > _loc5_.start.time && _loc2_.time < _loc5_.end.time)
+               if(now.time > info.start.time && now.time < info.end.time)
                {
-                  _eventsActiveDic[_loc3_] = _loc5_;
-                  _loc4_ = _loc3_.toString();
-                  leftViewInfoDic[_loc4_] = new LeftViewInfoVo(_loc3_,"· " + _loc5_.Title,1);
-                  addElement(_loc4_);
-                  _loc3_++;
+                  _eventsActiveDic[tagId] = info;
+                  idStr = tagId.toString();
+                  leftViewInfoDic[idStr] = new LeftViewInfoVo(tagId,"· " + info.Title,1);
+                  addElement(idStr);
+                  tagId++;
                }
             }
          }
       }
       
-      public function getActivityDataById(param1:String) : GmActivityInfo
+      public function getActivityDataById(actId:String) : GmActivityInfo
       {
-         return activityData[param1];
+         return activityData[actId];
       }
       
-      public function getActivityInitDataById(param1:String) : Object
+      public function getActivityInitDataById(actId:String) : Object
       {
-         return activityInitData[param1];
+         return activityInitData[actId];
       }
       
       public function get sendFrame() : SendGiftActivityFrame

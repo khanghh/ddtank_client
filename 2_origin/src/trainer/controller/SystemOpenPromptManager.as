@@ -92,9 +92,9 @@ package trainer.controller
          UIModuleLoader.Instance.addUIModuleImp("systemopenprompt");
       }
       
-      private function loadCompleteHandler(param1:UIModuleEvent) : void
+      private function loadCompleteHandler(event:UIModuleEvent) : void
       {
-         if(param1.module == "systemopenprompt")
+         if(event.module == "systemopenprompt")
          {
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",loadCompleteHandler);
             _isLoadComplete = true;
@@ -102,9 +102,9 @@ package trainer.controller
          }
       }
       
-      public function showFrame(param1:InventoryItemInfo = null, param2:int = 0) : void
+      public function showFrame(item:InventoryItemInfo = null, toPlace:int = 0) : void
       {
-         var _loc3_:* = null;
+         var tmp:* = null;
          _frameList = {};
          if(PetSpriteManager.Instance.checkFarmCropRipe())
          {
@@ -113,9 +113,9 @@ package trainer.controller
                loadModule();
                return;
             }
-            _loc3_ = ComponentFactory.Instance.creatCustomObject("SystemOpenPromptFrame");
-            _loc3_.show(7,gotoSystem);
-            _frameList[7] = _loc3_;
+            tmp = ComponentFactory.Instance.creatCustomObject("SystemOpenPromptFrame");
+            tmp.show(7,gotoSystem);
+            _frameList[7] = tmp;
          }
          if(PathManager.treasureSwitch && !_isJudge && PlayerManager.Instance.Self.Grade >= 25 && PlayerManager.Instance.Self.treasure + PlayerManager.Instance.Self.treasureAdd > 0 && !TreasureModel.instance.isEndTreasure)
          {
@@ -124,9 +124,9 @@ package trainer.controller
                loadModule();
                return;
             }
-            _loc3_ = ComponentFactory.Instance.creatCustomObject("SystemOpenPromptFrame");
-            _loc3_.show(10,gotoSystem);
-            _frameList[10] = _loc3_;
+            tmp = ComponentFactory.Instance.creatCustomObject("SystemOpenPromptFrame");
+            tmp.show(10,gotoSystem);
+            _frameList[10] = tmp;
          }
          if(PlayerManager.Instance.Self.Grade >= 30 && !PlayerManager.Instance.Self.isNewOnceFinish(103))
          {
@@ -135,9 +135,9 @@ package trainer.controller
                loadModule();
                return;
             }
-            _loc3_ = ComponentFactory.Instance.creatCustomObject("SystemOpenPromptFrame");
-            _loc3_.show(2,gotoSystem);
-            _frameList[2] = _loc3_;
+            tmp = ComponentFactory.Instance.creatCustomObject("SystemOpenPromptFrame");
+            tmp.show(2,gotoSystem);
+            _frameList[2] = tmp;
             SocketManager.Instance.out.syncWeakStep(103);
          }
          if(PlayerManager.Instance.Self.Grade >= 40 && !PlayerManager.Instance.Self.isNewOnceFinish(133))
@@ -147,9 +147,9 @@ package trainer.controller
                loadModule();
                return;
             }
-            _loc3_ = ComponentFactory.Instance.creatCustomObject("SystemOpenPromptFrame");
-            _loc3_.show(10,gotoSystem);
-            _frameList[10] = _loc3_;
+            tmp = ComponentFactory.Instance.creatCustomObject("SystemOpenPromptFrame");
+            tmp.show(10,gotoSystem);
+            _frameList[10] = tmp;
             SocketManager.Instance.out.syncWeakStep(133);
          }
          if(!_isJudge && PlayerManager.Instance.Self.Grade >= 5 && (PlayerManager.Instance.Self.IsVIP && PlayerManager.Instance.Self.canTakeVipReward))
@@ -159,9 +159,9 @@ package trainer.controller
                loadModule();
                return;
             }
-            _loc3_ = ComponentFactory.Instance.creatCustomObject("SystemOpenPromptFrame");
-            _loc3_.show(3,gotoSystem);
-            _frameList[3] = _loc3_;
+            tmp = ComponentFactory.Instance.creatCustomObject("SystemOpenPromptFrame");
+            tmp.show(3,gotoSystem);
+            _frameList[3] = tmp;
          }
          if(!_isJudge && PlayerManager.Instance.Self.Grade >= 5 && !PlayerManager.Instance.Self.Sign)
          {
@@ -170,9 +170,9 @@ package trainer.controller
                loadModule();
                return;
             }
-            _loc3_ = ComponentFactory.Instance.creatCustomObject("SystemOpenPromptFrame");
-            _loc3_.show(4,gotoSystem);
-            _frameList[4] = _loc3_;
+            tmp = ComponentFactory.Instance.creatCustomObject("SystemOpenPromptFrame");
+            tmp.show(4,gotoSystem);
+            _frameList[4] = tmp;
          }
          if(ConsortionModelManager.Instance.isShowBossOpenTip)
          {
@@ -181,9 +181,9 @@ package trainer.controller
                loadModule();
                return;
             }
-            _loc3_ = ComponentFactory.Instance.creatCustomObject("SystemOpenPromptFrame");
-            _loc3_.show(5,gotoSystem);
-            _frameList[5] = _loc3_;
+            tmp = ComponentFactory.Instance.creatCustomObject("SystemOpenPromptFrame");
+            tmp.show(5,gotoSystem);
+            _frameList[5] = tmp;
             ConsortionModelManager.Instance.isShowBossOpenTip = false;
          }
          if(ConsortiaGuardControl.Instance.model.isOpen)
@@ -193,9 +193,9 @@ package trainer.controller
                loadModule();
                return;
             }
-            _loc3_ = ComponentFactory.Instance.creatCustomObject("SystemOpenPromptFrame");
-            _loc3_.show(11,gotoSystem);
-            _frameList[11] = _loc3_;
+            tmp = ComponentFactory.Instance.creatCustomObject("SystemOpenPromptFrame");
+            tmp.show(11,gotoSystem);
+            _frameList[11] = tmp;
          }
          if(ConsortionModelManager.Instance.checkRewardStauts())
          {
@@ -204,9 +204,9 @@ package trainer.controller
                loadModule();
                return;
             }
-            _loc3_ = ComponentFactory.Instance.creatCustomObject("SystemOpenPromptFrame");
-            _loc3_.show(12,gotoSystem);
-            _frameList[12] = _loc3_;
+            tmp = ComponentFactory.Instance.creatCustomObject("SystemOpenPromptFrame");
+            tmp.show(12,gotoSystem);
+            _frameList[12] = tmp;
          }
          if(SevenDoubleManager.instance.isShowDungeonTip && !PlayerManager.Instance.Self.isSameDay && SevenDoubleManager.instance.isStart)
          {
@@ -215,45 +215,45 @@ package trainer.controller
                loadModule();
                return;
             }
-            _loc3_ = ComponentFactory.Instance.creatCustomObject("SystemOpenPromptFrame");
-            _loc3_.show(8,gotoSystem);
-            _frameList[8] = _loc3_;
+            tmp = ComponentFactory.Instance.creatCustomObject("SystemOpenPromptFrame");
+            tmp.show(8,gotoSystem);
+            _frameList[8] = tmp;
             SevenDoubleManager.instance.isShowDungeonTip = false;
          }
          _isJudge = true;
       }
       
-      public function showEquipTipFrame(param1:InventoryItemInfo) : void
+      public function showEquipTipFrame(item:InventoryItemInfo) : void
       {
-         var _loc2_:* = null;
+         var equipFrame:* = null;
          _equipFrameDic = new Dictionary();
-         _item = param1;
+         _item = item;
          if(_item)
          {
-            _loc2_ = ComponentFactory.Instance.creatCustomObject("SystemOpenPromptFrame");
-            _loc2_.show(9,equipedNewEquip,_item);
-            _equipFrameDic[param1.TemplateID] = _loc2_;
+            equipFrame = ComponentFactory.Instance.creatCustomObject("SystemOpenPromptFrame");
+            equipFrame.show(9,equipedNewEquip,_item);
+            _equipFrameDic[item.TemplateID] = equipFrame;
          }
       }
       
-      public function equipedNewEquip(param1:BagCell) : void
+      public function equipedNewEquip(equipCell:BagCell) : void
       {
-         var _loc3_:InventoryItemInfo = param1.info as InventoryItemInfo;
-         var _loc2_:int = PlayerManager.Instance.getPlaceOfEquip(_loc3_);
-         if(_loc2_ == -1)
+         var info:InventoryItemInfo = equipCell.info as InventoryItemInfo;
+         var toPlace:int = PlayerManager.Instance.getPlaceOfEquip(info);
+         if(toPlace == -1)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.systemOpenPrompt.equiped"));
          }
          else
          {
-            SocketManager.Instance.out.sendMoveGoods(0,_loc3_.Place,0,_loc2_,_loc3_.Count);
+            SocketManager.Instance.out.sendMoveGoods(0,info.Place,0,toPlace,info.Count);
          }
-         _equipFrameDic[_loc3_.TemplateID] = null;
+         _equipFrameDic[info.TemplateID] = null;
       }
       
-      public function gotoSystem(param1:int) : void
+      public function gotoSystem(type:int) : void
       {
-         switch(int(param1) - 1)
+         switch(int(type) - 1)
          {
             case 0:
                showTotem();
@@ -289,7 +289,7 @@ package trainer.controller
             case 11:
                showConsortion();
          }
-         _frameList[param1] = null;
+         _frameList[type] = null;
       }
       
       private function goSevenDoubleDungeon() : void
@@ -346,16 +346,16 @@ package trainer.controller
       {
          var _loc4_:int = 0;
          var _loc3_:* = _frameList;
-         for each(var _loc2_ in _frameList)
+         for each(var tmp in _frameList)
          {
-            _loc2_.dispose();
+            tmp.dispose();
          }
          _frameList = null;
          var _loc6_:int = 0;
          var _loc5_:* = _equipFrameDic;
-         for each(var _loc1_ in _equipFrameDic)
+         for each(var equipTmp in _equipFrameDic)
          {
-            _loc1_.dispose();
+            equipTmp.dispose();
          }
          _equipFrameDic = null;
       }

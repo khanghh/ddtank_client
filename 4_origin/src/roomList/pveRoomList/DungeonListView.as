@@ -35,11 +35,11 @@ package roomList.pveRoomList
          addEventListener("response",__frameEventHandler);
       }
       
-      public function initView(param1:DungeonListController, param2:DungeonListModel) : void
+      public function initView(controller:DungeonListController, model:DungeonListModel) : void
       {
          titleText = LanguageMgr.GetTranslation("tank.hall.ChooseHallView.dungeon");
-         _controlle = param1;
-         _model = param2;
+         _controlle = controller;
+         _model = model;
          _dungeonListBGView = new DungeonListBGView(_controlle,_model);
          PositionUtils.setPos(_dungeonListBGView,"asset.ddtdungeonList.bgview.pos");
          addChild(_dungeonListBGView);
@@ -51,10 +51,10 @@ package roomList.pveRoomList
          addChild(_leaf);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

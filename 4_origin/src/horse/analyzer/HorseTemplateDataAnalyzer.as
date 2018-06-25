@@ -10,47 +10,46 @@ package horse.analyzer
       
       private var _horseTemplateList:Vector.<HorseTemplateVo>;
       
-      public function HorseTemplateDataAnalyzer(param1:Function)
+      public function HorseTemplateDataAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:XML = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var tmpVo:* = null;
+         var xml:XML = new XML(data);
          _horseTemplateList = new Vector.<HorseTemplateVo>();
-         if(_loc3_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc4_ = _loc3_..item;
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_.length())
+            xmllist = xml..item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc2_ = new HorseTemplateVo();
-               ObjectUtils.copyPorpertiesByXML(_loc2_,_loc4_[_loc5_]);
-               _horseTemplateList.push(_loc2_);
-               _loc5_++;
+               tmpVo = new HorseTemplateVo();
+               ObjectUtils.copyPorpertiesByXML(tmpVo,xmllist[i]);
+               _horseTemplateList.push(tmpVo);
+               i++;
             }
             _horseTemplateList.sort(compareFunc);
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc3_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeError();
          }
       }
       
-      private function compareFunc(param1:HorseTemplateVo, param2:HorseTemplateVo) : int
+      private function compareFunc(tmpA:HorseTemplateVo, tmpB:HorseTemplateVo) : int
       {
-         if(param1.Grade > param2.Grade)
+         if(tmpA.Grade > tmpB.Grade)
          {
             return 1;
          }
-         if(param1.Grade < param2.Grade)
+         if(tmpA.Grade < tmpB.Grade)
          {
             return -1;
          }

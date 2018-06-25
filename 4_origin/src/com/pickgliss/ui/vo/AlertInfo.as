@@ -63,24 +63,24 @@ package com.pickgliss.ui.vo
       
       private var _soundID;
       
-      public function AlertInfo(param1:String = "", param2:String = "Đồng ý", param3:String = "Hủy bỏ", param4:Boolean = true, param5:Boolean = true, param6:Object = null, param7:Boolean = true, param8:Boolean = true, param9:Boolean = true, param10:Boolean = true, param11:int = 20, param12:int = 30, param13:Boolean = false, param14:int = 0)
+      public function AlertInfo($title:String = "", $submitLabel:String = "Đồng ý", $cancelLabel:String = "Hủy bỏ", $showSubmit:Boolean = true, $showCancel:Boolean = true, $data:Object = null, $center:Boolean = true, $movable:Boolean = true, $enableEnter:Boolean = true, $enableEsc:Boolean = true, $bottomGap:int = 20, $buttonGape:int = 30, $autoDispose:Boolean = false, $type:int = 0)
       {
          _buttonGape = ComponentSetting.ALERT_BUTTON_GAPE;
          super();
-         title = param1;
-         type = param14;
-         submitLabel = param2;
-         cancelLabel = param3;
-         showSubmit = param4;
-         showCancel = param5;
-         data = param6;
-         frameCenter = param7;
-         moveEnable = param8;
-         enterEnable = param9;
-         escEnable = param10;
-         bottomGap = param11;
-         buttonGape = param12;
-         autoDispose = param13;
+         title = $title;
+         type = $type;
+         submitLabel = $submitLabel;
+         cancelLabel = $cancelLabel;
+         showSubmit = $showSubmit;
+         showCancel = $showCancel;
+         data = $data;
+         frameCenter = $center;
+         moveEnable = $movable;
+         enterEnable = $enableEnter;
+         escEnable = $enableEsc;
+         bottomGap = $bottomGap;
+         buttonGape = $buttonGape;
+         autoDispose = $autoDispose;
       }
       
       public function get autoButtonGape() : Boolean
@@ -88,13 +88,13 @@ package com.pickgliss.ui.vo
          return _autoButtonGape;
       }
       
-      public function set autoButtonGape(param1:Boolean) : void
+      public function set autoButtonGape(value:Boolean) : void
       {
-         if(_autoButtonGape == param1)
+         if(_autoButtonGape == value)
          {
             return;
          }
-         _autoButtonGape = param1;
+         _autoButtonGape = value;
          fireChange();
       }
       
@@ -103,13 +103,13 @@ package com.pickgliss.ui.vo
          return _autoDispose;
       }
       
-      public function set autoDispose(param1:Boolean) : void
+      public function set autoDispose(value:Boolean) : void
       {
-         if(_autoDispose == param1)
+         if(_autoDispose == value)
          {
             return;
          }
-         _autoDispose = param1;
+         _autoDispose = value;
          fireChange();
       }
       
@@ -118,13 +118,13 @@ package com.pickgliss.ui.vo
          return _type;
       }
       
-      public function set type(param1:int) : void
+      public function set type(value:int) : void
       {
-         if(_type == param1)
+         if(_type == value)
          {
             return;
          }
-         _type = param1;
+         _type = value;
          fireChange();
       }
       
@@ -133,13 +133,13 @@ package com.pickgliss.ui.vo
          return _bottomGap;
       }
       
-      public function set bottomGap(param1:int) : void
+      public function set bottomGap(value:int) : void
       {
-         if(_bottomGap == param1)
+         if(_bottomGap == value)
          {
             return;
          }
-         _bottomGap = param1;
+         _bottomGap = value;
          fireChange();
       }
       
@@ -148,13 +148,13 @@ package com.pickgliss.ui.vo
          return _buttonGape;
       }
       
-      public function set buttonGape(param1:int) : void
+      public function set buttonGape(value:int) : void
       {
-         if(_buttonGape == param1)
+         if(_buttonGape == value)
          {
             return;
          }
-         _buttonGape = param1;
+         _buttonGape = value;
          fireChange();
       }
       
@@ -163,13 +163,13 @@ package com.pickgliss.ui.vo
          return _cancelLabel;
       }
       
-      public function set cancelLabel(param1:String) : void
+      public function set cancelLabel(value:String) : void
       {
-         if(_cancelLabel == param1)
+         if(_cancelLabel == value)
          {
             return;
          }
-         _cancelLabel = param1;
+         _cancelLabel = value;
          fireChange();
       }
       
@@ -178,11 +178,11 @@ package com.pickgliss.ui.vo
          return _submitEnabled;
       }
       
-      public function set submitEnabled(param1:Boolean) : void
+      public function set submitEnabled(val:Boolean) : void
       {
-         if(_submitEnabled != param1)
+         if(_submitEnabled != val)
          {
-            _submitEnabled = param1;
+            _submitEnabled = val;
             fireChange();
          }
       }
@@ -192,11 +192,11 @@ package com.pickgliss.ui.vo
          return _cancelEnabled;
       }
       
-      public function set cancelEnabled(param1:Boolean) : void
+      public function set cancelEnabled(val:Boolean) : void
       {
-         if(_cancelEnabled != param1)
+         if(_cancelEnabled != val)
          {
-            _cancelEnabled = param1;
+            _cancelEnabled = val;
             fireChange();
          }
       }
@@ -206,13 +206,13 @@ package com.pickgliss.ui.vo
          return _data;
       }
       
-      public function set data(param1:Object) : void
+      public function set data(value:Object) : void
       {
-         if(_data == param1)
+         if(_data == value)
          {
             return;
          }
-         _data = param1;
+         _data = value;
          fireChange();
       }
       
@@ -221,13 +221,13 @@ package com.pickgliss.ui.vo
          return _enableHtml;
       }
       
-      public function set enableHtml(param1:Boolean) : void
+      public function set enableHtml(value:Boolean) : void
       {
-         if(_enableHtml == param1)
+         if(_enableHtml == value)
          {
             return;
          }
-         _enableHtml = param1;
+         _enableHtml = value;
          fireChange();
       }
       
@@ -236,13 +236,13 @@ package com.pickgliss.ui.vo
          return _enterEnable;
       }
       
-      public function set enterEnable(param1:Boolean) : void
+      public function set enterEnable(value:Boolean) : void
       {
-         if(_enterEnable == param1)
+         if(_enterEnable == value)
          {
             return;
          }
-         _enterEnable = param1;
+         _enterEnable = value;
          fireChange();
       }
       
@@ -251,13 +251,13 @@ package com.pickgliss.ui.vo
          return _escEnable;
       }
       
-      public function set escEnable(param1:Boolean) : void
+      public function set escEnable(value:Boolean) : void
       {
-         if(_escEnable == param1)
+         if(_escEnable == value)
          {
             return;
          }
-         _escEnable = param1;
+         _escEnable = value;
          fireChange();
       }
       
@@ -266,13 +266,13 @@ package com.pickgliss.ui.vo
          return _frameCenter;
       }
       
-      public function set frameCenter(param1:Boolean) : void
+      public function set frameCenter(value:Boolean) : void
       {
-         if(_frameCenter == param1)
+         if(_frameCenter == value)
          {
             return;
          }
-         _frameCenter = param1;
+         _frameCenter = value;
          fireChange();
       }
       
@@ -281,13 +281,13 @@ package com.pickgliss.ui.vo
          return _moveEnable;
       }
       
-      public function set moveEnable(param1:Boolean) : void
+      public function set moveEnable(value:Boolean) : void
       {
-         if(_moveEnable == param1)
+         if(_moveEnable == value)
          {
             return;
          }
-         _moveEnable = param1;
+         _moveEnable = value;
          fireChange();
       }
       
@@ -296,13 +296,13 @@ package com.pickgliss.ui.vo
          return _mutiline;
       }
       
-      public function set mutiline(param1:Boolean) : void
+      public function set mutiline(value:Boolean) : void
       {
-         if(_mutiline == param1)
+         if(_mutiline == value)
          {
             return;
          }
-         _mutiline = param1;
+         _mutiline = value;
          fireChange();
       }
       
@@ -311,13 +311,13 @@ package com.pickgliss.ui.vo
          return _showCancel;
       }
       
-      public function set showCancel(param1:Boolean) : void
+      public function set showCancel(value:Boolean) : void
       {
-         if(_showCancel == param1)
+         if(_showCancel == value)
          {
             return;
          }
-         _showCancel = param1;
+         _showCancel = value;
          fireChange();
       }
       
@@ -326,13 +326,13 @@ package com.pickgliss.ui.vo
          return _showSubmit;
       }
       
-      public function set showSubmit(param1:Boolean) : void
+      public function set showSubmit(value:Boolean) : void
       {
-         if(_showSubmit == param1)
+         if(_showSubmit == value)
          {
             return;
          }
-         _showSubmit = param1;
+         _showSubmit = value;
          fireChange();
       }
       
@@ -341,13 +341,13 @@ package com.pickgliss.ui.vo
          return _submitLabel;
       }
       
-      public function set submitLabel(param1:String) : void
+      public function set submitLabel(value:String) : void
       {
-         if(_submitLabel == param1)
+         if(_submitLabel == value)
          {
             return;
          }
-         _submitLabel = param1;
+         _submitLabel = value;
          fireChange();
       }
       
@@ -356,13 +356,13 @@ package com.pickgliss.ui.vo
          return _textShowHeight;
       }
       
-      public function set textShowHeight(param1:int) : void
+      public function set textShowHeight(value:int) : void
       {
-         if(_textShowHeight == param1)
+         if(_textShowHeight == value)
          {
             return;
          }
-         _textShowHeight = param1;
+         _textShowHeight = value;
          fireChange();
       }
       
@@ -371,13 +371,13 @@ package com.pickgliss.ui.vo
          return _textShowWidth;
       }
       
-      public function set textShowWidth(param1:int) : void
+      public function set textShowWidth(value:int) : void
       {
-         if(_textShowWidth == param1)
+         if(_textShowWidth == value)
          {
             return;
          }
-         _textShowWidth = param1;
+         _textShowWidth = value;
          fireChange();
       }
       
@@ -386,13 +386,13 @@ package com.pickgliss.ui.vo
          return _title;
       }
       
-      public function set title(param1:String) : void
+      public function set title(value:String) : void
       {
-         if(_title == param1)
+         if(_title == value)
          {
             return;
          }
-         _title = param1;
+         _title = value;
          fireChange();
       }
       
@@ -401,13 +401,13 @@ package com.pickgliss.ui.vo
          return _soundID;
       }
       
-      public function set sound(param1:*) : void
+      public function set sound(soundid:*) : void
       {
-         if(_soundID == param1)
+         if(_soundID == soundid)
          {
             return;
          }
-         _soundID = param1;
+         _soundID = soundid;
          fireChange();
       }
       
@@ -421,9 +421,9 @@ package com.pickgliss.ui.vo
          return _customPos;
       }
       
-      public function set customPos(param1:Point) : void
+      public function set customPos(value:Point) : void
       {
-         _customPos = param1;
+         _customPos = value;
       }
       
       public function get logText() : String
@@ -431,9 +431,9 @@ package com.pickgliss.ui.vo
          return _logText;
       }
       
-      public function set logText(param1:String) : void
+      public function set logText(value:String) : void
       {
-         _logText = param1;
+         _logText = value;
       }
       
       public function get selectBtnY() : int
@@ -441,9 +441,9 @@ package com.pickgliss.ui.vo
          return _selectBtnY;
       }
       
-      public function set selectBtnY(param1:int) : void
+      public function set selectBtnY(value:int) : void
       {
-         _selectBtnY = param1;
+         _selectBtnY = value;
       }
    }
 }

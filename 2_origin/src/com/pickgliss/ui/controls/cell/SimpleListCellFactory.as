@@ -17,20 +17,20 @@ package com.pickgliss.ui.controls.cell
       
       private var _shareCells:Boolean;
       
-      public function SimpleListCellFactory(param1:String, param2:int, param3:int = -1, param4:String = "true", param5:String = "true")
+      public function SimpleListCellFactory(cellStyle:String, cellHeight:int, viewWidthNoCount:int = -1, allCellHasSameHeight:String = "true", shareCells:String = "true")
       {
          super();
-         _cellStyle = param1;
-         _allCellHasSameHeight = StringUtils.converBoolean(param4);
-         _shareCells = StringUtils.converBoolean(param5);
-         _cellHeight = param2;
-         _ViewWidthNoCount = param3;
+         _cellStyle = cellStyle;
+         _allCellHasSameHeight = StringUtils.converBoolean(allCellHasSameHeight);
+         _shareCells = StringUtils.converBoolean(shareCells);
+         _cellHeight = cellHeight;
+         _ViewWidthNoCount = viewWidthNoCount;
       }
       
       public function createNewCell() : IListCell
       {
-         var _loc1_:IListCell = ComponentFactory.Instance.creat(_cellStyle);
-         return _loc1_;
+         var cell:IListCell = ComponentFactory.Instance.creat(_cellStyle);
+         return cell;
       }
       
       public function getCellHeight() : int

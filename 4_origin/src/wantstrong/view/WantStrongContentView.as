@@ -38,17 +38,17 @@ package wantstrong.view
          addChild(_scrollPanel);
       }
       
-      public function setData(param1:* = null) : void
+      public function setData(val:* = null) : void
       {
-         var _loc3_:* = null;
+         var wantStrongDetail:* = null;
          var _loc5_:int = 0;
-         var _loc4_:* = param1;
-         for each(var _loc2_ in param1)
+         var _loc4_:* = val;
+         for each(var item in val)
          {
-            if(PlayerManager.Instance.Self.Grade >= _loc2_.needLevel)
+            if(PlayerManager.Instance.Self.Grade >= item.needLevel)
             {
-               _loc3_ = ComponentFactory.Instance.creatCustomObject("wantstrong.WantStrongDetail",[_loc2_]);
-               _content.addChild(_loc3_);
+               wantStrongDetail = ComponentFactory.Instance.creatCustomObject("wantstrong.WantStrongDetail",[item]);
+               _content.addChild(wantStrongDetail);
             }
          }
          _scrollPanel.invalidateViewport();

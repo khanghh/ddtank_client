@@ -46,8 +46,14 @@ package texpSystem.controller
       
       public var texpType:int = 20;
       
-      public function TexpManager(param1:TexpManagerEnforcer)
+      private var _changeProperties:Array;
+      
+      private var _texpType:Array;
+      
+      public function TexpManager(enforcer:TexpManagerEnforcer)
       {
+         _changeProperties = ["hpTexpExp","attTexpExp","defTexpExp","spdTexpExp","lukTexpExp","magicAtkTexpExp","magicDefTexpExp","critTexpExp","sunderArmorTexpExp","critDmgTexpExp","speedTexpExp","uniqueSkillTexpExp","dmgTexpExp","armorDefTexpExp"];
+         _texpType = [0,1,2,3,4,5,6,7,8,9,10,11,12,13];
          super();
       }
       
@@ -60,20 +66,20 @@ package texpSystem.controller
          return _instance;
       }
       
-      public function setup(param1:TexpExpAnalyze) : void
+      public function setup(analyzer:TexpExpAnalyze) : void
       {
-         _texpExp = param1.list;
+         _texpExp = analyzer.list;
          PlayerManager.Instance.Self.addEventListener("propertychange",__onChange);
          _isShow = new Dictionary();
       }
       
-      public function showTexpView(param1:String, param2:Sprite) : void
+      public function showTexpView($type:String, $parent:Sprite) : void
       {
-         cevent = new CEvent(param1,{
+         cevent = new CEvent($type,{
             "type":"openview",
-            "parent":param2
+            "parent":$parent
          });
-         AssetModuleLoader.addModelLoader("ddttexpsystem",6);
+         AssetModuleLoader.addModelLoader("ddttexpsystem",7);
          AssetModuleLoader.startCodeLoader(loadComplete);
       }
       
@@ -83,32 +89,32 @@ package texpSystem.controller
          _isShow[cevent.type] = true;
       }
       
-      public function closeTexpView(param1:String) : void
+      public function closeTexpView($type:String) : void
       {
-         dispatchEvent(new CEvent(param1,{"type":"closeView"}));
+         dispatchEvent(new CEvent($type,{"type":"closeView"}));
       }
       
-      public function changeInfo(param1:String, param2:*) : void
+      public function changeInfo($type:String, data:*) : void
       {
-         dispatchEvent(new CEvent(param1,{
+         dispatchEvent(new CEvent($type,{
             "type":"changeinfo",
-            "info":param2
+            "info":data
          }));
       }
       
-      public function changeVisible(param1:String, param2:Boolean) : void
+      public function changeVisible($type:String, value:Boolean) : void
       {
-         dispatchEvent(new CEvent(param1,{
+         dispatchEvent(new CEvent($type,{
             "type":"changevisible",
-            "visible":param2
+            "visible":value
          }));
       }
       
-      public function shine(param1:Boolean) : void
+      public function shine(value:Boolean) : void
       {
          dispatchEvent(new CEvent("texpView",{
             "type":"shine",
-            "shine":param1
+            "shine":value
          }));
       }
       
@@ -117,64 +123,63 @@ package texpSystem.controller
          dispatchEvent(new CEvent("texpView",{"type":"cleaninfo"}));
       }
       
-      public function isShow(param1:String) : Boolean
+      public function isShow(type:String) : Boolean
       {
-         return _isShow[param1];
+         return _isShow[type];
       }
       
-      public function getLv(param1:int) : int
+      public function getLv(exp:int) : int
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = 0;
-         var _loc2_:* = null;
-         _loc4_ = 1;
-         while(_loc4_ <= 75)
+         var i:int = 0;
+         var lv:* = 0;
+         var t:* = null;
+         for(i = 1; i <= 75; )
          {
-            _loc2_ = _texpExp[_loc4_];
-            if(param1 >= _loc2_.GP)
+            t = _texpExp[i];
+            if(exp >= t.GP)
             {
-               _loc3_ = _loc4_;
-               _loc4_++;
+               lv = i;
+               i++;
                continue;
             }
             break;
          }
-         return _loc3_;
+         return lv;
       }
       
-      public function getInfo(param1:int, param2:int) : TexpInfo
+      public function getInfo(type:int, exp:int) : TexpInfo
       {
-         var _loc4_:TexpInfo = new TexpInfo();
-         var _loc3_:int = getLv(param2);
-         _loc4_.type = param1;
-         _loc4_.lv = _loc3_;
-         if(_loc3_ == 0)
+         var info:TexpInfo = new TexpInfo();
+         var lv:int = getLv(exp);
+         info.type = type;
+         info.lv = lv;
+         if(lv == 0)
          {
-            _loc4_.currExp = param2;
-            _loc4_.currEffect = 0;
-            _loc4_.upExp = _texpExp[1].GP;
-            _loc4_.upEffect = getEffect(param1,_texpExp[_loc3_ + 1]);
+            info.currExp = exp;
+            info.currEffect = 0;
+            info.upExp = _texpExp[1].GP;
+            info.upEffect = getEffect(type,_texpExp[lv + 1]);
          }
-         else if(_loc3_ == 75)
+         else if(lv == 75)
          {
-            _loc4_.currExp = 0;
-            _loc4_.currEffect = getEffect(param1,_texpExp[_loc3_]);
-            _loc4_.upExp = 0;
-            _loc4_.upEffect = 0;
+            info.currExp = 0;
+            info.currEffect = getEffect(type,_texpExp[lv]);
+            info.upExp = 0;
+            info.upEffect = 0;
          }
          else
          {
-            _loc4_.currExp = param2 - _texpExp[_loc3_].GP;
-            _loc4_.currEffect = getEffect(param1,_texpExp[_loc3_]);
-            _loc4_.upExp = _texpExp[_loc3_ + 1].GP - _texpExp[_loc3_].GP;
-            _loc4_.upEffect = getEffect(param1,_texpExp[_loc3_ + 1]);
+            info.currExp = exp - _texpExp[lv].GP;
+            info.currEffect = getEffect(type,_texpExp[lv]);
+            info.upExp = _texpExp[lv + 1].GP - _texpExp[lv].GP;
+            info.upEffect = getEffect(type,_texpExp[lv + 1]);
          }
-         return _loc4_;
+         return info;
       }
       
-      public function getName(param1:int) : String
+      public function getName(type:int) : String
       {
-         switch(int(param1))
+         switch(int(type))
          {
             case 0:
                return LanguageMgr.GetTranslation("texpSystem.view.TexpView.hp");
@@ -190,135 +195,134 @@ package texpSystem.controller
                return LanguageMgr.GetTranslation("texpSystem.view.TexpView.magicAtk");
             case 6:
                return LanguageMgr.GetTranslation("texpSystem.view.TexpView.magicDef");
+            case 7:
+               return LanguageMgr.GetTranslation("texpSystem.view.TexpView.crit");
+            case 8:
+               return LanguageMgr.GetTranslation("texpSystem.view.TexpView.sunderArmor");
+            case 9:
+               return LanguageMgr.GetTranslation("texpSystem.view.TexpView.critDmg");
+            case 10:
+               return LanguageMgr.GetTranslation("texpSystem.view.TexpView.speed");
+            case 11:
+               return LanguageMgr.GetTranslation("texpSystem.view.TexpView.uniqueSkill");
+            case 12:
+               return LanguageMgr.GetTranslation("texpSystem.view.TexpView.dmg");
+            case 13:
+               return LanguageMgr.GetTranslation("texpSystem.view.TexpView.armorDef");
          }
       }
       
-      public function getExp(param1:int) : int
+      public function getExp(type:int) : int
       {
-         var _loc2_:SelfInfo = PlayerManager.Instance.Self;
-         switch(int(param1))
+         var self:SelfInfo = PlayerManager.Instance.Self;
+         switch(int(type))
          {
             case 0:
-               return _loc2_.hpTexpExp;
+               return self.hpTexpExp;
             case 1:
-               return _loc2_.attTexpExp;
+               return self.attTexpExp;
             case 2:
-               return _loc2_.defTexpExp;
+               return self.defTexpExp;
             case 3:
-               return _loc2_.spdTexpExp;
+               return self.spdTexpExp;
             case 4:
-               return _loc2_.lukTexpExp;
+               return self.lukTexpExp;
             case 5:
-               return _loc2_.magicAtkTexpExp;
+               return self.magicAtkTexpExp;
             case 6:
-               return _loc2_.magicDefTexpExp;
+               return self.magicDefTexpExp;
+            case 7:
+               return self.critTexpExp;
+            case 8:
+               return self.sunderArmorTexpExp;
+            case 9:
+               return self.critDmgTexpExp;
+            case 10:
+               return self.speedTexpExp;
+            case 11:
+               return self.uniqueSkillTexpExp;
+            case 12:
+               return self.dmgTexpExp;
+            case 13:
+               return self.armorDefTexpExp;
          }
       }
       
-      public function isXiuLianDaShi(param1:DictionaryData) : Boolean
+      public function isXiuLianDaShi(buffInfoData:DictionaryData) : Boolean
       {
-         var _loc2_:Boolean = false;
+         var resultBool:Boolean = false;
          var _loc5_:int = 0;
-         var _loc4_:* = param1;
-         for each(var _loc3_ in param1)
+         var _loc4_:* = buffInfoData;
+         for each(var buff in buffInfoData)
          {
-            if(_loc3_ && _loc3_.buffItemInfo && _loc3_.buffItemInfo.TemplateID == 11911)
+            if(buff && buff.buffItemInfo && buff.buffItemInfo.TemplateID == 11911)
             {
-               _loc2_ = true;
+               resultBool = true;
                break;
             }
          }
-         return _loc2_;
+         return resultBool;
       }
       
-      private function getEffect(param1:int, param2:TexpExp) : int
+      private function getEffect(type:int, exp:TexpExp) : int
       {
-         switch(int(param1))
+         switch(int(type))
          {
             case 0:
-               return param2.ExerciseH;
+               return exp.ExerciseH;
             case 1:
-               return param2.ExerciseA;
+               return exp.ExerciseA;
             case 2:
-               return param2.ExerciseD;
+               return exp.ExerciseD;
             case 3:
-               return param2.ExerciseAG;
+               return exp.ExerciseAG;
             case 4:
-               return param2.ExerciseL;
+               return exp.ExerciseL;
             case 5:
-               return param2.ExerciseMA;
+               return exp.ExerciseMA;
             case 6:
-               return param2.ExerciseMD;
+               return exp.ExerciseMD;
+            case 7:
+               return exp.TrainCrit;
+            case 8:
+               return exp.TrainSunder;
+            case 9:
+               return exp.TrainCritDmg;
+            case 10:
+               return exp.TrainSpeed;
+            case 11:
+               return exp.TrainTricKill;
+            case 12:
+               return exp.TrainDmg;
+            case 13:
+               return exp.TrainArmor;
          }
       }
       
-      private function isUp(param1:int, param2:int) : Boolean
+      private function isUp(type:int, oldExp:int) : Boolean
       {
-         var _loc3_:int = getExp(param1);
-         if(getLv(_loc3_) > getLv(param2))
+         var exp:int = getExp(type);
+         if(getLv(exp) > getLv(oldExp))
          {
             return true;
          }
          return false;
       }
       
-      private function __onChange(param1:PlayerPropertyEvent) : void
+      private function __onChange(evt:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["hpTexpExp"])
+         var i:int = 0;
+         for(i = 0; i < _changeProperties.length; )
          {
-            dispatchEvent(new TexpEvent("texpHp"));
-            if(isUp(0,param1.lastValue["hpTexpExp"]))
+            if(evt.changedProperties[_changeProperties[i]])
             {
-               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("texpSystem.view.TexpView.up",getName(0)));
+               dispatchEvent(new TexpEvent("texpproperty",_texpType[i]));
+               if(isUp(_texpType[i],evt.lastValue[_changeProperties[i]]))
+               {
+                  MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("texpSystem.view.TexpView.up",getName(_texpType[i])));
+               }
             }
-         }
-         if(param1.changedProperties["attTexpExp"])
-         {
-            dispatchEvent(new TexpEvent("texpAtt"));
-            if(isUp(1,param1.lastValue["attTexpExp"]))
-            {
-               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("texpSystem.view.TexpView.up",getName(1)));
-            }
-         }
-         if(param1.changedProperties["defTexpExp"])
-         {
-            dispatchEvent(new TexpEvent("texpDef"));
-            if(isUp(2,param1.lastValue["defTexpExp"]))
-            {
-               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("texpSystem.view.TexpView.up",getName(2)));
-            }
-         }
-         if(param1.changedProperties["spdTexpExp"])
-         {
-            dispatchEvent(new TexpEvent("texpSpd"));
-            if(isUp(3,param1.lastValue["spdTexpExp"]))
-            {
-               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("texpSystem.view.TexpView.up",getName(3)));
-            }
-         }
-         if(param1.changedProperties["lukTexpExp"])
-         {
-            dispatchEvent(new TexpEvent("texpLuk"));
-            if(isUp(4,param1.lastValue["lukTexpExp"]))
-            {
-               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("texpSystem.view.TexpView.up",getName(4)));
-            }
-         }
-         if(param1.changedProperties["magicAtkTexpExp"])
-         {
-            dispatchEvent(new TexpEvent("texpMagicAtk"));
-            if(isUp(5,param1.lastValue["magicAtkTexpExp"]))
-            {
-               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("texpSystem.view.TexpView.up",getName(5)));
-            }
-         }
-         if(param1.changedProperties["magicDefTexpExp"])
-         {
-            dispatchEvent(new TexpEvent("texpMagicDef"));
-            if(isUp(6,param1.lastValue["magicDefTexpExp"]))
-            {
-               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("texpSystem.view.TexpView.up",getName(6)));
-            }
+            i++;
          }
       }
    }

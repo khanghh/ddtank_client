@@ -20,10 +20,10 @@ package cardSystem
       
       public var data:Object;
       
-      public function CardSocketEvent(param1:String, param2:Object = null)
+      public function CardSocketEvent(type:String, $data:Object = null)
       {
-         super(param1);
-         data = param2;
+         super(type);
+         data = $data;
       }
    }
 }

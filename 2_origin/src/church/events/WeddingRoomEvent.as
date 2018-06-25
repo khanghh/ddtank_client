@@ -22,10 +22,10 @@ package church.events
       
       public var data:Object;
       
-      public function WeddingRoomEvent(param1:String, param2:Object = null)
+      public function WeddingRoomEvent(type:String, data:Object = null)
       {
-         this.data = param2;
-         super(param1);
+         this.data = data;
+         super(type);
       }
    }
 }

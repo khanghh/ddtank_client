@@ -35,10 +35,10 @@ package gameCommon.view.prop
       
       private var _tipStyle:String;
       
-      public function PropLayerButton(param1:int)
+      public function PropLayerButton(mode:int)
       {
          super();
-         _mode = param1;
+         _mode = mode;
          configUI();
          addEvent();
          buttonMode = true;
@@ -56,7 +56,7 @@ package gameCommon.view.prop
          removeEventListener("mouseOut",__mouseOut);
       }
       
-      private function __mouseOut(param1:MouseEvent) : void
+      private function __mouseOut(evt:MouseEvent) : void
       {
          if(_shine && _shine.parent)
          {
@@ -65,7 +65,7 @@ package gameCommon.view.prop
          _mouseOver = false;
       }
       
-      public function set enabled(param1:Boolean) : void
+      public function set enabled(val:Boolean) : void
       {
       }
       
@@ -74,7 +74,7 @@ package gameCommon.view.prop
          return true;
       }
       
-      private function __mouseOver(param1:MouseEvent) : void
+      private function __mouseOver(evt:MouseEvent) : void
       {
          if(_shine)
          {
@@ -96,10 +96,10 @@ package gameCommon.view.prop
          _shine.x = _loc1_;
       }
       
-      public function setMode(param1:int) : void
+      public function setMode(mode:int) : void
       {
-         tipData = LanguageMgr.GetTranslation("tank.game.ToolStripView.proplayer" + param1);
-         DisplayUtils.setFrame(_background,param1);
+         tipData = LanguageMgr.GetTranslation("tank.game.ToolStripView.proplayer" + mode);
+         DisplayUtils.setFrame(_background,mode);
          if(_mouseOver)
          {
             ShowTipManager.Instance.showTip(this);
@@ -131,9 +131,9 @@ package gameCommon.view.prop
          return _tipData;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
-         _tipData = param1.toString();
+         _tipData = value.toString();
       }
       
       public function get tipDirctions() : String
@@ -141,9 +141,9 @@ package gameCommon.view.prop
          return _tipDirction;
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
-         _tipDirction = param1;
+         _tipDirction = value;
       }
       
       public function get tipGapH() : int
@@ -151,9 +151,9 @@ package gameCommon.view.prop
          return _tipGapH;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
-         _tipGapH = param1;
+         _tipGapH = value;
       }
       
       public function get tipGapV() : int
@@ -161,9 +161,9 @@ package gameCommon.view.prop
          return _tipGapV;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
-         _tipGapV = param1;
+         _tipGapV = value;
       }
       
       public function get tipStyle() : String
@@ -171,9 +171,9 @@ package gameCommon.view.prop
          return _tipStyle;
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
-         _tipStyle = param1;
+         _tipStyle = value;
       }
       
       public function asDisplayObject() : DisplayObject

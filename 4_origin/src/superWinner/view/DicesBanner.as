@@ -14,38 +14,36 @@ package superWinner.view
       
       private var _space:Number;
       
-      public function DicesBanner(param1:Number = 37.8)
+      public function DicesBanner(space:Number = 37.8)
       {
          _diceArr = new Vector.<MovieClip>(6,true);
          super();
-         _space = param1;
+         _space = space;
          init();
       }
       
       private function init() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < 6)
+         var i:int = 0;
+         var dice:* = null;
+         for(i = 0; i < 6; )
          {
-            _loc1_ = ComponentFactory.Instance.creat("asset.superWinner.smallDice");
-            _loc1_.x = _loc2_ * _space;
-            _loc1_.gotoAndStop(6);
-            _diceArr[_loc2_] = _loc1_;
-            addChild(_loc1_);
-            _loc2_++;
+            dice = ComponentFactory.Instance.creat("asset.superWinner.smallDice");
+            dice.x = i * _space;
+            dice.gotoAndStop(6);
+            _diceArr[i] = dice;
+            addChild(dice);
+            i++;
          }
       }
       
-      public function showLastDices(param1:Vector.<int>) : void
+      public function showLastDices(val:Vector.<int>) : void
       {
-         var _loc2_:* = 0;
-         _loc2_ = uint(0);
-         while(_loc2_ < 6)
+         var i:* = 0;
+         for(i = uint(0); i < 6; )
          {
-            _diceArr[_loc2_].gotoAndStop(param1[_loc2_]);
-            _loc2_++;
+            _diceArr[i].gotoAndStop(val[i]);
+            i++;
          }
       }
       

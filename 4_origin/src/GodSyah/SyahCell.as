@@ -13,9 +13,9 @@ package GodSyah
          super(ComponentFactory.Instance.creatBitmap("wonderfulactivity.GodSyah.syahView.itemcell"));
       }
       
-      override public function set info(param1:ItemTemplateInfo) : void
+      override public function set info(value:ItemTemplateInfo) : void
       {
-         .super.info = param1;
+         .super.info = value;
       }
       
       override public function dispose() : void

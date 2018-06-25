@@ -50,13 +50,13 @@ package changeColor.view
       
       override protected function init() : void
       {
-         var _loc1_:* = null;
+         var rec:* = null;
          super.init();
          _changeColorLeftView = new ChangeColorLeftView();
          addToContent(_changeColorLeftView);
          _changeColorRightView = new ChangeColorRightView();
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("changeColor.rightViewRec");
-         ObjectUtils.copyPropertyByRectangle(_changeColorRightView,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("changeColor.rightViewRec");
+         ObjectUtils.copyPropertyByRectangle(_changeColorRightView,rec);
          addToContent(_changeColorRightView);
          addEvent();
       }
@@ -73,9 +73,9 @@ package changeColor.view
          removeEventListener("response",__frameEventHandler);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -85,18 +85,18 @@ package changeColor.view
          }
       }
       
-      private function __cellClickHandler(param1:ChangeColorCellEvent) : void
+      private function __cellClickHandler(evt:ChangeColorCellEvent) : void
       {
-         if(param1.data)
+         if(evt.data)
          {
-            _changeColorLeftView.setCurrentItem(param1.data);
+            _changeColorLeftView.setCurrentItem(evt.data);
          }
       }
       
-      private function __useCardHandler(param1:PkgEvent) : void
+      private function __useCardHandler(evt:PkgEvent) : void
       {
-         var _loc2_:Boolean = param1.pkg.readBoolean();
-         if(_loc2_)
+         var state:Boolean = evt.pkg.readBoolean();
+         if(state)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.im.IMController.success"));
          }

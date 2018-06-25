@@ -4,9 +4,9 @@ package BombTurnTable.view.quality
    {
        
       
-      public function WhiteTurnTable(param1:int)
+      public function WhiteTurnTable(status:int)
       {
-         super(param1);
+         super(status);
       }
       
       override protected function get bgBorResource() : String

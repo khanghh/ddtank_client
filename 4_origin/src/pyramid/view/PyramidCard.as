@@ -42,10 +42,10 @@ package pyramid.view
          initData();
       }
       
-      private function mouseMode(param1:Boolean) : void
+      private function mouseMode(bool:Boolean) : void
       {
-         this.buttonMode = param1;
-         this.mouseEnabled = param1;
+         this.buttonMode = bool;
+         this.mouseEnabled = bool;
       }
       
       private function initEvent() : void
@@ -70,7 +70,7 @@ package pyramid.view
          _openCardMovie.gotoAndStop(_openCardMovie.totalFrames - 1);
       }
       
-      private function __enterFrame(param1:Event) : void
+      private function __enterFrame(event:Event) : void
       {
          if(_openMovieState == 1)
          {
@@ -99,10 +99,10 @@ package pyramid.view
          }
       }
       
-      public function cardState(param1:int, param2:PyramidSystemItemsInfo = null) : void
+      public function cardState(type:int, itemInfo:PyramidSystemItemsInfo = null) : void
       {
-         _state = param1;
-         cellInfo(param2);
+         _state = type;
+         cellInfo(itemInfo);
          switch(int(_state))
          {
             case 0:
@@ -135,14 +135,14 @@ package pyramid.view
          }
       }
       
-      private function cellInfo(param1:PyramidSystemItemsInfo) : void
+      private function cellInfo(itemInfo:PyramidSystemItemsInfo) : void
       {
-         var _loc2_:* = null;
-         if(param1)
+         var tInfo:* = null;
+         if(itemInfo)
          {
-            _loc2_ = PyramidManager.instance.model.getInventoryItemInfo(param1);
+            tInfo = PyramidManager.instance.model.getInventoryItemInfo(itemInfo);
          }
-         _cell.info = _loc2_;
+         _cell.info = tInfo;
       }
       
       public function get state() : int

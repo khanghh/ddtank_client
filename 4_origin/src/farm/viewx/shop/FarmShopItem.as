@@ -37,6 +37,7 @@ package farm.viewx.shop
       public function FarmShopItem()
       {
          super();
+         FarmShopTips;
          initContent();
          addEvent();
       }
@@ -50,11 +51,11 @@ package farm.viewx.shop
          _payPaneBuyBtnHotArea.graphics.beginFill(0,0);
          _payPaneBuyBtnHotArea.graphics.drawRect(0,0,78,96);
          _payPaneBuyBtnHotArea.mouseEnabled = false;
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,60,60);
-         _loc1_.graphics.endFill();
-         _itemCell = CellFactory.instance.createShopItemCell(_loc1_,null,true,true) as ShopItemCell;
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,60,60);
+         sp.graphics.endFill();
+         _itemCell = CellFactory.instance.createShopItemCell(sp,null,true,true) as ShopItemCell;
          _itemCell.cellSize = 50;
          PositionUtils.setPos(_itemCell,"farm.shopItem.pos");
          addChild(_itemBg);
@@ -73,30 +74,43 @@ package farm.viewx.shop
          _payPaneBuyBtnHotArea.addEventListener("mouseOut",__payPaneOut);
       }
       
-      protected function __payPaneOut(param1:MouseEvent) : void
+      protected function __payPaneOut(event:MouseEvent) : void
       {
          ShowTipManager.Instance.removeTip(_payPaneBuyBtn);
       }
       
-      protected function __payPaneOver(param1:MouseEvent) : void
+      protected function __payPaneOver(event:MouseEvent) : void
       {
+         var data:* = null;
+         if(_shopItemInfo == null)
+         {
+            return;
+         }
          if(_shopItemInfo && _shopItemInfo.LimitGrade > PlayerManager.Instance.Self.Grade)
          {
-            _payPaneBuyBtn.tipStyle = "ddt.view.tips.OneLineTip";
-            _payPaneBuyBtn.tipData = LanguageMgr.GetTranslation("ddt.shop.LimitGradeBuy",_shopItemInfo.LimitGrade);
+            _payPaneBuyBtn.tipStyle = "farm.viewx.shop.FarmShopTips";
+            data = {
+               "shopItemInfo":_shopItemInfo,
+               "limitTips":LanguageMgr.GetTranslation("ddt.shop.LimitGradeBuy",_shopItemInfo.LimitGrade)
+            };
+            _payPaneBuyBtn.tipData = data;
             _payPaneBuyBtn.tipDirctions = "3,7,6";
             ShowTipManager.Instance.showTip(_payPaneBuyBtn);
          }
          else if(!canBuyFert())
          {
-            _payPaneBuyBtn.tipStyle = "ddt.view.tips.OneLineTip";
-            _payPaneBuyBtn.tipData = LanguageMgr.GetTranslation("ddt.shop.MinBuyFertLevel",ServerConfigManager.instance.getPrivilegeMinLevel("8"));
+            _payPaneBuyBtn.tipStyle = "farm.viewx.shop.FarmShopTips";
+            data = {
+               "shopItemInfo":_shopItemInfo,
+               "limitTips":LanguageMgr.GetTranslation("ddt.shop.MinBuyFertLevel",ServerConfigManager.instance.getPrivilegeMinLevel("8"))
+            };
+            _payPaneBuyBtn.tipData = data;
             _payPaneBuyBtn.tipDirctions = "3,7,6";
             ShowTipManager.Instance.showTip(_payPaneBuyBtn);
          }
       }
       
-      protected function __overHandler(param1:MouseEvent) : void
+      protected function __overHandler(event:MouseEvent) : void
       {
          if(!_canBuy)
          {
@@ -105,7 +119,7 @@ package farm.viewx.shop
          filters = null;
       }
       
-      protected function __outhandler(param1:MouseEvent) : void
+      protected function __outhandler(event:MouseEvent) : void
       {
          if(!_canBuy)
          {
@@ -122,16 +136,16 @@ package farm.viewx.shop
          _payPaneBuyBtnHotArea.removeEventListener("mouseOut",__payPaneOut);
       }
       
-      public function set shopItemInfo(param1:ShopItemInfo) : void
+      public function set shopItemInfo(value:ShopItemInfo) : void
       {
-         if(_shopItemInfo == param1)
+         if(_shopItemInfo == value)
          {
             return;
          }
-         _shopItemInfo = param1;
-         if(param1)
+         _shopItemInfo = value;
+         if(value)
          {
-            _itemCell.info = param1.TemplateInfo;
+            _itemCell.info = value.TemplateInfo;
          }
          else
          {
@@ -179,9 +193,9 @@ package farm.viewx.shop
          }
       }
       
-      protected function __payPanelClick(param1:MouseEvent) : void
+      protected function __payPanelClick(event:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
          if(!_canBuy)
          {
             return;

@@ -47,10 +47,10 @@ package campbattle.view.rank
          addChild(_manNumTxt);
       }
       
-      public function setItemTxt(param1:Object) : void
+      public function setItemTxt(obj:Object) : void
       {
-         _scoreTxt.text = param1.score;
-         _manNumTxt.text = param1.roles + "/15";
+         _scoreTxt.text = obj.score;
+         _manNumTxt.text = obj.roles + "/15";
       }
       
       public function resetItemTxt() : void

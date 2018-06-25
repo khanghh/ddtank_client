@@ -62,10 +62,10 @@ package auctionHouse.view
       
       private function initView() : void
       {
-         var _loc1_:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("asset.auctionHouse.BuyBG");
-         addChild(_loc1_);
-         var _loc2_:MovieImage = ComponentFactory.Instance.creatComponentByStylename("ddtauction.sellItemBG5");
-         addChild(_loc2_);
+         var bg:ScaleBitmapImage = ComponentFactory.Instance.creatComponentByStylename("asset.auctionHouse.BuyBG");
+         addChild(bg);
+         var bg1:MovieImage = ComponentFactory.Instance.creatComponentByStylename("ddtauction.sellItemBG5");
+         addChild(bg1);
          _talbeline6 = ComponentFactory.Instance.creatBitmap("asset.ddtcore.TwotableLine");
          PositionUtils.setPos(_talbeline6,"asset.ddtauction.TwotableLine.pos");
          addChild(_talbeline6);
@@ -95,7 +95,7 @@ package auctionHouse.view
          _mouthfulTxt.x = 522;
          _tableline = ComponentFactory.Instance.creatBitmap("asset.ddtauction.tableLine");
          addChild(_tableline);
-         _tableline.x = 289;
+         _tableline.x = 279;
          _tableline1 = ComponentFactory.Instance.creatBitmap("asset.ddtauction.tableLine");
          addChild(_tableline1);
          _tableline1.x = 339;
@@ -125,13 +125,13 @@ package auctionHouse.view
       {
       }
       
-      function addAuction(param1:AuctionGoodsInfo) : void
+      function addAuction(info:AuctionGoodsInfo) : void
       {
-         var _loc2_:AuctionBuyStripView = new AuctionBuyStripView();
-         _loc2_.info = param1;
-         _loc2_.addEventListener("selectStrip",__selectStrip);
-         _strips.push(_loc2_);
-         _list.addChild(_loc2_);
+         var strip:AuctionBuyStripView = new AuctionBuyStripView();
+         strip.info = info;
+         strip.addEventListener("selectStrip",__selectStrip);
+         _strips.push(strip);
+         _list.addChild(strip);
          invalidatePanel();
       }
       
@@ -167,19 +167,18 @@ package auctionHouse.view
       
       function deleteItem() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _strips.length)
+         var i:int = 0;
+         for(i = 0; i < _strips.length; )
          {
-            if(_selectStrip == _strips[_loc1_])
+            if(_selectStrip == _strips[i])
             {
                _selectStrip.removeEventListener("selectStrip",__selectStrip);
                _selectStrip.dispose();
-               _strips.splice(_loc1_,1);
+               _strips.splice(i,1);
                _selectStrip = null;
                break;
             }
-            _loc1_++;
+            i++;
          }
       }
       
@@ -187,9 +186,9 @@ package auctionHouse.view
       {
          var _loc3_:int = 0;
          var _loc2_:* = _strips;
-         for each(var _loc1_ in _strips)
+         for each(var strip in _strips)
          {
-            if(_selectStrip == _loc1_)
+            if(_selectStrip == strip)
             {
                _selectStrip.removeEventListener("selectStrip",__selectStrip);
                _selectStrip.clearSelectStrip();
@@ -199,30 +198,30 @@ package auctionHouse.view
          }
       }
       
-      function updateAuction(param1:AuctionGoodsInfo) : void
+      function updateAuction(info:AuctionGoodsInfo) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _strips;
-         for each(var _loc2_ in _strips)
+         for each(var strip in _strips)
          {
-            if(_loc2_.info.AuctionID == param1.AuctionID)
+            if(strip.info.AuctionID == info.AuctionID)
             {
-               param1.BagItemInfo = _loc2_.info.BagItemInfo;
-               _loc2_.info = param1;
+               info.BagItemInfo = strip.info.BagItemInfo;
+               strip.info = info;
                break;
             }
          }
       }
       
-      private function __selectStrip(param1:AuctionHouseEvent) : void
+      private function __selectStrip(event:AuctionHouseEvent) : void
       {
          if(_selectStrip)
          {
             _selectStrip.isSelect = false;
          }
-         var _loc2_:AuctionBuyStripView = param1.target as AuctionBuyStripView;
-         _loc2_.isSelect = true;
-         _selectStrip = _loc2_;
+         var strip:AuctionBuyStripView = event.target as AuctionBuyStripView;
+         strip.isSelect = true;
+         _selectStrip = strip;
          dispatchEvent(new AuctionHouseEvent("selectStrip"));
       }
       
@@ -246,13 +245,13 @@ package auctionHouse.view
          _list = null;
          var _loc3_:int = 0;
          var _loc2_:* = _strips;
-         for each(var _loc1_ in _strips)
+         for each(var strip in _strips)
          {
-            if(_loc1_)
+            if(strip)
             {
-               ObjectUtils.disposeObject(_loc1_);
+               ObjectUtils.disposeObject(strip);
             }
-            _loc1_ = null;
+            strip = null;
          }
          _strips = null;
          ObjectUtils.disposeAllChildren(this);

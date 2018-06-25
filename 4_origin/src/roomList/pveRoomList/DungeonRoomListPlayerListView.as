@@ -14,14 +14,14 @@ package roomList.pveRoomList
    {
        
       
-      public function DungeonRoomListPlayerListView(param1:DictionaryData)
+      public function DungeonRoomListPlayerListView(data:DictionaryData)
       {
-         super(param1);
+         super(data);
       }
       
       override protected function initbg() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _characterBg = ClassUtils.CreatInstance("asset.ddtroomlist.pve.characterbg") as MovieClip;
          PositionUtils.setPos(_characterBg,"asset.ddtRoomlist.pvp.left.characterbgpos");
          addChild(_characterBg);
@@ -32,15 +32,14 @@ package roomList.pveRoomList
          addChild(_listbg2);
          PositionUtils.setPos(_listbg2,"asset.ddtRoomlist.pve.listbgPos");
          _buffbgVec = new Vector.<Bitmap>(6);
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("asset.ddtRoomlist.pvp.buffbgpos");
-         _loc2_ = 0;
-         while(_loc2_ < 6)
+         var startPos:Point = ComponentFactory.Instance.creatCustomObject("asset.ddtRoomlist.pvp.buffbgpos");
+         for(i = 0; i < 6; )
          {
-            _buffbgVec[_loc2_] = ComponentFactory.Instance.creatBitmap("asset.ddtroomlist.pve.propCellBg");
-            _buffbgVec[_loc2_].x = _loc1_.x + (_buffbgVec[_loc2_].width - 1) * _loc2_;
-            _buffbgVec[_loc2_].y = _loc1_.y;
-            addChild(_buffbgVec[_loc2_]);
-            _loc2_++;
+            _buffbgVec[i] = ComponentFactory.Instance.creatBitmap("asset.ddtroomlist.pve.propCellBg");
+            _buffbgVec[i].x = startPos.x + (_buffbgVec[i].width - 1) * i;
+            _buffbgVec[i].y = startPos.y;
+            addChild(_buffbgVec[i]);
+            i++;
          }
       }
       

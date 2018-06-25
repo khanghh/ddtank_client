@@ -30,13 +30,13 @@ package cityBattle.view
       
       private var _cityName:Bitmap;
       
-      public function CastellanBuilding(param1:int)
+      public function CastellanBuilding(type:int)
       {
          super();
-         var _loc2_:CastellanInfo = CityBattleManager.instance.castellanList[param1 - 1];
-         building = ClassUtils.CreatInstance("asset.cityBattle.building" + String(param1));
+         var info:CastellanInfo = CityBattleManager.instance.castellanList[type - 1];
+         building = ClassUtils.CreatInstance("asset.cityBattle.building" + String(type));
          addChild(building);
-         if(param1 == CityBattleManager.instance.now)
+         if(type == CityBattleManager.instance.now)
          {
             building.gotoAndStop(2);
          }
@@ -46,34 +46,34 @@ package cityBattle.view
          }
          control = ClassUtils.CreatInstance("asset.cityBattle.control");
          addChild(control);
-         PositionUtils.setPos(control,"castellan.control" + String(param1) + "Pos");
-         control.gotoAndStop(_loc2_.side + 1);
-         _cityName = ComponentFactory.Instance.creatBitmap("asset.cityBattle.buildingName" + String(param1));
+         PositionUtils.setPos(control,"castellan.control" + String(type) + "Pos");
+         control.gotoAndStop(info.side + 1);
+         _cityName = ComponentFactory.Instance.creatBitmap("asset.cityBattle.buildingName" + String(type));
          addChild(_cityName);
-         if(_loc2_.winner)
+         if(info.winner)
          {
-            _character = CharactoryFactory.createCharacter(_loc2_.winner,"room") as RoomCharacter;
+            _character = CharactoryFactory.createCharacter(info.winner,"room") as RoomCharacter;
             _character.showGun = false;
             _character.show(false,-1);
             addChild(_character);
-            PositionUtils.setPos(_character,"castellan.character" + String(param1) + "Pos");
+            PositionUtils.setPos(_character,"castellan.character" + String(type) + "Pos");
             _character.mouseEnabled = true;
             _character.addEventListener("mouseOver",overHandler);
             _character.addEventListener("mouseOut",outHandler);
             _tip = new OneLineTip();
-            _tip.tipData = LanguageMgr.GetTranslation("ddt.cityBattle.winnerInfo.tips",_loc2_.winner.NickName,_loc2_.winner.zoneName,_loc2_.winner.Grade);
+            _tip.tipData = LanguageMgr.GetTranslation("ddt.cityBattle.winnerInfo.tips",info.winner.NickName,info.winner.zoneName,info.winner.Grade);
             _tip.x = _character.x;
             _tip.visible = false;
             addChild(_tip);
          }
       }
       
-      private function overHandler(param1:MouseEvent) : void
+      private function overHandler(e:MouseEvent) : void
       {
          _tip.visible = true;
       }
       
-      private function outHandler(param1:MouseEvent) : void
+      private function outHandler(e:MouseEvent) : void
       {
          _tip.visible = false;
       }

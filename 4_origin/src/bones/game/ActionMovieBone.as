@@ -10,17 +10,17 @@ package bones.game
       
       private var _movie:BoneMovieWrapper;
       
-      public function ActionMovieBone(param1:String)
+      public function ActionMovieBone(styleName:String)
       {
          super();
          touchable = false;
-         _movie = new BoneMovieWrapper(param1);
+         _movie = new BoneMovieWrapper(styleName);
          addChild(_movie.asDisplay);
       }
       
-      public function doAction(param1:String, param2:Function = null, param3:Array = null) : void
+      public function doAction(type:String, callBack:Function = null, args:Array = null) : void
       {
-         _movie.playAction(param1,param2,param3);
+         _movie.playAction(type,callBack,args);
       }
       
       public function get boneMovie() : BoneMovieWrapper
@@ -33,9 +33,9 @@ package bones.game
          return _movie.movie.currentLabel;
       }
       
-      public function setActionMapping(param1:String, param2:String) : void
+      public function setActionMapping(source:String, target:String) : void
       {
-         _movie.setActionMapping(param1,param2);
+         _movie.setActionMapping(source,target);
       }
       
       override public function dispose() : void

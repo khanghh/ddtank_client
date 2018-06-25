@@ -41,9 +41,9 @@ package ddt.manager
          return _landersAwardOfficial;
       }
       
-      public function set landersAwardOfficial(param1:Boolean) : void
+      public function set landersAwardOfficial(value:Boolean) : void
       {
-         _landersAwardOfficial = param1;
+         _landersAwardOfficial = value;
          checkShowIcon();
       }
       
@@ -52,10 +52,10 @@ package ddt.manager
          SocketManager.Instance.addEventListener(PkgEvent.format(404,48),__onIsReceiveAward);
       }
       
-      protected function __onIsReceiveAward(param1:PkgEvent) : void
+      protected function __onIsReceiveAward(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _getFlag = _loc2_.readBoolean();
+         var pkg:PackageIn = event.pkg;
+         _getFlag = pkg.readBoolean();
          checkShowIcon();
       }
       
@@ -79,9 +79,9 @@ package ddt.manager
          }
       }
       
-      public function createEntryBtn(param1:HBox) : void
+      public function createEntryBtn(hBox:HBox) : void
       {
-         _hBox = param1;
+         _hBox = hBox;
          if(landersAwardOfficial && !_getFlag)
          {
             if(!_landersBtn)
@@ -95,7 +95,7 @@ package ddt.manager
          }
       }
       
-      protected function __onGetAward(param1:MouseEvent) : void
+      protected function __onGetAward(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(DesktopManager.Instance.landersAwardFlag || DesktopManager.Instance.isDesktop)

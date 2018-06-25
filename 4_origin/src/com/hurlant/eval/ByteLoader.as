@@ -21,11 +21,11 @@ package com.hurlant.eval
          super();
       }
       
-      public static function getType(param1:ByteArray) : int
+      public static function getType(data:ByteArray) : int
       {
-         param1.endian = "littleEndian";
-         var _loc2_:uint = param1.readUnsignedInt();
-         switch(_loc2_)
+         data.endian = "littleEndian";
+         var version:uint = data.readUnsignedInt();
+         switch(version)
          {
             case 46 << 16 | 14:
             case 46 << 16 | 15:
@@ -48,61 +48,51 @@ package com.hurlant.eval
          }
       }
       
-      public static function wrapInSWF(param1:Array) : ByteArray
+      public static function wrapInSWF(bytes:Array) : ByteArray
       {
-         var _loc4_:ByteArray = null;
-         var _loc5_:int = 0;
-         var _loc2_:ByteArray = new ByteArray();
-         _loc2_.endian = Endian.LITTLE_ENDIAN;
-         var _loc3_:int = 0;
-         while(_loc3_ < swf_start.length)
+         var abc:ByteArray = null;
+         var j:int = 0;
+         var out:ByteArray = new ByteArray();
+         out.endian = Endian.LITTLE_ENDIAN;
+         for(var i:int = 0; i < swf_start.length; i++)
          {
-            _loc2_.writeByte(swf_start[_loc3_]);
-            _loc3_++;
+            out.writeByte(swf_start[i]);
          }
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         for(i = 0; i < bytes.length; i++)
          {
-            _loc4_ = param1[_loc3_];
-            _loc5_ = 0;
-            while(_loc5_ < abc_header.length)
+            abc = bytes[i];
+            for(j = 0; j < abc_header.length; j++)
             {
-               _loc2_.writeByte(abc_header[_loc5_]);
-               _loc5_++;
+               out.writeByte(abc_header[j]);
             }
-            _loc2_.writeInt(_loc4_.length);
-            _loc2_.writeBytes(_loc4_,0,_loc4_.length);
-            _loc3_++;
+            out.writeInt(abc.length);
+            out.writeBytes(abc,0,abc.length);
          }
-         _loc3_ = 0;
-         while(_loc3_ < swf_end.length)
+         for(i = 0; i < swf_end.length; i++)
          {
-            _loc2_.writeByte(swf_end[_loc3_]);
-            _loc3_++;
+            out.writeByte(swf_end[i]);
          }
-         _loc2_.position = 4;
-         _loc2_.writeInt(_loc2_.length);
-         _loc2_.position = 0;
-         return _loc2_;
+         out.position = 4;
+         out.writeInt(out.length);
+         out.position = 0;
+         return out;
       }
       
-      public static function isSWF(param1:ByteArray) : Boolean
+      public static function isSWF(data:ByteArray) : Boolean
       {
-         var _loc2_:int = getType(param1);
-         return (_loc2_ & 1) == 1;
+         var type:int = getType(data);
+         return (type & 1) == 1;
       }
       
-      public static function loadBytes(param1:*, param2:Boolean = false) : Boolean
+      public static function loadBytes(bytes:*, inplace:Boolean = false) : Boolean
       {
          var c:LoaderContext = null;
          var l:Loader = null;
-         var bytes:* = param1;
-         var inplace:Boolean = param2;
          if(bytes is Array || getType(bytes) == 2)
          {
             if(!(bytes is Array))
             {
-               bytes = [bytes];
+               var bytes:* = [bytes];
             }
             bytes = wrapInSWF(bytes);
          }

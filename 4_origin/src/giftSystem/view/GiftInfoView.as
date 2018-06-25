@@ -31,13 +31,13 @@ package giftSystem.view
          addChild(_giftAndRecord);
       }
       
-      public function set info(param1:PlayerInfo) : void
+      public function set info(value:PlayerInfo) : void
       {
-         if(_info == param1)
+         if(_info == value)
          {
             return;
          }
-         _info = param1;
+         _info = value;
          _banner.info = _info;
          _giftAndRecord.info = _info;
       }

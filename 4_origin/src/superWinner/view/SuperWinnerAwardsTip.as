@@ -50,11 +50,11 @@ package superWinner.view
          return _tipWidth;
       }
       
-      public function set tipWidth(param1:int) : void
+      public function set tipWidth(w:int) : void
       {
-         if(_tipWidth != param1)
+         if(_tipWidth != w)
          {
-            _tipWidth = param1;
+            _tipWidth = w;
             updateTransform();
          }
       }
@@ -64,7 +64,7 @@ package superWinner.view
          return _bg.height;
       }
       
-      public function set tipHeight(param1:int) : void
+      public function set tipHeight(h:int) : void
       {
       }
       
@@ -73,9 +73,9 @@ package superWinner.view
          return _data;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(data:Object) : void
       {
-         _data = param1;
+         _data = data;
          _contentTxt.htmlText = StringHelper.trim(String(_data));
          updateTransform();
       }

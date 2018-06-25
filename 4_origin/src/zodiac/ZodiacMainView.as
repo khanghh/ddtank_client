@@ -122,9 +122,9 @@ package zodiac
          _boxComponent.addChild(_boxMask);
          _boxComponent.addChild(_boxAwardBtn);
          _boxComponent.buttonMode = false;
-         var _loc2_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(201585);
-         var _loc1_:BagCell = new BagCell(0,_loc2_,false);
-         _boxComponent.tipData = _loc1_.tipData;
+         var allawardinfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(201585);
+         var cell:BagCell = new BagCell(0,allawardinfo,false);
+         _boxComponent.tipData = cell.tipData;
          addChild(_boxComponent);
          _lastCount = ComponentFactory.Instance.creatComponentByStylename("zodiac.mainview.lastcount.txt");
          addChild(_lastCount);
@@ -158,7 +158,7 @@ package zodiac
          _helpBtn.removeEventListener("click",__showHelpFrame);
       }
       
-      private function __addCounts(param1:MouseEvent) : void
+      private function __addCounts(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(ZodiacControl.instance.inRolling)
@@ -166,19 +166,19 @@ package zodiac
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("zodiac.mainview.inrolling"));
             return;
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("zodiac.mainview.addCountstip",ServerConfigManager.instance.zodiacAddPrice),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"SimpleAlert",60,false,1);
-         _loc2_.addEventListener("response",__onAlertResponse);
+         var frame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("zodiac.mainview.addCountstip",ServerConfigManager.instance.zodiacAddPrice),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"SimpleAlert",60,false,1);
+         frame.addEventListener("response",__onAlertResponse);
       }
       
-      private function __onAlertResponse(param1:FrameEvent) : void
+      private function __onAlertResponse(e:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onAlertResponse);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var frame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__onAlertResponse);
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
-            CheckMoneyUtils.instance.checkMoney(_loc2_.isBand,ServerConfigManager.instance.zodiacAddPrice,onCompleteHandler);
+            CheckMoneyUtils.instance.checkMoney(frame.isBand,ServerConfigManager.instance.zodiacAddPrice,onCompleteHandler);
          }
-         _loc2_.dispose();
+         frame.dispose();
       }
       
       private function onCompleteHandler() : void
@@ -186,7 +186,7 @@ package zodiac
          SocketManager.Instance.out.zodiacAddCounts(CheckMoneyUtils.instance.isBind);
       }
       
-      private function __gotoFinish(param1:MouseEvent) : void
+      private function __gotoFinish(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(ZodiacControl.instance.inRolling)
@@ -527,7 +527,7 @@ package zodiac
          ZodiacManager.instance.hide();
       }
       
-      private function __getAward(param1:MouseEvent) : void
+      private function __getAward(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(ZodiacControl.instance.inRolling)
@@ -538,7 +538,7 @@ package zodiac
          SocketManager.Instance.out.zodiacGetAward(ZodiacModel.instance.questArr[_index - 1]);
       }
       
-      private function __getAwardAll(param1:MouseEvent) : void
+      private function __getAwardAll(e:MouseEvent) : void
       {
          if(_boxAwardBtn.visible == false)
          {
@@ -553,7 +553,7 @@ package zodiac
          SocketManager.Instance.out.zodiacGetAwardAll();
       }
       
-      private function __showHelpFrame(param1:MouseEvent) : void
+      private function __showHelpFrame(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(ZodiacControl.instance.inRolling)
@@ -578,28 +578,28 @@ package zodiac
          LayerManager.Instance.addToLayer(_helpframe,3,true,2);
       }
       
-      private function __helpFrameRespose(param1:FrameEvent) : void
+      private function __helpFrameRespose(e:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(e.responseCode == 0 || e.responseCode == 1)
          {
             SoundManager.instance.play("008");
             _helpframe.parent.removeChild(_helpframe);
          }
       }
       
-      private function __closeHelpFrame(param1:MouseEvent) : void
+      private function __closeHelpFrame(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _helpframe.parent.removeChild(_helpframe);
       }
       
-      public function setViewIndex(param1:int) : void
+      public function setViewIndex($index:int) : void
       {
-         if(param1 == 0)
+         if($index == 0)
          {
-            param1 = 1;
+            $index = 1;
          }
-         _index = param1;
+         _index = $index;
          _title.gotoAndStop(_index);
          _details.text = LanguageMgr.GetTranslation("zodiac.mainview.constellation" + _index);
          setQuestInfo();
@@ -608,21 +608,20 @@ package zodiac
       
       public function updateView() : void
       {
-         var _loc1_:int = 0;
+         var index:int = 0;
          _last = ZodiacModel.instance.maxCounts - ZodiacModel.instance.finshedCounts;
          _lastCount.text = _last.toString();
-         var _loc2_:int = 0;
-         _loc1_ = 1;
-         while(_loc1_ <= 13)
+         var propress:int = 0;
+         for(index = 1; index <= 13; )
          {
-            if((ZodiacModel.instance.awardRecord >> _loc1_ & 1) == 1)
+            if((ZodiacModel.instance.awardRecord >> index & 1) == 1)
             {
-               _loc2_++;
+               propress++;
             }
-            _loc1_++;
+            index++;
          }
-         _boxMask.y = _boxBtnBitmap.y + _boxBtnBitmap.height - _loc2_ * 4;
-         if(_loc2_ == 12)
+         _boxMask.y = _boxBtnBitmap.y + _boxBtnBitmap.height - propress * 4;
+         if(propress == 12)
          {
             var _loc4_:* = false;
             _boxMask.visible = _loc4_;
@@ -632,7 +631,7 @@ package zodiac
             _boxAwardBtn.visible = true;
             _boxComponent.buttonMode = true;
          }
-         if(_loc2_ == 13)
+         if(propress == 13)
          {
             _boxBtnBitmap.visible = true;
             _loc4_ = false;
@@ -641,23 +640,22 @@ package zodiac
             _boxAwardBtn.visible = false;
             _boxComponent.buttonMode = false;
          }
-         var _loc3_:QuestInfo = TaskManager.instance.getQuestByID(ZodiacModel.instance.questArr[_index - 1]);
-         refreshQuestBtn(_index,_loc3_);
+         var info:QuestInfo = TaskManager.instance.getQuestByID(ZodiacModel.instance.questArr[_index - 1]);
+         refreshQuestBtn(_index,info);
       }
       
       private function setQuestInfo() : void
       {
-         var _loc4_:int = 0;
-         var _loc8_:* = null;
-         var _loc7_:* = null;
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
-         var _loc5_:* = null;
-         var _loc3_:* = null;
+         var a:int = 0;
+         var info:* = null;
+         var pos:* = null;
+         var i:int = 0;
+         var reward:* = null;
+         var tinfo:* = null;
+         var cell:* = null;
          if(_awards != null)
          {
-            _loc4_ = 0;
-            while(_loc4_ < _awards.length)
+            for(a = 0; a < _awards.length; )
             {
                removeChild(_awards[0]);
                _awards.shift();
@@ -667,48 +665,47 @@ package zodiac
          {
             _awards = [];
          }
-         var _loc1_:int = ZodiacModel.instance.questArr[_index - 1];
-         if(_loc1_ != 0)
+         var questID:int = ZodiacModel.instance.questArr[_index - 1];
+         if(questID != 0)
          {
-            _loc8_ = TaskManager.instance.getQuestByID(_loc1_);
+            info = TaskManager.instance.getQuestByID(questID);
             if((ZodiacModel.instance.awardRecord >> _index & 1) == 1)
             {
-               _quest.text = _loc8_.Detail + "(" + LanguageMgr.GetTranslation("zodiac.mainview.questcomplete") + ")";
+               _quest.text = info.Detail + "(" + LanguageMgr.GetTranslation("zodiac.mainview.questcomplete") + ")";
             }
             else
             {
-               _quest.text = _loc8_.conditionDescription[0];
+               _quest.text = info.conditionDescription[0];
             }
-            _indexType = ZodiacModel.instance.indexTypeArr[_loc1_];
-            refreshQuestBtn(_index,_loc8_);
-            if(_loc8_.itemRewards)
+            _indexType = ZodiacModel.instance.indexTypeArr[questID];
+            refreshQuestBtn(_index,info);
+            if(info.itemRewards)
             {
-               _loc7_ = PositionUtils.creatPoint("zodiac.mainview.awardcell.pos");
-               _loc6_ = 0;
-               while(_loc6_ < _loc8_.itemRewards.length)
+               pos = PositionUtils.creatPoint("zodiac.mainview.awardcell.pos");
+               for(i = 0; i < info.itemRewards.length; )
                {
-                  _loc2_ = _loc8_.itemRewards[_loc6_];
-                  _loc5_ = new InventoryItemInfo();
-                  _loc5_.TemplateID = _loc2_.itemID;
-                  _loc5_.Count = _loc2_.count[0];
-                  _loc5_.AttackCompose = _loc2_.AttackCompose;
-                  _loc5_.DefendCompose = _loc2_.DefendCompose;
-                  _loc5_.LuckCompose = _loc2_.LuckCompose;
-                  _loc5_.AgilityCompose = _loc2_.AgilityCompose;
-                  _loc5_.StrengthenLevel = _loc2_.StrengthenLevel;
-                  _loc5_.MagicAttack = _loc2_.MagicAttack;
-                  _loc5_.MagicDefence = _loc2_.MagicDefence;
-                  _loc5_.IsBinds = _loc2_.isBind;
-                  _loc5_.ValidDate = _loc2_.ValidateTime;
-                  ItemManager.fill(_loc5_);
-                  _loc3_ = new BagCell(0,_loc5_,false,ComponentFactory.Instance.creatBitmap("zodiac.mainview.awardcell.bg"),false);
-                  _loc3_.setContentSize(53,53);
-                  _loc3_.setCount(_loc5_.Count);
-                  _loc3_.x = _loc7_.x + 78 * (_loc6_ % 3);
-                  _loc3_.y = _loc7_.y + 62 * (int(_loc6_ / 3) % 3);
-                  addChild(_loc3_);
-                  _awards.push(_loc3_);
-                  _loc6_++;
+                  reward = info.itemRewards[i];
+                  tinfo = new InventoryItemInfo();
+                  tinfo.TemplateID = reward.itemID;
+                  tinfo.Count = reward.count[0];
+                  tinfo.AttackCompose = reward.AttackCompose;
+                  tinfo.DefendCompose = reward.DefendCompose;
+                  tinfo.LuckCompose = reward.LuckCompose;
+                  tinfo.AgilityCompose = reward.AgilityCompose;
+                  tinfo.StrengthenLevel = reward.StrengthenLevel;
+                  tinfo.MagicAttack = reward.MagicAttack;
+                  tinfo.MagicDefence = reward.MagicDefence;
+                  tinfo.IsBinds = reward.isBind;
+                  tinfo.ValidDate = reward.ValidateTime;
+                  ItemManager.fill(tinfo);
+                  cell = new BagCell(0,tinfo,false,ComponentFactory.Instance.creatBitmap("zodiac.mainview.awardcell.bg"),false);
+                  cell.setContentSize(53,53);
+                  cell.setCount(tinfo.Count);
+                  cell.x = pos.x + 78 * (i % 3);
+                  cell.y = pos.y + 62 * (int(i / 3) % 3);
+                  addChild(cell);
+                  _awards.push(cell);
+                  i++;
                }
             }
          }
@@ -718,25 +715,25 @@ package zodiac
          }
       }
       
-      private function refreshQuestBtn(param1:int, param2:QuestInfo) : void
+      private function refreshQuestBtn(index:int, info:QuestInfo) : void
       {
-         if(param2 == null)
+         if(info == null)
          {
             return;
          }
-         if((ZodiacModel.instance.awardRecord >> param1 & 1) == 1)
+         if((ZodiacModel.instance.awardRecord >> index & 1) == 1)
          {
             _gotofinishBtn.visible = false;
             _getAwardBtn.visible = true;
             _getAwardBtn.enable = false;
          }
-         else if(param2.isAchieved)
+         else if(info.isAchieved)
          {
             _gotofinishBtn.visible = false;
             _getAwardBtn.visible = true;
             _getAwardBtn.enable = false;
          }
-         else if(param2.isCompleted)
+         else if(info.isCompleted)
          {
             _gotofinishBtn.visible = false;
             _getAwardBtn.visible = true;

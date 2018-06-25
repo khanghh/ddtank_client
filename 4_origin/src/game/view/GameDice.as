@@ -71,7 +71,7 @@ package game.view
          NewHandContainer.Instance.showArrow(333,180,new Point(511,452),"asset.game.dice.tips","game.dice.tips.Pos",this,0,true);
       }
       
-      private function _beginBtnHandler(param1:MouseEvent) : void
+      private function _beginBtnHandler(e:MouseEvent) : void
       {
          if(leaderId != PlayerManager.Instance.Self.ID)
          {
@@ -95,17 +95,17 @@ package game.view
          diceMc.gotoAndPlay(1);
       }
       
-      private function _timerHandler(param1:TimerEvent) : void
+      private function _timerHandler(e:TimerEvent) : void
       {
          while(numSprite.numChildren > 0)
          {
             numSprite.removeChildAt(0);
          }
-         var _loc2_:Sprite = ComponentFactory.Instance.creatNumberSprite(countTime,"asset.game.dice.num");
-         _loc2_.x = 568;
-         _loc2_.y = 233;
+         var num:Sprite = ComponentFactory.Instance.creatNumberSprite(countTime,"asset.game.dice.num");
+         num.x = 568;
+         num.y = 233;
          countTime = Number(countTime) - 1;
-         numSprite.addChild(_loc2_);
+         numSprite.addChild(num);
          if(countTime == 0)
          {
             _time.removeEventListener("timer",_timerHandler);
@@ -114,7 +114,7 @@ package game.view
          }
       }
       
-      private function diceJumpHandler(param1:Event) : void
+      private function diceJumpHandler(e:Event) : void
       {
          diceMc.gotoAndStop(20 + diceNum);
       }

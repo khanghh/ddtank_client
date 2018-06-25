@@ -38,7 +38,7 @@ package times.view
       
       public function init() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _controller = TimesController.Instance;
          _contentViews = new Vector.<TimesContentView>(4);
          _bg = ComponentFactory.Instance.creatBitmap("asset.times.Bg");
@@ -46,12 +46,11 @@ package times.view
          _thumbnailView = ComponentFactory.Instance.creatCustomObject("times.TimesThumbnailView",[_controller]);
          _dateView = ComponentFactory.Instance.creatCustomObject("times.DateView");
          _menuView = ComponentFactory.Instance.creatCustomObject("times.MenuView");
-         _loc1_ = 0;
-         while(_loc1_ < _contentViews.length)
+         for(i = 0; i < _contentViews.length; )
          {
-            _contentViews[_loc1_] = new TimesContentView(_loc1_);
-            _contentViews[_loc1_].init(_controller.model.contentInfos[_loc1_]);
-            _loc1_++;
+            _contentViews[i] = new TimesContentView(i);
+            _contentViews[i].init(_controller.model.contentInfos[i]);
+            i++;
          }
          _closeBtn.addEventListener("click",__closeClick);
          addChild(_bg);
@@ -62,50 +61,49 @@ package times.view
          _controller.initView(this,_thumbnailView,_contentViews);
       }
       
-      public function menuSelected(param1:int) : void
+      public function menuSelected(index:int) : void
       {
-         _menuView.selected = param1;
+         _menuView.selected = index;
       }
       
-      private function __closeClick(param1:MouseEvent) : void
+      private function __closeClick(event:MouseEvent) : void
       {
          _closeBtn.removeEventListener("click",__closeClick);
          _controller.dispatchEvent(new TimesEvent("closeView"));
       }
       
-      public function updateGuildViewPoint(param1:Point) : void
+      public function updateGuildViewPoint(pagePos:Point) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:int = 0;
-         if(param1.x == -1 && param1.y == -1)
+         var i:int = 0;
+         var j:int = 0;
+         var info:* = null;
+         var idx:int = 0;
+         if(pagePos.x == -1 && pagePos.y == -1)
          {
-            _thumbnailView.pointIdx = _loc2_;
+            _thumbnailView.pointIdx = idx;
             return;
          }
-         _loc5_ = 0;
-         while(_loc5_ < _controller.model.contentInfos.length)
+         i = 0;
+         while(i < _controller.model.contentInfos.length)
          {
-            _loc3_ = 0;
-            while(_loc3_ < _controller.model.contentInfos[_loc5_].length)
+            for(j = 0; j < _controller.model.contentInfos[i].length; )
             {
-               _loc4_ = _controller.model.contentInfos[_loc5_][_loc3_];
-               if(param1.x == _loc4_.category && param1.y == _loc4_.page)
+               info = _controller.model.contentInfos[i][j];
+               if(pagePos.x == info.category && pagePos.y == info.page)
                {
-                  _thumbnailView.pointIdx = _loc2_ + 1;
+                  _thumbnailView.pointIdx = idx + 1;
                   return;
                }
-               _loc2_++;
-               _loc3_++;
+               idx++;
+               j++;
             }
-            _loc5_++;
+            i++;
          }
       }
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _controller = null;
          _closeBtn.removeEventListener("click",__closeClick);
          ObjectUtils.disposeObject(_bg);
@@ -116,12 +114,11 @@ package times.view
          _dateView = null;
          ObjectUtils.disposeObject(_menuView);
          _menuView = null;
-         _loc1_ = 0;
-         while(_loc1_ < _contentViews.length)
+         for(i = 0; i < _contentViews.length; )
          {
-            ObjectUtils.disposeObject(_contentViews[_loc1_]);
-            _contentViews[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_contentViews[i]);
+            _contentViews[i] = null;
+            i++;
          }
          _contentViews = null;
          ObjectUtils.disposeObject(_thumbnailView);

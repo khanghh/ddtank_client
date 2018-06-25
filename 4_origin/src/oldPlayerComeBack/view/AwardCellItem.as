@@ -14,10 +14,10 @@ package oldPlayerComeBack.view
       
       protected var _curPlace:int;
       
-      public function AwardCellItem(param1:int)
+      public function AwardCellItem(index:int)
       {
          super();
-         _curPlace = param1;
+         _curPlace = index;
          initView();
       }
       
@@ -28,9 +28,9 @@ package oldPlayerComeBack.view
          addChild(_cell);
       }
       
-      public function set info(param1:ItemTemplateInfo) : void
+      public function set info(info:ItemTemplateInfo) : void
       {
-         _cell.info = param1;
+         _cell.info = info;
       }
       
       public function getInfo() : InventoryItemInfo
@@ -38,11 +38,11 @@ package oldPlayerComeBack.view
          return _cell.info as InventoryItemInfo;
       }
       
-      public function set count(param1:int) : void
+      public function set count(value:int) : void
       {
-         if(param1 > 1)
+         if(value > 1)
          {
-            _cell.setCount(param1);
+            _cell.setCount(value);
          }
          else
          {

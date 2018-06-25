@@ -55,6 +55,8 @@ package team.view.mornui
       
       public var clip_divisionEffect:FrameClip = null;
       
+      public var btn_CaptainTransfer:Button = null;
+      
       public function TeamInfoViewUI()
       {
          super();

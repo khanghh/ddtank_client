@@ -41,9 +41,9 @@ package prayIndiana.model
          return _isOpen;
       }
       
-      public function set isOpen(param1:Boolean) : void
+      public function set isOpen(value:Boolean) : void
       {
-         _isOpen = param1;
+         _isOpen = value;
       }
       
       public function get goodsAll() : Array
@@ -51,9 +51,9 @@ package prayIndiana.model
          return _goodsAll;
       }
       
-      public function set goodsAll(param1:Array) : void
+      public function set goodsAll(value:Array) : void
       {
-         _goodsAll = param1;
+         _goodsAll = value;
       }
       
       public function get position() : int
@@ -61,9 +61,9 @@ package prayIndiana.model
          return _position;
       }
       
-      public function set position(param1:int) : void
+      public function set position(value:int) : void
       {
-         _position = param1;
+         _position = value;
       }
       
       public function get templateID() : int
@@ -71,9 +71,9 @@ package prayIndiana.model
          return _templateID;
       }
       
-      public function set templateID(param1:int) : void
+      public function set templateID(value:int) : void
       {
-         _templateID = param1;
+         _templateID = value;
       }
       
       public function get getGoods() : Array
@@ -81,9 +81,9 @@ package prayIndiana.model
          return _getGoods;
       }
       
-      public function set getGoods(param1:Array) : void
+      public function set getGoods(value:Array) : void
       {
-         _getGoods = param1;
+         _getGoods = value;
       }
       
       public function get prayInfo() : Array
@@ -96,9 +96,9 @@ package prayIndiana.model
          return _PrayGoodsCount;
       }
       
-      public function set PrayGoodsCount(param1:int) : void
+      public function set PrayGoodsCount(value:int) : void
       {
-         _PrayGoodsCount = param1;
+         _PrayGoodsCount = value;
       }
       
       public function get UpdateRateCount() : int
@@ -106,9 +106,9 @@ package prayIndiana.model
          return _UpdateRateCount;
       }
       
-      public function set UpdateRateCount(param1:int) : void
+      public function set UpdateRateCount(value:int) : void
       {
-         _UpdateRateCount = param1;
+         _UpdateRateCount = value;
       }
       
       public function get PrayLotteryGoodsCount() : int
@@ -116,14 +116,14 @@ package prayIndiana.model
          return _PrayLotteryGoodsCount;
       }
       
-      public function set PrayLotteryGoodsCount(param1:int) : void
+      public function set PrayLotteryGoodsCount(value:int) : void
       {
-         _PrayLotteryGoodsCount = param1;
+         _PrayLotteryGoodsCount = value;
       }
       
-      public function set prayInfo(param1:Array) : void
+      public function set prayInfo(value:Array) : void
       {
-         _prayInfo = param1;
+         _prayInfo = value;
       }
       
       public function get IsPray() : Boolean
@@ -131,9 +131,9 @@ package prayIndiana.model
          return _IsPray;
       }
       
-      public function set IsPray(param1:Boolean) : void
+      public function set IsPray(value:Boolean) : void
       {
-         _IsPray = param1;
+         _IsPray = value;
       }
       
       public function get type() : int
@@ -141,9 +141,9 @@ package prayIndiana.model
          return _type;
       }
       
-      public function set type(param1:int) : void
+      public function set type(value:int) : void
       {
-         _type = param1;
+         _type = value;
       }
       
       public function get probabilityNum() : int
@@ -151,9 +151,9 @@ package prayIndiana.model
          return _probabilityNum;
       }
       
-      public function set probabilityNum(param1:int) : void
+      public function set probabilityNum(value:int) : void
       {
-         _probabilityNum = param1;
+         _probabilityNum = value;
       }
       
       public function get gameTimes() : String
@@ -161,9 +161,9 @@ package prayIndiana.model
          return _gameTimes;
       }
       
-      public function set gameTimes(param1:String) : void
+      public function set gameTimes(value:String) : void
       {
-         _gameTimes = param1;
+         _gameTimes = value;
       }
    }
 }

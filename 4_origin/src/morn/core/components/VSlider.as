@@ -4,15 +4,15 @@ package morn.core.components
    {
        
       
-      public function VSlider(param1:String = null)
+      public function VSlider(skin:String = null)
       {
-         super(param1);
+         super(skin);
       }
       
       override protected function preinitialize() : void
       {
          super.preinitialize();
-         direction = VERTICAL;
+         direction = "vertical";
       }
    }
 }

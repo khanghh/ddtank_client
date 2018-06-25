@@ -26,9 +26,9 @@ package ddt.manager
       
       private var _survivalModeIcon:BaseButton;
       
-      public function SurvivalModeManager(param1:IEventDispatcher = null)
+      public function SurvivalModeManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get Instance() : SurvivalModeManager
@@ -45,10 +45,10 @@ package ddt.manager
          SocketManager.Instance.addEventListener(PkgEvent.format(320),__onOpenIcon);
       }
       
-      protected function __onOpenIcon(param1:PkgEvent) : void
+      protected function __onOpenIcon(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _showFlag = _loc2_.readBoolean();
+         var pkg:PackageIn = event.pkg;
+         _showFlag = pkg.readBoolean();
          if(_showFlag)
          {
             showSurvivalModeIcon();

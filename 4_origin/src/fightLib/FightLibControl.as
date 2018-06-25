@@ -13,7 +13,7 @@ package fightLib
       
       private var _script:BaseScript;
       
-      public function FightLibControl(param1:SingletonFocer)
+      public function FightLibControl(singletonFocer:SingletonFocer)
       {
          super();
       }
@@ -32,9 +32,9 @@ package fightLib
          return _script;
       }
       
-      public function set script(param1:BaseScript) : void
+      public function set script(value:BaseScript) : void
       {
-         _script = param1;
+         _script = value;
       }
    }
 }

@@ -67,9 +67,9 @@ package demonChiYou.view
       {
          _mgr = DemonChiYouManager.instance;
          _txtArr = [];
-         var _loc2_:Date = _mgr.model.endDate;
-         var _loc1_:Date = TimeManager.Instance.Now();
-         _leftSec = _loc2_.hours * 3600 + _loc2_.minutes * 60 + _loc2_.seconds - _loc1_.hours * 3600 - _loc1_.minutes * 60 - _loc1_.seconds;
+         var endDate:Date = _mgr.model.endDate;
+         var nowDate:Date = TimeManager.Instance.Now();
+         _leftSec = endDate.hours * 3600 + endDate.minutes * 60 + endDate.seconds - nowDate.hours * 3600 - nowDate.minutes * 60 - nowDate.seconds;
          _leftSec = _leftSec > 0?_leftSec:0;
          _totalInfoBg = ComponentFactory.Instance.creat("demonChiYou.totalInfoBg");
          addChild(_totalInfoBg);
@@ -82,12 +82,12 @@ package demonChiYou.view
          _show_totalInfoBtn.addChild(_show_totalInfoBtnIMG);
       }
       
-      private function onGetRankTimer(param1:TimerEvent) : void
+      private function onGetRankTimer(evt:TimerEvent) : void
       {
          SocketManager.Instance.out.getDemonChiYouRankInfo();
       }
       
-      private function onUpdateLeftTime(param1:TimerEvent) : void
+      private function onUpdateLeftTime(evt:TimerEvent) : void
       {
          if(_leftSec <= 0)
          {
@@ -101,8 +101,8 @@ package demonChiYou.view
       
       private function creatTxtInfo() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var txt:* = null;
          _totalInfo_time = ComponentFactory.Instance.creat("demonChiYou.totalInfo.time");
          _totalInfo_yourSelf = ComponentFactory.Instance.creat("demonChiYou.totalInfo.yourself");
          _totalInfo_timeTxt = ComponentFactory.Instance.creat("demonChiYou.totalInfo.timeTxt");
@@ -114,29 +114,28 @@ package demonChiYou.view
          _totalInfo_yourSelf.text = "0";
          _totalInfo_timeTxt.text = LanguageMgr.GetTranslation("worldboss.totalInfo.time");
          _totalInfo_yourSelfTxt.text = LanguageMgr.GetTranslation("demonChiYou.totalInfo.yourself");
-         _loc2_ = 0;
-         while(_loc2_ < 20)
+         for(i = 0; i < 20; )
          {
-            if(_loc2_ < 3)
+            if(i < 3)
             {
-               _loc1_ = ComponentFactory.Instance.creat("demonChiYou.rankingTxt.No" + (_loc2_ + 1));
+               txt = ComponentFactory.Instance.creat("demonChiYou.rankingTxt.No" + (i + 1));
             }
-            else if(_loc2_ < 10)
+            else if(i < 10)
             {
-               _loc1_ = ComponentFactory.Instance.creat("demonChiYou.rankingTxt.NoOtherLeft");
+               txt = ComponentFactory.Instance.creat("demonChiYou.rankingTxt.NoOtherLeft");
             }
-            else if(_loc2_ < 13)
+            else if(i < 13)
             {
-               _loc1_ = ComponentFactory.Instance.creat("demonChiYou.rankingTxt.No" + (_loc2_ + 1));
+               txt = ComponentFactory.Instance.creat("demonChiYou.rankingTxt.No" + (i + 1));
             }
             else
             {
-               _loc1_ = ComponentFactory.Instance.creat("demonChiYou.rankingTxt.NoOtherRight");
+               txt = ComponentFactory.Instance.creat("demonChiYou.rankingTxt.NoOtherRight");
             }
-            _loc1_.y = _loc1_.y + (int(_loc2_ % 10) * 24 - 30 + 17);
-            addChild(_loc1_);
-            _txtArr.push(_loc1_);
-            _loc2_++;
+            txt.y = txt.y + (int(i % 10) * 24 - 30 + 17);
+            addChild(txt);
+            _txtArr.push(txt);
+            i++;
          }
       }
       
@@ -159,7 +158,7 @@ package demonChiYou.view
          _mgr.removeEventListener("event_boss_end",onBossEnd);
       }
       
-      private function onBossEnd(param1:Event) : void
+      private function onBossEnd(evt:Event) : void
       {
          if(_mgr.model.bossState >= 3)
          {
@@ -167,45 +166,44 @@ package demonChiYou.view
          }
       }
       
-      private function onGetRankInfoBack(param1:Event) : void
+      private function onGetRankInfoBack(evt:Event) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         var _loc5_:* = null;
+         var i:int = 0;
+         var item:* = null;
+         var prect:* = null;
          if(_mgr.model.rankInfo.hasMyConsortiaData)
          {
             _totalInfo_yourSelf.text = _mgr.model.rankInfo.myConsortiaDamage.toString();
          }
-         var _loc3_:Array = _mgr.model.rankInfo.rankArr;
-         var _loc2_:int = _loc3_.length > 10?10:_loc3_.length;
-         _loc6_ = 0;
-         while(_loc6_ < _loc2_)
+         var arr:Array = _mgr.model.rankInfo.rankArr;
+         var num:int = arr.length > 10?10:arr.length;
+         for(i = 0; i < num; )
          {
-            _loc4_ = _loc3_[_loc6_];
-            _txtArr[_loc6_].text = _loc6_ + 1 + "." + formatName(_loc4_["Name"]);
-            _loc5_ = (_loc4_["Damage"] * 100 / _mgr.model.bossMaxBlood).toFixed(3) + "%";
-            _txtArr[_loc6_ + 10].text = _loc4_["Damage"] + "(" + _loc5_ + ")";
-            _loc6_++;
+            item = arr[i];
+            _txtArr[i].text = i + 1 + "." + formatName(item["Name"]);
+            prect = (item["Damage"] * 100 / _mgr.model.bossMaxBlood).toFixed(3) + "%";
+            _txtArr[i + 10].text = item["Damage"] + "(" + prect + ")";
+            i++;
          }
       }
       
-      private function formatName(param1:String) : String
+      private function formatName(name:String) : String
       {
-         if(param1.length > 4)
+         if(name.length > 4)
          {
-            return param1.slice(0,4) + "...";
+            return name.slice(0,4) + "...";
          }
-         return param1;
+         return name;
       }
       
-      private function __showTotalInfo(param1:MouseEvent) : void
+      private function __showTotalInfo(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _show_totalInfoBtnIMG.setFrame(!!_open_show?2:1);
          addEventListener("enterFrame",__totalViewShowOrHide);
       }
       
-      private function __totalViewShowOrHide(param1:Event) : void
+      private function __totalViewShowOrHide(evt:Event) : void
       {
          if(_open_show)
          {
@@ -235,14 +233,14 @@ package demonChiYou.view
          this.y = StageReferance.stageHeight - this.height - 94;
       }
       
-      private function setFormat(param1:int) : String
+      private function setFormat(value:int) : String
       {
-         var _loc2_:String = param1.toString();
-         if(param1 < 10)
+         var str:String = value.toString();
+         if(value < 10)
          {
-            _loc2_ = "0" + _loc2_;
+            str = "0" + str;
          }
-         return _loc2_;
+         return str;
       }
       
       public function dispose() : void

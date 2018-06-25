@@ -95,23 +95,23 @@ package shop.manager
          return _shopSaleList;
       }
       
-      public function getGoodsOldPriceByID(param1:int) : int
+      public function getGoodsOldPriceByID(value:int) : int
       {
          var _loc4_:int = 0;
          var _loc3_:* = _oldGoodsList;
-         for each(var _loc2_ in _oldGoodsList)
+         for each(var i in _oldGoodsList)
          {
-            if(_loc2_.TemplateID == param1)
+            if(i.TemplateID == value)
             {
-               return _loc2_.getItemPrice(1).bothMoneyValue;
+               return i.getItemPrice(1).bothMoneyValue;
             }
          }
          return 0;
       }
       
-      public function set goodsBuyMaxNum(param1:int) : void
+      public function set goodsBuyMaxNum(value:int) : void
       {
-         _goodsBuyMaxNum = param1;
+         _goodsBuyMaxNum = value;
       }
       
       public function get goodsBuyMaxNum() : int
@@ -126,10 +126,10 @@ package shop.manager
          LayerManager.Instance.addToLayer(_view,3,true,1);
       }
       
-      private function __onFrameClose(param1:FrameEvent) : void
+      private function __onFrameClose(e:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(e.responseCode == 0 || e.responseCode == 1)
          {
             _view.removeEventListener("response",__onFrameClose);
             _view.dispose();
@@ -139,24 +139,24 @@ package shop.manager
       
       private function checkStaleDatedShop() : void
       {
-         var _loc2_:* = undefined;
+         var copyShopSaleList:* = undefined;
          if(_view)
          {
-            _loc2_ = new Vector.<ShopItemInfo>();
+            copyShopSaleList = new Vector.<ShopItemInfo>();
             var _loc4_:int = 0;
             var _loc3_:* = _shopSaleList;
-            for each(var _loc1_ in _shopSaleList)
+            for each(var item in _shopSaleList)
             {
-               if(_loc1_.isValid)
+               if(item.isValid)
                {
-                  _loc2_.push(_loc1_);
+                  copyShopSaleList.push(item);
                }
             }
-            if(_shopSaleList.length == _loc2_.length)
+            if(_shopSaleList.length == copyShopSaleList.length)
             {
                return;
             }
-            _shopSaleList = _loc2_;
+            _shopSaleList = copyShopSaleList;
             _view.updateSaleGoods();
          }
       }
@@ -171,7 +171,7 @@ package shop.manager
          UIModuleLoader.Instance.addUIModuleImp("ddtshop");
       }
       
-      private function _onLoadingCloseHandle(param1:Event) : void
+      private function _onLoadingCloseHandle(e:Event) : void
       {
          UIModuleSmallLoading.Instance.removeEventListener("close",_onLoadingCloseHandle);
          UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__onLoadComplete);
@@ -179,9 +179,9 @@ package shop.manager
          UIModuleSmallLoading.Instance.hide();
       }
       
-      private function __onLoadComplete(param1:UIModuleEvent) : void
+      private function __onLoadComplete(e:UIModuleEvent) : void
       {
-         if(param1.module == "ddtshop")
+         if(e.module == "ddtshop")
          {
             UIModuleSmallLoading.Instance.hide();
             UIModuleSmallLoading.Instance.removeEventListener("close",_onLoadingCloseHandle);
@@ -191,11 +191,11 @@ package shop.manager
          }
       }
       
-      private function __onProgress(param1:UIModuleEvent) : void
+      private function __onProgress(e:UIModuleEvent) : void
       {
-         if(param1.module == "ddtshop")
+         if(e.module == "ddtshop")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = e.loader.progress * 100;
          }
       }
    }

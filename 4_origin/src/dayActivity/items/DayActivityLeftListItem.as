@@ -77,22 +77,22 @@ package dayActivity.items
       
       private var alertFrame:BaseAlerFrame;
       
-      public function DayActivityLeftListItem(param1:Boolean, param2:ActivityData)
+      public function DayActivityLeftListItem(bool:Boolean, data:ActivityData)
       {
          super();
-         _data = param2;
-         initView(param1,param2);
+         _data = data;
+         initView(bool,data);
       }
       
-      private function initView(param1:Boolean, param2:ActivityData) : void
+      private function initView(bool:Boolean, data:ActivityData) : void
       {
          buttonMode = true;
          useHandCursor = true;
-         if(param1)
+         if(bool)
          {
             _txt1 = ComponentFactory.Instance.creatComponentByStylename("day.activityView.left.Itemtxt1");
             _txt2 = ComponentFactory.Instance.creatComponentByStylename("day.activityView.left.Itemtxt1");
-            _money = param2.MoneyPoint;
+            _money = data.MoneyPoint;
             buttonMode = true;
             useHandCursor = true;
          }
@@ -101,16 +101,16 @@ package dayActivity.items
             _txt1 = ComponentFactory.Instance.creatComponentByStylename("day.activityView.left.Itemtxt2");
             _txt2 = ComponentFactory.Instance.creatComponentByStylename("day.activityView.left.Itemtxt2");
          }
-         _activityType = param2.ActivityType;
+         _activityType = data.ActivityType;
          _txt1.x = 0;
          _txt1.y = 4;
-         _txt1.text = param2.Description;
+         _txt1.text = data.Description;
          addChild(_txt1);
          _txt2.x = 223;
          _txt2.y = 4;
-         _txt2.text = param2.OverCount + "/" + param2.Count;
+         _txt2.text = data.OverCount + "/" + data.Count;
          addChild(_txt2);
-         _total = param2.Count;
+         _total = data.Count;
          _line = ComponentFactory.Instance.creatBitmap("day.line");
          addChild(_line);
          addEventListener("click",jumpHander);
@@ -121,23 +121,23 @@ package dayActivity.items
          _backGround.alpha = 0;
          _backGround.tipStyle = "ddt.view.tips.OneLineTip";
          _backGround.tipDirctions = "5,1,2";
-         if(param2.JumpType > 0)
+         if(data.JumpType > 0)
          {
-            _backGround.tipData = LanguageMgr.GetTranslation("ddt.battleGroud.itemTips",param2.ActivePoint,param2.Description);
+            _backGround.tipData = LanguageMgr.GetTranslation("ddt.battleGroud.itemTips",data.ActivePoint,data.Description);
          }
          else
          {
-            _backGround.tipData = LanguageMgr.GetTranslation("ddt.battleGroud.btnTip",param2.ActivePoint);
+            _backGround.tipData = LanguageMgr.GetTranslation("ddt.battleGroud.btnTip",data.ActivePoint);
          }
          addChild(_backGround);
       }
       
-      protected function jumpHander(param1:MouseEvent) : void
+      protected function jumpHander(event:MouseEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
+         var _payAlert:* = null;
+         var tmpGrade:int = 0;
          SoundManager.instance.play("008");
-         if(param1.target is SimpleBitmapButton)
+         if(event.target is SimpleBitmapButton)
          {
             if(PlayerManager.Instance.Self.bagLocked)
             {
@@ -145,14 +145,14 @@ package dayActivity.items
                return;
             }
             _str = LanguageMgr.GetTranslation("ddt.Dayactivity.addSpeed",_money);
-            _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_str,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2,null,"SimpleAlert",50,true,0);
-            _loc3_.enterEnable = false;
-            if(_loc3_.parent)
+            _payAlert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_str,LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2,null,"SimpleAlert",50,true,0);
+            _payAlert.enterEnable = false;
+            if(_payAlert.parent)
             {
-               _loc3_.parent.removeChild(_loc3_);
+               _payAlert.parent.removeChild(_payAlert);
             }
-            LayerManager.Instance.addToLayer(_loc3_,2,true,2);
-            _loc3_.addEventListener("response",onFrameResponse);
+            LayerManager.Instance.addToLayer(_payAlert,2,true,2);
+            _payAlert.addEventListener("response",onFrameResponse);
             return;
          }
          if(_data.JumpType > 0)
@@ -352,10 +352,10 @@ package dayActivity.items
                                                 MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.functionLimitTip",17));
                                                 return;
                                              }
-                                             _loc2_ = ConsortionModelManager.Instance.bossCallCondition;
-                                             if(PlayerManager.Instance.Self.consortiaInfo.Level < _loc2_)
+                                             tmpGrade = ConsortionModelManager.Instance.bossCallCondition;
+                                             if(PlayerManager.Instance.Self.consortiaInfo.Level < tmpGrade)
                                              {
-                                                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.consortia.bossFrame.conditionTxt2",_loc2_));
+                                                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.consortia.bossFrame.conditionTxt2",tmpGrade));
                                                 return;
                                              }
                                              StateManager.setState("consortia",ConsortionModelManager.Instance.openBossFrame);
@@ -383,7 +383,7 @@ package dayActivity.items
                                           MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.functionLimitTip",8));
                                           return;
                                        }
-                                       CheckWeaponManager.instance.setFunction(this,jumpHander,[param1]);
+                                       CheckWeaponManager.instance.setFunction(this,jumpHander,[event]);
                                        if(CheckWeaponManager.instance.isNoWeapon())
                                        {
                                           CheckWeaponManager.instance.showAlert();
@@ -505,25 +505,25 @@ package dayActivity.items
          }
       }
       
-      public function setTxt2(param1:int) : void
+      public function setTxt2(num:int) : void
       {
-         if(param1 >= _total)
+         if(num >= _total)
          {
-            param1 = _total;
+            num = _total;
          }
-         _txt2.text = param1 + "/" + _total;
+         _txt2.text = num + "/" + _total;
       }
       
-      private function onFrameResponse(param1:FrameEvent) : void
+      private function onFrameResponse(evt:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var _payAlert:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            CheckMoneyUtils.instance.checkMoney(_loc2_.isBand,_money,onCheckComplete);
+            CheckMoneyUtils.instance.checkMoney(_payAlert.isBand,_money,onCheckComplete);
          }
-         _loc2_.removeEventListener("response",onFrameResponse);
-         ObjectUtils.disposeObject(_loc2_);
-         _loc2_ = null;
+         _payAlert.removeEventListener("response",onFrameResponse);
+         ObjectUtils.disposeObject(_payAlert);
+         _payAlert = null;
       }
       
       protected function onCheckComplete() : void

@@ -40,13 +40,13 @@ package wonderfulActivity
          addEvents();
       }
       
-      public function setState(param1:int, param2:int) : void
+      public function setState(type:int, id:int) : void
       {
          if(!_rightView && !_rightView.parent)
          {
             return;
          }
-         _rightView.setState(param1,param2);
+         _rightView.setState(type,id);
       }
       
       private function initview() : void
@@ -73,46 +73,46 @@ package wonderfulActivity
          removeEventListener("response",_response);
       }
       
-      public function addElement(param1:Array) : void
+      public function addElement(actArr:Array) : void
       {
-         var _loc4_:* = null;
-         var _loc8_:* = null;
-         var _loc5_:Array = [];
-         var _loc7_:Array = [];
-         var _loc3_:Array = [];
+         var infoDic:* = null;
+         var vo:* = null;
+         var wonderArr:Array = [];
+         var limitArr:Array = [];
+         var newServerArr:Array = [];
          if(WonderfulActivityManager.Instance.isExchangeAct)
          {
-            _loc4_ = WonderfulActivityManager.Instance.exchangeActLeftViewInfoDic;
+            infoDic = WonderfulActivityManager.Instance.exchangeActLeftViewInfoDic;
          }
          else
          {
-            _loc4_ = WonderfulActivityManager.Instance.leftViewInfoDic;
+            infoDic = WonderfulActivityManager.Instance.leftViewInfoDic;
          }
          var _loc11_:int = 0;
-         var _loc10_:* = param1;
-         for each(var _loc2_ in param1)
+         var _loc10_:* = actArr;
+         for each(var id in actArr)
          {
-            if(_loc4_[_loc2_] != null)
+            if(infoDic[id] != null)
             {
-               _loc8_ = new ActivityCellVo();
-               _loc8_.id = _loc2_;
-               _loc8_.activityName = _loc4_[_loc2_].label;
-               _loc8_.viewType = _loc4_[_loc2_].viewType;
-               var _loc9_:* = _loc4_[_loc2_].unitIndex;
+               vo = new ActivityCellVo();
+               vo.id = id;
+               vo.activityName = infoDic[id].label;
+               vo.viewType = infoDic[id].viewType;
+               var _loc9_:* = infoDic[id].unitIndex;
                if(1 !== _loc9_)
                {
                   if(3 === _loc9_)
                   {
-                     _loc3_.push(_loc8_);
+                     newServerArr.push(vo);
                   }
                }
                else
                {
-                  _loc7_.push(_loc8_);
+                  limitArr.push(vo);
                }
             }
          }
-         if(_loc3_.length == 0)
+         if(newServerArr.length == 0)
          {
             _leftView.isNewServerExist = false;
          }
@@ -122,32 +122,32 @@ package wonderfulActivity
          }
          if(_leftView.isNewServerExist)
          {
-            _loc3_.sortOn("viewType",16);
-            _leftView.addUnitByType(_loc3_,3);
+            newServerArr.sortOn("viewType",16);
+            _leftView.addUnitByType(newServerArr,3);
          }
          else
          {
             _leftView.checkNewServerExist();
          }
-         var _loc6_:Boolean = WonderfulActivityManager.Instance.isExchangeAct;
-         if(_loc6_)
+         var isExchangeAct:Boolean = WonderfulActivityManager.Instance.isExchangeAct;
+         if(isExchangeAct)
          {
-            _leftView.addUnitByType(_loc7_.concat(_loc5_),4);
+            _leftView.addUnitByType(limitArr.concat(wonderArr),4);
          }
          else
          {
-            _leftView.addUnitByType(_loc7_,1);
+            _leftView.addUnitByType(limitArr,1);
          }
          _leftView.extendUnitView();
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
          if(!WonderfulActivityManager.Instance.isRuning)
          {
             return;
          }
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             if(WonderfulActivityManager.Instance.frameCanClose)
             {

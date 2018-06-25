@@ -59,19 +59,19 @@ package petsBag.view.item
          addChild(_luckTxt);
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         var _loc2_:* = null;
-         if(param1)
+         var petInfo:* = null;
+         if(data)
          {
-            _tipData = param1;
-            _loc2_ = param1 as PetInfo;
-            _petName.text = _loc2_.Name + " Lv." + _loc2_.Level;
-            _attackTxt.text = LanguageMgr.GetTranslation("attack") + "：" + _loc2_.Attack;
-            _defenceTxt.text = LanguageMgr.GetTranslation("defence") + "：" + _loc2_.Defence;
-            _HPTxt.text = LanguageMgr.GetTranslation("MaxHp") + "：" + _loc2_.Blood;
-            _agilityTxt.text = LanguageMgr.GetTranslation("agility") + "：" + _loc2_.Agility;
-            _luckTxt.text = LanguageMgr.GetTranslation("luck") + "：" + _loc2_.Luck;
+            _tipData = data;
+            petInfo = data as PetInfo;
+            _petName.text = petInfo.Name + " Lv." + petInfo.Level;
+            _attackTxt.text = LanguageMgr.GetTranslation("attack") + "：" + petInfo.Attack;
+            _defenceTxt.text = LanguageMgr.GetTranslation("defence") + "：" + petInfo.Defence;
+            _HPTxt.text = LanguageMgr.GetTranslation("MaxHp") + "：" + petInfo.Blood;
+            _agilityTxt.text = LanguageMgr.GetTranslation("agility") + "：" + petInfo.Agility;
+            _luckTxt.text = LanguageMgr.GetTranslation("luck") + "：" + petInfo.Luck;
             updateWH();
          }
       }

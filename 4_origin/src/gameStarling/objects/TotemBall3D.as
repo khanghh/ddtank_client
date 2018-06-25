@@ -9,31 +9,30 @@ package gameStarling.objects
    {
        
       
-      public function TotemBall3D(param1:Bomb, param2:Living, param3:int = 0, param4:Boolean = false)
+      public function TotemBall3D(info:Bomb, owner:Living, refineryLevel:int = 0, isPhantom:Boolean = false)
       {
-         super(param1,param2,param3,param4);
+         super(info,owner,refineryLevel,isPhantom);
       }
       
       override public function bomb() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:Array = map.physicalChilds[info.Id];
-         if(_loc2_)
+         var i:int = 0;
+         var gameLiving:* = null;
+         var childs:Array = map.physicalChilds[info.Id];
+         if(childs)
          {
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_.length)
+            for(i = 0; i < childs.length; )
             {
-               _loc1_ = _loc2_[_loc3_][0];
-               trace("gameLiving.angle:" + _loc1_.angle);
-               if(_loc1_.actionMovie)
+               gameLiving = childs[i][0];
+               trace("gameLiving.angle:" + gameLiving.angle);
+               if(gameLiving.actionMovie)
                {
                   var _loc4_:* = 0.7;
-                  _loc1_.actionMovie.scaleY = _loc4_;
-                  _loc1_.actionMovie.scaleX = _loc4_;
+                  gameLiving.actionMovie.scaleY = _loc4_;
+                  gameLiving.actionMovie.scaleX = _loc4_;
                }
-               GameControl.Instance.gameView.addGameLivingToMap(_loc2_[_loc3_]);
-               _loc3_++;
+               GameControl.Instance.gameView.addGameLivingToMap(childs[i]);
+               i++;
             }
             delete map.physicalChilds[info.Id];
          }

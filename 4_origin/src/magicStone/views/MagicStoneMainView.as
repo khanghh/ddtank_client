@@ -57,7 +57,7 @@ package magicStone.views
          _btnHelp.addEventListener("click",__helpClick);
       }
       
-      private function __helpClick(param1:MouseEvent) : void
+      private function __helpClick(evt:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(!_helpFrame)
@@ -77,16 +77,16 @@ package magicStone.views
          LayerManager.Instance.addToLayer(_helpFrame,3,true,2);
       }
       
-      private function __helpFrameRespose(param1:FrameEvent) : void
+      private function __helpFrameRespose(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             SoundManager.instance.playButtonSound();
             _helpFrame.parent.removeChild(_helpFrame);
          }
       }
       
-      private function __closeHelpFrame(param1:MouseEvent) : void
+      private function __closeHelpFrame(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          _helpFrame.parent.removeChild(_helpFrame);

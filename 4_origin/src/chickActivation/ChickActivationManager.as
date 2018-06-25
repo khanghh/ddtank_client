@@ -28,9 +28,9 @@ package chickActivation
       
       private var _model:ChickActivationModel;
       
-      public function ChickActivationManager(param1:IEventDispatcher = null)
+      public function ChickActivationManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : ChickActivationManager
@@ -56,105 +56,102 @@ package chickActivation
       
       private function initData() : void
       {
-         var _loc1_:Dictionary = new Dictionary();
-         _loc1_["0,0,1"] = 1;
-         _loc1_["0,0,2"] = 1;
-         _loc1_["0,0,3"] = 1;
-         _loc1_["0,0,4"] = 1;
-         _loc1_["0,0,5"] = 1;
-         _loc1_["0,0,6"] = 1;
-         _loc1_["0,0,0"] = 1;
-         _loc1_["0,2,5"] = 2;
-         _loc1_["0,2,6"] = 2;
-         _loc1_["0,2,0"] = 2;
-         _loc1_["0,1"] = 3;
-         _loc1_["0,3"] = 12;
-         _loc1_["1,0,1"] = 101;
-         _loc1_["1,0,2"] = 101;
-         _loc1_["1,0,3"] = 101;
-         _loc1_["1,0,4"] = 101;
-         _loc1_["1,0,5"] = 101;
-         _loc1_["1,0,6"] = 101;
-         _loc1_["1,0,0"] = 101;
-         _loc1_["1,2,5"] = 102;
-         _loc1_["1,2,6"] = 102;
-         _loc1_["1,2,0"] = 102;
-         _loc1_["1,1"] = 103;
-         _model.qualityDic = _loc1_;
+         var qualityDic:Dictionary = new Dictionary();
+         qualityDic["0,0,1"] = 1;
+         qualityDic["0,0,2"] = 1;
+         qualityDic["0,0,3"] = 1;
+         qualityDic["0,0,4"] = 1;
+         qualityDic["0,0,5"] = 1;
+         qualityDic["0,0,6"] = 1;
+         qualityDic["0,0,0"] = 1;
+         qualityDic["0,2,5"] = 2;
+         qualityDic["0,2,6"] = 2;
+         qualityDic["0,2,0"] = 2;
+         qualityDic["0,1"] = 3;
+         qualityDic["0,3"] = 12;
+         qualityDic["1,0,1"] = 101;
+         qualityDic["1,0,2"] = 101;
+         qualityDic["1,0,3"] = 101;
+         qualityDic["1,0,4"] = 101;
+         qualityDic["1,0,5"] = 101;
+         qualityDic["1,0,6"] = 101;
+         qualityDic["1,0,0"] = 101;
+         qualityDic["1,2,5"] = 102;
+         qualityDic["1,2,6"] = 102;
+         qualityDic["1,2,0"] = 102;
+         qualityDic["1,1"] = 103;
+         _model.qualityDic = qualityDic;
       }
       
-      private function __chickActivationHandler(param1:CrazyTankSocketEvent) : void
+      private function __chickActivationHandler(event:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         if(_loc2_ == 1)
+         var pkg:PackageIn = event.pkg;
+         var cmd:int = pkg.readInt();
+         if(cmd == 1)
          {
-            loginDataUpdate(_loc3_);
+            loginDataUpdate(pkg);
          }
-         else if(_loc2_ == 2)
+         else if(cmd == 2)
          {
-            dataUpdate(_loc3_);
+            dataUpdate(pkg);
          }
       }
       
-      private function loginDataUpdate(param1:PackageIn) : void
+      private function loginDataUpdate(pkg:PackageIn) : void
       {
-         var _loc3_:int = 0;
-         model.isKeyOpened = param1.readInt();
-         model.keyIndex = param1.readInt();
-         model.keyOpenedTime = param1.readDate();
-         model.keyOpenedType = param1.readInt();
-         var _loc2_:Array = [];
-         _loc3_ = 0;
-         while(_loc3_ < 12)
+         var i:int = 0;
+         model.isKeyOpened = pkg.readInt();
+         model.keyIndex = pkg.readInt();
+         model.keyOpenedTime = pkg.readDate();
+         model.keyOpenedType = pkg.readInt();
+         var gainArr:Array = [];
+         for(i = 0; i < 12; )
          {
-            _loc2_.push(param1.readInt());
-            _loc3_++;
+            gainArr.push(pkg.readInt());
+            i++;
          }
-         model.gainArr = _loc2_;
+         model.gainArr = gainArr;
          model.dataChange("updateData");
       }
       
-      private function dataUpdate(param1:PackageIn) : void
+      private function dataUpdate(pkg:PackageIn) : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:int = 0;
-         model.isKeyOpened = param1.readInt();
-         model.keyIndex = param1.readInt();
-         model.keyOpenedTime = param1.readDate();
-         model.keyOpenedType = param1.readInt();
-         var _loc4_:Array = [];
-         _loc5_ = 0;
-         while(_loc5_ < 12)
+         var i:int = 0;
+         var g:int = 0;
+         model.isKeyOpened = pkg.readInt();
+         model.keyIndex = pkg.readInt();
+         model.keyOpenedTime = pkg.readDate();
+         model.keyOpenedType = pkg.readInt();
+         var gainArr:Array = [];
+         for(i = 0; i < 12; )
          {
-            _loc4_.push(param1.readInt());
-            _loc5_++;
+            gainArr.push(pkg.readInt());
+            i++;
          }
-         var _loc3_:* = -1;
+         var temp1:* = -1;
          if(model.gainArr.length == 12)
          {
-            _loc2_ = 0;
-            while(_loc2_ < model.gainArr.length - 1)
+            for(g = 0; g < model.gainArr.length - 1; )
             {
-               if(model.gainArr[_loc2_] != _loc4_[_loc2_] && _loc4_[_loc2_] > 0)
+               if(model.gainArr[g] != gainArr[g] && gainArr[g] > 0)
                {
-                  _loc3_ = _loc2_;
+                  temp1 = g;
                   break;
                }
-               _loc2_++;
+               g++;
             }
-            if(_loc3_ != -1)
+            if(temp1 != -1)
             {
-               model.dataChange("getReward",_loc3_);
+               model.dataChange("getReward",temp1);
             }
          }
-         model.gainArr = _loc4_;
+         model.gainArr = gainArr;
          model.dataChange("updateData");
       }
       
-      public function templateDataSetup(param1:Array) : void
+      public function templateDataSetup(dataList:Array) : void
       {
-         model.itemInfoList = param1;
+         model.itemInfoList = dataList;
       }
       
       public function checkShowIcon() : void
@@ -165,7 +162,7 @@ package chickActivation
       
       public function showFrame() : void
       {
-         var _loc1_:* = null;
+         var loader:* = null;
          if(model.itemInfoList)
          {
             UIModuleSmallLoading.Instance.progress = 0;
@@ -176,16 +173,16 @@ package chickActivation
          }
          else
          {
-            _loc1_ = LoaderCreate.Instance.createActivitySystemItemsLoader();
-            _loc1_.addEventListener("complete",__dataLoaderCompleteHandler);
-            LoadResourceManager.Instance.startLoad(_loc1_);
+            loader = LoaderCreate.Instance.createActivitySystemItemsLoader();
+            loader.addEventListener("complete",__dataLoaderCompleteHandler);
+            LoadResourceManager.Instance.startLoad(loader);
          }
       }
       
-      private function __dataLoaderCompleteHandler(param1:LoaderEvent) : void
+      private function __dataLoaderCompleteHandler(event:LoaderEvent) : void
       {
-         var _loc2_:BaseLoader = param1.loader;
-         _loc2_.removeEventListener("complete",__dataLoaderCompleteHandler);
+         var loader:BaseLoader = event.loader;
+         loader.removeEventListener("complete",__dataLoaderCompleteHandler);
          UIModuleSmallLoading.Instance.progress = 0;
          UIModuleSmallLoading.Instance.show();
          UIModuleLoader.Instance.addEventListener("uiModuleComplete",loadCompleteHandler);
@@ -193,17 +190,17 @@ package chickActivation
          UIModuleLoader.Instance.addUIModuleImp("chickActivation");
       }
       
-      private function onUimoduleLoadProgress(param1:UIModuleEvent) : void
+      private function onUimoduleLoadProgress(event:UIModuleEvent) : void
       {
-         if(param1.module == "chickActivation")
+         if(event.module == "chickActivation")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
          }
       }
       
-      private function loadCompleteHandler(param1:UIModuleEvent) : void
+      private function loadCompleteHandler(event:UIModuleEvent) : void
       {
-         if(param1.module == "chickActivation")
+         if(event.module == "chickActivation")
          {
             UIModuleSmallLoading.Instance.hide();
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",loadCompleteHandler);

@@ -32,9 +32,9 @@ package feedback.data
          return _questionId;
       }
       
-      public function set questionId(param1:String) : void
+      public function set questionId(value:String) : void
       {
-         _questionId = param1;
+         _questionId = value;
       }
       
       public function get replyId() : int
@@ -42,9 +42,9 @@ package feedback.data
          return _replyId;
       }
       
-      public function set replyId(param1:int) : void
+      public function set replyId(value:int) : void
       {
-         _replyId = param1;
+         _replyId = value;
       }
       
       public function get nickName() : String
@@ -52,9 +52,9 @@ package feedback.data
          return _nickName;
       }
       
-      public function set nickName(param1:String) : void
+      public function set nickName(value:String) : void
       {
-         _nickName = param1;
+         _nickName = value;
       }
       
       public function get replyDate() : Date
@@ -62,9 +62,9 @@ package feedback.data
          return _replyDate;
       }
       
-      public function set replyDate(param1:Date) : void
+      public function set replyDate(value:Date) : void
       {
-         _replyDate = param1;
+         _replyDate = value;
       }
       
       public function get replyContent() : String
@@ -72,9 +72,9 @@ package feedback.data
          return _replyContent;
       }
       
-      public function set replyContent(param1:String) : void
+      public function set replyContent(value:String) : void
       {
-         _replyContent = param1;
+         _replyContent = value;
       }
       
       public function get stopReply() : String
@@ -82,9 +82,9 @@ package feedback.data
          return _stopReply;
       }
       
-      public function set stopReply(param1:String) : void
+      public function set stopReply(value:String) : void
       {
-         _stopReply = param1;
+         _stopReply = value;
       }
       
       public function get questionTitle() : String
@@ -92,9 +92,9 @@ package feedback.data
          return _questionTitle;
       }
       
-      public function set questionTitle(param1:String) : void
+      public function set questionTitle(value:String) : void
       {
-         _questionTitle = param1;
+         _questionTitle = value;
       }
       
       public function get occurrenceDate() : String
@@ -102,9 +102,9 @@ package feedback.data
          return _occurrenceDate;
       }
       
-      public function set occurrenceDate(param1:String) : void
+      public function set occurrenceDate(value:String) : void
       {
-         _occurrenceDate = param1;
+         _occurrenceDate = value;
       }
       
       public function get questionContent() : String
@@ -112,9 +112,9 @@ package feedback.data
          return _questionContent;
       }
       
-      public function set questionContent(param1:String) : void
+      public function set questionContent(value:String) : void
       {
-         _questionContent = param1;
+         _questionContent = value;
       }
    }
 }

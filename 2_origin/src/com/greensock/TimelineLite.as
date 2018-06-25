@@ -15,9 +15,9 @@ package com.greensock
       
       protected var _endCaps:Array;
       
-      public function TimelineLite(param1:Object = null)
+      public function TimelineLite(vars:Object = null)
       {
-         super(param1);
+         super(vars);
          _endCaps = [null,null];
          _labels = {};
          this.autoRemoveChildren = this.vars.autoRemoveChildren == true;
@@ -28,232 +28,231 @@ package com.greensock
          }
       }
       
-      override public function remove(param1:TweenCore, param2:Boolean = false) : void
+      override public function remove(tween:TweenCore, skipDisable:Boolean = false) : void
       {
-         if(param1.cachedOrphan)
+         if(tween.cachedOrphan)
          {
             return;
          }
-         if(!param2)
+         if(!skipDisable)
          {
-            param1.setEnabled(false,true);
+            tween.setEnabled(false,true);
          }
-         var _loc4_:TweenCore = !!this.gc?_endCaps[0]:_firstChild;
-         var _loc3_:TweenCore = !!this.gc?_endCaps[1]:_lastChild;
-         if(param1.nextNode)
+         var first:TweenCore = !!this.gc?_endCaps[0]:_firstChild;
+         var last:TweenCore = !!this.gc?_endCaps[1]:_lastChild;
+         if(tween.nextNode)
          {
-            param1.nextNode.prevNode = param1.prevNode;
+            tween.nextNode.prevNode = tween.prevNode;
          }
-         else if(_loc3_ == param1)
+         else if(last == tween)
          {
-            _loc3_ = param1.prevNode;
+            last = tween.prevNode;
          }
-         if(param1.prevNode)
+         if(tween.prevNode)
          {
-            param1.prevNode.nextNode = param1.nextNode;
+            tween.prevNode.nextNode = tween.nextNode;
          }
-         else if(_loc4_ == param1)
+         else if(first == tween)
          {
-            _loc4_ = param1.nextNode;
+            first = tween.nextNode;
          }
          if(this.gc)
          {
-            _endCaps[0] = _loc4_;
-            _endCaps[1] = _loc3_;
+            _endCaps[0] = first;
+            _endCaps[1] = last;
          }
          else
          {
-            _firstChild = _loc4_;
-            _lastChild = _loc3_;
+            _firstChild = first;
+            _lastChild = last;
          }
-         param1.cachedOrphan = true;
+         tween.cachedOrphan = true;
          setDirtyCache(true);
       }
       
-      override public function insert(param1:TweenCore, param2:* = 0) : TweenCore
+      override public function insert(tween:TweenCore, timeOrLabel:* = 0) : TweenCore
       {
-         var _loc5_:* = null;
-         var _loc3_:* = null;
-         if(typeof param2 == "string")
+         var curTween:* = null;
+         var tl:* = null;
+         if(typeof timeOrLabel == "string")
          {
-            if(!(param2 in _labels))
+            if(!(timeOrLabel in _labels))
             {
-               addLabel(param2,this.duration);
+               addLabel(timeOrLabel,this.duration);
             }
-            param2 = Number(_labels[param2]);
+            timeOrLabel = Number(_labels[timeOrLabel]);
          }
-         if(!param1.cachedOrphan && param1.timeline)
+         if(!tween.cachedOrphan && tween.timeline)
          {
-            param1.timeline.remove(param1,true);
+            tween.timeline.remove(tween,true);
          }
-         param1.timeline = this;
-         param1.cachedStartTime = Number(param2) + param1.delay;
-         if(param1.cachedPaused)
+         tween.timeline = this;
+         tween.cachedStartTime = Number(timeOrLabel) + tween.delay;
+         if(tween.cachedPaused)
          {
-            param1.cachedPauseTime = param1.cachedStartTime + (this.rawTime - param1.cachedStartTime) / param1.cachedTimeScale;
+            tween.cachedPauseTime = tween.cachedStartTime + (this.rawTime - tween.cachedStartTime) / tween.cachedTimeScale;
          }
-         if(param1.gc)
+         if(tween.gc)
          {
-            param1.setEnabled(true,true);
+            tween.setEnabled(true,true);
          }
          setDirtyCache(true);
-         var _loc7_:* = !!this.gc?_endCaps[0]:_firstChild;
-         var _loc4_:* = !!this.gc?_endCaps[1]:_lastChild;
-         if(_loc4_ == null)
+         var first:* = !!this.gc?_endCaps[0]:_firstChild;
+         var last:* = !!this.gc?_endCaps[1]:_lastChild;
+         if(last == null)
          {
-            _loc4_ = param1;
-            _loc7_ = _loc4_;
+            last = tween;
+            first = last;
             var _loc8_:* = null;
-            param1.prevNode = _loc8_;
-            param1.nextNode = _loc8_;
+            tween.prevNode = _loc8_;
+            tween.nextNode = _loc8_;
          }
          else
          {
-            _loc5_ = _loc4_;
-            var _loc6_:Number = param1.cachedStartTime;
-            while(_loc5_ != null && _loc6_ < _loc5_.cachedStartTime)
+            curTween = last;
+            var st:Number = tween.cachedStartTime;
+            while(curTween != null && st < curTween.cachedStartTime)
             {
-               _loc5_ = _loc5_.prevNode;
+               curTween = curTween.prevNode;
             }
-            if(_loc5_ == null)
+            if(curTween == null)
             {
-               _loc7_.prevNode = param1;
-               param1.nextNode = _loc7_;
-               param1.prevNode = null;
-               _loc7_ = param1;
+               first.prevNode = tween;
+               tween.nextNode = first;
+               tween.prevNode = null;
+               first = tween;
             }
             else
             {
-               if(_loc5_.nextNode)
+               if(curTween.nextNode)
                {
-                  _loc5_.nextNode.prevNode = param1;
+                  curTween.nextNode.prevNode = tween;
                }
-               else if(_loc5_ == _loc4_)
+               else if(curTween == last)
                {
-                  _loc4_ = param1;
+                  last = tween;
                }
-               param1.prevNode = _loc5_;
-               param1.nextNode = _loc5_.nextNode;
-               _loc5_.nextNode = param1;
+               tween.prevNode = curTween;
+               tween.nextNode = curTween.nextNode;
+               curTween.nextNode = tween;
             }
          }
-         param1.cachedOrphan = false;
+         tween.cachedOrphan = false;
          if(this.gc)
          {
-            _endCaps[0] = _loc7_;
-            _endCaps[1] = _loc4_;
+            _endCaps[0] = first;
+            _endCaps[1] = last;
          }
          else
          {
-            _firstChild = _loc7_;
-            _lastChild = _loc4_;
+            _firstChild = first;
+            _lastChild = last;
          }
-         if(this.gc && this.cachedStartTime + (param1.cachedStartTime + param1.cachedTotalDuration / param1.cachedTimeScale) / this.cachedTimeScale > this.timeline.cachedTime)
+         if(this.gc && this.cachedStartTime + (tween.cachedStartTime + tween.cachedTotalDuration / tween.cachedTimeScale) / this.cachedTimeScale > this.timeline.cachedTime)
          {
             this.setEnabled(true,false);
-            _loc3_ = this.timeline;
-            while(_loc3_.gc && _loc3_.timeline)
+            tl = this.timeline;
+            while(tl.gc && tl.timeline)
             {
-               if(_loc3_.cachedStartTime + _loc3_.totalDuration / _loc3_.cachedTimeScale > _loc3_.timeline.cachedTime)
+               if(tl.cachedStartTime + tl.totalDuration / tl.cachedTimeScale > tl.timeline.cachedTime)
                {
-                  _loc3_.setEnabled(true,false);
+                  tl.setEnabled(true,false);
                }
-               _loc3_ = _loc3_.timeline;
+               tl = tl.timeline;
             }
          }
-         return param1;
+         return tween;
       }
       
-      public function append(param1:TweenCore, param2:Number = 0) : TweenCore
+      public function append(tween:TweenCore, offset:Number = 0) : TweenCore
       {
-         return insert(param1,this.duration + param2);
+         return insert(tween,this.duration + offset);
       }
       
-      public function prepend(param1:TweenCore, param2:Boolean = false) : TweenCore
+      public function prepend(tween:TweenCore, adjustLabels:Boolean = false) : TweenCore
       {
-         shiftChildren(param1.totalDuration / param1.cachedTimeScale + param1.delay,param2,0);
-         return insert(param1,0);
+         shiftChildren(tween.totalDuration / tween.cachedTimeScale + tween.delay,adjustLabels,0);
+         return insert(tween,0);
       }
       
-      public function insertMultiple(param1:Array, param2:* = 0, param3:String = "normal", param4:Number = 0) : Array
+      public function insertMultiple(tweens:Array, timeOrLabel:* = 0, align:String = "normal", stagger:Number = 0) : Array
       {
-         var _loc5_:* = null;
-         var _loc8_:int = 0;
-         var _loc6_:Number = Number(param2) || 0;
-         var _loc7_:int = param1.length;
-         if(typeof param2 == "string")
+         var tween:* = null;
+         var i:int = 0;
+         var curTime:Number = Number(timeOrLabel) || 0;
+         var l:int = tweens.length;
+         if(typeof timeOrLabel == "string")
          {
-            if(!(param2 in _labels))
+            if(!(timeOrLabel in _labels))
             {
-               addLabel(param2,this.duration);
+               addLabel(timeOrLabel,this.duration);
             }
-            _loc6_ = _labels[param2];
+            curTime = _labels[timeOrLabel];
          }
-         _loc8_ = 0;
-         while(_loc8_ < _loc7_)
+         for(i = 0; i < l; )
          {
-            _loc5_ = param1[_loc8_] as TweenCore;
-            insert(_loc5_,_loc6_);
-            if(param3 == "sequence")
+            tween = tweens[i] as TweenCore;
+            insert(tween,curTime);
+            if(align == "sequence")
             {
-               _loc6_ = _loc5_.cachedStartTime + _loc5_.totalDuration / _loc5_.cachedTimeScale;
+               curTime = tween.cachedStartTime + tween.totalDuration / tween.cachedTimeScale;
             }
-            else if(param3 == "start")
+            else if(align == "start")
             {
-               _loc5_.cachedStartTime = _loc5_.cachedStartTime - _loc5_.delay;
+               tween.cachedStartTime = tween.cachedStartTime - tween.delay;
             }
-            _loc6_ = _loc6_ + param4;
-            _loc8_ = _loc8_ + 1;
+            curTime = curTime + stagger;
+            i = i + 1;
          }
-         return param1;
+         return tweens;
       }
       
-      public function appendMultiple(param1:Array, param2:Number = 0, param3:String = "normal", param4:Number = 0) : Array
+      public function appendMultiple(tweens:Array, offset:Number = 0, align:String = "normal", stagger:Number = 0) : Array
       {
-         return insertMultiple(param1,this.duration + param2,param3,param4);
+         return insertMultiple(tweens,this.duration + offset,align,stagger);
       }
       
-      public function prependMultiple(param1:Array, param2:String = "normal", param3:Number = 0, param4:Boolean = false) : Array
+      public function prependMultiple(tweens:Array, align:String = "normal", stagger:Number = 0, adjustLabels:Boolean = false) : Array
       {
-         var _loc5_:TimelineLite = new TimelineLite({
-            "tweens":param1,
-            "align":param2,
-            "stagger":param3
+         var tl:TimelineLite = new TimelineLite({
+            "tweens":tweens,
+            "align":align,
+            "stagger":stagger
          });
-         shiftChildren(_loc5_.duration,param4,0);
-         insertMultiple(param1,0,param2,param3);
-         _loc5_.kill();
-         return param1;
+         shiftChildren(tl.duration,adjustLabels,0);
+         insertMultiple(tweens,0,align,stagger);
+         tl.kill();
+         return tweens;
       }
       
-      public function addLabel(param1:String, param2:Number) : void
+      public function addLabel(label:String, time:Number) : void
       {
-         _labels[param1] = param2;
+         _labels[label] = time;
       }
       
-      public function removeLabel(param1:String) : Number
+      public function removeLabel(label:String) : Number
       {
-         var _loc2_:Number = _labels[param1];
-         delete _labels[param1];
-         return _loc2_;
+         var n:Number = _labels[label];
+         delete _labels[label];
+         return n;
       }
       
-      public function getLabelTime(param1:String) : Number
+      public function getLabelTime(label:String) : Number
       {
-         return param1 in _labels?Number(_labels[param1]):-1;
+         return label in _labels?Number(_labels[label]):-1;
       }
       
-      protected function parseTimeOrLabel(param1:*) : Number
+      protected function parseTimeOrLabel(timeOrLabel:*) : Number
       {
-         if(typeof param1 == "string")
+         if(typeof timeOrLabel == "string")
          {
-            if(!(param1 in _labels))
+            if(!(timeOrLabel in _labels))
             {
-               throw new Error("TimelineLite error: the " + param1 + " label was not found.");
+               throw new Error("TimelineLite error: the " + timeOrLabel + " label was not found.");
             }
-            return getLabelTime(String(param1));
+            return getLabelTime(String(timeOrLabel));
          }
-         return Number(param1);
+         return Number(timeOrLabel);
       }
       
       public function stop() : void
@@ -261,30 +260,30 @@ package com.greensock
          this.paused = true;
       }
       
-      public function gotoAndPlay(param1:*, param2:Boolean = true) : void
+      public function gotoAndPlay(timeOrLabel:*, suppressEvents:Boolean = true) : void
       {
-         setTotalTime(parseTimeOrLabel(param1),param2);
+         setTotalTime(parseTimeOrLabel(timeOrLabel),suppressEvents);
          play();
       }
       
-      public function gotoAndStop(param1:*, param2:Boolean = true) : void
+      public function gotoAndStop(timeOrLabel:*, suppressEvents:Boolean = true) : void
       {
-         setTotalTime(parseTimeOrLabel(param1),param2);
+         setTotalTime(parseTimeOrLabel(timeOrLabel),suppressEvents);
          this.paused = true;
       }
       
-      public function goto_(param1:*, param2:Boolean = true) : void
+      public function goto_(timeOrLabel:*, suppressEvents:Boolean = true) : void
       {
-         setTotalTime(parseTimeOrLabel(param1),param2);
+         setTotalTime(parseTimeOrLabel(timeOrLabel),suppressEvents);
       }
       
-      override public function renderTime(param1:Number, param2:Boolean = false, param3:Boolean = false) : void
+      override public function renderTime(time:Number, suppressEvents:Boolean = false, force:Boolean = false) : void
       {
-         var _loc5_:* = null;
-         var _loc4_:* = false;
-         var _loc9_:Boolean = false;
-         var _loc6_:* = null;
-         var _loc11_:Number = NaN;
+         var tween:* = null;
+         var isComplete:* = false;
+         var rendered:Boolean = false;
+         var next:* = null;
+         var dur:Number = NaN;
          if(this.gc)
          {
             this.setEnabled(true,false);
@@ -293,62 +292,62 @@ package com.greensock
          {
             this.active = true;
          }
-         var _loc8_:Number = !!this.cacheIsDirty?this.totalDuration:Number(this.cachedTotalDuration);
-         var _loc13_:Number = this.cachedTime;
-         var _loc12_:Number = this.cachedStartTime;
-         var _loc7_:Number = this.cachedTimeScale;
-         var _loc10_:Boolean = this.cachedPaused;
-         if(param1 >= _loc8_)
+         var totalDur:Number = !!this.cacheIsDirty?this.totalDuration:Number(this.cachedTotalDuration);
+         var prevTime:Number = this.cachedTime;
+         var prevStart:Number = this.cachedStartTime;
+         var prevTimeScale:Number = this.cachedTimeScale;
+         var prevPaused:Boolean = this.cachedPaused;
+         if(time >= totalDur)
          {
-            if(_rawPrevTime <= _loc8_ && _rawPrevTime != param1)
+            if(_rawPrevTime <= totalDur && _rawPrevTime != time)
             {
-               var _loc14_:* = _loc8_;
+               var _loc14_:* = totalDur;
                this.cachedTime = _loc14_;
                this.cachedTotalTime = _loc14_;
-               forceChildrenToEnd(_loc8_,param2);
-               _loc4_ = !this.hasPausedChild();
-               _loc9_ = true;
-               if(this.cachedDuration == 0 && _loc4_ && (param1 == 0 || _rawPrevTime < 0))
+               forceChildrenToEnd(totalDur,suppressEvents);
+               isComplete = !this.hasPausedChild();
+               rendered = true;
+               if(this.cachedDuration == 0 && isComplete && (time == 0 || _rawPrevTime < 0))
                {
-                  param3 = true;
+                  force = true;
                }
             }
          }
-         else if(param1 <= 0)
+         else if(time <= 0)
          {
-            if(param1 < 0)
+            if(time < 0)
             {
                this.active = false;
                if(this.cachedDuration == 0 && _rawPrevTime >= 0)
                {
-                  param3 = true;
-                  _loc4_ = true;
+                  force = true;
+                  isComplete = true;
                }
             }
-            else if(param1 == 0 && !this.initted)
+            else if(time == 0 && !this.initted)
             {
-               param3 = true;
+               force = true;
             }
-            if(_rawPrevTime >= 0 && _rawPrevTime != param1)
+            if(_rawPrevTime >= 0 && _rawPrevTime != time)
             {
-               forceChildrenToBeginning(0,param2);
+               forceChildrenToBeginning(0,suppressEvents);
                this.cachedTotalTime = 0;
                this.cachedTime = 0;
-               _loc9_ = true;
+               rendered = true;
                if(this.cachedReversed)
                {
-                  _loc4_ = true;
+                  isComplete = true;
                }
             }
          }
          else
          {
-            _loc14_ = param1;
+            _loc14_ = time;
             this.cachedTime = _loc14_;
             this.cachedTotalTime = _loc14_;
          }
-         _rawPrevTime = param1;
-         if(this.cachedTime == _loc13_ && !param3)
+         _rawPrevTime = time;
+         if(this.cachedTime == prevTime && !force)
          {
             return;
          }
@@ -356,33 +355,33 @@ package com.greensock
          {
             this.initted = true;
          }
-         if(_loc13_ == 0 && this.vars.onStart && this.cachedTime != 0 && !param2)
+         if(prevTime == 0 && this.vars.onStart && this.cachedTime != 0 && !suppressEvents)
          {
             this.vars.onStart.apply(null,this.vars.onStartParams);
          }
-         if(!_loc9_)
+         if(!rendered)
          {
-            if(this.cachedTime - _loc13_ > 0)
+            if(this.cachedTime - prevTime > 0)
             {
-               _loc5_ = _firstChild;
-               while(_loc5_)
+               tween = _firstChild;
+               while(tween)
                {
-                  _loc6_ = _loc5_.nextNode;
-                  if(!(this.cachedPaused && !_loc10_))
+                  next = tween.nextNode;
+                  if(!(this.cachedPaused && !prevPaused))
                   {
-                     if(_loc5_.active || !_loc5_.cachedPaused && _loc5_.cachedStartTime <= this.cachedTime && !_loc5_.gc)
+                     if(tween.active || !tween.cachedPaused && tween.cachedStartTime <= this.cachedTime && !tween.gc)
                      {
-                        if(!_loc5_.cachedReversed)
+                        if(!tween.cachedReversed)
                         {
-                           _loc5_.renderTime((this.cachedTime - _loc5_.cachedStartTime) * _loc5_.cachedTimeScale,param2,false);
+                           tween.renderTime((this.cachedTime - tween.cachedStartTime) * tween.cachedTimeScale,suppressEvents,false);
                         }
                         else
                         {
-                           _loc11_ = !!_loc5_.cacheIsDirty?_loc5_.totalDuration:Number(_loc5_.cachedTotalDuration);
-                           _loc5_.renderTime(_loc11_ - (this.cachedTime - _loc5_.cachedStartTime) * _loc5_.cachedTimeScale,param2,false);
+                           dur = !!tween.cacheIsDirty?tween.totalDuration:Number(tween.cachedTotalDuration);
+                           tween.renderTime(dur - (this.cachedTime - tween.cachedStartTime) * tween.cachedTimeScale,suppressEvents,false);
                         }
                      }
-                     _loc5_ = _loc6_;
+                     tween = next;
                      continue;
                   }
                   break;
@@ -390,201 +389,200 @@ package com.greensock
             }
             else
             {
-               _loc5_ = _lastChild;
-               while(_loc5_)
+               tween = _lastChild;
+               while(tween)
                {
-                  _loc6_ = _loc5_.prevNode;
-                  if(!(this.cachedPaused && !_loc10_))
+                  next = tween.prevNode;
+                  if(!(this.cachedPaused && !prevPaused))
                   {
-                     if(_loc5_.active || !_loc5_.cachedPaused && _loc5_.cachedStartTime <= _loc13_ && !_loc5_.gc)
+                     if(tween.active || !tween.cachedPaused && tween.cachedStartTime <= prevTime && !tween.gc)
                      {
-                        if(!_loc5_.cachedReversed)
+                        if(!tween.cachedReversed)
                         {
-                           _loc5_.renderTime((this.cachedTime - _loc5_.cachedStartTime) * _loc5_.cachedTimeScale,param2,false);
+                           tween.renderTime((this.cachedTime - tween.cachedStartTime) * tween.cachedTimeScale,suppressEvents,false);
                         }
                         else
                         {
-                           _loc11_ = !!_loc5_.cacheIsDirty?_loc5_.totalDuration:Number(_loc5_.cachedTotalDuration);
-                           _loc5_.renderTime(_loc11_ - (this.cachedTime - _loc5_.cachedStartTime) * _loc5_.cachedTimeScale,param2,false);
+                           dur = !!tween.cacheIsDirty?tween.totalDuration:Number(tween.cachedTotalDuration);
+                           tween.renderTime(dur - (this.cachedTime - tween.cachedStartTime) * tween.cachedTimeScale,suppressEvents,false);
                         }
                      }
-                     _loc5_ = _loc6_;
+                     tween = next;
                      continue;
                   }
                   break;
                }
             }
          }
-         if(_hasUpdate && !param2)
+         if(_hasUpdate && !suppressEvents)
          {
             this.vars.onUpdate.apply(null,this.vars.onUpdateParams);
          }
-         if(_loc4_ && (_loc12_ == this.cachedStartTime || _loc7_ != this.cachedTimeScale) && (_loc8_ >= this.totalDuration || this.cachedTime == 0))
+         if(isComplete && (prevStart == this.cachedStartTime || prevTimeScale != this.cachedTimeScale) && (totalDur >= this.totalDuration || this.cachedTime == 0))
          {
-            complete(true,param2);
+            complete(true,suppressEvents);
          }
       }
       
-      protected function forceChildrenToBeginning(param1:Number, param2:Boolean = false) : Number
+      protected function forceChildrenToBeginning(time:Number, suppressEvents:Boolean = false) : Number
       {
-         var _loc5_:* = null;
-         var _loc4_:Number = NaN;
-         var _loc3_:* = _lastChild;
-         var _loc6_:Boolean = this.cachedPaused;
-         while(_loc3_)
+         var next:* = null;
+         var dur:Number = NaN;
+         var tween:* = _lastChild;
+         var prevPaused:Boolean = this.cachedPaused;
+         while(tween)
          {
-            _loc5_ = _loc3_.prevNode;
-            if(!(this.cachedPaused && !_loc6_))
+            next = tween.prevNode;
+            if(!(this.cachedPaused && !prevPaused))
             {
-               if(_loc3_.active || !_loc3_.cachedPaused && !_loc3_.gc && (_loc3_.cachedTotalTime != 0 || _loc3_.cachedDuration == 0))
+               if(tween.active || !tween.cachedPaused && !tween.gc && (tween.cachedTotalTime != 0 || tween.cachedDuration == 0))
                {
-                  if(param1 == 0 && (_loc3_.cachedDuration != 0 || _loc3_.cachedStartTime == 0))
+                  if(time == 0 && (tween.cachedDuration != 0 || tween.cachedStartTime == 0))
                   {
-                     _loc3_.renderTime(!!_loc3_.cachedReversed?_loc3_.cachedTotalDuration:0,param2,false);
+                     tween.renderTime(!!tween.cachedReversed?tween.cachedTotalDuration:0,suppressEvents,false);
                   }
-                  else if(!_loc3_.cachedReversed)
+                  else if(!tween.cachedReversed)
                   {
-                     _loc3_.renderTime((param1 - _loc3_.cachedStartTime) * _loc3_.cachedTimeScale,param2,false);
+                     tween.renderTime((time - tween.cachedStartTime) * tween.cachedTimeScale,suppressEvents,false);
                   }
                   else
                   {
-                     _loc4_ = !!_loc3_.cacheIsDirty?_loc3_.totalDuration:Number(_loc3_.cachedTotalDuration);
-                     _loc3_.renderTime(_loc4_ - (param1 - _loc3_.cachedStartTime) * _loc3_.cachedTimeScale,param2,false);
+                     dur = !!tween.cacheIsDirty?tween.totalDuration:Number(tween.cachedTotalDuration);
+                     tween.renderTime(dur - (time - tween.cachedStartTime) * tween.cachedTimeScale,suppressEvents,false);
                   }
                }
-               _loc3_ = _loc5_;
+               tween = next;
                continue;
             }
             break;
          }
-         return param1;
+         return time;
       }
       
-      protected function forceChildrenToEnd(param1:Number, param2:Boolean = false) : Number
+      protected function forceChildrenToEnd(time:Number, suppressEvents:Boolean = false) : Number
       {
-         var _loc5_:* = null;
-         var _loc4_:Number = NaN;
-         var _loc3_:* = _firstChild;
-         var _loc6_:Boolean = this.cachedPaused;
-         while(_loc3_)
+         var next:* = null;
+         var dur:Number = NaN;
+         var tween:* = _firstChild;
+         var prevPaused:Boolean = this.cachedPaused;
+         while(tween)
          {
-            _loc5_ = _loc3_.nextNode;
-            if(!(this.cachedPaused && !_loc6_))
+            next = tween.nextNode;
+            if(!(this.cachedPaused && !prevPaused))
             {
-               if(_loc3_.active || !_loc3_.cachedPaused && !_loc3_.gc && (_loc3_.cachedTotalTime != _loc3_.cachedTotalDuration || _loc3_.cachedDuration == 0))
+               if(tween.active || !tween.cachedPaused && !tween.gc && (tween.cachedTotalTime != tween.cachedTotalDuration || tween.cachedDuration == 0))
                {
-                  if(param1 == this.cachedDuration && (_loc3_.cachedDuration != 0 || _loc3_.cachedStartTime == this.cachedDuration))
+                  if(time == this.cachedDuration && (tween.cachedDuration != 0 || tween.cachedStartTime == this.cachedDuration))
                   {
-                     _loc3_.renderTime(!!_loc3_.cachedReversed?0:Number(_loc3_.cachedTotalDuration),param2,false);
+                     tween.renderTime(!!tween.cachedReversed?0:Number(tween.cachedTotalDuration),suppressEvents,false);
                   }
-                  else if(!_loc3_.cachedReversed)
+                  else if(!tween.cachedReversed)
                   {
-                     _loc3_.renderTime((param1 - _loc3_.cachedStartTime) * _loc3_.cachedTimeScale,param2,false);
+                     tween.renderTime((time - tween.cachedStartTime) * tween.cachedTimeScale,suppressEvents,false);
                   }
                   else
                   {
-                     _loc4_ = !!_loc3_.cacheIsDirty?_loc3_.totalDuration:Number(_loc3_.cachedTotalDuration);
-                     _loc3_.renderTime(_loc4_ - (param1 - _loc3_.cachedStartTime) * _loc3_.cachedTimeScale,param2,false);
+                     dur = !!tween.cacheIsDirty?tween.totalDuration:Number(tween.cachedTotalDuration);
+                     tween.renderTime(dur - (time - tween.cachedStartTime) * tween.cachedTimeScale,suppressEvents,false);
                   }
                }
-               _loc3_ = _loc5_;
+               tween = next;
                continue;
             }
             break;
          }
-         return param1;
+         return time;
       }
       
       public function hasPausedChild() : Boolean
       {
-         var _loc1_:TweenCore = !!this.gc?_endCaps[0]:_firstChild;
-         while(_loc1_)
+         var tween:TweenCore = !!this.gc?_endCaps[0]:_firstChild;
+         while(tween)
          {
-            if(_loc1_.cachedPaused || _loc1_ is TimelineLite && (_loc1_ as TimelineLite).hasPausedChild())
+            if(tween.cachedPaused || tween is TimelineLite && (tween as TimelineLite).hasPausedChild())
             {
                return true;
             }
-            _loc1_ = _loc1_.nextNode;
+            tween = tween.nextNode;
          }
          return false;
       }
       
-      public function getChildren(param1:Boolean = true, param2:Boolean = true, param3:Boolean = true, param4:Number = -9.999999999E9) : Array
+      public function getChildren(nested:Boolean = true, tweens:Boolean = true, timelines:Boolean = true, ignoreBeforeTime:Number = -9.999999999E9) : Array
       {
-         var _loc7_:Array = [];
-         var _loc6_:int = 0;
-         var _loc5_:TweenCore = !!this.gc?_endCaps[0]:_firstChild;
-         while(_loc5_)
+         var a:Array = [];
+         var cnt:int = 0;
+         var tween:TweenCore = !!this.gc?_endCaps[0]:_firstChild;
+         while(tween)
          {
-            if(_loc5_.cachedStartTime >= param4)
+            if(tween.cachedStartTime >= ignoreBeforeTime)
             {
-               if(_loc5_ is TweenLite)
+               if(tween is TweenLite)
                {
-                  if(param2)
+                  if(tweens)
                   {
-                     _loc6_++;
-                     _loc7_[_loc6_] = _loc5_;
+                     cnt++;
+                     a[cnt] = tween;
                   }
                }
                else
                {
-                  if(param3)
+                  if(timelines)
                   {
-                     _loc6_++;
-                     _loc7_[_loc6_] = _loc5_;
+                     cnt++;
+                     a[cnt] = tween;
                   }
-                  if(param1)
+                  if(nested)
                   {
-                     _loc7_ = _loc7_.concat(TimelineLite(_loc5_).getChildren(true,param2,param3));
+                     a = a.concat(TimelineLite(tween).getChildren(true,tweens,timelines));
                   }
                }
             }
-            _loc5_ = _loc5_.nextNode;
+            tween = tween.nextNode;
          }
-         return _loc7_;
+         return a;
       }
       
-      public function getTweensOf(param1:Object, param2:Boolean = true) : Array
+      public function getTweensOf(target:Object, nested:Boolean = true) : Array
       {
-         var _loc7_:int = 0;
-         var _loc6_:Array = getChildren(param2,true,false);
-         var _loc4_:Array = [];
-         var _loc5_:int = _loc6_.length;
-         var _loc3_:int = 0;
-         _loc7_ = 0;
-         while(_loc7_ < _loc5_)
+         var i:int = 0;
+         var tweens:Array = getChildren(nested,true,false);
+         var a:Array = [];
+         var l:int = tweens.length;
+         var cnt:int = 0;
+         for(i = 0; i < l; )
          {
-            if(TweenLite(_loc6_[_loc7_]).target == param1)
+            if(TweenLite(tweens[i]).target == target)
             {
-               _loc3_++;
-               _loc4_[_loc3_] = _loc6_[_loc7_];
+               cnt++;
+               a[cnt] = tweens[i];
             }
-            _loc7_ = _loc7_ + 1;
+            i = i + 1;
          }
-         return _loc4_;
+         return a;
       }
       
-      public function shiftChildren(param1:Number, param2:Boolean = false, param3:Number = 0) : void
+      public function shiftChildren(amount:Number, adjustLabels:Boolean = false, ignoreBeforeTime:Number = 0) : void
       {
-         var _loc4_:TweenCore = !!this.gc?_endCaps[0]:_firstChild;
-         while(_loc4_)
+         var tween:TweenCore = !!this.gc?_endCaps[0]:_firstChild;
+         while(tween)
          {
-            if(_loc4_.cachedStartTime >= param3)
+            if(tween.cachedStartTime >= ignoreBeforeTime)
             {
-               _loc4_.cachedStartTime = _loc4_.cachedStartTime + param1;
+               tween.cachedStartTime = tween.cachedStartTime + amount;
             }
-            _loc4_ = _loc4_.nextNode;
+            tween = tween.nextNode;
          }
-         if(param2)
+         if(adjustLabels)
          {
             var _loc9_:int = 0;
             var _loc8_:* = _labels;
-            for(var _loc5_ in _labels)
+            for(var p in _labels)
             {
-               if(_labels[_loc5_] >= param3)
+               if(_labels[p] >= ignoreBeforeTime)
                {
-                  var _loc6_:* = _loc5_;
-                  var _loc7_:* = _labels[_loc6_] + param1;
+                  var _loc6_:* = p;
+                  var _loc7_:* = _labels[_loc6_] + amount;
                   _labels[_loc6_] = _loc7_;
                }
             }
@@ -592,85 +590,85 @@ package com.greensock
          this.setDirtyCache(true);
       }
       
-      public function killTweensOf(param1:Object, param2:Boolean = true, param3:Object = null) : Boolean
+      public function killTweensOf(target:Object, nested:Boolean = true, vars:Object = null) : Boolean
       {
-         var _loc4_:* = null;
-         var _loc5_:Array = getTweensOf(param1,param2);
-         var _loc6_:int = _loc5_.length;
+         var tween:* = null;
+         var tweens:Array = getTweensOf(target,nested);
+         var i:int = tweens.length;
          while(true)
          {
-            _loc6_--;
-            if(_loc6_ <= -1)
+            i--;
+            if(i <= -1)
             {
                break;
             }
-            _loc4_ = _loc5_[_loc6_];
-            if(param3 != null)
+            tween = tweens[i];
+            if(vars != null)
             {
-               _loc4_.killVars(param3);
+               tween.killVars(vars);
             }
-            if(param3 == null || _loc4_.cachedPT1 == null && _loc4_.initted)
+            if(vars == null || tween.cachedPT1 == null && tween.initted)
             {
-               _loc4_.setEnabled(false,false);
+               tween.setEnabled(false,false);
             }
          }
-         return _loc5_.length > 0;
+         return tweens.length > 0;
       }
       
       override public function invalidate() : void
       {
-         var _loc1_:TweenCore = !!this.gc?_endCaps[0]:_firstChild;
-         while(_loc1_)
+         var tween:TweenCore = !!this.gc?_endCaps[0]:_firstChild;
+         while(tween)
          {
-            _loc1_.invalidate();
-            _loc1_ = _loc1_.nextNode;
+            tween.invalidate();
+            tween = tween.nextNode;
          }
       }
       
-      public function clear(param1:Array = null) : void
+      public function clear(tweens:Array = null) : void
       {
-         if(param1 == null)
+         if(tweens == null)
          {
-            param1 = getChildren(false,true,true);
+            tweens = getChildren(false,true,true);
          }
-         var _loc2_:int = param1.length;
+         var i:int = tweens.length;
          while(true)
          {
-            _loc2_--;
-            if(_loc2_ <= -1)
+            i--;
+            if(i <= -1)
             {
                break;
             }
-            TweenCore(param1[_loc2_]).setEnabled(false,false);
+            TweenCore(tweens[i]).setEnabled(false,false);
          }
       }
       
-      override public function setEnabled(param1:Boolean, param2:Boolean = false) : Boolean
+      override public function setEnabled(enabled:Boolean, ignoreTimeline:Boolean = false) : Boolean
       {
-         var _loc3_:* = null;
-         if(param1 == this.gc)
+         var tween:* = null;
+         if(enabled == this.gc)
          {
-            if(param1)
+            if(enabled)
             {
-               _loc3_ = _endCaps[0];
+               tween = _endCaps[0];
                _firstChild = _endCaps[0];
                _lastChild = _endCaps[1];
                _endCaps = [null,null];
             }
             else
             {
-               _loc3_ = _firstChild;
+               tween = _firstChild;
                _endCaps = [_firstChild,_lastChild];
                _lastChild = null;
                _firstChild = null;
             }
-            while(_loc3_)
+            while(tween)
             {
-               _loc3_.setEnabled(param1,true);
-               _loc3_ = _loc3_.nextNode;
+               tween.setEnabled(enabled,true);
+               tween = tween.nextNode;
             }
          }
-         return super.setEnabled(param1,param2);
+         return super.setEnabled(enabled,ignoreTimeline);
       }
       
       public function get currentProgress() : Number
@@ -678,64 +676,64 @@ package com.greensock
          return this.cachedTime / this.duration;
       }
       
-      public function set currentProgress(param1:Number) : void
+      public function set currentProgress(n:Number) : void
       {
-         setTotalTime(this.duration * param1,false);
+         setTotalTime(this.duration * n,false);
       }
       
       override public function get duration() : Number
       {
-         var _loc1_:Number = NaN;
+         var d:Number = NaN;
          if(this.cacheIsDirty)
          {
-            _loc1_ = this.totalDuration;
+            d = this.totalDuration;
          }
          return this.cachedDuration;
       }
       
-      override public function set duration(param1:Number) : void
+      override public function set duration(n:Number) : void
       {
-         if(this.duration != 0 && param1 != 0)
+         if(this.duration != 0 && n != 0)
          {
-            this.timeScale = this.duration / param1;
+            this.timeScale = this.duration / n;
          }
       }
       
       override public function get totalDuration() : Number
       {
-         var _loc5_:Number = NaN;
-         var _loc3_:* = null;
-         var _loc1_:* = NaN;
+         var end:Number = NaN;
+         var next:* = null;
+         var max:* = NaN;
          if(this.cacheIsDirty)
          {
-            _loc1_ = 0;
-            var _loc2_:* = !!this.gc?_endCaps[0]:_firstChild;
-            var _loc4_:* = -Infinity;
-            while(_loc2_)
+            max = 0;
+            var tween:* = !!this.gc?_endCaps[0]:_firstChild;
+            var prevStart:* = -Infinity;
+            while(tween)
             {
-               _loc3_ = _loc2_.nextNode;
-               if(_loc2_.cachedStartTime < _loc4_)
+               next = tween.nextNode;
+               if(tween.cachedStartTime < prevStart)
                {
-                  this.insert(_loc2_,_loc2_.cachedStartTime - _loc2_.delay);
-                  _loc4_ = Number(_loc2_.prevNode.cachedStartTime);
+                  this.insert(tween,tween.cachedStartTime - tween.delay);
+                  prevStart = Number(tween.prevNode.cachedStartTime);
                }
                else
                {
-                  _loc4_ = Number(_loc2_.cachedStartTime);
+                  prevStart = Number(tween.cachedStartTime);
                }
-               if(_loc2_.cachedStartTime < 0)
+               if(tween.cachedStartTime < 0)
                {
-                  _loc1_ = Number(_loc1_ - _loc2_.cachedStartTime);
-                  this.shiftChildren(-_loc2_.cachedStartTime,false,-9999999999);
+                  max = Number(max - tween.cachedStartTime);
+                  this.shiftChildren(-tween.cachedStartTime,false,-9999999999);
                }
-               _loc5_ = _loc2_.cachedStartTime + _loc2_.totalDuration / _loc2_.cachedTimeScale;
-               if(_loc5_ > _loc1_)
+               end = tween.cachedStartTime + tween.totalDuration / tween.cachedTimeScale;
+               if(end > max)
                {
-                  _loc1_ = _loc5_;
+                  max = end;
                }
-               _loc2_ = _loc3_;
+               tween = next;
             }
-            var _loc6_:* = _loc1_;
+            var _loc6_:* = max;
             this.cachedTotalDuration = _loc6_;
             this.cachedDuration = _loc6_;
             this.cacheIsDirty = false;
@@ -743,11 +741,11 @@ package com.greensock
          return this.cachedTotalDuration;
       }
       
-      override public function set totalDuration(param1:Number) : void
+      override public function set totalDuration(n:Number) : void
       {
-         if(this.totalDuration != 0 && param1 != 0)
+         if(this.totalDuration != 0 && n != 0)
          {
-            this.timeScale = this.totalDuration / param1;
+            this.timeScale = this.totalDuration / n;
          }
       }
       
@@ -756,26 +754,26 @@ package com.greensock
          return this.cachedTimeScale;
       }
       
-      public function set timeScale(param1:Number) : void
+      public function set timeScale(n:Number) : void
       {
-         if(param1 == 0)
+         if(n == 0)
          {
-            param1 = 0.0001;
+            n = 0.0001;
          }
-         var _loc2_:Number = this.cachedPauseTime || this.cachedPauseTime == 0?this.cachedPauseTime:Number(this.timeline.cachedTotalTime);
-         this.cachedStartTime = _loc2_ - (_loc2_ - this.cachedStartTime) * this.cachedTimeScale / param1;
-         this.cachedTimeScale = param1;
+         var tlTime:Number = this.cachedPauseTime || this.cachedPauseTime == 0?this.cachedPauseTime:Number(this.timeline.cachedTotalTime);
+         this.cachedStartTime = tlTime - (tlTime - this.cachedStartTime) * this.cachedTimeScale / n;
+         this.cachedTimeScale = n;
          setDirtyCache(false);
       }
       
       public function get useFrames() : Boolean
       {
-         var _loc1_:SimpleTimeline = this.timeline;
-         while(_loc1_.timeline)
+         var tl:SimpleTimeline = this.timeline;
+         while(tl.timeline)
          {
-            _loc1_ = _loc1_.timeline;
+            tl = tl.timeline;
          }
-         return _loc1_ == TweenLite.rootFramesTimeline;
+         return tl == TweenLite.rootFramesTimeline;
       }
       
       override public function get rawTime() : Number

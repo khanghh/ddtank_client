@@ -9,45 +9,44 @@ package ddt.data.analyze
       
       public var bombs:Dictionary;
       
-      public function WeaponBallInfoAnalyze(param1:Function)
+      public function WeaponBallInfoAnalyze(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc8_:* = null;
-         var _loc10_:int = 0;
-         var _loc6_:* = null;
-         var _loc9_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
-         var _loc7_:XML = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var attr:* = null;
+         var bombIds:* = null;
+         var TemplateID:int = 0;
+         var propname:* = null;
+         var value:int = 0;
+         var xml:XML = new XML(data);
          bombs = new Dictionary();
-         if(_loc7_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc8_ = _loc7_..Item;
-            _loc10_ = 0;
-            while(_loc10_ < _loc8_.length())
+            xmllist = xml..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc6_ = _loc8_[_loc10_].attributes();
-               _loc9_ = [];
+               attr = xmllist[i].attributes();
+               bombIds = [];
                var _loc14_:int = 0;
-               var _loc13_:* = _loc6_;
-               for each(var _loc3_ in _loc6_)
+               var _loc13_:* = attr;
+               for each(var item in attr)
                {
-                  _loc2_ = _loc3_.name().toString();
+                  propname = item.name().toString();
                   try
                   {
-                     if(_loc2_ == "TemplateID")
+                     if(propname == "TemplateID")
                      {
-                        _loc5_ = _loc3_;
+                        TemplateID = item;
                      }
                      else
                      {
-                        _loc4_ = _loc3_;
-                        _loc9_.push(_loc4_);
+                        value = item;
+                        bombIds.push(value);
                      }
                   }
                   catch(e:Error)
@@ -56,14 +55,14 @@ package ddt.data.analyze
                      continue;
                   }
                }
-               bombs[_loc5_] = _loc9_;
-               _loc10_++;
+               bombs[TemplateID] = bombIds;
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc7_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }

@@ -50,22 +50,22 @@ package RechargeRank
          SocketManager.Instance.addEventListener(PkgEvent.format(352),__updateInfo);
       }
       
-      protected function __updateInfo(param1:PkgEvent) : void
+      protected function __updateInfo(event:PkgEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc6_:int = 0;
-         var _loc9_:* = null;
-         var _loc8_:int = 0;
-         var _loc5_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         actId = _loc4_.readUTF();
-         var _loc10_:Boolean = _loc4_.readBoolean();
-         var _loc2_:Dictionary = WonderfulActivityManager.Instance.activityData;
-         var _loc7_:Dictionary = WonderfulActivityManager.Instance.leftViewInfoDic;
-         if(_loc10_)
+         var count:int = 0;
+         var k:int = 0;
+         var vo:* = null;
+         var i:int = 0;
+         var vo1:* = null;
+         var pkg:PackageIn = event.pkg;
+         actId = pkg.readUTF();
+         var isOpen:Boolean = pkg.readBoolean();
+         var activityData:Dictionary = WonderfulActivityManager.Instance.activityData;
+         var leftViewInfoDic:Dictionary = WonderfulActivityManager.Instance.leftViewInfoDic;
+         if(isOpen)
          {
-            status = _loc4_.readInt();
-            xmlData = _loc2_[actId];
+            status = pkg.readInt();
+            xmlData = activityData[actId];
             if(!xmlData)
             {
                requestCount = Number(requestCount) + 1;
@@ -77,40 +77,39 @@ package RechargeRank
             }
             if(WonderfulActivityManager.Instance.actList.indexOf(actId) == -1)
             {
-               _loc7_[actId] = new LeftViewInfoVo(61,"· " + xmlData.activityName,xmlData.icon);
+               leftViewInfoDic[actId] = new LeftViewInfoVo(61,"· " + xmlData.activityName,xmlData.icon);
                WonderfulActivityManager.Instance.addElement(actId);
             }
             rankList = [];
-            _loc3_ = _loc4_.readInt();
-            if(_loc3_ <= 0)
+            count = pkg.readInt();
+            if(count <= 0)
             {
-               _loc6_ = 0;
-               while(_loc6_ < 10)
+               for(k = 0; k < 10; )
                {
-                  _loc9_ = new RechargeRankVo();
-                  _loc9_.userId = 0;
-                  _loc9_.name = "";
-                  _loc9_.vipLvl = 0;
-                  _loc9_.consume = 0;
-                  rankList.push(_loc9_);
-                  _loc6_++;
+                  vo = new RechargeRankVo();
+                  vo.userId = 0;
+                  vo.name = "";
+                  vo.vipLvl = 0;
+                  vo.consume = 0;
+                  rankList.push(vo);
+                  k++;
                }
             }
             else
             {
-               _loc8_ = 0;
-               while(_loc8_ <= _loc3_ - 1)
+               i = 0;
+               while(i <= count - 1)
                {
-                  _loc5_ = new RechargeRankVo();
-                  _loc5_.userId = _loc4_.readInt();
-                  _loc5_.name = _loc4_.readUTF();
-                  _loc5_.vipLvl = _loc4_.readByte();
-                  _loc5_.consume = _loc4_.readInt();
-                  rankList.push(_loc5_);
-                  _loc8_++;
+                  vo1 = new RechargeRankVo();
+                  vo1.userId = pkg.readInt();
+                  vo1.name = pkg.readUTF();
+                  vo1.vipLvl = pkg.readByte();
+                  vo1.consume = pkg.readInt();
+                  rankList.push(vo1);
+                  i++;
                }
             }
-            myConsume = _loc4_.readInt();
+            myConsume = pkg.readInt();
             dispatchEvent(new Event("rechargeUpdateView"));
          }
          else

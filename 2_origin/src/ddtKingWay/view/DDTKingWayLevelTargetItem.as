@@ -43,11 +43,11 @@ package ddtKingWay.view
       
       private var _info:QuestInfo;
       
-      public function DDTKingWayLevelTargetItem(param1:int = 0)
+      public function DDTKingWayLevelTargetItem(num:int = 0)
       {
          super();
-         _num = param1;
-         _bg = ComponentFactory.Instance.creatBitmap("asset.ddtKingWay.itembg" + (param1 % 2 + 1));
+         _num = num;
+         _bg = ComponentFactory.Instance.creatBitmap("asset.ddtKingWay.itembg" + (num % 2 + 1));
          _stateImage = ComponentFactory.Instance.creatComponentByStylename("asset.ddtKingWay.completestatusIcom");
          _taskTargetText = ComponentFactory.Instance.creatComponentByStylename("asset.ddtKingWay.taskTargetText");
          _jumpBtn = ComponentFactory.Instance.creatComponentByStylename("asset.ddtKingWay.upgradeBtn");
@@ -58,30 +58,30 @@ package ddtKingWay.view
          addChild(_jumpBtn);
       }
       
-      public function updataStutas(param1:QuestInfo, param2:Boolean, param3:Boolean) : void
+      public function updataStutas(info:QuestInfo, status:Boolean, isGardeRange:Boolean) : void
       {
-         _info = param1;
-         _taskStatus = param2;
-         creatStateText(param3);
+         _info = info;
+         _taskStatus = status;
+         creatStateText(isGardeRange);
       }
       
-      private function creatStateText(param1:Boolean) : void
+      private function creatStateText(isGardeRange:Boolean) : void
       {
-         var _loc2_:int = 0;
-         if((!_info.data || _info.progress[_num] <= 0) && param1)
+         var state:int = 0;
+         if((!_info.data || _info.progress[_num] <= 0) && isGardeRange)
          {
-            _loc2_ = 2;
+            state = 2;
          }
          else
          {
-            _loc2_ = 1;
+            state = 1;
          }
-         _stateImage.setFrame(_loc2_);
-         _taskTargetText.setFrame(_loc2_);
+         _stateImage.setFrame(state);
+         _taskTargetText.setFrame(state);
          _taskTargetText.text = _info.conditions[_num].description;
       }
       
-      private function textClickHandler(param1:MouseEvent) : void
+      private function textClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(_info.MapID > 0)
@@ -89,8 +89,8 @@ package ddtKingWay.view
             TaskManager.instance.jumpToQuestByID(_info.QuestID);
             return;
          }
-         var _loc3_:Dictionary = HallTaskTrackManager.instance.btnIndexMap;
-         var _loc2_:int = _info.conditions[_num].type;
+         var idxMap:Dictionary = HallTaskTrackManager.instance.btnIndexMap;
+         var tmp:int = _info.conditions[_num].type;
          var _loc4_:* = _info.conditions[_num].turnType;
          if(-1 !== _loc4_)
          {
@@ -114,7 +114,7 @@ package ddtKingWay.view
                            HorseManager.instance.show();
                         }
                      }
-                     else if(_loc2_ == 94)
+                     else if(tmp == 94)
                      {
                         FarmModelController.instance.goFarm(PlayerManager.Instance.Self.ID,PlayerManager.Instance.Self.NickName);
                      }
@@ -123,7 +123,7 @@ package ddtKingWay.view
                         PetsBagManager.instance().show();
                      }
                   }
-                  else if(_loc2_ == 82)
+                  else if(tmp == 82)
                   {
                      if(PlayerManager.Instance.Self.Grade < 35)
                      {
@@ -132,7 +132,7 @@ package ddtKingWay.view
                      }
                      BagAndInfoManager.Instance.showBagAndInfo(9);
                   }
-                  else if(_loc2_ == 205)
+                  else if(tmp == 205)
                   {
                      if(PlayerManager.Instance.Self.Grade < 40)
                      {
@@ -147,7 +147,7 @@ package ddtKingWay.view
                   StateManager.setState("dungeon");
                }
             }
-            else if(_loc2_ == 9)
+            else if(tmp == 9)
             {
                if(_info.conditions[_num].target <= 12)
                {
@@ -158,15 +158,15 @@ package ddtKingWay.view
                   BagStore.instance.openStore("bag_store",1);
                }
             }
-            else if(_loc2_ == 202)
+            else if(tmp == 202)
             {
                BagStore.instance.openStore("forge_store",3);
             }
-            else if(_loc2_ == 203)
+            else if(tmp == 203)
             {
                BagStore.instance.openStore("forge_store",4);
             }
-            else if(_loc2_ == 80)
+            else if(tmp == 80)
             {
                if(PlayerManager.Instance.Self.Grade < 35)
                {

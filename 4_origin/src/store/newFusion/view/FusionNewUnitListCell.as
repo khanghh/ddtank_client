@@ -51,19 +51,19 @@ package store.newFusion.view
       
       private function updateViewData() : void
       {
-         isPetsActivated = function(param1:FusionNewVo):Boolean
+         isPetsActivated = function($data:FusionNewVo):Boolean
          {
-            return PetsAdvancedManager.Instance.isActivated(param1.fusionItemInfo.TemplateID);
+            return PetsAdvancedManager.Instance.isActivated($data.fusionItemInfo.TemplateID);
          };
-         isMountsActivated = function(param1:FusionNewVo):Boolean
+         isMountsActivated = function($data:FusionNewVo):Boolean
          {
-            var _loc3_:Boolean = false;
-            var _loc2_:Array = HorseControl.instance.getHorsePicCherishState(param1.mountID,param1.fusionItemInfo.TemplateID);
-            if(_loc2_[0] == true)
+            var isMountsActivated:Boolean = false;
+            var status:Array = HorseControl.instance.getHorsePicCherishState($data.mountID,$data.fusionItemInfo.TemplateID);
+            if(status[0] == true)
             {
-               _loc3_ = true;
+               isMountsActivated = true;
             }
-            return _loc3_;
+            return isMountsActivated;
          };
          _nameTxt.text = _data.fusionItemInfo.Name;
          var tmp:int = _data.canFusionCount;
@@ -99,11 +99,11 @@ package store.newFusion.view
          }
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
-         _selectedCover.visible = param2;
-         _nameTxt.textColor = !!param2?16051939:16768669;
-         _countTxt.textColor = !!param2?16051939:16768669;
+         _selectedCover.visible = isSelected;
+         _nameTxt.textColor = !!isSelected?16051939:16768669;
+         _countTxt.textColor = !!isSelected?16051939:16768669;
       }
       
       public function getCellValue() : *
@@ -111,9 +111,9 @@ package store.newFusion.view
          return _data;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _data = param1 as FusionNewVo;
+         _data = value as FusionNewVo;
          updateViewData();
       }
       

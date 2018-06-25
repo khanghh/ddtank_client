@@ -58,14 +58,14 @@ package morn.core.components
       
       public var canForceChange:Boolean;
       
-      public function ComboBox(param1:String = null, param2:String = null)
+      public function ComboBox(skin:String = null, labels:String = null)
       {
-         this._itemColors = Styles.comboBoxItemColors;
-         this._itemSize = Styles.fontSize;
-         this._labels = [];
+         _itemColors = Styles.comboBoxItemColors;
+         _itemSize = Styles.fontSize;
+         _labels = [];
          super();
-         this.skin = param1;
-         this.labels = param2;
+         this.skin = skin;
+         this.labels = labels;
       }
       
       override protected function preinitialize() : void
@@ -75,488 +75,490 @@ package morn.core.components
       
       override protected function createChildren() : void
       {
-         addChild(this._button = new Button());
-         this._listBg = new Image();
-         this._list = new List();
-         this._list.mouseHandler = new Handler(this.onlistItemMouse);
-         this._scrollBar = new VScrollBar();
-         this._list.addChild(this._scrollBar);
+         _button = new Button();
+         addChild(new Button());
+         _listBg = new Image();
+         _list = new List();
+         _list.mouseHandler = new Handler(onlistItemMouse);
+         _scrollBar = new VScrollBar();
+         _list.addChild(_scrollBar);
       }
       
       override protected function initialize() : void
       {
-         this._button.btnLabel.align = "left";
-         this._button.enableClickMoveDownEffect = false;
-         this._button.labelMargin = "5";
-         this._button.addEventListener(MouseEvent.MOUSE_DOWN,this.onButtonMouseDown);
-         this._list.addEventListener(Event.CHANGE,this.onListChange);
-         this._scrollBar.name = "scrollBar";
-         this._scrollBar.y = 1;
+         _button.btnLabel.align = "left";
+         _button.enableClickMoveDownEffect = false;
+         _button.labelMargin = "5";
+         _button.addEventListener("mouseDown",onButtonMouseDown);
+         _list.addEventListener("change",onListChange);
+         _scrollBar.name = "scrollBar";
+         _scrollBar.y = 1;
       }
       
-      private function onButtonMouseDown(param1:MouseEvent) : void
+      private function onButtonMouseDown(e:MouseEvent) : void
       {
-         callLater(this.changeOpen);
+         callLater(changeOpen);
       }
       
-      protected function onListChange(param1:Event) : void
+      protected function onListChange(e:Event) : void
       {
-         this.selectedIndex = this._list.selectedIndex;
+         selectedIndex = _list.selectedIndex;
       }
       
       public function get skin() : String
       {
-         return this._button.skin;
+         return _button.skin;
       }
       
-      public function set skin(param1:String) : void
+      public function set skin(value:String) : void
       {
-         if(this._button.skin != param1)
+         if(_button.skin != value)
          {
-            this._button.skin = param1;
-            _contentWidth = this._button.width;
-            _contentHeight = this._button.height;
-            callLater(this.changeList);
+            _button.skin = value;
+            _contentWidth = _button.width;
+            _contentHeight = _button.height;
+            callLater(changeList);
          }
       }
       
-      public function set imageLabel(param1:String) : void
+      public function set imageLabel(value:String) : void
       {
-         this._button.imageLabel = param1;
+         _button.imageLabel = value;
       }
       
-      public function set imageLabelX(param1:int) : void
+      public function set imageLabelX(value:int) : void
       {
-         this._button.imageLabelX = param1;
+         _button.imageLabelX = value;
       }
       
-      public function set imageLabelY(param1:int) : void
+      public function set imageLabelY(value:int) : void
       {
-         this._button.imageLabelY = param1;
+         _button.imageLabelY = value;
       }
       
-      public function set imageLabelSizeGrid(param1:String) : void
+      public function set imageLabelSizeGrid(value:String) : void
       {
-         this._button.imageLabelSizeGrid = param1;
+         _button.imageLabelSizeGrid = value;
       }
       
-      public function set imageLabelRect(param1:String) : void
+      public function set imageLabelRect(value:String) : void
       {
-         this._button.imageLabelRect = param1;
+         _button.imageLabelRect = value;
       }
       
-      public function set enableClickMoveDownEffect(param1:Boolean) : void
+      public function set enableClickMoveDownEffect(value:Boolean) : void
       {
-         this._button.enableClickMoveDownEffect = param1;
+         _button.enableClickMoveDownEffect = value;
       }
       
-      public function set listSkin(param1:String) : void
+      public function set listSkin(value:String) : void
       {
-         this._listBg.skin = param1;
-         callLater(this.changeList);
+         _listBg.skin = value;
+         callLater(changeList);
       }
       
-      public function set listSizeGrid(param1:String) : void
+      public function set listSizeGrid(value:String) : void
       {
-         this._listBg.sizeGrid = param1;
-         callLater(this.changeList);
+         _listBg.sizeGrid = value;
+         callLater(changeList);
       }
       
-      public function set itemSizeGride(param1:String) : void
+      public function set itemSizeGride(value:String) : void
       {
-         this._itemSizeGride = param1;
-         callLater(this.changeList);
+         _itemSizeGride = value;
+         callLater(changeList);
       }
       
-      public function set itemSteateNum(param1:int) : void
+      public function set itemSteateNum(value:int) : void
       {
-         this._itemSteateNum = param1;
-         callLater(this.changeList);
+         _itemSteateNum = value;
+         callLater(changeList);
       }
       
-      public function set itemClipUrl(param1:String) : void
+      public function set itemClipUrl(value:String) : void
       {
-         this._itemClipUrl = param1;
-         callLater(this.changeList);
+         _itemClipUrl = value;
+         callLater(changeList);
       }
       
-      public function set itemHeight(param1:Number) : void
+      public function set itemHeight(value:Number) : void
       {
-         this._itemH = param1;
-         callLater(this.changeList);
+         _itemH = value;
+         callLater(changeList);
       }
       
-      public function set itemLabelMargin(param1:String) : void
+      public function set itemLabelMargin(value:String) : void
       {
-         this._itemLabelMargin = param1;
-         callLater(this.changeList);
+         _itemLabelMargin = value;
+         callLater(changeList);
       }
       
-      public function set itemLabelStroke(param1:String) : void
+      public function set itemLabelStroke(value:String) : void
       {
-         this._itemLabelStroke = param1;
-         callLater(this.changeList);
+         _itemLabelStroke = value;
+         callLater(changeList);
       }
       
       protected function changeList() : void
       {
-         var _loc1_:Number = width - 2;
-         var _loc2_:Number = this._itemColors[2];
-         var _loc3_:Boolean = Boolean(this._itemSteateNum > 1);
-         this._itemHeight = Number(this._itemH) || Number(ObjectUtils.getTextField(new TextFormat(Styles.fontName,this._itemSize)).height + 3);
-         this._list.itemRender = new XML("<Box>" + "<Clip name=\'clip\' width=\'" + _loc1_ + "\' clipsUrl=\'" + this._itemClipUrl + "\' sizeGride=\'" + this._itemSizeGride + "\' height=\'" + this._itemHeight + "\' visible=\'" + _loc3_ + "\' x=\'1\' />" + "<Label name=\'label\' width=\'" + _loc1_ + "\' size=\'" + this._itemSize + "\' height=\'" + this._itemHeight + "\' color=\'" + _loc2_ + "\' margin=\'" + this._itemLabelMargin + "\' stroke=\'" + this._itemLabelStroke + "\' x=\'1\' />" + "</Box>");
-         this._list.repeatY = this._visibleNum;
-         this._scrollBar.x = width - this._scrollBar.width - 1;
-         this._list.refresh();
+         var labelWidth:Number = width - 2;
+         var labelColor:Number = _itemColors[2];
+         var v:* = _itemSteateNum > 1;
+         _itemHeight = _itemH || Number(ObjectUtils.getTextField(new TextFormat(Styles.fontName,_itemSize)).height + 3);
+         _list.itemRender = new XML("<Box><Clip name=\'clip\' width=\'" + labelWidth + "\' clipsUrl=\'" + _itemClipUrl + "\' sizeGride=\'" + _itemSizeGride + "\' height=\'" + _itemHeight + "\' visible=\'" + v + "\' x=\'1\' />" + "<Label name=\'label\' width=\'" + labelWidth + "\' size=\'" + _itemSize + "\' height=\'" + _itemHeight + "\' color=\'" + labelColor + "\' margin=\'" + _itemLabelMargin + "\' stroke=\'" + _itemLabelStroke + "\' x=\'1\' />" + "</Box>");
+         _list.repeatY = _visibleNum;
+         _scrollBar.x = width - _scrollBar.width - 1;
+         _list.refresh();
       }
       
-      protected function onlistItemMouse(param1:MouseEvent, param2:int) : void
+      protected function onlistItemMouse(e:MouseEvent, index:int) : void
       {
-         var _loc4_:Box = null;
-         var _loc5_:Label = null;
-         var _loc6_:Clip = null;
-         var _loc3_:String = param1.type;
-         if(_loc3_ == MouseEvent.CLICK || _loc3_ == MouseEvent.ROLL_OVER || _loc3_ == MouseEvent.ROLL_OUT)
+         var box:* = null;
+         var label:* = null;
+         var clip:* = null;
+         var type:String = e.type;
+         if(type == "click" || type == "rollOver" || type == "rollOut")
          {
-            _loc4_ = this._list.getCell(param2);
-            _loc5_ = _loc4_.getChildByName("label") as Label;
-            _loc6_ = _loc4_.getChildByName("clip") as Clip;
-            if(_loc3_ == MouseEvent.ROLL_OVER)
+            box = _list.getCell(index);
+            label = box.getChildByName("label") as Label;
+            clip = box.getChildByName("clip") as Clip;
+            if(type == "rollOver")
             {
-               _loc6_.visible = true;
-               _loc6_.frame = this._itemSteateNum - 1;
+               clip.visible = true;
+               clip.frame = _itemSteateNum - 1;
             }
             else
             {
-               _loc6_.visible = Boolean(this._itemSteateNum > 1);
-               _loc6_.frame = 0;
+               clip.visible = _itemSteateNum > 1;
+               clip.frame = 0;
             }
-            if(_loc3_ == MouseEvent.CLICK)
+            if(type == "click")
             {
-               this.isOpen = false;
+               isOpen = false;
             }
          }
       }
       
       protected function changeOpen() : void
       {
-         this.isOpen = !this._isOpen;
+         isOpen = !_isOpen;
       }
       
-      override public function set width(param1:Number) : void
+      override public function set width(value:Number) : void
       {
-         super.width = param1;
-         this._button.width = _width;
-         callLater(this.changeItem);
-         callLater(this.changeList);
+         .super.width = value;
+         _button.width = _width;
+         callLater(changeItem);
+         callLater(changeList);
       }
       
-      override public function set height(param1:Number) : void
+      override public function set height(value:Number) : void
       {
-         super.height = param1;
-         this._button.height = _height;
+         .super.height = value;
+         _button.height = _height;
       }
       
       public function get labels() : String
       {
-         return this._labels.join(",");
+         return _labels.join(",");
       }
       
-      public function set labels(param1:String) : void
+      public function set labels(value:String) : void
       {
-         if(this._labels.length > 0)
+         if(_labels.length > 0)
          {
-            this.selectedIndex = -1;
+            selectedIndex = -1;
          }
-         if(Boolean(param1))
+         if(value)
          {
-            this._labels = param1.split(",");
+            _labels = value.split(",");
          }
          else
          {
-            this._labels.length = 0;
+            _labels.length = 0;
          }
-         callLater(this.changeItem);
+         callLater(changeItem);
       }
       
       protected function changeItem() : void
       {
-         exeCallLater(this.changeList);
-         this._listHeight = this._labels.length > 0?Number(Math.min(this._visibleNum,this._labels.length) * this._itemHeight):Number(this._itemHeight);
-         this._scrollBar.height = this._listHeight - 2;
-         this._listBg.width = width - 1;
-         this._listBg.height = this._list.height;
-         var _loc1_:Array = [];
-         var _loc2_:int = 0;
-         var _loc3_:int = this._labels.length;
-         while(_loc2_ < _loc3_)
+         var i:int = 0;
+         var n:int = 0;
+         exeCallLater(changeList);
+         _listHeight = _labels.length > 0?Math.min(_visibleNum,_labels.length) * _itemHeight:Number(_itemHeight);
+         _scrollBar.height = _listHeight - 2;
+         _listBg.width = width - 1;
+         _listBg.height = _list.height;
+         var a:Array = [];
+         for(i = 0,n = _labels.length; i < n; )
          {
-            _loc1_.push({"label":this._labels[_loc2_]});
-            _loc2_++;
+            a.push({"label":_labels[i]});
+            i++;
          }
-         this._list.array = _loc1_;
+         _list.array = a;
       }
       
       public function get selectedIndex() : int
       {
-         return this._selectedIndex;
+         return _selectedIndex;
       }
       
-      public function set selectedIndex(param1:int) : void
+      public function set selectedIndex(value:int) : void
       {
-         if(this._selectedIndex != param1 || this.canForceChange)
+         if(_selectedIndex != value || canForceChange)
          {
-            this._list.selectedIndex = this._selectedIndex = param1;
-            this._button.label = this.selectedLabel;
-            sendEvent(Event.CHANGE);
-            sendEvent(Event.SELECT);
-            if(this._selectHandler != null)
+            _selectedIndex = value;
+            _list.selectedIndex = value;
+            _button.label = selectedLabel;
+            sendEvent("change");
+            sendEvent("select");
+            if(_selectHandler != null)
             {
-               this._selectHandler.executeWith([this._selectedIndex]);
+               _selectHandler.executeWith([_selectedIndex]);
             }
          }
       }
       
       public function resetSelect() : void
       {
-         this._selectedIndex = -1;
+         _selectedIndex = -1;
       }
       
       public function get selectHandler() : Handler
       {
-         return this._selectHandler;
+         return _selectHandler;
       }
       
-      public function set selectHandler(param1:Handler) : void
+      public function set selectHandler(value:Handler) : void
       {
-         this._selectHandler = param1;
+         _selectHandler = value;
       }
       
       public function get selectedLabel() : String
       {
-         return this._selectedIndex > -1 && this._selectedIndex < this._labels.length?this._labels[this._selectedIndex]:null;
+         return _selectedIndex > -1 && _selectedIndex < _labels.length?_labels[_selectedIndex]:null;
       }
       
-      public function set selectedLabel(param1:String) : void
+      public function set selectedLabel(value:String) : void
       {
-         this.selectedIndex = this._labels.indexOf(param1);
+         selectedIndex = _labels.indexOf(value);
       }
       
       public function get visibleNum() : int
       {
-         return this._visibleNum;
+         return _visibleNum;
       }
       
-      public function set visibleNum(param1:int) : void
+      public function set visibleNum(value:int) : void
       {
-         this._visibleNum = param1;
-         callLater(this.changeList);
+         _visibleNum = value;
+         callLater(changeList);
       }
       
       public function get itemColors() : String
       {
-         return String(this._itemColors);
+         return String(_itemColors);
       }
       
-      public function set itemColors(param1:String) : void
+      public function set itemColors(value:String) : void
       {
-         this._itemColors = StringUtils.fillArray(this._itemColors,param1);
-         callLater(this.changeList);
+         _itemColors = StringUtils.fillArray(_itemColors,value);
+         callLater(changeList);
       }
       
       public function get itemSize() : int
       {
-         return this._itemSize;
+         return _itemSize;
       }
       
-      public function set itemSize(param1:int) : void
+      public function set itemSize(value:int) : void
       {
-         this._itemSize = param1;
-         callLater(this.changeList);
+         _itemSize = value;
+         callLater(changeList);
       }
       
       public function get isOpen() : Boolean
       {
-         return this._isOpen;
+         return _isOpen;
       }
       
-      public function set isOpen(param1:Boolean) : void
+      public function set isOpen(value:Boolean) : void
       {
-         var _loc2_:Point = null;
-         var _loc3_:Number = NaN;
-         if(this._isOpen != param1)
+         var p:* = null;
+         var py:Number = NaN;
+         if(_isOpen != value)
          {
-            this._isOpen = param1;
-            this._button.selected = this._isOpen;
-            if(this._isOpen)
+            _isOpen = value;
+            _button.selected = _isOpen;
+            if(_isOpen)
             {
-               _loc2_ = localToGlobal(new Point());
-               _loc3_ = _loc2_.y + this._button.height;
-               _loc3_ = _loc3_ + this._listHeight <= App.stage.stageHeight?Number(_loc3_):Number(_loc2_.y - this._listHeight);
-               this._list.setPosition(_loc2_.x,_loc3_);
-               this._listBg.setPosition(_loc2_.x,_loc3_);
-               App.stage.addChild(this._listBg);
-               App.stage.addChild(this._list);
-               App.stage.addEventListener(MouseEvent.MOUSE_DOWN,this.removeList);
-               this._list.scrollTo(this._selectedIndex + this._visibleNum < this._list.length?int(this._selectedIndex):int(this._list.length - this._visibleNum));
+               p = localToGlobal(new Point());
+               py = p.y + _button.height;
+               py = py + _listHeight <= App.stage.stageHeight?py:Number(p.y - _listHeight);
+               _list.setPosition(p.x,py);
+               _listBg.setPosition(p.x,py);
+               App.stage.addChild(_listBg);
+               App.stage.addChild(_list);
+               App.stage.addEventListener("mouseDown",removeList);
+               _list.scrollTo(_selectedIndex + _visibleNum < _list.length?_selectedIndex:_list.length - _visibleNum);
             }
             else
             {
-               this._listBg.remove();
-               this._list.remove();
-               App.stage.removeEventListener(MouseEvent.MOUSE_DOWN,this.removeList);
+               _listBg.remove();
+               _list.remove();
+               App.stage.removeEventListener("mouseDown",removeList);
             }
          }
       }
       
-      protected function removeList(param1:Event) : void
+      protected function removeList(e:Event) : void
       {
-         if(param1 == null || param1.target == this._list.content || !this._button.contains(param1.target as DisplayObject) && !this._list.contains(param1.target as DisplayObject))
+         if(e == null || e.target == _list.content || !_button.contains(e.target as DisplayObject) && !_list.contains(e.target as DisplayObject))
          {
-            this.isOpen = false;
+            isOpen = false;
          }
       }
       
       public function get scrollBarSkin() : String
       {
-         return this._scrollBar.skin;
+         return _scrollBar.skin;
       }
       
-      public function set scrollBarSkin(param1:String) : void
+      public function set scrollBarSkin(value:String) : void
       {
-         this._scrollBar.skin = param1;
+         _scrollBar.skin = value;
       }
       
       public function get sizeGrid() : String
       {
-         return this._button.sizeGrid;
+         return _button.sizeGrid;
       }
       
-      public function set sizeGrid(param1:String) : void
+      public function set sizeGrid(value:String) : void
       {
-         this._button.sizeGrid = param1;
+         _button.sizeGrid = value;
       }
       
       public function get scrollBar() : VScrollBar
       {
-         return this._scrollBar;
+         return _scrollBar;
       }
       
       public function get button() : Button
       {
-         return this._button;
+         return _button;
       }
       
       public function get list() : List
       {
-         return this._list;
+         return _list;
       }
       
-      override public function set dataSource(param1:Object) : void
+      override public function set dataSource(value:Object) : void
       {
-         _dataSource = param1;
-         if(param1 is int || param1 is String)
+         _dataSource = value;
+         if(value is int || value is String)
          {
-            this.selectedIndex = int(param1);
+            selectedIndex = int(value);
          }
-         else if(param1 is Array)
+         else if(value is Array)
          {
-            this.labels = (param1 as Array).join(",");
+            labels = (value as Array).join(",");
          }
          else
          {
-            super.dataSource = param1;
+            .super.dataSource = value;
          }
       }
       
       public function get labelColors() : String
       {
-         return this._button.labelColors;
+         return _button.labelColors;
       }
       
-      public function set labelColors(param1:String) : void
+      public function set labelColors(value:String) : void
       {
-         this._button.labelColors = param1;
+         _button.labelColors = value;
       }
       
       public function get labelMargin() : String
       {
-         return this._button.btnLabel.margin;
+         return _button.btnLabel.margin;
       }
       
-      public function set labelMargin(param1:String) : void
+      public function set labelMargin(value:String) : void
       {
-         this._button.btnLabel.margin = param1;
+         _button.btnLabel.margin = value;
       }
       
       public function get labelStroke() : String
       {
-         return this._button.btnLabel.stroke;
+         return _button.btnLabel.stroke;
       }
       
-      public function set labelStroke(param1:String) : void
+      public function set labelStroke(value:String) : void
       {
-         this._button.btnLabel.stroke = param1;
+         _button.btnLabel.stroke = value;
       }
       
       public function get labelSize() : Object
       {
-         return this._button.btnLabel.size;
+         return _button.btnLabel.size;
       }
       
-      public function set labelSize(param1:Object) : void
+      public function set labelSize(value:Object) : void
       {
-         this._button.btnLabel.size = param1;
+         _button.btnLabel.size = value;
       }
       
       public function get labelBold() : Object
       {
-         return this._button.btnLabel.bold;
+         return _button.btnLabel.bold;
       }
       
-      public function set labelBold(param1:Object) : void
+      public function set labelBold(value:Object) : void
       {
-         this._button.btnLabel.bold = param1;
+         _button.btnLabel.bold = value;
       }
       
       public function get labelFont() : String
       {
-         return this._button.btnLabel.font;
+         return _button.btnLabel.font;
       }
       
-      public function set labelFont(param1:String) : void
+      public function set labelFont(value:String) : void
       {
-         this._button.btnLabel.font = param1;
+         _button.btnLabel.font = value;
       }
       
-      public function set buttonLabel(param1:String) : void
+      public function set buttonLabel(value:String) : void
       {
-         this._button.label = param1;
+         _button.label = value;
       }
       
       public function get stateNum() : int
       {
-         return this._button.stateNum;
+         return _button.stateNum;
       }
       
-      public function set stateNum(param1:int) : void
+      public function set stateNum(value:int) : void
       {
-         this._button.stateNum = param1;
+         _button.stateNum = value;
       }
       
       override public function dispose() : void
       {
          super.dispose();
-         this._button && this._button.dispose();
-         this._list && this._list.dispose();
-         this._listBg && this._listBg.dispose();
-         this._scrollBar && this._scrollBar.dispose();
-         this._button = null;
-         this._list = null;
-         this._scrollBar = null;
-         this._itemColors = null;
-         this._labels = null;
-         this._selectHandler = null;
+         _button && _button.dispose();
+         _list && _list.dispose();
+         _listBg && _listBg.dispose();
+         _scrollBar && _scrollBar.dispose();
+         _button = null;
+         _list = null;
+         _scrollBar = null;
+         _itemColors = null;
+         _labels = null;
+         _selectHandler = null;
       }
    }
 }

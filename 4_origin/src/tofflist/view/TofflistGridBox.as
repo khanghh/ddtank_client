@@ -81,69 +81,69 @@ package tofflist.view
       
       private function initData() : void
       {
-         var _loc15_:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("person_local_battle");
-         _loc15_.TitleTextString = [RANK,NAME,BATTLE];
-         _layoutInfoArr["personLocalBattle"] = _loc15_;
-         var _loc21_:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("person_local_level");
-         _loc21_.TitleTextString = [RANK,NAME,LEVEL,EXP];
-         _layoutInfoArr["personLocalLevel"] = _loc21_;
-         var _loc5_:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("person_local_achive");
-         _loc5_.TitleTextString = [RANK,NAME,ACHIVE_POINT];
-         _layoutInfoArr["personLocalAchive"] = _loc5_;
-         var _loc14_:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("person_local_charm");
-         _loc14_.TitleTextString = [RANK,NAME,CHARM_LEVEL,CHARM_VALUE];
-         _layoutInfoArr["personLocalCharm"] = _loc14_;
-         var _loc18_:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("person_local_match");
-         _loc18_.TitleTextString = [RANK,NAME,SCORE];
-         _layoutInfoArr["personLocalMatch"] = _loc18_;
-         var _loc19_:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("person_local_mounts");
-         _loc19_.TitleTextString = [RANK,MOUNTSNAME,MOUNTSLEVEL,MOUNTSHOST];
-         _layoutInfoArr["personLocalMounts"] = _loc19_;
-         var _loc12_:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("person_cross_battle");
-         _loc12_.TitleTextString = [RANK,NAME,SERVER,BATTLE];
-         _layoutInfoArr["personCrossBattle"] = _loc12_;
-         var _loc20_:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("person_cross_level");
-         _loc20_.TitleTextString = [RANK,NAME,LEVEL,SERVER,EXP];
-         _layoutInfoArr["personCrossLevel"] = _loc20_;
-         var _loc10_:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("person_cross_achive");
-         _loc10_.TitleTextString = [RANK,NAME,SERVER,ACHIVE_POINT];
-         _layoutInfoArr["personCrossAchive"] = _loc10_;
-         var _loc4_:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("person_cross_charm");
-         _loc4_.TitleTextString = [RANK,NAME,CHARM_LEVEL,SERVER,CHARM_VALUE];
-         _layoutInfoArr["personCrossCharm"] = _loc4_;
-         var _loc9_:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("person_cross_mounts");
-         _loc9_.TitleTextString = [RANK,MOUNTSNAME,MOUNTSLEVEL,SERVER,MOUNTSHOST];
-         _layoutInfoArr["personCrossMounts"] = _loc9_;
-         var _loc13_:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("consortia_local_battle");
-         _loc13_.TitleTextString = [RANK,NAME,BATTLE];
-         _layoutInfoArr["consortiaLocalBattle"] = _loc13_;
-         var _loc6_:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("consortia_local_level");
-         _loc6_.TitleTextString = [RANK,NAME,LEVEL,ASSET];
-         _layoutInfoArr["consortiaLocalLevel"] = _loc6_;
-         var _loc1_:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("consortia_local_asset");
-         _loc1_.TitleTextString = [RANK,NAME,TOTAL_ASSET];
-         _layoutInfoArr["consortiaLocalAsset"] = _loc1_;
-         var _loc3_:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("consortia_local_charm");
-         _loc3_.TitleTextString = [RANK,NAME,CHARM_VALUE];
-         _layoutInfoArr["consortiaLocalCharm"] = _loc3_;
-         var _loc16_:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("consortia_cross_battle");
-         _loc16_.TitleTextString = [RANK,NAME,SERVER,BATTLE];
-         _layoutInfoArr["consortiaCrossBattle"] = _loc16_;
-         var _loc8_:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("consortia_cross_level");
-         _loc8_.TitleTextString = [RANK,NAME,LEVEL,SERVER,ASSET];
-         _layoutInfoArr["consortiaCrossLevel"] = _loc8_;
-         var _loc7_:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("consortia_cross_asset");
-         _loc7_.TitleTextString = [RANK,NAME,SERVER,TOTAL_ASSET];
-         _layoutInfoArr["consortiaCrossAsset"] = _loc7_;
-         var _loc2_:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("consortia_cross_charm");
-         _loc2_.TitleTextString = [RANK,NAME,SERVER,CHARM_VALUE];
-         _layoutInfoArr["consortiaCrossCharm"] = _loc2_;
-         var _loc17_:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("team_local");
-         _loc17_.TitleTextString = [RANK,TEAMNAME,TEAMSEGMENT,TEAMINTEGRAL];
-         _layoutInfoArr["teamThe"] = _loc17_;
-         var _loc11_:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("team_cross");
-         _loc11_.TitleTextString = [RANK,TEAMNAME,TEAMSEGMENT,SERVER,TEAMINTEGRAL];
-         _layoutInfoArr["teamCross"] = _loc11_;
+         var person_local_battle:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("person_local_battle");
+         person_local_battle.TitleTextString = [RANK,NAME,BATTLE];
+         _layoutInfoArr["personLocalBattle"] = person_local_battle;
+         var person_local_level:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("person_local_level");
+         person_local_level.TitleTextString = [RANK,NAME,LEVEL,EXP];
+         _layoutInfoArr["personLocalLevel"] = person_local_level;
+         var person_local_achive:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("person_local_achive");
+         person_local_achive.TitleTextString = [RANK,NAME,ACHIVE_POINT];
+         _layoutInfoArr["personLocalAchive"] = person_local_achive;
+         var person_local_charm:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("person_local_charm");
+         person_local_charm.TitleTextString = [RANK,NAME,CHARM_LEVEL,CHARM_VALUE];
+         _layoutInfoArr["personLocalCharm"] = person_local_charm;
+         var person_local_match:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("person_local_match");
+         person_local_match.TitleTextString = [RANK,NAME,SCORE];
+         _layoutInfoArr["personLocalMatch"] = person_local_match;
+         var person_local_mounts:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("person_local_mounts");
+         person_local_mounts.TitleTextString = [RANK,MOUNTSNAME,MOUNTSLEVEL,MOUNTSHOST];
+         _layoutInfoArr["personLocalMounts"] = person_local_mounts;
+         var person_cross_battle:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("person_cross_battle");
+         person_cross_battle.TitleTextString = [RANK,NAME,SERVER,BATTLE];
+         _layoutInfoArr["personCrossBattle"] = person_cross_battle;
+         var person_cross_level:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("person_cross_level");
+         person_cross_level.TitleTextString = [RANK,NAME,LEVEL,SERVER,EXP];
+         _layoutInfoArr["personCrossLevel"] = person_cross_level;
+         var person_cross_achive:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("person_cross_achive");
+         person_cross_achive.TitleTextString = [RANK,NAME,SERVER,ACHIVE_POINT];
+         _layoutInfoArr["personCrossAchive"] = person_cross_achive;
+         var person_cross_charm:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("person_cross_charm");
+         person_cross_charm.TitleTextString = [RANK,NAME,CHARM_LEVEL,SERVER,CHARM_VALUE];
+         _layoutInfoArr["personCrossCharm"] = person_cross_charm;
+         var person_cross_mounts:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("person_cross_mounts");
+         person_cross_mounts.TitleTextString = [RANK,MOUNTSNAME,MOUNTSLEVEL,SERVER,MOUNTSHOST];
+         _layoutInfoArr["personCrossMounts"] = person_cross_mounts;
+         var consortia_local_battle:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("consortia_local_battle");
+         consortia_local_battle.TitleTextString = [RANK,NAME,BATTLE];
+         _layoutInfoArr["consortiaLocalBattle"] = consortia_local_battle;
+         var consortia_local_level:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("consortia_local_level");
+         consortia_local_level.TitleTextString = [RANK,NAME,LEVEL,ASSET];
+         _layoutInfoArr["consortiaLocalLevel"] = consortia_local_level;
+         var consortia_local_asset:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("consortia_local_asset");
+         consortia_local_asset.TitleTextString = [RANK,NAME,TOTAL_ASSET];
+         _layoutInfoArr["consortiaLocalAsset"] = consortia_local_asset;
+         var consortia_local_charm:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("consortia_local_charm");
+         consortia_local_charm.TitleTextString = [RANK,NAME,CHARM_VALUE];
+         _layoutInfoArr["consortiaLocalCharm"] = consortia_local_charm;
+         var consortia_cross_battle:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("consortia_cross_battle");
+         consortia_cross_battle.TitleTextString = [RANK,NAME,SERVER,BATTLE];
+         _layoutInfoArr["consortiaCrossBattle"] = consortia_cross_battle;
+         var consortia_cross_level:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("consortia_cross_level");
+         consortia_cross_level.TitleTextString = [RANK,NAME,LEVEL,SERVER,ASSET];
+         _layoutInfoArr["consortiaCrossLevel"] = consortia_cross_level;
+         var consortia_cross_asset:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("consortia_cross_asset");
+         consortia_cross_asset.TitleTextString = [RANK,NAME,SERVER,TOTAL_ASSET];
+         _layoutInfoArr["consortiaCrossAsset"] = consortia_cross_asset;
+         var consortia_cross_charm:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("consortia_cross_charm");
+         consortia_cross_charm.TitleTextString = [RANK,NAME,SERVER,CHARM_VALUE];
+         _layoutInfoArr["consortiaCrossCharm"] = consortia_cross_charm;
+         var team_local:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("team_local");
+         team_local.TitleTextString = [RANK,TEAMNAME,TEAMSEGMENT,TEAMINTEGRAL];
+         _layoutInfoArr["teamThe"] = team_local;
+         var team_cross:TofflistLayoutInfo = ComponentFactory.Instance.creatCustomObject("team_cross");
+         team_cross.TitleTextString = [RANK,TEAMNAME,TEAMSEGMENT,SERVER,TEAMINTEGRAL];
+         _layoutInfoArr["teamCross"] = team_cross;
       }
       
       public function get orderList() : TofflistOrderList
@@ -151,14 +151,14 @@ package tofflist.view
          return _orderList;
       }
       
-      public function updateList(param1:Array, param2:int = 1) : void
+      public function updateList(list:Array, page:int = 1) : void
       {
-         var _loc3_:* = null;
-         _orderList.items(param1,param2);
+         var layoutinfo:* = null;
+         _orderList.items(list,page);
          if(_id)
          {
-            _loc3_ = _layoutInfoArr[_id];
-            _orderList.showHline(_loc3_.TitleHLinePoint);
+            layoutinfo = _layoutInfoArr[_id];
+            _orderList.showHline(layoutinfo.TitleHLinePoint);
          }
       }
       
@@ -171,30 +171,29 @@ package tofflist.view
          }
       }
       
-      public function updateStyleXY(param1:String) : void
+      public function updateStyleXY($id:String) : void
       {
-         var _loc4_:* = null;
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         _id = param1;
+         var line:* = null;
+         var i:int = 0;
+         var txt:* = null;
+         _id = $id;
          ObjectUtils.disposeAllChildren(_title);
-         var _loc2_:TofflistLayoutInfo = _layoutInfoArr[param1];
+         var layoutinfo:TofflistLayoutInfo = _layoutInfoArr[$id];
          var _loc8_:int = 0;
-         var _loc7_:* = _loc2_.TitleHLinePoint;
-         for each(var _loc3_ in _loc2_.TitleHLinePoint)
+         var _loc7_:* = layoutinfo.TitleHLinePoint;
+         for each(var pt in layoutinfo.TitleHLinePoint)
          {
-            _loc4_ = ComponentFactory.Instance.creatBitmap("asset.corel.formLineBig");
-            PositionUtils.setPos(_loc4_,_loc3_);
-            _title.addChild(_loc4_);
+            line = ComponentFactory.Instance.creatBitmap("asset.corel.formLineBig");
+            PositionUtils.setPos(line,pt);
+            _title.addChild(line);
          }
-         _loc6_ = 0;
-         while(_loc6_ < _loc2_.TitleTextPoint.length)
+         for(i = 0; i < layoutinfo.TitleTextPoint.length; )
          {
-            _loc5_ = ComponentFactory.Instance.creatComponentByStylename("toffilist.listTitleText");
-            PositionUtils.setPos(_loc5_,_loc2_.TitleTextPoint[_loc6_]);
-            _loc5_.text = _loc2_.TitleTextString[_loc6_];
-            _title.addChild(_loc5_);
-            _loc6_++;
+            txt = ComponentFactory.Instance.creatComponentByStylename("toffilist.listTitleText");
+            PositionUtils.setPos(txt,layoutinfo.TitleTextPoint[i]);
+            txt.text = layoutinfo.TitleTextString[i];
+            _title.addChild(txt);
+            i++;
          }
       }
    }

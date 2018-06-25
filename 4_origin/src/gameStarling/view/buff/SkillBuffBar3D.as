@@ -26,31 +26,31 @@ package gameStarling.view.buff
          addChild(_hBox);
       }
       
-      public function addIcon(param1:int) : void
+      public function addIcon(id:int) : void
       {
-         if(_iconDic.hasKey(param1))
+         if(_iconDic.hasKey(id))
          {
             return;
          }
-         var _loc2_:Image = StarlingMain.instance.createImage(PATH + param1);
+         var icon:Image = StarlingMain.instance.createImage(PATH + id);
          if(_hBox)
          {
-            _hBox.addElement(_loc2_);
+            _hBox.addElement(icon);
          }
-         _iconDic.add(param1,_loc2_);
+         _iconDic.add(id,icon);
       }
       
-      public function removeIcon(param1:int) : void
+      public function removeIcon(id:int) : void
       {
-         var _loc2_:* = null;
-         if(_iconDic && _iconDic.hasKey(param1))
+         var icon:* = null;
+         if(_iconDic && _iconDic.hasKey(id))
          {
-            _loc2_ = _iconDic[param1] as Image;
-            if(_loc2_ && _hBox)
+            icon = _iconDic[id] as Image;
+            if(icon && _hBox)
             {
-               _hBox.removeElement(_loc2_,true);
+               _hBox.removeElement(icon,true);
             }
-            _iconDic.remove(param1);
+            _iconDic.remove(id);
          }
       }
       

@@ -37,10 +37,10 @@ package beadSystem.views
       
       private var _index:int;
       
-      public function BeadAdvancedItem(param1:int)
+      public function BeadAdvancedItem(index:int)
       {
          super();
-         _index = param1;
+         _index = index;
          initView();
          buttonMode = true;
       }
@@ -71,9 +71,9 @@ package beadSystem.views
          return _index;
       }
       
-      public function set isSelect(param1:Boolean) : void
+      public function set isSelect(value:Boolean) : void
       {
-         _selectState = param1;
+         _selectState = value;
          _noSelectBg.visible = !_selectState;
          var _loc2_:* = _selectState;
          _selectLight.visible = _loc2_;
@@ -98,15 +98,15 @@ package beadSystem.views
          return _info;
       }
       
-      public function set info(param1:AdvanceBeadInfo) : void
+      public function set info(info:AdvanceBeadInfo) : void
       {
-         _info = param1;
+         _info = info;
          updateView();
       }
       
       protected function updateView() : void
       {
-         var _loc1_:* = null;
+         var itemCell:* = null;
          if(_info != null)
          {
             _itemName.text = _info.runeName;
@@ -115,13 +115,13 @@ package beadSystem.views
          }
       }
       
-      private function createBagCellInfo(param1:int) : InventoryItemInfo
+      private function createBagCellInfo(templeteId:int) : InventoryItemInfo
       {
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         _loc2_.TemplateID = param1;
-         _loc2_ = ItemManager.fill(_loc2_);
-         _loc2_.IsBinds = true;
-         return _loc2_;
+         var info:InventoryItemInfo = new InventoryItemInfo();
+         info.TemplateID = templeteId;
+         info = ItemManager.fill(info);
+         info.IsBinds = true;
+         return info;
       }
       
       public function dispose() : void

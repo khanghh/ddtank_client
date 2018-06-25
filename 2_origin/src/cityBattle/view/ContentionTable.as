@@ -24,43 +24,42 @@ package cityBattle.view
       
       private var _scoreTxt:FilterFrameText;
       
-      public function ContentionTable(param1:int)
+      public function ContentionTable(side:int)
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var info:* = null;
+         var blueItem:* = null;
+         var redItem:* = null;
          super();
-         _side = param1;
+         _side = side;
          _vbox = new VBox();
          _vbox.spacing = 7;
          _vbox.y = 180;
          addChild(_vbox);
-         var _loc5_:int = 0;
+         var i:int = 0;
          _rankTxt = ComponentFactory.Instance.creatComponentByStylename("contention.rank.txt");
          _nameTxt = ComponentFactory.Instance.creatComponentByStylename("contention.name.txt");
          _scoreTxt = ComponentFactory.Instance.creatComponentByStylename("contention.score.txt");
          if(_side == 0)
          {
-            _loc5_ = 0;
-            while(_loc5_ < CityBattleManager.instance.blueList.length)
+            for(i = 0; i < CityBattleManager.instance.blueList.length; )
             {
-               _loc4_ = CityBattleManager.instance.blueList[_loc5_];
-               _loc3_ = new ContentionItem(_loc4_);
-               _loc3_.x = 35;
-               _vbox.addChild(_loc3_);
-               _loc5_++;
+               info = CityBattleManager.instance.blueList[i];
+               blueItem = new ContentionItem(info);
+               blueItem.x = 35;
+               _vbox.addChild(blueItem);
+               i++;
             }
          }
          else
          {
-            _loc5_ = 0;
-            while(_loc5_ < CityBattleManager.instance.redList.length)
+            i = 0;
+            while(i < CityBattleManager.instance.redList.length)
             {
-               _loc4_ = CityBattleManager.instance.redList[_loc5_];
-               _loc2_ = new ContentionItem(_loc4_);
-               _loc2_.x = 427;
-               _vbox.addChild(_loc2_);
-               _loc5_++;
+               info = CityBattleManager.instance.redList[i];
+               redItem = new ContentionItem(info);
+               redItem.x = 427;
+               _vbox.addChild(redItem);
+               i++;
             }
          }
          _rankTxt.text = LanguageMgr.GetTranslation("ddt.cityBattle.rank");
@@ -94,21 +93,21 @@ class ContentionItem extends Sprite implements Disposeable
    
    private var _scoreTxt:FilterFrameText;
    
-   function ContentionItem(param1:ContentionInfo)
+   function ContentionItem(info:ContentionInfo)
    {
       super();
       _rankTxt = ComponentFactory.Instance.creatComponentByStylename("contention.itemRank.txt");
       addChild(_rankTxt);
-      _rankTxt.text = String(param1.rank);
+      _rankTxt.text = String(info.rank);
       _nameTxt = ComponentFactory.Instance.creatComponentByStylename("contention.itemName.txt");
       addChild(_nameTxt);
       _nameTxt.mouseEnabled = true;
       _nameTxt.selectable = false;
-      _nameTxt.tipData = param1.server;
-      _nameTxt.text = param1.name;
+      _nameTxt.tipData = info.server;
+      _nameTxt.text = info.name;
       _scoreTxt = ComponentFactory.Instance.creatComponentByStylename("contention.itemScore.txt");
       addChild(_scoreTxt);
-      _scoreTxt.text = String(param1.socre);
+      _scoreTxt.text = String(info.socre);
    }
    
    public function dispose() : void

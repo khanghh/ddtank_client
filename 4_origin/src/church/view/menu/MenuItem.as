@@ -23,14 +23,14 @@ package church.view.menu
       
       protected var _enable:Boolean = false;
       
-      public function MenuItem(param1:String = "")
+      public function MenuItem(label:String = "")
       {
          super();
          _bg = ComponentFactory.Instance.creat("church.room.listGuestListMenuItemBgAsset");
          _bg.setFrame(1);
          addChild(_bg);
          _label = ComponentFactory.Instance.creat("church.room.listGuestListMenuItemInfoAsset");
-         _label.text = !!param1?param1:"";
+         _label.text = !!label?label:"";
          addChild(_label);
          _textFormat1 = ComponentFactory.Instance.model.getSet("church.textFormat14");
          _textFormat2 = ComponentFactory.Instance.model.getSet("church.textFormat15");
@@ -50,17 +50,17 @@ package church.view.menu
          removeEventListener("rollOut",__rollOut);
       }
       
-      private function __rollOver(param1:MouseEvent) : void
+      private function __rollOver(event:MouseEvent) : void
       {
          _bg.setFrame(2);
       }
       
-      private function __rollOut(param1:MouseEvent) : void
+      private function __rollOut(event:MouseEvent) : void
       {
          _bg.setFrame(1);
       }
       
-      private function __mouseClick(param1:MouseEvent) : void
+      private function __mouseClick(event:MouseEvent) : void
       {
          if(_enable)
          {
@@ -73,14 +73,14 @@ package church.view.menu
          return _enable;
       }
       
-      public function set enable(param1:Boolean) : void
+      public function set enable(value:Boolean) : void
       {
-         if(_enable != param1)
+         if(_enable != value)
          {
-            _enable = param1;
-            mouseEnabled = param1;
+            _enable = value;
+            mouseEnabled = value;
             _bg.setFrame(1);
-            if(param1)
+            if(value)
             {
                _label.setTextFormat(_textFormat1);
             }

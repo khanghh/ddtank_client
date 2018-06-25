@@ -40,25 +40,24 @@ package dragonBoat.view
       
       public function DragonBoatSelfRankItem()
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var rankIcon:* = null;
          super();
          _awardList = new Vector.<BagCell>();
          _rankIconList = new Vector.<Bitmap>(3);
-         _loc3_ = 0;
-         while(_loc3_ < 3)
+         for(i = 0; i < 3; )
          {
-            _loc1_ = ComponentFactory.Instance.creatBitmap("asset.dragonBoat.mainFrame.cellRankth" + (_loc3_ + 1));
-            addChild(_loc1_);
-            _rankIconList[_loc3_] = _loc1_;
-            _loc3_++;
+            rankIcon = ComponentFactory.Instance.creatBitmap("asset.dragonBoat.mainFrame.cellRankth" + (i + 1));
+            addChild(rankIcon);
+            _rankIconList[i] = rankIcon;
+            i++;
          }
          _rankTxt = ComponentFactory.Instance.creatComponentByStylename("dragonBoat.mainFrame.cell.rankTxt");
          _nameTxt = VipController.instance.getVipNameTxt(130,1);
-         var _loc2_:TextFormat = new TextFormat();
-         _loc2_.align = "center";
-         _loc2_.bold = true;
-         _nameTxt.textField.defaultTextFormat = _loc2_;
+         var textFormat:TextFormat = new TextFormat();
+         textFormat.align = "center";
+         textFormat.bold = true;
+         _nameTxt.textField.defaultTextFormat = textFormat;
          _nameTxt.textSize = 14;
          PositionUtils.setPos(_nameTxt,"dragonBoat.mainFrame.cell.nameTxtPos");
          addChild(_nameTxt);
@@ -76,33 +75,33 @@ package dragonBoat.view
       {
          var _loc3_:int = 0;
          var _loc2_:* = _awardList;
-         for each(var _loc1_ in _awardList)
+         for each(var _bagCell in _awardList)
          {
-            _loc1_.info = null;
+            _bagCell.info = null;
          }
       }
       
-      private function updateAwardCell(param1:int, param2:ItemTemplateInfo) : void
+      private function updateAwardCell($index:int, $info:ItemTemplateInfo) : void
       {
-         var _loc3_:BagCell = null;
-         if(param1 > _awardList.length - 1)
+         var _awardCell:BagCell = null;
+         if($index > _awardList.length - 1)
          {
-            _loc3_ = new BagCell(1,param2,true,null,false);
-            _loc3_.tipGapH = 0;
-            _loc3_.tipGapV = 0;
-            _loc3_.scaleX = 0.6;
-            _loc3_.scaleY = 0.6;
+            _awardCell = new BagCell(1,$info,true,null,false);
+            _awardCell.tipGapH = 0;
+            _awardCell.tipGapV = 0;
+            _awardCell.scaleX = 0.6;
+            _awardCell.scaleY = 0.6;
          }
          else
          {
-            _loc3_ = _awardList[param1];
+            _awardCell = _awardList[$index];
          }
-         _loc3_.info = param2;
-         _loc3_.x = _awardHbox.width + 5;
-         _awardHbox.addChild(_loc3_);
+         _awardCell.info = $info;
+         _awardCell.x = _awardHbox.width + 5;
+         _awardHbox.addChild(_awardCell);
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
       }
       
@@ -111,20 +110,20 @@ package dragonBoat.view
          return _data;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         _data = param1;
-         var _loc2_:int = _data.rank;
-         setRankIconVisible(_loc2_);
-         if(_loc2_ >= 1 && _loc2_ <= 3)
+         var i:int = 0;
+         var _itemInfo:* = null;
+         _data = value;
+         var rank:int = _data.rank;
+         setRankIconVisible(rank);
+         if(rank >= 1 && rank <= 3)
          {
             _rankTxt.visible = false;
          }
          else
          {
-            _rankTxt.text = _loc2_ + "th";
+            _rankTxt.text = rank + "th";
             _rankTxt.visible = true;
          }
          _nameTxt.text = _data.name;
@@ -137,32 +136,30 @@ package dragonBoat.view
             }
          }
          clearAwardCell();
-         _loc4_ = 0;
-         while(_loc4_ < _data.itemInfoArr.length)
+         for(i = 0; i < _data.itemInfoArr.length; )
          {
-            _loc3_ = _data.itemInfoArr[_loc4_] as InventoryItemInfo;
-            updateAwardCell(_loc4_,_loc3_);
-            _loc4_++;
+            _itemInfo = _data.itemInfoArr[i] as InventoryItemInfo;
+            updateAwardCell(i,_itemInfo);
+            i++;
          }
          _awardHbox.x = _awardHboxPos.x + (120 - _awardHbox.width) / 2;
       }
       
-      private function setRankIconVisible(param1:int) : void
+      private function setRankIconVisible(rank:int) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = _rankIconList.length;
-         _loc3_ = 1;
-         while(_loc3_ <= _loc2_)
+         var i:int = 0;
+         var len:int = _rankIconList.length;
+         for(i = 1; i <= len; )
          {
-            if(param1 == _loc3_)
+            if(rank == i)
             {
-               _rankIconList[_loc3_ - 1].visible = true;
+               _rankIconList[i - 1].visible = true;
             }
             else
             {
-               _rankIconList[_loc3_ - 1].visible = false;
+               _rankIconList[i - 1].visible = false;
             }
-            _loc3_++;
+            i++;
          }
       }
       

@@ -88,9 +88,9 @@ package ddt.view.tips
          return _tempData;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         _tempData = param1 as PetSkillTemplateInfo;
+         _tempData = data as PetSkillTemplateInfo;
          if(!_tempData)
          {
             return;

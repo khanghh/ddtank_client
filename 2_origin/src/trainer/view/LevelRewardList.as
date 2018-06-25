@@ -20,23 +20,22 @@ package trainer.view
          _cells = new Vector.<BaseCell>();
       }
       
-      public function addCell(param1:BaseCell) : void
+      public function addCell(cell:BaseCell) : void
       {
-         _cells.push(param1);
-         addChild(param1);
+         _cells.push(cell);
+         addChild(cell);
          arrangeCell();
       }
       
       private function arrangeCell() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _cells.length)
+         var i:int = 0;
+         for(i = 0; i < _cells.length; )
          {
             var _loc2_:int = 1;
-            _cells[_loc1_].scaleY = _loc2_;
-            _cells[_loc1_].scaleX = _loc2_;
-            if(_loc1_ == 0)
+            _cells[i].scaleY = _loc2_;
+            _cells[i].scaleX = _loc2_;
+            if(i == 0)
             {
                addChild(_cells[0]);
                _loc2_ = 0;
@@ -45,21 +44,20 @@ package trainer.view
             }
             else
             {
-               addChild(_cells[_loc1_]);
-               _cells[_loc1_].x = _cells[_loc1_ - 1].x + _cells[_loc1_ - 1].width + 20;
+               addChild(_cells[i]);
+               _cells[i].x = _cells[i - 1].x + _cells[i - 1].width + 20;
             }
-            _loc1_++;
+            i++;
          }
       }
       
       public function disopse() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _cells.length)
+         var i:int = 0;
+         for(i = 0; i < _cells.length; )
          {
-            _cells[_loc1_].dispose();
-            _loc1_++;
+            _cells[i].dispose();
+            i++;
          }
          if(this.parent)
          {

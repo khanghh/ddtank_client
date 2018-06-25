@@ -33,8 +33,8 @@ package store.view.fusion
       private function initII() : void
       {
          titleText = LanguageMgr.GetTranslation("store.view.fusion.PreviewFrame.preview");
-         var _loc1_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.store.PreviewFrameBG");
-         addToContent(_loc1_);
+         var bg:Bitmap = ComponentFactory.Instance.creatBitmap("asset.store.PreviewFrameBG");
+         addToContent(bg);
          _list = new VBox();
          addToContent(_list);
          _okBtn = ComponentFactory.Instance.creatComponentByStylename("store.PreviewFrameEnter");
@@ -58,29 +58,28 @@ package store.view.fusion
          removeEventListener("response",_response);
       }
       
-      private function _okClick(param1:MouseEvent) : void
+      private function _okClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          hide();
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          hide();
       }
       
-      public function set items(param1:Array) : void
+      public function set items($list:Array) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var i:int = 0;
+         var item:* = null;
+         for(i = 0; i < $list.length; )
          {
-            _loc2_ = new PreviewItem();
-            _loc2_.info = param1[_loc3_] as PreviewInfoII;
-            _list.addChild(_loc2_);
-            _loc3_++;
+            item = new PreviewItem();
+            item.info = $list[i] as PreviewInfoII;
+            _list.addChild(item);
+            i++;
          }
       }
       
@@ -123,7 +122,7 @@ package store.view.fusion
          }
       }
       
-      private function removeFromStageHandler(param1:Event) : void
+      private function removeFromStageHandler(event:Event) : void
       {
          BagStore.instance.reduceTipPanelNumber();
       }

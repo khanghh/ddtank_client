@@ -28,13 +28,13 @@ package giftSystem.view
          initEvent();
       }
       
-      public function set info(param1:PlayerInfo) : void
+      public function set info(value:PlayerInfo) : void
       {
-         if(_info == param1)
+         if(_info == value)
          {
             return;
          }
-         _info = param1;
+         _info = value;
          _giftInfoView.info = _info;
       }
       

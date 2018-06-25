@@ -109,77 +109,73 @@ package equipretrieve.view
       
       private function _getCellsPoint() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var point:* = null;
          _pointArray = new Vector.<Point>();
-         _loc2_ = 0;
-         while(_loc2_ < 5)
+         for(i = 0; i < 5; )
          {
-            _loc1_ = ComponentFactory.Instance.creatCustomObject("equipretrieve.cellPoint" + _loc2_);
-            _pointArray.push(_loc1_);
-            _loc2_++;
+            point = ComponentFactory.Instance.creatCustomObject("equipretrieve.cellPoint" + i);
+            _pointArray.push(point);
+            i++;
          }
       }
       
       private function _buildCell() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var _cell:* = null;
+         var _moveCell:* = null;
          _cells = new Vector.<StoreCell>();
          _moveCells = new Vector.<StoreCell>();
-         _loc3_ = 0;
-         while(_loc3_ < 5)
+         for(i = 0; i < 5; )
          {
-            if(_loc3_ == 0)
+            if(i == 0)
             {
-               _loc1_ = new RetrieveResultCell(_loc3_);
-               _loc2_ = new RetrieveResultCell(_loc3_);
-               addChild(_loc1_);
-               addChild(_loc2_);
+               _cell = new RetrieveResultCell(i);
+               _moveCell = new RetrieveResultCell(i);
+               addChild(_cell);
+               addChild(_moveCell);
                addChild(_dropArea);
             }
             else
             {
-               _loc1_ = new RetrieveCell(_loc3_);
-               _loc2_ = new RetrieveCell(_loc3_);
-               addChild(_loc1_);
-               addChild(_loc2_);
+               _cell = new RetrieveCell(i);
+               _moveCell = new RetrieveCell(i);
+               addChild(_cell);
+               addChild(_moveCell);
             }
-            var _loc4_:* = _pointArray[_loc3_].x;
-            _loc1_.x = _loc4_;
-            _loc2_.x = _loc4_;
-            _loc4_ = _pointArray[_loc3_].y;
-            _loc1_.y = _loc4_;
-            _loc2_.y = _loc4_;
-            _cells[_loc3_] = _loc1_;
-            _loc2_.visible = false;
-            _loc2_.BGVisible = false;
-            _moveCells[_loc3_] = _loc2_;
-            RetrieveModel.Instance.setSaveCells(_loc1_,_loc3_);
-            _loc3_++;
+            var _loc4_:* = _pointArray[i].x;
+            _cell.x = _loc4_;
+            _moveCell.x = _loc4_;
+            _loc4_ = _pointArray[i].y;
+            _cell.y = _loc4_;
+            _moveCell.y = _loc4_;
+            _cells[i] = _cell;
+            _moveCell.visible = false;
+            _moveCell.BGVisible = false;
+            _moveCells[i] = _moveCell;
+            RetrieveModel.Instance.setSaveCells(_cell,i);
+            i++;
          }
       }
       
       public function startShine() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 1;
-         while(_loc1_ < 5)
+         var i:int = 0;
+         for(i = 1; i < 5; )
          {
-            _cells[_loc1_].startShine();
-            _loc1_++;
+            _cells[i].startShine();
+            i++;
          }
       }
       
       public function stopShine() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 1;
-         while(_loc1_ < 5)
+         var i:int = 0;
+         for(i = 1; i < 5; )
          {
-            _cells[_loc1_].stopShine();
-            _loc1_++;
+            _cells[i].stopShine();
+            i++;
          }
       }
       
@@ -207,95 +203,93 @@ package equipretrieve.view
          _startStrthTip.visible = false;
       }
       
-      private function executeRetrieve(param1:MouseEvent) : void
+      private function executeRetrieve(e:MouseEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
+         var i:int = 0;
+         var alert:* = null;
+         var j:int = 0;
+         var alert1:* = null;
          SoundManager.instance.play("008");
-         _loc6_ = 1;
-         while(_loc6_ < _cells.length)
+         for(i = 1; i < _cells.length; )
          {
-            if(_cells[_loc6_].info == null)
+            if(_cells[i].info == null)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.equipretrieve.countlack"));
                return;
             }
-            _loc6_++;
+            i++;
          }
          if(int(_needGoldText.text) > PlayerManager.Instance.Self.Gold)
          {
-            _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.view.GoldInadequate"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-            _loc3_.moveEnable = false;
-            _loc3_.addEventListener("response",_responseV);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.view.GoldInadequate"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+            alert.moveEnable = false;
+            alert.addEventListener("response",_responseV);
             return;
          }
-         var _loc2_:int = 0;
-         _loc5_ = 1;
-         while(_loc5_ < _cells.length)
+         var count:int = 0;
+         for(j = 1; j < _cells.length; )
          {
-            if(_cells[_loc5_].itemInfo.IsBinds == true)
+            if(_cells[j].itemInfo.IsBinds == true)
             {
-               _loc2_++;
+               count++;
             }
-            _loc5_++;
+            j++;
          }
-         if(_loc2_ > 0 && _loc2_ < 4)
+         if(count > 0 && count < 4)
          {
-            _loc4_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("store.StoreIIStrengthBG.use"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-            _loc4_.moveEnable = false;
-            _loc4_.info.enableHtml = true;
-            _loc4_.info.mutiline = true;
-            _loc4_.addEventListener("response",_bingResponse);
+            alert1 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("store.StoreIIStrengthBG.use"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+            alert1.moveEnable = false;
+            alert1.info.enableHtml = true;
+            alert1.info.mutiline = true;
+            alert1.addEventListener("response",_bingResponse);
             return;
          }
          RetrieveController.Instance.viewMouseEvtBoolean = false;
          SocketManager.Instance.out.sendEquipRetrieve();
       }
       
-      private function _bingResponse(param1:FrameEvent) : void
+      private function _bingResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",_bingResponse);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var alert:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",_bingResponse);
+         if(event.responseCode == 3 || event.responseCode == 2)
          {
             RetrieveController.Instance.viewMouseEvtBoolean = false;
             SocketManager.Instance.out.sendEquipRetrieve();
          }
-         ObjectUtils.disposeObject(_loc2_);
+         ObjectUtils.disposeObject(alert);
       }
       
-      private function _responseV(param1:FrameEvent) : void
+      private function _responseV(evt:FrameEvent) : void
       {
-         var _loc2_:* = null;
+         var _quick:* = null;
          SoundManager.instance.play("008");
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseV);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         (evt.currentTarget as BaseAlerFrame).removeEventListener("response",_responseV);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
-            _loc2_.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
-            _loc2_.itemID = 11233;
-            LayerManager.Instance.addToLayer(_loc2_,2,true,1);
+            _quick = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
+            _quick.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
+            _quick.itemID = 11233;
+            LayerManager.Instance.addToLayer(_quick,2,true,1);
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(evt.currentTarget);
       }
       
-      public function refreshData(param1:Dictionary) : void
+      public function refreshData(items:Dictionary) : void
       {
-         var _loc2_:int = 0;
+         var itemPlace:int = 0;
          var _loc5_:int = 0;
-         var _loc4_:* = param1;
-         for(var _loc3_ in param1)
+         var _loc4_:* = items;
+         for(var place in items)
          {
-            if(_loc3_ != "0")
+            if(place != "0")
             {
-               _loc2_ = _loc3_;
-               _cells[_loc2_].info = PlayerManager.Instance.Self.StoreBag.items[_loc3_];
+               itemPlace = place;
+               _cells[itemPlace].info = PlayerManager.Instance.Self.StoreBag.items[place];
                if(!PlayerManager.Instance.Self.StoreBag.items["0"])
                {
-                  RetrieveModel.Instance.setSaveInfo(PlayerManager.Instance.Self.StoreBag.items[_loc3_],_loc2_);
+                  RetrieveModel.Instance.setSaveInfo(PlayerManager.Instance.Self.StoreBag.items[place],itemPlace);
                }
             }
          }
@@ -307,9 +301,9 @@ package equipretrieve.view
          {
             hideArr();
          }
-         if(param1["0"] && PlayerManager.Instance.Self.StoreBag.items["0"])
+         if(items["0"] && PlayerManager.Instance.Self.StoreBag.items["0"])
          {
-            _moveCells[0].info = param1["0"];
+            _moveCells[0].info = items["0"];
             RetrieveModel.Instance.setSaveInfo(_moveCells[0].itemInfo,0);
             if(_moveCells[0].info && EquipType.isEquipBoolean(_moveCells[0].info))
             {
@@ -323,209 +317,204 @@ package equipretrieve.view
          }
       }
       
-      public function cellDoubleClick(param1:BagCell) : void
+      public function cellDoubleClick(cell:BagCell) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:InventoryItemInfo = param1.info as InventoryItemInfo;
-         _loc2_ = 1;
-         while(_loc2_ < _cells.length)
+         var i:int = 0;
+         var info:InventoryItemInfo = cell.info as InventoryItemInfo;
+         for(i = 1; i < _cells.length; )
          {
-            if(_cells[_loc2_].info == null)
+            if(_cells[i].info == null)
             {
-               SocketManager.Instance.out.sendMoveGoods(param1.bagType,_loc3_.Place,12,_loc2_);
-               RetrieveModel.Instance.setSavePlaceType(_loc3_,_loc2_);
+               SocketManager.Instance.out.sendMoveGoods(cell.bagType,info.Place,12,i);
+               RetrieveModel.Instance.setSavePlaceType(info,i);
                return;
             }
-            _loc2_++;
+            i++;
          }
-         SocketManager.Instance.out.sendMoveGoods(param1.bagType,_loc3_.Place,12,1);
-         RetrieveModel.Instance.setSaveInfo(_loc3_,1);
-         RetrieveModel.Instance.setSavePlaceType(_loc3_,1);
+         SocketManager.Instance.out.sendMoveGoods(cell.bagType,info.Place,12,1);
+         RetrieveModel.Instance.setSaveInfo(info,1);
+         RetrieveModel.Instance.setSavePlaceType(info,1);
       }
       
       public function returnBag() : void
       {
          var _loc3_:int = 0;
          var _loc2_:* = _cells;
-         for(var _loc1_ in _cells)
+         for(var place in _cells)
          {
-            if(_cells[_loc1_].info)
+            if(_cells[place].info)
             {
-               SocketManager.Instance.out.sendMoveGoods(12,int(_loc1_),int(!EquipType.isEquipBoolean(_cells[_loc1_].info)),-1);
+               SocketManager.Instance.out.sendMoveGoods(12,int(place),int(!EquipType.isEquipBoolean(_cells[place].info)),-1);
             }
          }
       }
       
       private function _cellslightMovie() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var animation:* = null;
          if(!_moveCells)
          {
             return;
          }
-         var _loc1_:AnimationControl = new AnimationControl();
-         _loc1_.addEventListener("complete",_cellslightMovieOver);
-         _loc3_ = 1;
-         while(_loc3_ < _moveCells.length)
+         var animationControl:AnimationControl = new AnimationControl();
+         animationControl.addEventListener("complete",_cellslightMovieOver);
+         for(i = 1; i < _moveCells.length; )
          {
-            _moveCells[_loc3_].info = RetrieveModel.Instance.getSaveCells(_loc3_).info;
-            _moveCells[_loc3_].visible = true;
-            _loc2_ = new GlowFilterAnimation();
-            _loc2_.start(_moveCells[_loc3_]);
-            _loc2_.addMovie(0,0,4);
-            _loc2_.addMovie(15,15,4);
-            _loc2_.addMovie(15,15,2);
-            _loc2_.addMovie(0,0,4);
-            _loc2_.addMovie(0,0,2);
-            _loc2_.addMovie(15,15,4);
-            _loc2_.addMovie(15,15,2);
-            _loc2_.addMovie(0,0,4);
-            _loc1_.addMovies(_loc2_);
-            _loc3_++;
+            _moveCells[i].info = RetrieveModel.Instance.getSaveCells(i).info;
+            _moveCells[i].visible = true;
+            animation = new GlowFilterAnimation();
+            animation.start(_moveCells[i]);
+            animation.addMovie(0,0,4);
+            animation.addMovie(15,15,4);
+            animation.addMovie(15,15,2);
+            animation.addMovie(0,0,4);
+            animation.addMovie(0,0,2);
+            animation.addMovie(15,15,4);
+            animation.addMovie(15,15,2);
+            animation.addMovie(0,0,4);
+            animationControl.addMovies(animation);
+            i++;
          }
          SoundManager.instance.play("147");
-         _loc1_.startMovie();
+         animationControl.startMovie();
       }
       
-      private function _cellslightMovieOver(param1:Event) : void
+      private function _cellslightMovieOver(e:Event) : void
       {
-         param1.currentTarget.removeEventListener("complete",_cellslightMovieOver);
+         e.currentTarget.removeEventListener("complete",_cellslightMovieOver);
          _cellsMove();
       }
       
       private function _cellsMove() : void
       {
-         var _loc4_:int = 0;
+         var i:int = 0;
          if(!_moveCells)
          {
             return;
          }
-         var _loc3_:TimelineLite = new TimelineLite({"onComplete":_tweenlineComplete});
-         var _loc2_:Array = [];
-         var _loc1_:Array = [];
-         _loc4_ = 1;
-         while(_loc4_ < _moveCells.length)
+         var tweenline:TimelineLite = new TimelineLite({"onComplete":_tweenlineComplete});
+         var arrAct0:Array = [];
+         var arrAct1:Array = [];
+         for(i = 1; i < _moveCells.length; )
          {
-            _loc2_.push(TweenLite.to(_moveCells[_loc4_],0.3,{
+            arrAct0.push(TweenLite.to(_moveCells[i],0.3,{
                "x":_moveCells[0].x + 12,
                "y":_moveCells[0].y + 12
             }));
-            _loc1_.push(TweenLite.to(_moveCells[_loc4_],0.2,{
+            arrAct1.push(TweenLite.to(_moveCells[i],0.2,{
                "scaleX":0.5,
                "scaleY":0.5,
                "x":_moveCells[0].x + 30,
                "y":_moveCells[0].y + 30
             }));
-            _loc4_++;
+            i++;
          }
-         _loc3_.appendMultiple(_loc2_);
-         _loc3_.appendMultiple(_loc1_);
+         tweenline.appendMultiple(arrAct0);
+         tweenline.appendMultiple(arrAct1);
       }
       
       private function _tweenlineComplete() : void
       {
-         var _loc9_:int = 0;
+         var i:int = 0;
          if(!_moveCells)
          {
             return;
          }
-         _loc9_ = 1;
-         while(_loc9_ < _moveCells.length)
+         for(i = 1; i < _moveCells.length; )
          {
-            _moveCells[_loc9_].x = RetrieveModel.Instance.getSaveCells(_loc9_).oldx;
-            _moveCells[_loc9_].y = RetrieveModel.Instance.getSaveCells(_loc9_).oldy;
+            _moveCells[i].x = RetrieveModel.Instance.getSaveCells(i).oldx;
+            _moveCells[i].y = RetrieveModel.Instance.getSaveCells(i).oldy;
             var _loc15_:* = 1;
-            _moveCells[_loc9_].scaleY = _loc15_;
-            _moveCells[_loc9_].scaleX = _loc15_;
-            _moveCells[_loc9_].visible = false;
-            _loc9_++;
+            _moveCells[i].scaleY = _loc15_;
+            _moveCells[i].scaleX = _loc15_;
+            _moveCells[i].visible = false;
+            i++;
          }
-         var _loc10_:MovieImage = MovieImage(ComponentFactory.Instance.creatComponentByStylename("effectmc0"));
-         var _loc7_:MovieImage = MovieImage(ComponentFactory.Instance.creatComponentByStylename("effectmc1"));
-         var _loc8_:MovieImage = MovieImage(ComponentFactory.Instance.creatComponentByStylename("effectmc2"));
-         var _loc4_:MovieImage = MovieImage(ComponentFactory.Instance.creatComponentByStylename("effectmc3"));
-         var _loc5_:MovieImage = MovieImage(ComponentFactory.Instance.creatComponentByStylename("effectmc4"));
-         var _loc1_:MovieClipControl = new MovieClipControl(45);
-         addChild(_loc10_);
-         addChild(_loc7_);
-         addChild(_loc8_);
+         var effectMc0:MovieImage = MovieImage(ComponentFactory.Instance.creatComponentByStylename("effectmc0"));
+         var effectMc1:MovieImage = MovieImage(ComponentFactory.Instance.creatComponentByStylename("effectmc1"));
+         var effectMc2:MovieImage = MovieImage(ComponentFactory.Instance.creatComponentByStylename("effectmc2"));
+         var effectMc3:MovieImage = MovieImage(ComponentFactory.Instance.creatComponentByStylename("effectmc3"));
+         var effectMc4:MovieImage = MovieImage(ComponentFactory.Instance.creatComponentByStylename("effectmc4"));
+         var movieControl:MovieClipControl = new MovieClipControl(45);
+         addChild(effectMc0);
+         addChild(effectMc1);
+         addChild(effectMc2);
          addChild(_moveCells[0]);
-         addChild(_loc4_);
-         addChild(_loc5_);
+         addChild(effectMc3);
+         addChild(effectMc4);
          _effectMcArr = new Vector.<MovieImage>();
-         _effectMcArr.push(_loc10_);
-         _effectMcArr.push(_loc7_);
-         _effectMcArr.push(_loc8_);
-         _effectMcArr.push(_loc4_);
-         _effectMcArr.push(_loc5_);
-         _loc1_.addMovies(_loc10_.movie,1,_loc10_.movie.totalFrames);
-         _loc1_.addMovies(_loc7_.movie,1,_loc7_.movie.totalFrames);
-         _loc1_.addMovies(_loc8_.movie,1,_loc8_.movie.totalFrames);
-         _loc1_.addMovies(_loc4_.movie,2,_loc4_.movie.totalFrames);
-         _loc1_.addMovies(_loc5_.movie,5,_loc5_.movie.totalFrames);
-         _loc1_.startMovie();
-         var _loc6_:TimelineLite = new TimelineLite({"onComplete":_tweenline1Complete});
+         _effectMcArr.push(effectMc0);
+         _effectMcArr.push(effectMc1);
+         _effectMcArr.push(effectMc2);
+         _effectMcArr.push(effectMc3);
+         _effectMcArr.push(effectMc4);
+         movieControl.addMovies(effectMc0.movie,1,effectMc0.movie.totalFrames);
+         movieControl.addMovies(effectMc1.movie,1,effectMc1.movie.totalFrames);
+         movieControl.addMovies(effectMc2.movie,1,effectMc2.movie.totalFrames);
+         movieControl.addMovies(effectMc3.movie,2,effectMc3.movie.totalFrames);
+         movieControl.addMovies(effectMc4.movie,5,effectMc4.movie.totalFrames);
+         movieControl.startMovie();
+         var tweenline:TimelineLite = new TimelineLite({"onComplete":_tweenline1Complete});
          _moveCells[0].info = RetrieveModel.Instance.getSaveCells(0).info;
          _moveCells[0].visible = true;
          _loc15_ = 0.2;
          _moveCells[0].scaleY = _loc15_;
          _moveCells[0].scaleX = _loc15_;
-         var _loc12_:Number = _moveCells[0].x + _moveCells[0].width / 2;
-         var _loc11_:Number = _moveCells[0].y + _moveCells[0].height / 2;
-         var _loc13_:Number = _moveCells[0].width / 2;
-         var _loc14_:Number = _moveCells[0].height / 2;
-         var _loc3_:Number = RetrieveModel.Instance.getresultCell().point.x - this.localToGlobal(new Point(_moveCells[0].x,_moveCells[0].y)).x + _moveCells[0].x;
-         var _loc2_:Number = RetrieveModel.Instance.getresultCell().point.y - this.localToGlobal(new Point(_moveCells[0].x,_moveCells[0].y)).y + _moveCells[0].y;
+         var centerX:Number = _moveCells[0].x + _moveCells[0].width / 2;
+         var centerY:Number = _moveCells[0].y + _moveCells[0].height / 2;
+         var oldWidth:Number = _moveCells[0].width / 2;
+         var oldHeight:Number = _moveCells[0].height / 2;
+         var moveToX:Number = RetrieveModel.Instance.getresultCell().point.x - this.localToGlobal(new Point(_moveCells[0].x,_moveCells[0].y)).x + _moveCells[0].x;
+         var moveToY:Number = RetrieveModel.Instance.getresultCell().point.y - this.localToGlobal(new Point(_moveCells[0].x,_moveCells[0].y)).y + _moveCells[0].y;
          _loc15_ = 0.2;
          _moveCells[0].scaleY = _loc15_;
          _moveCells[0].scaleX = _loc15_;
-         _moveCells[0].x = _loc12_ - 0.2 * _loc13_;
-         _moveCells[0].y = _loc11_ - 0.2 * _loc14_;
-         _loc6_.append(TweenLite.to(_moveCells[0],0.2,{
+         _moveCells[0].x = centerX - 0.2 * oldWidth;
+         _moveCells[0].y = centerY - 0.2 * oldHeight;
+         tweenline.append(TweenLite.to(_moveCells[0],0.2,{
             "scaleX":0.2,
             "scaleY":0.2,
-            "x":_loc12_ - 0.2 * _loc13_,
-            "y":_loc11_ - 0.2 * _loc14_
+            "x":centerX - 0.2 * oldWidth,
+            "y":centerY - 0.2 * oldHeight
          }));
-         _loc6_.append(TweenLite.to(_moveCells[0],0.2,{
+         tweenline.append(TweenLite.to(_moveCells[0],0.2,{
             "scaleX":0.8,
             "scaleY":0.8,
-            "x":_loc12_ - 0.8 * _loc13_,
-            "y":_loc11_ - 0.8 * _loc14_
+            "x":centerX - 0.8 * oldWidth,
+            "y":centerY - 0.8 * oldHeight
          }));
-         _loc6_.append(TweenLite.to(_moveCells[0],1.3,{
+         tweenline.append(TweenLite.to(_moveCells[0],1.3,{
             "scaleX":0.8,
             "scaleY":0.8,
-            "x":_loc12_ - 0.8 * _loc13_,
-            "y":_loc11_ - 0.8 * _loc14_
+            "x":centerX - 0.8 * oldWidth,
+            "y":centerY - 0.8 * oldHeight
          }));
-         _loc6_.append(TweenLite.to(_moveCells[0],0.2,{
+         tweenline.append(TweenLite.to(_moveCells[0],0.2,{
             "scaleX":1.2,
             "scaleY":1.2,
-            "x":_loc12_ - 1.2 * _loc13_,
-            "y":_loc11_ - 1.2 * _loc14_
+            "x":centerX - 1.2 * oldWidth,
+            "y":centerY - 1.2 * oldHeight
          }));
-         _loc6_.append(TweenLite.to(_moveCells[0],0.5,{
+         tweenline.append(TweenLite.to(_moveCells[0],0.5,{
             "scaleX":0.5,
             "scaleY":0.5,
-            "x":_loc3_,
-            "y":_loc2_
+            "x":moveToX,
+            "y":moveToY
          }));
       }
       
       private function _tweenline1Complete() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _effectMcArr.length)
+         var i:int = 0;
+         for(i = 0; i < _effectMcArr.length; )
          {
-            if(_effectMcArr[_loc1_])
+            if(_effectMcArr[i])
             {
-               ObjectUtils.disposeObject(_effectMcArr[_loc1_]);
+               ObjectUtils.disposeObject(_effectMcArr[i]);
             }
-            _effectMcArr[_loc1_] = null;
-            _loc1_++;
+            _effectMcArr[i] = null;
+            i++;
          }
          if(!_moveCells)
          {
@@ -551,27 +540,26 @@ package equipretrieve.view
       
       public function clearCellInfo() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          if(!_cells)
          {
             return;
          }
-         var _loc1_:int = _cells.length;
-         _loc2_ = 1;
-         while(_loc2_ < 5)
+         var tmp:int = _cells.length;
+         for(i = 1; i < 5; )
          {
-            if(_cells[_loc2_])
+            if(_cells[i])
             {
-               _cells[_loc2_].info = null;
+               _cells[i].info = null;
             }
-            _loc2_++;
+            i++;
          }
          hideArr();
       }
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var place:int = 0;
          if(_titleBg)
          {
             ObjectUtils.disposeObject(_titleBg);
@@ -623,20 +611,19 @@ package equipretrieve.view
          _GoldBitmap = null;
          _needMoneyIcon = null;
          returnBag();
-         _loc1_ = 0;
-         while(_loc1_ < _cells.length)
+         for(place = 0; place < _cells.length; )
          {
-            if(_cells[_loc1_])
+            if(_cells[place])
             {
-               ObjectUtils.disposeObject(_cells[_loc1_]);
+               ObjectUtils.disposeObject(_cells[place]);
             }
-            if(_moveCells[_loc1_])
+            if(_moveCells[place])
             {
-               ObjectUtils.disposeObject(_moveCells[_loc1_]);
+               ObjectUtils.disposeObject(_moveCells[place]);
             }
-            _moveCells[_loc1_] = null;
-            _cells[_loc1_] = null;
-            _loc1_++;
+            _moveCells[place] = null;
+            _cells[place] = null;
+            place++;
          }
          _cells = null;
          _moveCells = null;

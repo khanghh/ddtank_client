@@ -44,27 +44,27 @@ package horseRace.view
       
       private var buffConfig:Array;
       
-      public function HorseRaceBuffItem(param1:int, param2:int)
+      public function HorseRaceBuffItem($buffType:int, $buffIndex:int)
       {
          super();
-         _buffIndex = param2;
-         _buffType = param1;
+         _buffIndex = $buffIndex;
+         _buffType = $buffType;
          buffConfig = ServerConfigManager.instance.horseGameBuffConfig;
          initView();
          initEvent();
       }
       
-      private function getConfigByID(param1:int) : int
+      private function getConfigByID(id:int) : int
       {
-         var _loc4_:int = 0;
-         var _loc3_:String = buffConfig[param1 - 1];
-         var _loc2_:Array = _loc3_.split(",");
-         var _loc5_:int = _loc2_[0];
-         if(_loc5_ == param1)
+         var lastTime:int = 0;
+         var buffStr:String = buffConfig[id - 1];
+         var arr:Array = buffStr.split(",");
+         var buffId:int = arr[0];
+         if(buffId == id)
          {
-            _loc4_ = _loc2_[1];
+            lastTime = arr[1];
          }
-         return _loc4_;
+         return lastTime;
       }
       
       private function initView() : void
@@ -156,13 +156,13 @@ package horseRace.view
          addChild(_buffObj8);
       }
       
-      public function setShowBuff(param1:int, param2:int) : void
+      public function setShowBuff($buffType:int, minute:int) : void
       {
-         _buffType = param1;
-         if(param1 == 0)
+         _buffType = $buffType;
+         if($buffType == 0)
          {
             _daojishi.visible = true;
-            _daojishi.gotoAndStop(param2);
+            _daojishi.gotoAndStop(minute);
             if(_buffObj1)
             {
                _buffObj1.visible = false;
@@ -196,7 +196,7 @@ package horseRace.view
                _buffObj8.visible = false;
             }
          }
-         if(param2 == -1)
+         if(minute == -1)
          {
             _daojishi.visible = false;
             if(_buffObj1)
@@ -234,18 +234,18 @@ package horseRace.view
          }
       }
       
-      public function setShowBuffObj(param1:int) : void
+      public function setShowBuffObj($buffType:int) : void
       {
-         if(param1 != 0)
+         if($buffType != 0)
          {
             _daojishi.visible = false;
-            showBuffObjByType(param1);
+            showBuffObjByType($buffType);
          }
       }
       
-      public function showBuffObjByType(param1:int) : void
+      public function showBuffObjByType(type:int) : void
       {
-         if(param1 == 1)
+         if(type == 1)
          {
             _buffObj1.visible = true;
             _buffObj2.visible = false;
@@ -256,7 +256,7 @@ package horseRace.view
             _buffObj7.visible = false;
             _buffObj8.visible = false;
          }
-         else if(param1 == 2)
+         else if(type == 2)
          {
             _buffObj1.visible = false;
             _buffObj2.visible = true;
@@ -267,7 +267,7 @@ package horseRace.view
             _buffObj7.visible = false;
             _buffObj8.visible = false;
          }
-         else if(param1 == 3)
+         else if(type == 3)
          {
             _buffObj1.visible = false;
             _buffObj2.visible = false;
@@ -278,7 +278,7 @@ package horseRace.view
             _buffObj7.visible = false;
             _buffObj8.visible = false;
          }
-         else if(param1 == 4)
+         else if(type == 4)
          {
             _buffObj1.visible = false;
             _buffObj2.visible = false;
@@ -289,7 +289,7 @@ package horseRace.view
             _buffObj7.visible = false;
             _buffObj8.visible = false;
          }
-         else if(param1 == 5)
+         else if(type == 5)
          {
             _buffObj1.visible = false;
             _buffObj2.visible = false;
@@ -300,7 +300,7 @@ package horseRace.view
             _buffObj7.visible = false;
             _buffObj8.visible = false;
          }
-         else if(param1 == 6)
+         else if(type == 6)
          {
             _buffObj1.visible = false;
             _buffObj2.visible = false;
@@ -311,7 +311,7 @@ package horseRace.view
             _buffObj7.visible = false;
             _buffObj8.visible = false;
          }
-         else if(param1 == 7)
+         else if(type == 7)
          {
             _buffObj1.visible = false;
             _buffObj2.visible = false;
@@ -322,7 +322,7 @@ package horseRace.view
             _buffObj7.visible = true;
             _buffObj8.visible = false;
          }
-         else if(param1 == 8)
+         else if(type == 8)
          {
             _buffObj1.visible = false;
             _buffObj2.visible = false;
@@ -333,7 +333,7 @@ package horseRace.view
             _buffObj7.visible = false;
             _buffObj8.visible = true;
          }
-         else if(param1 == 0)
+         else if(type == 0)
          {
             _buffObj1.visible = false;
             _buffObj2.visible = false;
@@ -346,7 +346,7 @@ package horseRace.view
          }
       }
       
-      private function _buffObjClick(param1:MouseEvent) : void
+      private function _buffObjClick(e:MouseEvent) : void
       {
          HorseRaceManager.Instance.dispatchEvent(new HorseRaceEvents("HORSERACE_USE_DAOJU",_buffIndex));
       }

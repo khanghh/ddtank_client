@@ -39,7 +39,7 @@ package stock.views
          btnBuy.clickHandler = new Handler(buy);
       }
       
-      private function select(param1:int) : void
+      private function select(index:int) : void
       {
          updateLoan();
       }
@@ -71,23 +71,23 @@ package stock.views
          super.dispose();
       }
       
-      private function change(param1:int) : void
+      private function change(value:int) : void
       {
-         _cnt = param1;
+         _cnt = value;
          updateLoan();
       }
       
       private function updateLoan() : void
       {
-         var _loc1_:int = _cnt * 1 / ServerConfigManager.instance.stockLoanRechageRate;
+         var cost:int = _cnt * 1 / ServerConfigManager.instance.stockLoanRechageRate;
          if(radioGroup.selectedIndex == 0)
          {
-            lablMoney.text = _loc1_.toString();
+            lablMoney.text = cost.toString();
             lablBindMoney.text = "0";
          }
          else
          {
-            lablBindMoney.text = _loc1_.toString();
+            lablBindMoney.text = cost.toString();
             lablMoney.text = "0";
          }
       }

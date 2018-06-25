@@ -107,33 +107,33 @@ package consortion.view.selfConsortia
          PlayerManager.Instance.Self.removeEventListener("propertychange",__selfPropertyHanlder);
       }
       
-      private function __onItmeClickHandler(param1:MouseEvent) : void
+      private function __onItmeClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          PlayerTipManager.show(_playerInfo,StageReferance.stage.mouseY);
       }
       
-      private function __mouseOverHandler(param1:MouseEvent) : void
+      private function __mouseOverHandler(evt:MouseEvent) : void
       {
          _light.visible = true;
       }
       
-      private function __mouseOutHandler(param1:MouseEvent) : void
+      private function __mouseOutHandler(evt:MouseEvent) : void
       {
          _light.visible = _isSelected;
       }
       
-      public function isSelelct(param1:Boolean) : void
+      public function isSelelct(b:Boolean) : void
       {
-         _isSelected = param1;
-         _light.visible = param1;
+         _isSelected = b;
+         _light.visible = b;
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
          if(_playerInfo == null || _playerInfo.ID != PlayerManager.Instance.Self.ID)
          {
-            if(param3 % 2 != 0)
+            if(index % 2 != 0)
             {
                _itemBG.setFrame(2);
             }
@@ -144,7 +144,7 @@ package consortion.view.selfConsortia
          }
          if(_playerInfo)
          {
-            isSelelct(param2);
+            isSelelct(isSelected);
          }
       }
       
@@ -153,9 +153,9 @@ package consortion.view.selfConsortia
          return _playerInfo;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _playerInfo = param1;
+         _playerInfo = value;
          if(_playerInfo == null)
          {
             isSelelct(false);
@@ -214,64 +214,64 @@ package consortion.view.selfConsortia
          }
       }
       
-      private function __selfPropertyHanlder(param1:PlayerPropertyEvent) : void
+      private function __selfPropertyHanlder(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["RichesOffer"] || param1.changedProperties["UseOffer"])
+         if(event.changedProperties["RichesOffer"] || event.changedProperties["UseOffer"])
          {
             _offer.text = String(PlayerManager.Instance.Self.UseOffer);
          }
-         if(param1.changedProperties["isVip"])
+         if(event.changedProperties["isVip"])
          {
             setName();
          }
       }
       
-      private function setVisible(param1:Boolean) : void
+      private function setVisible(b:Boolean) : void
       {
          if(_nameForVip)
          {
-            _nameForVip.visible = param1;
+            _nameForVip.visible = b;
          }
-         _name.visible = param1;
-         _job.visible = param1;
-         _levelIcon.visible = param1;
-         _offer.visible = param1;
-         _week.visible = param1;
-         _fightPower.visible = param1;
-         _offLine.visible = param1;
+         _name.visible = b;
+         _job.visible = b;
+         _levelIcon.visible = b;
+         _offer.visible = b;
+         _week.visible = b;
+         _fightPower.visible = b;
+         _offLine.visible = b;
       }
       
       private function setName() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var tInfo:* = null;
+         var textFormat:* = null;
          if(_playerInfo.ID == PlayerManager.Instance.Self.ID)
          {
-            _loc2_ = PlayerManager.Instance.Self;
+            tInfo = PlayerManager.Instance.Self;
          }
          else
          {
-            _loc2_ = _playerInfo;
+            tInfo = _playerInfo;
          }
          ObjectUtils.disposeObject(_name);
          _name = ComponentFactory.Instance.creatComponentByStylename("memberItem.commonName");
-         _name.text = _loc2_.NickName;
+         _name.text = tInfo.NickName;
          addChild(_name);
-         if(_loc2_.IsVIP)
+         if(tInfo.IsVIP)
          {
             ObjectUtils.disposeObject(_nameForVip);
-            _nameForVip = VipController.instance.getVipNameTxt(124,_loc2_.typeVIP);
-            _loc1_ = new TextFormat();
-            _loc1_.align = "center";
-            _loc1_.bold = true;
-            _nameForVip.textField.defaultTextFormat = _loc1_;
+            _nameForVip = VipController.instance.getVipNameTxt(124,tInfo.typeVIP);
+            textFormat = new TextFormat();
+            textFormat.align = "center";
+            textFormat.bold = true;
+            _nameForVip.textField.defaultTextFormat = textFormat;
             _nameForVip.textSize = 16;
             _nameForVip.x = _name.x;
             _nameForVip.y = _name.y;
-            _nameForVip.text = _loc2_.NickName;
+            _nameForVip.text = tInfo.NickName;
             addChild(_nameForVip);
          }
-         PositionUtils.adaptNameStyle(_loc2_,_name,_nameForVip);
+         PositionUtils.adaptNameStyle(tInfo,_name,_nameForVip);
          creatAttestBtn();
       }
       

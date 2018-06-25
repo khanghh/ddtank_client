@@ -62,9 +62,9 @@ package ddt.view.bossbox
          }
       }
       
-      public function set vipAwardGoodsList(param1:Array) : void
+      public function set vipAwardGoodsList(templateIds:Array) : void
       {
-         _goodsList = param1;
+         _goodsList = templateIds;
          _list = ComponentFactory.Instance.creatCustomObject("bossbox.VipInfoTipList");
          _list.showForVipAward(_goodsList);
          addChild(_list);
@@ -76,16 +76,16 @@ package ddt.view.bossbox
          _button.addEventListener("click",_click);
       }
       
-      private function _click(param1:MouseEvent) : void
+      private function _click(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _selectCellInfo = _list.currentCell.info;
          dispatchEvent(new FrameEvent(2));
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

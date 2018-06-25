@@ -13,61 +13,60 @@ package AvatarCollection.data
       
       private var _weaponUnitDic:DictionaryData;
       
-      public function AvatarCollectionUnitDataAnalyzer(param1:Function)
+      public function AvatarCollectionUnitDataAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:XML = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var tmpVo:* = null;
+         var xml:XML = new XML(data);
          _maleUnitDic = new DictionaryData();
          _femaleUnitDic = new DictionaryData();
          _weaponUnitDic = new DictionaryData();
-         if(_loc3_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc4_ = _loc3_..Item;
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_.length())
+            xmllist = xml..Item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc2_ = new AvatarCollectionUnitVo();
-               _loc2_.id = _loc4_[_loc5_].@ID;
-               _loc2_.sex = _loc4_[_loc5_].@Sex;
-               _loc2_.name = _loc4_[_loc5_].@Name;
-               _loc2_.Attack = _loc4_[_loc5_].@Attack;
-               _loc2_.Defence = _loc4_[_loc5_].@Defend;
-               _loc2_.Agility = _loc4_[_loc5_].@Agility;
-               _loc2_.Luck = _loc4_[_loc5_].@Luck;
-               _loc2_.Damage = _loc4_[_loc5_].@Damage;
-               _loc2_.Guard = _loc4_[_loc5_].@Guard;
-               _loc2_.Blood = _loc4_[_loc5_].@Blood;
-               _loc2_.needHonor = _loc4_[_loc5_].@Cost;
-               _loc2_.Type = _loc4_[_loc5_].@Type;
-               if(_loc2_.Type == 1)
+               tmpVo = new AvatarCollectionUnitVo();
+               tmpVo.id = xmllist[i].@ID;
+               tmpVo.sex = xmllist[i].@Sex;
+               tmpVo.name = xmllist[i].@Name;
+               tmpVo.Attack = xmllist[i].@Attack;
+               tmpVo.Defence = xmllist[i].@Defend;
+               tmpVo.Agility = xmllist[i].@Agility;
+               tmpVo.Luck = xmllist[i].@Luck;
+               tmpVo.Damage = xmllist[i].@Damage;
+               tmpVo.Guard = xmllist[i].@Guard;
+               tmpVo.Blood = xmllist[i].@Blood;
+               tmpVo.needHonor = xmllist[i].@Cost;
+               tmpVo.Type = xmllist[i].@Type;
+               if(tmpVo.Type == 1)
                {
-                  if(_loc2_.sex == 1)
+                  if(tmpVo.sex == 1)
                   {
-                     _maleUnitDic.add(_loc2_.id,_loc2_);
+                     _maleUnitDic.add(tmpVo.id,tmpVo);
                   }
                   else
                   {
-                     _femaleUnitDic.add(_loc2_.id,_loc2_);
+                     _femaleUnitDic.add(tmpVo.id,tmpVo);
                   }
                }
-               else if(_loc2_.Type == 2)
+               else if(tmpVo.Type == 2)
                {
-                  _weaponUnitDic.add(_loc2_.id,_loc2_);
+                  _weaponUnitDic.add(tmpVo.id,tmpVo);
                }
-               _loc5_++;
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc3_.@message;
+            message = xml.@message;
             onAnalyzeError();
          }
       }

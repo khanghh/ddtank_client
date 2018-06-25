@@ -6,10 +6,10 @@ package com.pickgliss.events
       
       private var source:Object;
       
-      public function ModelEvent(param1:Object)
+      public function ModelEvent(source:Object)
       {
          super();
-         this.source = param1;
+         this.source = source;
       }
       
       public function getSource() : Object

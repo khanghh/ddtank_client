@@ -14,64 +14,64 @@ package gameCommon.view.buff
       
       private var _buffs:Vector.<FightBuffInfo>;
       
-      public function FightContainerBuff(param1:int, param2:int = 2)
+      public function FightContainerBuff(id:int, $type:int = 2)
       {
          _buffs = new Vector.<FightBuffInfo>();
-         super(param1);
-         type = param2;
+         super(id);
+         type = $type;
       }
       
-      public function addFightBuff(param1:FightBuffInfo) : void
+      public function addFightBuff(buff:FightBuffInfo) : void
       {
-         _buffs.push(param1);
+         _buffs.push(buff);
       }
       
       public function get tipData() : Object
       {
-         var _loc1_:* = undefined;
-         var _loc4_:* = null;
-         var _loc2_:BuffTipInfo = new BuffTipInfo();
+         var buffs:* = undefined;
+         var buff:* = null;
+         var data:BuffTipInfo = new BuffTipInfo();
          if(type == 2)
          {
-            _loc2_.isActive = true;
-            _loc2_.describe = LanguageMgr.GetTranslation("tank.view.buff.PayBuff.Note");
-            _loc2_.name = LanguageMgr.GetTranslation("tank.view.buff.PayBuff.Name");
-            _loc2_.isFree = false;
-            _loc1_ = new Vector.<BuffInfo>();
+            data.isActive = true;
+            data.describe = LanguageMgr.GetTranslation("tank.view.buff.PayBuff.Note");
+            data.name = LanguageMgr.GetTranslation("tank.view.buff.PayBuff.Name");
+            data.isFree = false;
+            buffs = new Vector.<BuffInfo>();
             var _loc6_:int = 0;
             var _loc5_:* = _buffs;
-            for each(var _loc3_ in _buffs)
+            for each(var fightBuff in _buffs)
             {
-               if(BuffType.isPayBuff(_loc3_.id) && _loc3_.isSelf)
+               if(BuffType.isPayBuff(fightBuff.id) && fightBuff.isSelf)
                {
-                  _loc4_ = PlayerManager.Instance.Self.getBuff(_loc3_.id);
-                  _loc4_.calculatePayBuffValidDay();
+                  buff = PlayerManager.Instance.Self.getBuff(fightBuff.id);
+                  buff.calculatePayBuffValidDay();
                }
                else
                {
-                  _loc4_ = new BuffInfo(_loc3_.id);
-                  _loc4_.day = _loc3_.data;
-                  _loc4_.isSelf = false;
+                  buff = new BuffInfo(fightBuff.id);
+                  buff.day = fightBuff.data;
+                  buff.isSelf = false;
                }
-               _loc1_.push(_loc4_);
+               buffs.push(buff);
             }
-            _loc2_.linkBuffs = _loc1_;
+            data.linkBuffs = buffs;
          }
          else if(type == 3)
          {
-            _loc2_.isActive = true;
-            _loc2_.name = LanguageMgr.GetTranslation("tank.view.buff.consortiaBuff");
-            _loc2_.isFree = false;
-            _loc2_.linkBuffs = _buffs;
+            data.isActive = true;
+            data.name = LanguageMgr.GetTranslation("tank.view.buff.consortiaBuff");
+            data.isFree = false;
+            data.linkBuffs = _buffs;
          }
          else
          {
-            _loc2_.isActive = true;
-            _loc2_.name = LanguageMgr.GetTranslation("tank.view.buff.cardBuff");
-            _loc2_.isFree = false;
-            _loc2_.linkBuffs = _buffs;
+            data.isActive = true;
+            data.name = LanguageMgr.GetTranslation("tank.view.buff.cardBuff");
+            data.isFree = false;
+            data.linkBuffs = _buffs;
          }
-         return _loc2_;
+         return data;
       }
       
       public function dispose() : void

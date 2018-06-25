@@ -7,9 +7,9 @@ package gameCommon.view.experience
    {
        
       
-      public function ExpAttatchExpItem(param1:Array)
+      public function ExpAttatchExpItem(arr:Array)
       {
-         super(param1);
+         super(arr);
       }
       
       override protected function init() : void

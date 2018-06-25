@@ -57,9 +57,9 @@ package ddt.view.chat
       
       private var _isEditing:Boolean;
       
-      public function ChatFastReplyPanel(param1:Boolean = false)
+      public function ChatFastReplyPanel(inGame:Boolean = false)
       {
-         _inGame = param1;
+         _inGame = inGame;
          super();
       }
       
@@ -68,9 +68,9 @@ package ddt.view.chat
          return _isEditing;
       }
       
-      public function set isEditing(param1:Boolean) : void
+      public function set isEditing(value:Boolean) : void
       {
-         _isEditing = param1;
+         _isEditing = value;
       }
       
       public function get selectedWrod() : String
@@ -78,10 +78,10 @@ package ddt.view.chat
          return _selected;
       }
       
-      override public function set setVisible(param1:Boolean) : void
+      override public function set setVisible(value:Boolean) : void
       {
-         .super.setVisible = param1;
-         if(param1)
+         .super.setVisible = value;
+         if(value)
          {
             if(ChatManager.Instance.isInGame)
             {
@@ -102,11 +102,11 @@ package ddt.view.chat
          isEditing = false;
       }
       
-      private function __itemClick(param1:MouseEvent) : void
+      private function __itemClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:ChatFastReplyItem = param1.currentTarget as ChatFastReplyItem;
-         _selected = _loc2_.word;
+         var t:ChatFastReplyItem = evt.currentTarget as ChatFastReplyItem;
+         _selected = t.word;
          if(_inGame)
          {
             dispatchEvent(new Event("selectedingame"));
@@ -117,11 +117,11 @@ package ddt.view.chat
          }
       }
       
-      private function __mouseClick(param1:*) : void
+      private function __mouseClick(evt:*) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
-         var _loc2_:* = param1.currentTarget;
+         evt.stopImmediatePropagation();
+         var _loc2_:* = evt.currentTarget;
          if(_inputBox !== _loc2_)
          {
             if(_enterBtn !== _loc2_)
@@ -143,16 +143,16 @@ package ddt.view.chat
          }
       }
       
-      private function __deleteItem(param1:ChatEvent) : void
+      private function __deleteItem(e:ChatEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc3_:ChatFastReplyItem = param1.data as ChatFastReplyItem;
-         var _loc2_:uint = _items.indexOf(_loc3_);
-         _loc3_.removeEventListener("click",__itemClick);
-         _loc3_.dispose();
-         _items.splice(_loc2_,1);
-         ChatManager.Instance.model.customFastReply.splice(_loc2_ - 5,1);
-         delete SharedManager.Instance.fastReplys[_loc3_.word];
+         var item:ChatFastReplyItem = e.data as ChatFastReplyItem;
+         var idx:uint = _items.indexOf(item);
+         item.removeEventListener("click",__itemClick);
+         item.dispose();
+         _items.splice(idx,1);
+         ChatManager.Instance.model.customFastReply.splice(idx - 5,1);
+         delete SharedManager.Instance.fastReplys[item.word];
          SharedManager.Instance.save();
          _customCnt = Number(_customCnt) - 1;
          updatePos(-1);
@@ -170,14 +170,14 @@ package ddt.view.chat
             ChatManager.Instance.sysChatYellow(LanguageMgr.GetTranslation("chat.FastReplyCustomCountLimit"));
             return;
          }
-         var _loc1_:String = FilterWordManager.filterWrod(_inputBox.text);
-         var _loc2_:ChatFastReplyItem = new ChatFastReplyItem(_loc1_,true);
-         _loc2_.addEventListener("click",__itemClick);
-         _loc2_.addEventListener("delete",__deleteItem);
-         _items.push(_loc2_);
-         ChatManager.Instance.model.customFastReply.push(_loc2_.word);
-         _box.addChild(_loc2_);
-         SharedManager.Instance.fastReplys[_loc2_.word] = _loc2_.word;
+         var str:String = FilterWordManager.filterWrod(_inputBox.text);
+         var item:ChatFastReplyItem = new ChatFastReplyItem(str,true);
+         item.addEventListener("click",__itemClick);
+         item.addEventListener("delete",__deleteItem);
+         _items.push(item);
+         ChatManager.Instance.model.customFastReply.push(item.word);
+         _box.addChild(item);
+         SharedManager.Instance.fastReplys[item.word] = item.word;
          SharedManager.Instance.save();
          _customCnt = Number(_customCnt) + 1;
          updatePos(1);
@@ -186,7 +186,7 @@ package ddt.view.chat
          StageReferance.stage.focus = null;
       }
       
-      private function updatePos(param1:int) : void
+      private function updatePos(value:int) : void
       {
          _inputBg.y = _box.height + 10;
          _enterBtn.y = _inputBg.y + 2;
@@ -201,20 +201,20 @@ package ddt.view.chat
          {
             _customBg.height = _box.height - _customBg.y + 8;
          }
-         y = y - 21 * param1;
+         y = y - 21 * value;
       }
       
       private function fixVerticalPos() : void
       {
-         var _loc1_:uint = _items.length - 5;
-         y = y - _loc1_ * 21;
+         var len:uint = _items.length - 5;
+         y = y - len * 21;
       }
       
       override protected function init() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
+         var item1:* = null;
          super.init();
          _defaultStr = LanguageMgr.GetTranslation("chat.FastReplyDefaultStr");
          _bg = ComponentFactory.Instance.creatComponentByStylename("chat.FastReplyBg");
@@ -228,26 +228,25 @@ package ddt.view.chat
          _customBg.graphics.drawRect(5,0,168,1);
          _customBg.graphics.endFill();
          _items = new Vector.<ChatFastReplyItem>();
-         _loc4_ = 0;
-         while(_loc4_ < FASTREPLYS.length)
+         for(i = 0; i < FASTREPLYS.length; )
          {
-            _loc3_ = new ChatFastReplyItem(FASTREPLYS[_loc4_]);
-            _loc3_.addEventListener("click",__itemClick);
-            _items.push(_loc3_);
-            _box.addChild(_loc3_);
-            _loc4_++;
+            item = new ChatFastReplyItem(FASTREPLYS[i]);
+            item.addEventListener("click",__itemClick);
+            _items.push(item);
+            _box.addChild(item);
+            i++;
          }
          _box.addChild(_boundary);
          var _loc6_:int = 0;
          var _loc5_:* = SharedManager.Instance.fastReplys;
-         for(var _loc2_ in SharedManager.Instance.fastReplys)
+         for(var str in SharedManager.Instance.fastReplys)
          {
-            _loc1_ = new ChatFastReplyItem(SharedManager.Instance.fastReplys[_loc2_],true);
-            _loc1_.addEventListener("click",__itemClick);
-            _loc1_.addEventListener("delete",__deleteItem);
-            ChatManager.Instance.model.customFastReply.push(_loc1_.word);
-            _items.push(_loc1_);
-            _box.addChild(_loc1_);
+            item1 = new ChatFastReplyItem(SharedManager.Instance.fastReplys[str],true);
+            item1.addEventListener("click",__itemClick);
+            item1.addEventListener("delete",__deleteItem);
+            ChatManager.Instance.model.customFastReply.push(item1.word);
+            _items.push(item1);
+            _box.addChild(item1);
             _customCnt = Number(_customCnt) + 1;
          }
          _inputBox.maxChars = 20;
@@ -274,12 +273,12 @@ package ddt.view.chat
          addEventListener("click",__spriteClick);
       }
       
-      private function __spriteClick(param1:MouseEvent) : void
+      private function __spriteClick(e:MouseEvent) : void
       {
          isEditing = false;
       }
       
-      private function __checkMaxChars(param1:TextEvent) : void
+      private function __checkMaxChars(event:TextEvent) : void
       {
          if(_inputBox.length >= 20)
          {
@@ -287,21 +286,21 @@ package ddt.view.chat
          }
       }
       
-      private function __creatItem(param1:KeyboardEvent) : void
+      private function __creatItem(event:KeyboardEvent) : void
       {
-         param1.stopImmediatePropagation();
-         if(param1.keyCode == 13)
+         event.stopImmediatePropagation();
+         if(event.keyCode == 13)
          {
             SoundManager.instance.play("008");
             createCustomItem();
          }
       }
       
-      private function __focusOut(param1:FocusEvent) : void
+      private function __focusOut(event:FocusEvent) : void
       {
-         if(param1.currentTarget.text == "" || param1.currentTarget.text == _defaultStr)
+         if(event.currentTarget.text == "" || event.currentTarget.text == _defaultStr)
          {
-            param1.currentTarget.text = _defaultStr;
+            event.currentTarget.text = _defaultStr;
          }
       }
    }

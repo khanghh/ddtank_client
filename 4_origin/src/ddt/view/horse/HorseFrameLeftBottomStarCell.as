@@ -46,19 +46,19 @@ package ddt.view.horse
          addChild(_normalMc);
       }
       
-      public function refreshView(param1:int, param2:int) : void
+      public function refreshView(index:int, curLevel:int) : void
       {
-         _level = param1;
+         _level = index;
          ObjectUtils.disposeObject(_skillCell);
          _skillCell = null;
-         var _loc3_:HorseTemplateVo = HorseManager.instance.getHorseTemplateInfoByLevel(_level);
-         if(_loc3_)
+         var tmp:HorseTemplateVo = HorseManager.instance.getHorseTemplateInfoByLevel(_level);
+         if(tmp)
          {
-            if(_loc3_.SkillID > 0)
+            if(tmp.SkillID > 0)
             {
                _bg.visible = false;
                _bg2.visible = true;
-               _skillCell = new HorseSkillCell(_loc3_.SkillID);
+               _skillCell = new HorseSkillCell(tmp.SkillID);
                _skillCell.scaleX = _bg2.width / _skillCell.width;
                _skillCell.scaleY = _bg2.height / _skillCell.height;
                _skillCell.alpha = 0;
@@ -69,7 +69,7 @@ package ddt.view.horse
                _bg.visible = true;
                _bg2.visible = false;
             }
-            if(_level <= param2)
+            if(_level <= curLevel)
             {
                if(!_isOpen)
                {
@@ -93,18 +93,18 @@ package ddt.view.horse
       
       private function openHandler() : void
       {
-         var _loc1_:MovieClip = ComponentFactory.Instance.creat("asset.horse.frame.starOpenMc");
-         _loc1_.mouseEnabled = false;
-         _loc1_.mouseChildren = false;
-         addChild(_loc1_);
-         var _loc2_:MovieClipWrapper = new MovieClipWrapper(_loc1_,true,true);
-         _loc2_.addEventListener("complete",playEndHandler);
+         var openMc:MovieClip = ComponentFactory.Instance.creat("asset.horse.frame.starOpenMc");
+         openMc.mouseEnabled = false;
+         openMc.mouseChildren = false;
+         addChild(openMc);
+         var tmp:MovieClipWrapper = new MovieClipWrapper(openMc,true,true);
+         tmp.addEventListener("complete",playEndHandler);
       }
       
-      private function playEndHandler(param1:Event) : void
+      private function playEndHandler(event:Event) : void
       {
-         var _loc2_:MovieClipWrapper = param1.currentTarget as MovieClipWrapper;
-         _loc2_.removeEventListener("complete",playEndHandler);
+         var tmp:MovieClipWrapper = event.currentTarget as MovieClipWrapper;
+         tmp.removeEventListener("complete",playEndHandler);
          if(_normalMc)
          {
             _normalMc.gotoAndStop(1);

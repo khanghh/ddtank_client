@@ -18,8 +18,8 @@ package mysteriousRoullete.components
       
       public function playOneStep() : void
       {
-         var _loc1_:String = _oneArray[_number];
-         SoundManager.instance.play(_loc1_);
+         var id:String = _oneArray[_number];
+         SoundManager.instance.play(id);
          _number = _number >= 4?0:Number(_number + 1);
       }
    }

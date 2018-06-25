@@ -42,7 +42,7 @@ package battleSkill
          addEventsMap([[BattleSkillEvent.OPEN_SKILL_VIEW,openSkillView_Handler],[BattleSkillEvent.BATTLESKILL_INFO,battleSkillInfo_Handler],[BattleSkillEvent.UPDATE_SKILL,refreshMainView_Handler]],_manager);
       }
       
-      private function openSkillView_Handler(param1:BattleSkillEvent) : void
+      private function openSkillView_Handler(evt:BattleSkillEvent) : void
       {
          if(_skillFrame)
          {
@@ -55,7 +55,7 @@ package battleSkill
          GameInSocketOut.sendGetBattleSkillInfo();
       }
       
-      private function battleSkillInfo_Handler(param1:BattleSkillEvent) : void
+      private function battleSkillInfo_Handler(evt:BattleSkillEvent) : void
       {
          if(_skillFrame == null)
          {
@@ -65,41 +65,41 @@ package battleSkill
          initBringSkillView();
       }
       
-      private function refreshMainView_Handler(param1:BattleSkillEvent) : void
+      private function refreshMainView_Handler(evt:BattleSkillEvent) : void
       {
-         var _loc2_:int = BattleSkillManager.instance.curUpSkillId;
-         var _loc3_:int = param1.data as int;
-         var _loc4_:BattleSkillSkillInfo = BattleSkillManager.instance.getBattleSKillInfoBySkillID(_loc3_);
-         updateSkillList(_loc2_,_loc4_);
-         updateBringList(_loc2_,_loc4_);
+         var oldID:int = BattleSkillManager.instance.curUpSkillId;
+         var newID:int = evt.data as int;
+         var info:BattleSkillSkillInfo = BattleSkillManager.instance.getBattleSKillInfoBySkillID(newID);
+         updateSkillList(oldID,info);
+         updateBringList(oldID,info);
       }
       
-      private function updateSkillList(param1:int, param2:BattleSkillSkillInfo) : void
+      private function updateSkillList(skillId:int, newSkillInfo:BattleSkillSkillInfo) : void
       {
-         var _loc4_:Dictionary = _skillFrame.frameSkillCells;
+         var cellsDic:Dictionary = _skillFrame.frameSkillCells;
          var _loc6_:int = 0;
-         var _loc5_:* = _loc4_;
-         for each(var _loc3_ in _loc4_)
+         var _loc5_:* = cellsDic;
+         for each(var cell in cellsDic)
          {
-            if(_loc3_.info.SkillID == param1)
+            if(cell.info.SkillID == skillId)
             {
-               _loc3_.updateSkillState(param2);
+               cell.updateSkillState(newSkillInfo);
                return;
             }
          }
       }
       
-      private function updateBringList(param1:int, param2:BattleSkillSkillInfo) : void
+      private function updateBringList(skillId:int, newSkillInfo:BattleSkillSkillInfo) : void
       {
-         var _loc5_:BringSkillCellGroupContainer = _skillFrame.bringSkillView;
-         var _loc3_:Dictionary = _loc5_._allCells;
+         var view:BringSkillCellGroupContainer = _skillFrame.bringSkillView;
+         var cells:Dictionary = view._allCells;
          var _loc7_:int = 0;
-         var _loc6_:* = _loc3_;
-         for each(var _loc4_ in _loc3_)
+         var _loc6_:* = cells;
+         for each(var cell in cells)
          {
-            if(_loc4_.info.SkillID == param1)
+            if(cell.info.SkillID == skillId)
             {
-               _loc4_.info = param2;
+               cell.info = newSkillInfo;
                return;
             }
          }
@@ -107,41 +107,40 @@ package battleSkill
       
       private function initActivateSkillView() : void
       {
-         var _loc5_:* = null;
-         var _loc4_:int = 0;
-         var _loc3_:Array = BattleSkillManager.instance.getActivatedSkillArr();
-         var _loc2_:Dictionary = _skillFrame.frameSkillCells;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_.length)
+         var info:* = null;
+         var i:int = 0;
+         var activateSkillArr:Array = BattleSkillManager.instance.getActivatedSkillArr();
+         var cellsDic:Dictionary = _skillFrame.frameSkillCells;
+         for(i = 0; i < activateSkillArr.length; )
          {
-            _loc5_ = BattleSkillManager.instance.getBattleSKillInfoBySkillID(_loc3_[_loc4_]);
-            if(_loc5_ == null)
+            info = BattleSkillManager.instance.getBattleSKillInfoBySkillID(activateSkillArr[i]);
+            if(info == null)
             {
                return;
             }
             var _loc7_:int = 0;
-            var _loc6_:* = _loc2_;
-            for each(var _loc1_ in _loc2_)
+            var _loc6_:* = cellsDic;
+            for each(var cell in cellsDic)
             {
-               if(_loc1_.info.Type == _loc5_.Type)
+               if(cell.info.Type == info.Type)
                {
-                  _loc1_.updateSkillState(_loc5_);
+                  cell.updateSkillState(info);
                   break;
                }
             }
-            _loc4_++;
+            i++;
          }
       }
       
       private function initBringSkillView() : void
       {
-         var _loc1_:BringSkillCellGroupContainer = _skillFrame.bringSkillView;
-         _loc1_.initBringSkillCellGroup();
+         var view:BringSkillCellGroupContainer = _skillFrame.bringSkillView;
+         view.initBringSkillCellGroup();
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             if(_skillFrame)

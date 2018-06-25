@@ -22,16 +22,16 @@ package ddt.view.common
       
       private var _academyIcon:AcademyIcon;
       
-      public function PlayerIconSpan(param1:BasePlayer)
+      public function PlayerIconSpan(info:BasePlayer)
       {
-         _info = param1;
+         _info = info;
          super();
       }
       
       override protected function init() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = undefined;
+         var team:int = 0;
+         var gameControl:* = undefined;
          super.init();
          if(_info)
          {
@@ -40,16 +40,16 @@ package ddt.view.common
                _levelIcon = new LevelIcon();
             }
             _levelIcon.setSize(0);
-            _loc2_ = 1;
+            team = 1;
             if(StateManager.currentStateType == "fighting" || StateManager.currentStateType == "trainer1" || StateManager.currentStateType == "trainer2" || StateManager.currentStateType == "fightLabGameView")
             {
-               _loc1_ = getDefinitionByName("gameCommon.GameControl");
-               if(_loc1_)
+               gameControl = getDefinitionByName("gameCommon.GameControl");
+               if(gameControl)
                {
-                  _loc2_ = _loc1_.Instance.Current.findLivingByPlayerID(_info.ID,_info.ZoneID) == null?-1:_loc1_.Instance.Current.findLivingByPlayerID(_info.ID,_info.ZoneID).team;
+                  team = gameControl.Instance.Current.findLivingByPlayerID(_info.ID,_info.ZoneID) == null?-1:gameControl.Instance.Current.findLivingByPlayerID(_info.ID,_info.ZoneID).team;
                }
             }
-            _levelIcon.setInfo(_info.Grade,_info.ddtKingGrade,_info.Repute,_info.WinCount,_info.TotalCount,_info.FightPower,_info.Offer,true,false,_loc2_);
+            _levelIcon.setInfo(_info.Grade,_info.ddtKingGrade,_info.Repute,_info.WinCount,_info.TotalCount,_info.FightPower,_info.Offer,true,false,team);
             addChild(_levelIcon);
             if(_info.ID == PlayerManager.Instance.Self.ID || _info.IsVIP)
             {

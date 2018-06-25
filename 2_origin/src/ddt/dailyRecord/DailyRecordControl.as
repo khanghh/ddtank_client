@@ -2,11 +2,17 @@ package ddt.dailyRecord
 {
    import com.pickgliss.ui.ComponentFactory;
    import com.pickgliss.ui.LayerManager;
+   import com.pickgliss.utils.handler;
    import ddt.events.PkgEvent;
+   import ddt.manager.ChatManager;
+   import ddt.manager.LanguageMgr;
    import ddt.manager.ServerManager;
    import ddt.manager.SocketManager;
+   import ddt.view.chat.ChatData;
    import flash.events.Event;
    import flash.events.EventDispatcher;
+   import flash.utils.setTimeout;
+   import road7th.comm.PackageIn;
    
    public class DailyRecordControl extends EventDispatcher
    {
@@ -21,9 +27,6 @@ package ddt.dailyRecord
       public function DailyRecordControl()
       {
          super();
-         recordList = new Vector.<DailiyRecordInfo>();
-         SocketManager.Instance.addEventListener(PkgEvent.format(103),daily);
-         ServerManager.Instance.addEventListener("changeServer",__changeServerHandler);
       }
       
       public static function get Instance() : DailyRecordControl
@@ -35,85 +38,102 @@ package ddt.dailyRecord
          return _instance;
       }
       
-      private function __changeServerHandler(param1:Event) : void
+      public function setup() : void
+      {
+         recordList = new Vector.<DailiyRecordInfo>();
+         SocketManager.Instance.addEventListener(PkgEvent.format(103,1),daily);
+         SocketManager.Instance.addEventListener(PkgEvent.format(103,2),SingleLogHandler);
+         ServerManager.Instance.addEventListener("changeServer",__changeServerHandler);
+      }
+      
+      private function SingleLogHandler(evt:PkgEvent) : void
+      {
+         var pkg:PackageIn = evt.pkg;
+         var type:int = pkg.readInt();
+         var value:String = pkg.readUTF();
+         var chatData:ChatData = new ChatData();
+         chatData.channel = 21;
+         chatData.childChannelArr = [7,14];
+         chatData.type = type;
+         chatData.msg = LanguageMgr.GetTranslation("ddt.dailyRecord.chatMsg" + type,value);
+      }
+      
+      private function __changeServerHandler(event:Event) : void
       {
          recordList = new Vector.<DailiyRecordInfo>();
       }
       
-      private function daily(param1:PkgEvent) : void
+      private function daily(event:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:int = param1.pkg.readInt();
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         var i:int = 0;
+         var info:* = null;
+         var j:int = 0;
+         var len:int = event.pkg.readInt();
+         for(i = 0; i < len; )
          {
-            _loc4_ = new DailiyRecordInfo();
-            _loc4_.type = param1.pkg.readInt();
-            _loc4_.value = param1.pkg.readUTF();
+            info = new DailiyRecordInfo();
+            info.type = event.pkg.readInt();
+            info.value = event.pkg.readUTF();
             if(recordList.length == 0)
             {
-               recordList.push(_loc4_);
+               recordList.push(info);
             }
-            else if(isUpdate(_loc4_.type))
+            else if(isUpdate(info.type))
             {
-               _loc3_ = 0;
-               while(_loc3_ < recordList.length)
+               for(j = 0; j < recordList.length; )
                {
-                  if(recordList[_loc3_].type == _loc4_.type)
+                  if(recordList[j].type == info.type)
                   {
-                     recordList[_loc3_].value = _loc4_.value;
+                     recordList[j].value = info.value;
                      break;
                   }
-                  if(_loc3_ == recordList.length - 1)
+                  if(j == recordList.length - 1)
                   {
-                     sortPos(_loc4_);
+                     sortPos(info);
                      break;
                   }
-                  _loc3_++;
+                  j++;
                }
             }
             else
             {
-               sortPos(_loc4_);
+               sortPos(info);
             }
-            _loc5_++;
+            i++;
          }
          dispatchEvent(new Event("recordListIsReady"));
       }
       
-      private function sortPos(param1:DailiyRecordInfo) : void
+      private function sortPos(info:DailiyRecordInfo) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < recordList.length)
+         var i:int = 0;
+         for(i = 0; i < recordList.length; )
          {
-            if(_loc2_ != recordList.length - 1)
+            if(i != recordList.length - 1)
             {
-               if(param1.type >= recordList[_loc2_].type && param1.type < recordList[_loc2_ + 1].type)
+               if(info.type >= recordList[i].type && info.type < recordList[i + 1].type)
                {
-                  recordList.splice(_loc2_ + 1,0,param1);
+                  recordList.splice(i + 1,0,info);
                   break;
                }
-               _loc2_++;
+               i++;
                continue;
             }
-            if(param1.type < recordList[_loc2_].type)
+            if(info.type < recordList[i].type)
             {
-               recordList.unshift(param1);
+               recordList.unshift(info);
             }
             else
             {
-               recordList.push(param1);
+               recordList.push(info);
             }
             break;
          }
       }
       
-      private function isUpdate(param1:int) : Boolean
+      private function isUpdate(type:int) : Boolean
       {
-         var _loc2_:* = param1;
+         var _loc2_:* = type;
          if(10 !== _loc2_)
          {
             if(16 !== _loc2_)
@@ -143,47 +163,47 @@ package ddt.dailyRecord
                                                 return false;
                                              }
                                           }
-                                          addr17:
+                                          addr20:
                                           return true;
                                        }
-                                       addr16:
-                                       §§goto(addr17);
+                                       addr19:
+                                       §§goto(addr20);
                                     }
-                                    addr15:
-                                    §§goto(addr16);
+                                    addr18:
+                                    §§goto(addr19);
                                  }
-                                 addr14:
-                                 §§goto(addr15);
+                                 addr17:
+                                 §§goto(addr18);
                               }
-                              addr13:
-                              §§goto(addr14);
+                              addr16:
+                              §§goto(addr17);
                            }
-                           addr12:
-                           §§goto(addr13);
+                           addr15:
+                           §§goto(addr16);
                         }
-                        addr11:
-                        §§goto(addr12);
+                        addr14:
+                        §§goto(addr15);
                      }
-                     addr10:
-                     §§goto(addr11);
+                     addr13:
+                     §§goto(addr14);
                   }
-                  addr9:
-                  §§goto(addr10);
+                  addr12:
+                  §§goto(addr13);
                }
-               addr8:
-               §§goto(addr9);
+               addr11:
+               §§goto(addr12);
             }
-            addr7:
-            §§goto(addr8);
+            addr10:
+            §§goto(addr11);
          }
-         §§goto(addr7);
+         §§goto(addr10);
       }
       
       public function alertDailyFrame() : void
       {
          SocketManager.Instance.out.sendDailyRecord();
-         var _loc1_:DailyRecordFrame = ComponentFactory.Instance.creatComponentByStylename("dailyRecordFrame");
-         LayerManager.Instance.addToLayer(_loc1_,3,true,2);
+         var dailyFrame:DailyRecordFrame = ComponentFactory.Instance.creatComponentByStylename("dailyRecordFrame");
+         LayerManager.Instance.addToLayer(dailyFrame,3,true,2);
       }
    }
 }

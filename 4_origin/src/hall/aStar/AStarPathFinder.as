@@ -21,124 +21,121 @@ package hall.aStar
          super();
       }
       
-      public function init(param1:SceneMapGridData) : void
+      public function init(mapData:SceneMapGridData) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         _mapData = param1;
-         var _loc3_:int = param1.numX;
-         var _loc4_:int = param1.numY;
-         var _loc2_:Array = param1.gridsTypeArrArr;
+         var i:int = 0;
+         var j:int = 0;
+         _mapData = mapData;
+         var numX:int = mapData.numX;
+         var numY:int = mapData.numY;
+         var gridTypeArrArr:Array = mapData.gridsTypeArrArr;
          _aStar = new AStar();
-         _grid = new Grid(_loc3_,_loc4_,_mapData.cellW,_mapData.cellH);
-         _loc6_ = 0;
-         while(_loc6_ < _loc3_)
+         _grid = new Grid(numX,numY,_mapData.cellW,_mapData.cellH);
+         for(i = 0; i < numX; )
          {
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_)
+            for(j = 0; j < numY; )
             {
-               if(_loc2_[_loc6_][_loc5_] == 2)
+               if(gridTypeArrArr[i][j] == 2)
                {
-                  _grid.setWalkable(_loc6_,_loc5_,false);
+                  _grid.setWalkable(i,j,false);
                }
-               _loc5_++;
+               j++;
             }
-            _loc6_++;
+            i++;
          }
       }
       
-      public function hit(param1:Point) : Boolean
+      public function hit(local:Point) : Boolean
       {
-         var _loc4_:int = transToNodeCoordinateX(param1.x);
-         var _loc3_:int = transToNodeCoordinateY(param1.y);
-         if(_loc4_ < 0 || _loc4_ >= _grid.numCols || _loc3_ < 0 || _loc3_ >= _grid.numRows)
+         var x:int = transToNodeCoordinateX(local.x);
+         var y:int = transToNodeCoordinateY(local.y);
+         if(x < 0 || x >= _grid.numCols || y < 0 || y >= _grid.numRows)
          {
             return false;
          }
-         var _loc2_:Node = _grid.getNode(_loc4_,_loc3_);
-         return !_loc2_.walkable;
+         var node:Node = _grid.getNode(x,y);
+         return !node.walkable;
       }
       
-      public function searchPath(param1:Point, param2:Point) : Array
+      public function searchPath(from:Point, to:Point) : Array
       {
-         var _loc10_:* = null;
-         var _loc4_:int = transToNodeCoordinateX(param1.x);
-         var _loc5_:int = transToNodeCoordinateY(param1.y);
-         var _loc7_:int = transToNodeCoordinateX(param2.x);
-         var _loc9_:int = transToNodeCoordinateY(param2.y);
-         if(_loc4_ < 0 || _loc4_ >= _grid.numCols || _loc5_ < 0 || _loc5_ >= _grid.numRows || _loc7_ < 0 || _loc7_ >= _grid.numCols || _loc9_ < 0 || _loc9_ >= _grid.numRows)
+         var pathArr:* = null;
+         var startX:int = transToNodeCoordinateX(from.x);
+         var startY:int = transToNodeCoordinateY(from.y);
+         var endX:int = transToNodeCoordinateX(to.x);
+         var endY:int = transToNodeCoordinateY(to.y);
+         if(startX < 0 || startX >= _grid.numCols || startY < 0 || startY >= _grid.numRows || endX < 0 || endX >= _grid.numCols || endY < 0 || endY >= _grid.numRows)
          {
             return null;
          }
-         var _loc6_:Node = _grid.getEndNearNode(_loc4_,_loc5_,_loc7_,_loc9_);
-         var _loc8_:Array = searchNodePath(_loc4_,_loc5_,_loc6_.x,_loc6_.y);
-         if(_loc8_)
+         var fixEndNode:Node = _grid.getEndNearNode(startX,startY,endX,endY);
+         var nodePathArr:Array = searchNodePath(startX,startY,fixEndNode.x,fixEndNode.y);
+         if(nodePathArr)
          {
-            if(_loc8_.length == 1 && Node(_loc8_[0]).equalXY(_loc4_,_loc5_))
+            if(nodePathArr.length == 1 && Node(nodePathArr[0]).equalXY(startX,startY))
             {
                return null;
             }
-            _loc10_ = [];
+            pathArr = [];
             var _loc12_:int = 0;
-            var _loc11_:* = _loc8_;
-            for each(var _loc3_ in _loc8_)
+            var _loc11_:* = nodePathArr;
+            for each(var node in nodePathArr)
             {
-               _loc10_.push(new Point(_loc3_.x * _mapData.cellW + _mapData.cellW / 2,_loc3_.y * _mapData.cellH + _mapData.cellH / 2));
+               pathArr.push(new Point(node.x * _mapData.cellW + _mapData.cellW / 2,node.y * _mapData.cellH + _mapData.cellH / 2));
             }
-            if(_loc10_ && _loc10_.length > 0 && _grid.getNode(_loc7_,_loc9_).walkable)
+            if(pathArr && pathArr.length > 0 && _grid.getNode(endX,endY).walkable)
             {
-               _loc10_.pop();
-               _loc10_.push(param2);
+               pathArr.pop();
+               pathArr.push(to);
             }
          }
-         return _loc10_;
+         return pathArr;
       }
       
-      public function transToNodeCoordinateX(param1:Number) : int
+      public function transToNodeCoordinateX(pointX:Number) : int
       {
-         return Math.floor(param1 / _mapData.cellW);
+         return Math.floor(pointX / _mapData.cellW);
       }
       
-      public function transToNodeCoordinateY(param1:Number) : int
+      public function transToNodeCoordinateY(pointY:Number) : int
       {
-         return Math.floor(param1 / _mapData.cellH);
+         return Math.floor(pointY / _mapData.cellH);
       }
       
-      private function searchNodePath(param1:int, param2:int, param3:int, param4:int) : Array
+      private function searchNodePath(startNodeX:int, startNodeY:int, endNodeX:int, endNodeY:int) : Array
       {
-         var _loc8_:* = null;
-         var _loc7_:int = 0;
-         var _loc6_:* = 0;
-         var _loc9_:int = 0;
-         _grid.setStartNode(param1,param2);
-         _grid.setEndNode(param3,param4);
-         var _loc5_:Array = null;
+         var pathArr:* = null;
+         var length:int = 0;
+         var start:* = 0;
+         var end:int = 0;
+         _grid.setStartNode(startNodeX,startNodeY);
+         _grid.setEndNode(endNodeX,endNodeY);
+         var newPathArr:Array = null;
          if(_aStar.findPath(_grid))
          {
-            _loc8_ = _aStar.path;
-            if(_loc8_.length > 0)
+            pathArr = _aStar.path;
+            if(pathArr.length > 0)
             {
-               _loc7_ = _loc8_.length;
-               _loc5_ = [_loc8_[0]];
-               _loc6_ = 0;
-               while(_loc6_ < _loc7_ - 1)
+               length = pathArr.length;
+               newPathArr = [pathArr[0]];
+               for(start = 0; start < length - 1; )
                {
-                  _loc9_ = _loc7_ - 1;
-                  while(_loc9_ > _loc6_)
+                  end = length - 1;
+                  while(end > start)
                   {
-                     if(!_grid.hasBarrier(_loc8_[_loc6_].x,_loc8_[_loc6_].y,_loc8_[_loc9_].x,_loc8_[_loc9_].y))
+                     if(!_grid.hasBarrier(pathArr[start].x,pathArr[start].y,pathArr[end].x,pathArr[end].y))
                      {
-                        _loc5_.push(_loc8_[_loc9_]);
-                        _loc6_ = _loc9_;
+                        newPathArr.push(pathArr[end]);
+                        start = end;
                         break;
                      }
-                     _loc9_--;
+                     end--;
                   }
-                  _loc6_++;
+                  start++;
                }
             }
          }
-         return _loc5_;
+         return newPathArr;
       }
       
       public function dispose() : void

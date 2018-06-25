@@ -39,9 +39,9 @@ package mines.view
          return _currentPage;
       }
       
-      public function set currentPage(param1:int) : void
+      public function set currentPage(value:int) : void
       {
-         _currentPage = param1;
+         _currentPage = value;
          if(_currentPage < 1)
          {
             _currentPage = 4;
@@ -56,34 +56,33 @@ package mines.view
       
       override protected function initialize() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          _cells = new Dictionary();
          _cellVec = new Vector.<BagCell>();
-         _loc2_ = 1;
-         while(_loc2_ <= 16)
+         for(i = 1; i <= 16; )
          {
-            _loc1_ = new BagCell(_loc2_,null,true,ComponentFactory.Instance.creatBitmap("asset.mines.bag.cellBg"));
-            _loc1_.mouseOverEffBoolean = false;
-            _loc1_.x = 29 + 81 * ((_loc2_ - 1) % 4);
-            _loc1_.y = 29 + 74 * Math.floor((_loc2_ - 1) / 4);
-            addChild(_loc1_);
-            _loc1_.addEventListener("interactive_double_click",__doubleClickHandler);
-            DoubleClickManager.Instance.enableDoubleClick(_loc1_);
-            _cells[_loc2_] = _loc1_;
-            _cellVec.push(_loc1_);
-            _loc2_++;
+            cell = new BagCell(i,null,true,ComponentFactory.Instance.creatBitmap("asset.mines.bag.cellBg"));
+            cell.mouseOverEffBoolean = false;
+            cell.x = 29 + 81 * ((i - 1) % 4);
+            cell.y = 29 + 74 * Math.floor((i - 1) / 4);
+            addChild(cell);
+            cell.addEventListener("interactive_double_click",__doubleClickHandler);
+            DoubleClickManager.Instance.enableDoubleClick(cell);
+            _cells[i] = cell;
+            _cellVec.push(cell);
+            i++;
          }
          upBtn.clickHandler = new Handler(changePage,[-1]);
          downBtn.clickHandler = new Handler(changePage,[1]);
          arrangeBtn.clickHandler = new Handler(arrangeHandler);
       }
       
-      private function __doubleClickHandler(param1:InteractiveEvent) : void
+      private function __doubleClickHandler(evt:InteractiveEvent) : void
       {
-         if((param1.currentTarget as BagCell).info != null)
+         if((evt.currentTarget as BagCell).info != null)
          {
-            dispatchEvent(new CellEvent("doubleclick",param1.currentTarget,true));
+            dispatchEvent(new CellEvent("doubleclick",evt.currentTarget,true));
             SoundManager.instance.play("008");
          }
       }
@@ -96,28 +95,27 @@ package mines.view
       
       private function updateBag() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 1;
-         while(_loc3_ <= 16)
+         var i:int = 0;
+         var index:int = 0;
+         var info:* = null;
+         for(i = 1; i <= 16; )
          {
-            _loc1_ = _loc3_ + (_currentPage - 1) * 16;
-            _loc2_ = _bagdata.getItemAt(_loc1_) as InventoryItemInfo;
-            (_cells[_loc3_] as BagCell).info = _loc2_;
-            (_cells[_loc3_] as BagCell).place = _loc1_;
-            if(_loc2_)
+            index = i + (_currentPage - 1) * 16;
+            info = _bagdata.getItemAt(index) as InventoryItemInfo;
+            (_cells[i] as BagCell).info = info;
+            (_cells[i] as BagCell).place = index;
+            if(info)
             {
-               (_cells[_loc3_] as BagCell).setCount(_loc2_.Count);
-               (_cells[_loc3_] as BagCell).refreshTbxPos();
+               (_cells[i] as BagCell).setCount(info.Count);
+               (_cells[i] as BagCell).refreshTbxPos();
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      public function setData(param1:BagInfo) : void
+      public function setData(bag:BagInfo) : void
       {
-         if(_bagdata == param1)
+         if(_bagdata == bag)
          {
             return;
          }
@@ -125,69 +123,69 @@ package mines.view
          {
             _bagdata.removeEventListener("update",__updateGoods);
          }
-         _bagdata = param1;
+         _bagdata = bag;
          currentPage = 1;
          _bagdata.addEventListener("update",__updateGoods);
       }
       
-      public function __updateGoods(param1:BagEvent) : void
+      public function __updateGoods(evt:BagEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:Dictionary = param1.changedSlots;
+         var c:* = null;
+         var changes:Dictionary = evt.changedSlots;
          var _loc6_:int = 0;
-         var _loc5_:* = _loc4_;
-         for each(var _loc3_ in _loc4_)
+         var _loc5_:* = changes;
+         for each(var i in changes)
          {
-            _loc2_ = _bagdata.getItemAt(_loc3_.Place);
-            if(_loc2_)
+            c = _bagdata.getItemAt(i.Place);
+            if(c)
             {
-               setCellInfo(_loc2_.Place,_loc2_);
+               setCellInfo(c.Place,c);
             }
             else
             {
-               setCellInfo(_loc3_.Place,null);
+               setCellInfo(i.Place,null);
             }
             dispatchEvent(new Event("change"));
          }
       }
       
-      public function setCellInfo(param1:int, param2:InventoryItemInfo) : void
+      public function setCellInfo(place:int, info:InventoryItemInfo) : void
       {
-         var _loc3_:int = 0;
-         if(param1 > (_currentPage - 1) * 16 && param1 <= _currentPage * 16)
+         var index:int = 0;
+         if(place > (_currentPage - 1) * 16 && place <= _currentPage * 16)
          {
-            _loc3_ = param1 - (_currentPage - 1) * 16;
-            if(param2 == null)
+            index = place - (_currentPage - 1) * 16;
+            if(info == null)
             {
-               if(_cells[_loc3_])
+               if(_cells[index])
                {
-                  _cells[_loc3_].info = null;
+                  _cells[index].info = null;
                }
                return;
             }
-            if(param2.Count == 0)
+            if(info.Count == 0)
             {
-               _cells[_loc3_].info = null;
+               _cells[index].info = null;
             }
             else
             {
-               _cells[_loc3_].info = param2;
-               _cells[_loc3_].refreshTbxPos();
+               _cells[index].info = info;
+               _cells[index].refreshTbxPos();
             }
-            _cells[_loc3_].place = param1;
+            _cells[index].place = place;
          }
       }
       
-      private function changePage(param1:int) : void
+      private function changePage(type:int) : void
       {
-         currentPage = currentPage + param1;
+         currentPage = currentPage + type;
       }
       
-      protected function __clickHandler(param1:InteractiveEvent) : void
+      protected function __clickHandler(evt:InteractiveEvent) : void
       {
-         if((param1.currentTarget as BagCell).info != null)
+         if((evt.currentTarget as BagCell).info != null)
          {
-            dispatchEvent(new CellEvent("itemclick",param1.currentTarget,false,false,param1.ctrlKey));
+            dispatchEvent(new CellEvent("itemclick",evt.currentTarget,false,false,evt.ctrlKey));
          }
       }
       

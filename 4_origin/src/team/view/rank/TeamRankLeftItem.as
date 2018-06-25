@@ -10,16 +10,16 @@ package team.view.rank
       
       private var _index:int;
       
-      public function TeamRankLeftItem(param1:int = 0)
+      public function TeamRankLeftItem(index:int = 0)
       {
          super();
-         _index = param1;
+         _index = index;
          _isClick = false;
       }
       
-      public function set index(param1:int) : void
+      public function set index(value:int) : void
       {
-         _index = param1;
+         _index = value;
          updataItem();
       }
       
@@ -37,9 +37,9 @@ package team.view.rank
          }
       }
       
-      public function set isClick(param1:Boolean) : void
+      public function set isClick(value:Boolean) : void
       {
-         _isClick = param1;
+         _isClick = value;
          updataItem();
       }
       

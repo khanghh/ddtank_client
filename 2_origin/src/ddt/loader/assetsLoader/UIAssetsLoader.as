@@ -24,71 +24,69 @@ package ddt.loader.assetsLoader
          _loadingIDList = new Dictionary();
       }
       
-      public function load(param1:String, param2:Array) : void
+      public function load(id:String, moduleList:Array) : void
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         if(_moduleLoadedDic[param1] == null && _loadingIDList[param1] == null)
+         var len:int = 0;
+         var i:int = 0;
+         if(_moduleLoadedDic[id] == null && _loadingIDList[id] == null)
          {
-            _loadingIDList[param1] = param2;
+            _loadingIDList[id] = moduleList;
             UIModuleSmallLoading.Instance.progress = 0;
             UIModuleSmallLoading.Instance.show();
             UIModuleSmallLoading.Instance.addEventListener("close",__onClose);
             UIModuleLoader.Instance.addEventListener("uiModuleComplete",__onUIModuleComplete);
             UIModuleLoader.Instance.addEventListener("uiMoudleProgress",__onProgress);
-            _loc3_ = param2.length;
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_)
+            len = moduleList.length;
+            for(i = 0; i < len; )
             {
-               UIModuleLoader.Instance.addUIModuleImp(param2[_loc4_]);
-               _loc4_++;
+               UIModuleLoader.Instance.addUIModuleImp(moduleList[i]);
+               i++;
             }
          }
       }
       
-      protected function __onUIModuleComplete(param1:UIModuleEvent) : void
+      protected function __onUIModuleComplete(event:UIModuleEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
+         var arr:* = null;
+         var len:int = 0;
+         var i:int = 0;
          var _loc7_:int = 0;
          var _loc6_:* = _loadingIDList;
          loop0:
-         for each(var _loc3_ in _loadingIDList)
+         for each(var n in _loadingIDList)
          {
-            _loc2_ = _loadingIDList[_loc3_] as Array;
-            _loc4_ = _loc2_.length;
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_)
+            arr = _loadingIDList[n] as Array;
+            len = arr.length;
+            for(i = 0; i < len; )
             {
-               if(param1.module == _loc2_[_loc5_])
+               if(event.module == arr[i])
                {
-                  _loc2_.splice(_loc5_,1);
-                  if(_loc2_.length == 0)
+                  arr.splice(i,1);
+                  if(arr.length == 0)
                   {
-                     delete _loadingIDList[_loc3_];
-                     _moduleLoadedDic[_loc3_] = 1;
-                     listLoaded(_loc3_);
+                     delete _loadingIDList[n];
+                     _moduleLoadedDic[n] = 1;
+                     listLoaded(n);
                      UIModuleSmallLoading.Instance.hide();
                   }
                   break loop0;
                }
-               _loc5_++;
+               i++;
             }
          }
       }
       
-      private function listLoaded(param1:String) : void
+      private function listLoaded(id:String) : void
       {
          dispatchEvent(new Event(""));
       }
       
-      protected function __onProgress(param1:UIModuleEvent) : void
+      protected function __onProgress(event:UIModuleEvent) : void
       {
-         UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+         UIModuleSmallLoading.Instance.progress = event.loader.progress * 100;
       }
       
-      protected function __onClose(param1:Event) : void
+      protected function __onClose(event:Event) : void
       {
          UIModuleSmallLoading.Instance.hide();
          UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);

@@ -29,9 +29,9 @@ package ddt.manager
          return _instance;
       }
       
-      public function setup(param1:LoginSelectListAnalyzer) : void
+      public function setup(analyzer:LoginSelectListAnalyzer) : void
       {
-         _list = param1.list;
+         _list = analyzer.list;
          if(_list.length == 0)
          {
             _isNewBie = true;
@@ -47,9 +47,9 @@ package ddt.manager
          return _list;
       }
       
-      public function set currentLoginRole(param1:Role) : void
+      public function set currentLoginRole(role:Role) : void
       {
-         _currentLoginRole = param1;
+         _currentLoginRole = role;
       }
       
       public function get currentLoginRole() : Role
@@ -73,17 +73,17 @@ package ddt.manager
       
       public function get haveNotDeleteRoleNum() : int
       {
-         var _loc1_:int = 0;
+         var count:int = 0;
          var _loc4_:int = 0;
          var _loc3_:* = _list;
-         for each(var _loc2_ in _list)
+         for each(var tmpRole in _list)
          {
-            if(_loc2_.LoginState == 0 || _loc2_.LoginState == 2)
+            if(tmpRole.LoginState == 0 || tmpRole.LoginState == 2)
             {
-               _loc1_++;
+               count++;
             }
          }
-         return _loc1_;
+         return count;
       }
    }
 }

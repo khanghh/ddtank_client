@@ -47,9 +47,9 @@ package horse.data
          return _effectPic;
       }
       
-      public function set EffectPic(param1:String) : void
+      public function set EffectPic(value:String) : void
       {
-         _effectPic = param1;
+         _effectPic = value;
       }
       
       public function get EffectClassLink() : String

@@ -256,34 +256,34 @@ package farm.viewx
          }
       }
       
-      protected function __onComplete(param1:Event) : void
+      protected function __onComplete(event:Event) : void
       {
          _farmPoultry.removeEventListener("complete",__onComplete);
          SocketManager.Instance.addEventListener(PkgEvent.format(81,21),__onGetPoultryLevel);
          SocketManager.Instance.out.getFarmPoultryLevel(FarmModelController.instance.model.currentFarmerId);
       }
       
-      protected function __onGetPoultryLevel(param1:PkgEvent) : void
+      protected function __onGetPoultryLevel(event:PkgEvent) : void
       {
-         var _loc7_:PackageIn = param1.pkg;
-         var _loc5_:int = _loc7_.readInt();
-         var _loc3_:int = _loc7_.readInt();
-         var _loc4_:int = _loc7_.readInt();
-         var _loc8_:int = _loc7_.readInt();
-         var _loc6_:int = _loc7_.readByte();
-         var _loc2_:Date = _loc7_.readDate();
-         if(_loc5_ == FarmModelController.instance.model.currentFarmerId)
+         var pkg:PackageIn = event.pkg;
+         var userId:int = pkg.readInt();
+         var treeLevel:int = pkg.readInt();
+         var poultryExp:int = pkg.readInt();
+         var poultryLevel:int = pkg.readInt();
+         var state:int = pkg.readByte();
+         var countdownTime:Date = pkg.readDate();
+         if(userId == FarmModelController.instance.model.currentFarmerId)
          {
-            _farmTree.setLevel(_loc3_);
-            _farmPoultry.setInfo(_loc4_,_loc8_,_loc6_,_loc2_);
+            _farmTree.setLevel(treeLevel);
+            _farmPoultry.setInfo(poultryExp,poultryLevel,state,countdownTime);
          }
       }
       
       public function addSelfPlayer() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:Class = ClassUtils.uiSourceDomain.getDefinition("asset.farm.MouseClickMovie") as Class;
-         _mouseMovie = new _loc2_() as MovieClip;
+         var selfPlayerVO:* = null;
+         var mvClass:Class = ClassUtils.uiSourceDomain.getDefinition("asset.farm.MouseClickMovie") as Class;
+         _mouseMovie = new mvClass() as MovieClip;
          _mouseMovie.mouseChildren = false;
          _mouseMovie.mouseEnabled = false;
          _mouseMovie.stop();
@@ -292,66 +292,66 @@ package farm.viewx
          _sceneScene.setHitTester(new PathMapHitTester(_meshLayer));
          if(!_selfPlayer)
          {
-            _loc1_ = new PlayerVO();
-            _loc1_.playerInfo = PlayerManager.Instance.Self;
-            _currentLoadingPlayer = new FarmPlayer(_loc1_,addPlayerCallBack);
+            selfPlayerVO = new PlayerVO();
+            selfPlayerVO.playerInfo = PlayerManager.Instance.Self;
+            _currentLoadingPlayer = new FarmPlayer(selfPlayerVO,addPlayerCallBack);
          }
       }
       
-      private function addPlayerCallBack(param1:FarmPlayer, param2:Boolean, param3:int) : void
+      private function addPlayerCallBack(farmPlayer:FarmPlayer, isLoadSucceed:Boolean, vFlag:int) : void
       {
-         if(param3 == 0)
+         if(vFlag == 0)
          {
-            if(!param1)
+            if(!farmPlayer)
             {
                return;
             }
             _currentLoadingPlayer = null;
-            param1.sceneScene = _sceneScene;
-            var _loc4_:* = param1.playerVO.scenePlayerDirection;
-            param1.sceneCharacterDirection = _loc4_;
-            param1.setSceneCharacterDirectionDefault = _loc4_;
-            if(!_selfPlayer && param1.playerVO.playerInfo.ID == PlayerManager.Instance.Self.ID)
+            farmPlayer.sceneScene = _sceneScene;
+            var _loc4_:* = farmPlayer.playerVO.scenePlayerDirection;
+            farmPlayer.sceneCharacterDirection = _loc4_;
+            farmPlayer.setSceneCharacterDirectionDefault = _loc4_;
+            if(!_selfPlayer && farmPlayer.playerVO.playerInfo.ID == PlayerManager.Instance.Self.ID)
             {
-               _selfPlayer = param1;
+               _selfPlayer = farmPlayer;
                addChild(_selfPlayer);
                _selfPlayer.addEventListener("characterActionChange",playerActionChange);
             }
             else
             {
-               _friendPlayer = param1;
-               addChild(param1);
+               _friendPlayer = farmPlayer;
+               addChild(farmPlayer);
             }
-            param1.playerPoint = new Point(200,300);
-            param1.sceneCharacterStateType = "natural";
+            farmPlayer.playerPoint = new Point(200,300);
+            farmPlayer.sceneCharacterStateType = "natural";
             addEventListener("enterFrame",__updateFrame);
          }
       }
       
-      protected function playerActionChange(param1:SceneCharacterEvent) : void
+      protected function playerActionChange(event:SceneCharacterEvent) : void
       {
-         var _loc2_:String = param1.data.toString();
-         if(_loc2_ == "naturalStandFront" || _loc2_ == "naturalStandBack")
+         var type:String = event.data.toString();
+         if(type == "naturalStandFront" || type == "naturalStandBack")
          {
             _mouseMovie.gotoAndStop(1);
          }
       }
       
-      protected function __onPlayerClick(param1:MouseEvent) : void
+      protected function __onPlayerClick(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var targetPoint:* = null;
          if(_selfPlayer)
          {
-            _loc2_ = this.globalToLocal(new Point(param1.stageX,param1.stageY));
+            targetPoint = this.globalToLocal(new Point(event.stageX,event.stageY));
             if(getTimer() - _lastClick > _clickInterval)
             {
                _lastClick = getTimer();
-               if(!_sceneScene.hit(_loc2_))
+               if(!_sceneScene.hit(targetPoint))
                {
-                  _mouseMovie.x = _loc2_.x;
-                  _mouseMovie.y = _loc2_.y;
+                  _mouseMovie.x = targetPoint.x;
+                  _mouseMovie.y = targetPoint.y;
                   _mouseMovie.play();
-                  _selfPlayer.playerVO.walkPath = _sceneScene.searchPath(_selfPlayer.playerPoint,_loc2_);
+                  _selfPlayer.playerVO.walkPath = _sceneScene.searchPath(_selfPlayer.playerPoint,targetPoint);
                   _selfPlayer.playerVO.walkPath.shift();
                   _selfPlayer.playerVO.scenePlayerDirection = SceneCharacterDirection.getDirection(_selfPlayer.playerPoint,_selfPlayer.playerVO.walkPath[0]);
                   _selfPlayer.playerVO.currentWalkStartPoint = _selfPlayer.currentWalkStartPoint;
@@ -360,7 +360,7 @@ package farm.viewx
          }
       }
       
-      protected function __updateFrame(param1:Event) : void
+      protected function __updateFrame(event:Event) : void
       {
          if(_selfPlayer)
          {
@@ -383,11 +383,11 @@ package farm.viewx
          addChild(_newPetText);
       }
       
-      private function set newPetShowVisble(param1:Boolean) : void
+      private function set newPetShowVisble(value:Boolean) : void
       {
-         _newPetPao.visible = param1;
-         _newdragon.visible = param1;
-         _newPetText.visible = param1;
+         _newPetPao.visible = value;
+         _newdragon.visible = value;
+         _newPetText.visible = value;
       }
       
       private function checkHelper() : void
@@ -404,32 +404,32 @@ package farm.viewx
          }
       }
       
-      private function setVisibleByAuto(param1:Boolean = true) : void
+      private function setVisibleByAuto(value:Boolean = true) : void
       {
          if(_doSeedBtn)
          {
-            _doSeedBtn.enable = param1;
+            _doSeedBtn.enable = value;
          }
          if(_doMatureBtn)
          {
-            _doMatureBtn.enable = param1;
+            _doMatureBtn.enable = value;
          }
          if(_farmShovelBtn)
          {
-            _farmShovelBtn.setBtnVis(param1);
+            _farmShovelBtn.setBtnVis(value);
          }
          if(_startHelperMC)
          {
-            _startHelperMC.visible = !param1;
+            _startHelperMC.visible = !value;
          }
       }
       
-      private function __setVisible(param1:FarmEvent) : void
+      private function __setVisible(evt:FarmEvent) : void
       {
          setVisibleByAuto(false);
       }
       
-      private function __setVisibleFal(param1:FarmEvent) : void
+      private function __setVisibleFal(evt:FarmEvent) : void
       {
          setVisibleByAuto(true);
       }
@@ -544,12 +544,12 @@ package farm.viewx
          addFieldBlockEvent();
       }
       
-      private function __goTreasureBtn(param1:MouseEvent) : void
+      private function __goTreasureBtn(e:MouseEvent) : void
       {
          TreasureManager.instance.show();
       }
       
-      private function __arrangeBackHandler(param1:FarmEvent) : void
+      private function __arrangeBackHandler(e:FarmEvent) : void
       {
          _arrangeBtn.dispatchEvent(new MouseEvent("mouseOut"));
          _arrangeBtn.removeEventListener("mouseOver",__arrangeOver);
@@ -570,20 +570,19 @@ package farm.viewx
       
       private function addFieldBlockEvent() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = _fieldView.fields.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var i:int = 0;
+         var length:int = _fieldView.fields.length;
+         for(i = 0; i < length; )
          {
-            _fieldView.fields[_loc2_].addEventListener("fieldblockclick",__onFieldBlockClick);
-            _loc2_++;
+            _fieldView.fields[i].addEventListener("fieldblockclick",__onFieldBlockClick);
+            i++;
          }
       }
       
-      protected function __onFieldBlockClick(param1:FarmEvent) : void
+      protected function __onFieldBlockClick(event:FarmEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc5_:int = 0;
+         var point:* = null;
+         var i:int = 0;
          if(FarmModelController.instance.model.helperArray[0] || FarmModelController.instance.model.currentFarmerId != PlayerManager.Instance.Self.ID)
          {
             return;
@@ -594,27 +593,26 @@ package farm.viewx
             _selectedView = new ManureOrSeedSelectedView();
             addChild(_selectedView);
          }
-         var _loc3_:int = _fieldView.fields.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_)
+         var length:int = _fieldView.fields.length;
+         for(i = 0; i < length; )
          {
-            if(param1.currentTarget == _fieldView.fields[_loc5_])
+            if(event.currentTarget == _fieldView.fields[i])
             {
-               _loc2_ = PositionUtils.creatPoint("farm.fieldsView.fieldPos" + _loc5_);
+               point = PositionUtils.creatPoint("farm.fieldsView.fieldPos" + i);
             }
-            _loc5_++;
+            i++;
          }
-         var _loc4_:Point = PositionUtils.creatPoint("assets.farm.filedbolckRect");
-         _selectedView.x = _loc2_.x + _fieldView.x;
+         var rect:Point = PositionUtils.creatPoint("assets.farm.filedbolckRect");
+         _selectedView.x = point.x + _fieldView.x;
          if(_selectedView.x + _selectedView.width > StageReferance.stageWidth - 90)
          {
             _selectedView.x = StageReferance.stageWidth - _selectedView.width - 90;
          }
-         _selectedView.y = _loc2_.y + _fieldView.y - _selectedView.height;
+         _selectedView.y = point.y + _fieldView.y - _selectedView.height;
          _selectedView.viewType = 1;
       }
       
-      protected function __updateNum(param1:FarmEvent) : void
+      protected function __updateNum(event:FarmEvent) : void
       {
          if(FarmModelController.instance.model.buyExpRemainNum > 0)
          {
@@ -631,7 +629,7 @@ package farm.viewx
          }
       }
       
-      protected function __priectListLoadComplete(param1:Event) : void
+      protected function __priectListLoadComplete(event:Event) : void
       {
          _buyExpBtn = UICreatShortcut.creatAndAdd("Farm.FarmMainView.buyExpBtn",this);
          _buyExpText = UICreatShortcut.creatTextAndAdd("Farm.FarmMainView.buyExpNumText","",this);
@@ -647,7 +645,7 @@ package farm.viewx
          FarmModelController.instance.removeEventListener("loaderSuperPetFoodPricetList",__priectListLoadComplete);
       }
       
-      protected function __onBuyExpClick(param1:MouseEvent) : void
+      protected function __onBuyExpClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          _farmBuyExpFrame = ComponentFactory.Instance.creatComponentByStylename("farm.viewx.farmBuyExpFrame");
@@ -655,9 +653,9 @@ package farm.viewx
          _farmBuyExpFrame.addEventListener("response",__BuyExpFrameResponse);
       }
       
-      protected function __BuyExpFrameResponse(param1:FrameEvent) : void
+      protected function __BuyExpFrameResponse(event:FrameEvent) : void
       {
-         if(param1.responseCode == 1 || param1.responseCode == 0)
+         if(event.responseCode == 1 || event.responseCode == 0)
          {
             SoundManager.instance.playButtonSound();
             if(_farmBuyExpFrame)
@@ -669,57 +667,57 @@ package farm.viewx
          }
       }
       
-      private function __doSeedOver(param1:MouseEvent) : void
+      private function __doSeedOver(e:MouseEvent) : void
       {
-         param1.currentTarget.x = param1.currentTarget.x - 15;
+         e.currentTarget.x = e.currentTarget.x - 15;
       }
       
-      private function __doSeedOut(param1:MouseEvent) : void
+      private function __doSeedOut(e:MouseEvent) : void
       {
-         param1.currentTarget.x = param1.currentTarget.x + 15;
+         e.currentTarget.x = e.currentTarget.x + 15;
       }
       
-      private function __doMatureOver(param1:MouseEvent) : void
+      private function __doMatureOver(e:MouseEvent) : void
       {
-         param1.currentTarget.x = param1.currentTarget.x - 15;
+         e.currentTarget.x = e.currentTarget.x - 15;
       }
       
-      private function __doMatureOut(param1:MouseEvent) : void
+      private function __doMatureOut(e:MouseEvent) : void
       {
-         param1.currentTarget.x = param1.currentTarget.x + 15;
+         e.currentTarget.x = e.currentTarget.x + 15;
       }
       
-      private function __farmShopOver(param1:MouseEvent) : void
+      private function __farmShopOver(e:MouseEvent) : void
       {
-         param1.currentTarget.x = param1.currentTarget.x - 15;
+         e.currentTarget.x = e.currentTarget.x - 15;
       }
       
-      private function __farmShopOut(param1:MouseEvent) : void
+      private function __farmShopOut(e:MouseEvent) : void
       {
-         param1.currentTarget.x = param1.currentTarget.x + 15;
+         e.currentTarget.x = e.currentTarget.x + 15;
       }
       
-      private function __goHomeOver(param1:MouseEvent) : void
+      private function __goHomeOver(e:MouseEvent) : void
       {
-         param1.currentTarget.x = param1.currentTarget.x - 15;
+         e.currentTarget.x = e.currentTarget.x - 15;
       }
       
-      private function __goHomeOut(param1:MouseEvent) : void
+      private function __goHomeOut(e:MouseEvent) : void
       {
-         param1.currentTarget.x = param1.currentTarget.x + 15;
+         e.currentTarget.x = e.currentTarget.x + 15;
       }
       
-      private function __arrangeOver(param1:MouseEvent) : void
+      private function __arrangeOver(e:MouseEvent) : void
       {
-         param1.currentTarget.x = param1.currentTarget.x - 15;
+         e.currentTarget.x = e.currentTarget.x - 15;
       }
       
-      private function __arrangeOut(param1:MouseEvent) : void
+      private function __arrangeOut(e:MouseEvent) : void
       {
-         param1.currentTarget.x = param1.currentTarget.x + 15;
+         e.currentTarget.x = e.currentTarget.x + 15;
       }
       
-      private function __arrangeHandler(param1:MouseEvent) : void
+      private function __arrangeHandler(event:MouseEvent) : void
       {
          if(!FarmModelController.instance.model.isArrange)
          {
@@ -728,23 +726,23 @@ package farm.viewx
          }
       }
       
-      private function __updatePetFarmGuilde(param1:UpdatePetFarmGuildeEvent) : void
+      private function __updatePetFarmGuilde(e:UpdatePetFarmGuildeEvent) : void
       {
          PetsBagManager.instance().finishTask();
          petFarmGuilde();
       }
       
-      private function __killcrop_iconShow(param1:SelectComposeItemEvent) : void
+      private function __killcrop_iconShow(e:SelectComposeItemEvent) : void
       {
          _farmShovelBtn.dispatchEvent(new MouseEvent("click"));
       }
       
-      protected function __pastureOut(param1:MouseEvent) : void
+      protected function __pastureOut(event:MouseEvent) : void
       {
          _pastureHouseBtn.filters = null;
       }
       
-      protected function __pastureOver(param1:MouseEvent) : void
+      protected function __pastureOver(event:MouseEvent) : void
       {
          _pastureHouseBtn.filters = SceneCharacterPlayerBase.MOUSE_ON_GLOW_FILTER;
       }
@@ -760,9 +758,9 @@ package farm.viewx
          addSelfPlayer();
       }
       
-      protected function __enterFram(param1:FarmEvent) : void
+      protected function __enterFram(event:FarmEvent) : void
       {
-         var _loc2_:* = null;
+         var selfPlayerVO:* = null;
          if(FarmModelController.instance.midAutumnFlag)
          {
             setFarmPlayerInfo();
@@ -901,9 +899,9 @@ package farm.viewx
             }
             if(FarmModelController.instance.midAutumnFlag)
             {
-               _loc2_ = new PlayerVO();
-               _loc2_.playerInfo = PlayerManager.Instance.findPlayer(FarmModelController.instance.model.currentFarmerId);
-               _currentLoadingPlayer = new FarmPlayer(_loc2_,addPlayerCallBack);
+               selfPlayerVO = new PlayerVO();
+               selfPlayerVO.playerInfo = PlayerManager.Instance.findPlayer(FarmModelController.instance.model.currentFarmerId);
+               _currentLoadingPlayer = new FarmPlayer(selfPlayerVO,addPlayerCallBack);
                _currentLoadingPlayer.isChatBall = true;
                _selfPlayer.playerPoint = new Point(356,430);
                _selfPlayer.sceneCharacterDirection = SceneCharacterDirection.LB;
@@ -911,14 +909,14 @@ package farm.viewx
          }
       }
       
-      private function __goHomeHandler(param1:MouseEvent) : void
+      private function __goHomeHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          FarmModelController.instance.goFarm(PlayerManager.Instance.Self.ID,PlayerManager.Instance.Self.NickName);
          PetsBagManager.instance().clearCurrentPetFarmGuildeArrow(116);
       }
       
-      private function __onSelectedBtnClick(param1:MouseEvent) : void
+      private function __onSelectedBtnClick(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_selectedView != null)
@@ -929,7 +927,7 @@ package farm.viewx
          _selectedView = new ManureOrSeedSelectedView();
          addChild(_selectedView);
          PositionUtils.setPos(_selectedView,"farm.seedSelectViewPos");
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = e.currentTarget;
          if(_doSeedBtn !== _loc2_)
          {
             if(_doMatureBtn !== _loc2_)
@@ -942,7 +940,7 @@ package farm.viewx
          }
       }
       
-      private function __onFastForwardSelectedBtnClick(param1:MouseEvent) : void
+      private function __onFastForwardSelectedBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -956,19 +954,19 @@ package farm.viewx
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.farms.noFastForwardInfo"));
             return;
          }
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.farms.fastForwardAllInfo",_needMoney),"",LanguageMgr.GetTranslation("cancel"),false,false,false,2,null,"SimpleAlert",30,true,1);
-         _loc2_.addEventListener("response",__onResponse);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.farms.fastForwardAllInfo",_needMoney),"",LanguageMgr.GetTranslation("cancel"),false,false,false,2,null,"SimpleAlert",30,true,1);
+         alert.addEventListener("response",__onResponse);
       }
       
-      protected function __onResponse(param1:FrameEvent) : void
+      protected function __onResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:Boolean = (param1.target as BaseAlerFrame).isBand;
-         (param1.target as BaseAlerFrame).removeEventListener("response",__onResponse);
-         (param1.target as BaseAlerFrame).dispose();
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var isBand:Boolean = (event.target as BaseAlerFrame).isBand;
+         (event.target as BaseAlerFrame).removeEventListener("response",__onResponse);
+         (event.target as BaseAlerFrame).dispose();
+         if(event.responseCode == 2 || event.responseCode == 3)
          {
-            CheckMoneyUtils.instance.checkMoney(_loc2_,_needMoney,onCheckComplete);
+            CheckMoneyUtils.instance.checkMoney(isBand,_needMoney,onCheckComplete);
          }
       }
       
@@ -979,22 +977,21 @@ package farm.viewx
       
       private function ripeNum() : int
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc1_:Vector.<FieldVO> = FarmModelController.instance.model.fieldsInfo;
-         _loc3_ = 0;
-         while(_loc3_ < _loc1_.length)
+         var i:int = 0;
+         var num:int = 0;
+         var fieldVoVec:Vector.<FieldVO> = FarmModelController.instance.model.fieldsInfo;
+         for(i = 0; i < fieldVoVec.length; )
          {
-            if(_loc1_[_loc3_] && _loc1_[_loc3_].seedID != 0 && _loc1_[_loc3_].realNeedTime > 0)
+            if(fieldVoVec[i] && fieldVoVec[i].seedID != 0 && fieldVoVec[i].realNeedTime > 0)
             {
-               _loc2_++;
+               num++;
             }
-            _loc3_++;
+            i++;
          }
-         return _loc2_;
+         return num;
       }
       
-      private function __showHelper(param1:MouseEvent) : void
+      private function __showHelper(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -1012,17 +1009,17 @@ package farm.viewx
          _farmHelper.addEventListener("response",__closeHelperView);
       }
       
-      private function __closeHelperView(param1:FrameEvent) : void
+      private function __closeHelperView(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          _farmHelper.removeEventListener("response",__closeHelperView);
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             default:
          }
       }
       
-      private function __showShop(param1:MouseEvent) : void
+      private function __showShop(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _farmShop = ComponentFactory.Instance.creatComponentByStylename("farm.farmShopView.shop");
@@ -1030,11 +1027,11 @@ package farm.viewx
          _farmShop.show();
       }
       
-      private function __closeFarmShop(param1:FrameEvent) : void
+      private function __closeFarmShop(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
          _farmShop.removeEventListener("response",__closeFarmShop);
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -1043,7 +1040,7 @@ package farm.viewx
          }
       }
       
-      private function __pastureHouse(param1:MouseEvent) : void
+      private function __pastureHouse(e:MouseEvent) : void
       {
          if(FarmModelController.instance.model.currentFarmerId == PlayerManager.Instance.Self.ID)
          {
@@ -1052,19 +1049,19 @@ package farm.viewx
          }
       }
       
-      private function __farmHelperOver(param1:MouseEvent) : void
+      private function __farmHelperOver(e:MouseEvent) : void
       {
-         param1.currentTarget.x = param1.currentTarget.x - 15;
+         e.currentTarget.x = e.currentTarget.x - 15;
          MovieClip(_farmHelperBtn.backgound).gotoAndStop(_currentFarmHelperFrame);
       }
       
-      private function __farmHelperOut(param1:MouseEvent) : void
+      private function __farmHelperOut(e:MouseEvent) : void
       {
-         param1.currentTarget.x = param1.currentTarget.x + 15;
+         e.currentTarget.x = e.currentTarget.x + 15;
          MovieClip(_farmHelperBtn.backgound).gotoAndStop(_currentFarmHelperFrame);
       }
       
-      private function __farmHelperDown(param1:MouseEvent) : void
+      private function __farmHelperDown(e:MouseEvent) : void
       {
          MovieClip(_farmHelperBtn.backgound).gotoAndStop(_currentFarmHelperFrame);
       }
@@ -1118,13 +1115,12 @@ package farm.viewx
       
       private function removeFieldBolckEvent() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = _fieldView.fields.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var i:int = 0;
+         var length:int = _fieldView.fields.length;
+         for(i = 0; i < length; )
          {
-            _fieldView.fields[_loc2_].removeEventListener("fieldblockclick",__onFieldBlockClick);
-            _loc2_++;
+            _fieldView.fields[i].removeEventListener("fieldblockclick",__onFieldBlockClick);
+            i++;
          }
       }
       

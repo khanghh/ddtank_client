@@ -39,50 +39,50 @@ package ddt.manager
          return _instance;
       }
       
-      public function setup(param1:DataAnalyzer) : void
+      public function setup(analyzer:DataAnalyzer) : void
       {
-         if(param1 is DailyLeagueAwardAnalyzer)
+         if(analyzer is DailyLeagueAwardAnalyzer)
          {
-            _leagueAwardList = DailyLeagueAwardAnalyzer(param1).list;
+            _leagueAwardList = DailyLeagueAwardAnalyzer(analyzer).list;
          }
-         else if(param1 is DailyLeagueLevelAnalyzer)
+         else if(analyzer is DailyLeagueLevelAnalyzer)
          {
-            _leagueLevelRank = DailyLeagueLevelAnalyzer(param1).list;
+            _leagueLevelRank = DailyLeagueLevelAnalyzer(analyzer).list;
          }
       }
       
-      public function getLeagueLevelByScore(param1:Number, param2:Boolean = false) : DailyLeagueLevelInfo
+      public function getLeagueLevelByScore(score:Number, leagueFirst:Boolean = false) : DailyLeagueLevelInfo
       {
-         var _loc4_:int = 0;
-         var _loc3_:DailyLeagueLevelInfo = new DailyLeagueLevelInfo();
-         if(param2)
+         var i:int = 0;
+         var leagueLevel:DailyLeagueLevelInfo = new DailyLeagueLevelInfo();
+         if(leagueFirst)
          {
-            _loc3_ = _leagueLevelRank[0];
-            return _loc3_;
+            leagueLevel = _leagueLevelRank[0];
+            return leagueLevel;
          }
-         _loc4_ = 0;
-         while(_loc4_ < _leagueLevelRank.length)
+         i = 0;
+         while(i < _leagueLevelRank.length)
          {
-            if(_leagueLevelRank[_loc4_].Score > -1 && param1 >= _leagueLevelRank[_loc4_].Score)
+            if(_leagueLevelRank[i].Score > -1 && score >= _leagueLevelRank[i].Score)
             {
-               _loc3_ = _leagueLevelRank[_loc4_];
+               leagueLevel = _leagueLevelRank[i];
             }
-            _loc4_++;
+            i++;
          }
-         return _loc3_;
+         return leagueLevel;
       }
       
-      public function filterLeagueAwardList(param1:int, param2:int) : Array
+      public function filterLeagueAwardList(playerLv:int, scoreLv:int) : Array
       {
-         _lv1 = PLAYER_LEVEL[param1][0];
-         _lv2 = PLAYER_LEVEL[param1][1];
-         _scoreLv = param1 * 4 + (param2 + 1);
+         _lv1 = PLAYER_LEVEL[playerLv][0];
+         _lv2 = PLAYER_LEVEL[playerLv][1];
+         _scoreLv = playerLv * 4 + (scoreLv + 1);
          return _leagueAwardList.filter(filterLeagueAwardListCallback);
       }
       
-      private function filterLeagueAwardListCallback(param1:DailyLeagueAwardInfo, param2:int, param3:Array) : Boolean
+      private function filterLeagueAwardListCallback(item:DailyLeagueAwardInfo, index:int, array:Array) : Boolean
       {
-         if(param1.Level >= _lv1 && param1.Level <= _lv2 && param1.Class == _scoreLv)
+         if(item.Level >= _lv1 && item.Level <= _lv2 && item.Class == _scoreLv)
          {
             return true;
          }

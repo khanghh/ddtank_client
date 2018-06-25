@@ -22,17 +22,17 @@ package ddt.command
       
       private var _channel:SoundChannel;
       
-      public function SoundEffect(param1:String)
+      public function SoundEffect(id:String)
       {
          super();
-         _id = param1;
+         _id = id;
          init();
       }
       
       private function init() : void
       {
-         var _loc1_:* = SoundEffectManager.Instance.definition(_id);
-         _sound = new _loc1_();
+         var soundClass:* = SoundEffectManager.Instance.definition(_id);
+         _sound = new soundClass();
          _channel = new SoundChannel();
          _channel.soundTransform = new SoundTransform(SharedManager.Instance.soundVolumn);
          _channel.addEventListener("soundComplete",__onSoundComplete);
@@ -54,7 +54,7 @@ package ddt.command
          return _delay;
       }
       
-      private function __onSoundComplete(param1:Event) : void
+      private function __onSoundComplete(e:Event) : void
       {
          dispatchEvent(new Event("soundComplete"));
       }

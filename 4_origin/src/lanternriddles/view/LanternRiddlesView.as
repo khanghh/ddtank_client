@@ -108,18 +108,17 @@ package lanternriddles.view
       
       private function addRankView() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < RANK_NUM)
+         var rank:* = null;
+         var i:int = 0;
+         for(i = 0; i < RANK_NUM; )
          {
-            _loc1_ = new LanternRankItem();
-            _loc1_.buttonMode = true;
-            PositionUtils.setPos(_loc1_,"lantern.view.rankPos");
-            _loc1_.y = _loc1_.y + _loc2_ * _offY;
-            addToContent(_loc1_);
-            _rankVec.push(_loc1_);
-            _loc2_++;
+            rank = new LanternRankItem();
+            rank.buttonMode = true;
+            PositionUtils.setPos(rank,"lantern.view.rankPos");
+            rank.y = rank.y + i * _offY;
+            addToContent(rank);
+            _rankVec.push(rank);
+            i++;
          }
       }
       
@@ -133,60 +132,60 @@ package lanternriddles.view
          LanternRiddlesManager.instance.addEventListener("lanternRiddles_skill",__onSetBtnEnable);
       }
       
-      protected function __onSetBtnEnable(param1:CrazyTankSocketEvent) : void
+      protected function __onSetBtnEnable(event:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:Boolean = _loc3_.readBoolean();
+         var pkg:PackageIn = event.pkg;
+         var flag:Boolean = pkg.readBoolean();
          if(_hitFlag)
          {
             _questionView.setSelectBtnEnable(false);
-            _hitBtn.enable = !_loc2_;
+            _hitBtn.enable = !flag;
          }
          else
          {
-            _doubleBtn.enable = !_loc2_;
+            _doubleBtn.enable = !flag;
          }
       }
       
-      protected function __onSetQuestionInfo(param1:CrazyTankSocketEvent) : void
+      protected function __onSetQuestionInfo(event:CrazyTankSocketEvent) : void
       {
-         var _loc8_:* = null;
-         var _loc5_:int = 0;
-         var _loc9_:int = 0;
-         var _loc10_:int = 0;
-         var _loc3_:Boolean = false;
-         var _loc2_:Boolean = false;
-         var _loc7_:PackageIn = param1.pkg;
-         var _loc4_:int = _loc7_.readInt();
-         var _loc6_:int = _loc7_.readInt();
-         var _loc11_:LanternInfo = LanternRiddlesManager.instance.info[_loc6_];
-         if(_loc11_)
+         var endDate:* = null;
+         var integer:int = 0;
+         var rightNum:int = 0;
+         var option:int = 0;
+         var hitFlag:Boolean = false;
+         var doubleFlag:Boolean = false;
+         var pkg:PackageIn = event.pkg;
+         var index:int = pkg.readInt();
+         var questionID:int = pkg.readInt();
+         var info:LanternInfo = LanternRiddlesManager.instance.info[questionID];
+         if(info)
          {
-            _questionView.count = _loc7_.readInt();
-            _loc8_ = _loc7_.readDate();
-            _doubleFreeCount = _loc7_.readInt();
-            _doublePrice = _loc7_.readInt();
-            _hitFreeCount = _loc7_.readInt();
-            _hitPrice = _loc7_.readInt();
-            _loc5_ = _loc7_.readInt();
-            _loc9_ = _loc7_.readInt();
-            _loc10_ = _loc7_.readInt();
-            _loc3_ = _loc7_.readBoolean();
-            _loc2_ = _loc7_.readBoolean();
-            _loc11_.QuestionIndex = _loc4_;
-            _loc11_.QuestionID = _loc6_;
-            _loc11_.Option = _loc10_;
-            _loc11_.EndDate = _loc8_;
+            _questionView.count = pkg.readInt();
+            endDate = pkg.readDate();
+            _doubleFreeCount = pkg.readInt();
+            _doublePrice = pkg.readInt();
+            _hitFreeCount = pkg.readInt();
+            _hitPrice = pkg.readInt();
+            integer = pkg.readInt();
+            rightNum = pkg.readInt();
+            option = pkg.readInt();
+            hitFlag = pkg.readBoolean();
+            doubleFlag = pkg.readBoolean();
+            info.QuestionIndex = index;
+            info.QuestionID = questionID;
+            info.Option = option;
+            info.EndDate = endDate;
             _questionView.setSelectBtnEnable(true);
-            _questionView.info = _loc11_;
+            _questionView.info = info;
             _freeDouble.text = LanguageMgr.GetTranslation("lanternRiddles.view.freeText",_doubleFreeCount);
             _freeHit.text = LanguageMgr.GetTranslation("lanternRiddles.view.freeText",_hitFreeCount);
-            _myInteger.text = _loc5_.toString();
-            _questionNum.text = LanguageMgr.GetTranslation("lanternRiddles.view.questionNumText",_loc9_);
+            _myInteger.text = integer.toString();
+            _questionNum.text = LanguageMgr.GetTranslation("lanternRiddles.view.questionNumText",rightNum);
             if(_questionView.countDownTime > 0)
             {
-               _doubleBtn.enable = !_loc2_;
-               _hitBtn.enable = !_loc3_;
+               _doubleBtn.enable = !doubleFlag;
+               _hitBtn.enable = !hitFlag;
                if(!_hitBtn.enable)
                {
                   _questionView.setSelectBtnEnable(false);
@@ -207,51 +206,48 @@ package lanternriddles.view
          }
       }
       
-      protected function __onSetRankInfo(param1:CrazyTankSocketEvent) : void
+      protected function __onSetRankInfo(event:CrazyTankSocketEvent) : void
       {
-         var _loc10_:int = 0;
-         var _loc9_:* = null;
-         var _loc2_:int = 0;
-         var _loc7_:int = 0;
-         var _loc3_:* = null;
-         var _loc6_:int = 0;
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc8_:Array = [];
-         _myRank.text = String(_loc5_.readInt());
-         var _loc4_:int = _loc5_.readInt();
-         _loc10_ = 0;
-         while(_loc10_ < _loc4_)
+         var i:int = 0;
+         var rankInfo:* = null;
+         var awardNum:int = 0;
+         var j:int = 0;
+         var awardInfo:* = null;
+         var m:int = 0;
+         var pkg:PackageIn = event.pkg;
+         var infoArray:Array = [];
+         _myRank.text = String(pkg.readInt());
+         var length:int = pkg.readInt();
+         for(i = 0; i < length; )
          {
-            _loc9_ = new LanternInfo();
-            _loc9_.Rank = _loc5_.readInt();
-            _loc9_.NickName = _loc5_.readUTF();
-            _loc9_.TypeVIP = _loc5_.readByte();
-            _loc9_.Integer = _loc5_.readInt();
-            _loc2_ = _loc5_.readInt();
-            _loc7_ = 0;
-            while(_loc7_ < _loc2_)
+            rankInfo = new LanternInfo();
+            rankInfo.Rank = pkg.readInt();
+            rankInfo.NickName = pkg.readUTF();
+            rankInfo.TypeVIP = pkg.readByte();
+            rankInfo.Integer = pkg.readInt();
+            awardNum = pkg.readInt();
+            for(j = 0; j < awardNum; )
             {
-               _loc3_ = new LanternAwardInfo();
-               _loc3_.TempId = _loc5_.readInt();
-               _loc3_.AwardNum = _loc5_.readInt();
-               _loc3_.IsBind = _loc5_.readBoolean();
-               _loc3_.ValidDate = _loc5_.readInt();
-               _loc9_.AwardInfoVec.push(_loc3_);
-               _loc7_++;
+               awardInfo = new LanternAwardInfo();
+               awardInfo.TempId = pkg.readInt();
+               awardInfo.AwardNum = pkg.readInt();
+               awardInfo.IsBind = pkg.readBoolean();
+               awardInfo.ValidDate = pkg.readInt();
+               rankInfo.AwardInfoVec.push(awardInfo);
+               j++;
             }
-            _loc8_.push(_loc9_);
-            _loc10_++;
+            infoArray.push(rankInfo);
+            i++;
          }
-         _loc8_.sortOn("Rank",16);
-         _loc6_ = 0;
-         while(_loc6_ < _loc8_.length)
+         infoArray.sortOn("Rank",16);
+         for(m = 0; m < infoArray.length; )
          {
-            _rankVec[_loc6_].info = _loc8_[_loc6_];
-            _loc6_++;
+            _rankVec[m].info = infoArray[m];
+            m++;
          }
       }
       
-      protected function _onDoubleBtnClick(param1:MouseEvent) : void
+      protected function _onDoubleBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          _hitFlag = false;
@@ -285,72 +281,72 @@ package lanternriddles.view
          }
       }
       
-      protected function __onLanternAlertSelect(param1:LanternEvent) : void
+      protected function __onLanternAlertSelect(event:LanternEvent) : void
       {
-         setBindFlag(param1.flag);
+         setBindFlag(event.flag);
       }
       
-      protected function __onBuyHandle(param1:FrameEvent) : void
+      protected function __onBuyHandle(event:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("lanternSelect",__onLanternAlertSelect);
-         _loc2_.removeEventListener("response",__onBuyHandle);
-         switch(int(param1.responseCode) - 2)
+         var frame:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("lanternSelect",__onLanternAlertSelect);
+         frame.removeEventListener("response",__onBuyHandle);
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
                if(_hitFlag)
                {
-                  SharedManager.Instance.isBuyHitBind = _loc2_.isBand;
+                  SharedManager.Instance.isBuyHitBind = frame.isBand;
                }
                else
                {
-                  SharedManager.Instance.isBuyIntegerBind = _loc2_.isBand;
+                  SharedManager.Instance.isBuyIntegerBind = frame.isBand;
                }
-               if(payment(_loc2_.isBand))
+               if(payment(frame.isBand))
                {
-                  SocketManager.Instance.out.sendLanternRiddlesUseSkill(_questionView.info.QuestionID,_questionView.info.QuestionIndex,!!_hitFlag?0:1,_loc2_.isBand);
+                  SocketManager.Instance.out.sendLanternRiddlesUseSkill(_questionView.info.QuestionID,_questionView.info.QuestionIndex,!!_hitFlag?0:1,frame.isBand);
                }
                _hitBtn.enable = false;
          }
-         _loc2_.dispose();
-         _loc2_ = null;
+         frame.dispose();
+         frame = null;
       }
       
-      private function setBindFlag(param1:Boolean) : void
+      private function setBindFlag(flag:Boolean) : void
       {
          if(_hitFlag)
          {
-            SharedManager.Instance.isBuyHit = param1;
+            SharedManager.Instance.isBuyHit = flag;
          }
          else
          {
-            SharedManager.Instance.isBuyInteger = param1;
+            SharedManager.Instance.isBuyInteger = flag;
          }
       }
       
-      private function payment(param1:Boolean) : Boolean
+      private function payment(isBand:Boolean) : Boolean
       {
-         var _loc2_:* = null;
-         if(param1)
+         var alertFrame:* = null;
+         if(isBand)
          {
             if(!checkMoney(true))
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("buried.alertInfo.noBindMoney"),"",LanguageMgr.GetTranslation("cancel"),true,false,false,2);
-               _loc2_.addEventListener("response",onResponseHander);
+               alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("buried.alertInfo.noBindMoney"),"",LanguageMgr.GetTranslation("cancel"),true,false,false,2);
+               alertFrame.addEventListener("response",onResponseHander);
                return false;
             }
          }
          else if(!checkMoney(false))
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-            _loc2_.addEventListener("response",_response);
+            alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+            alertFrame.addEventListener("response",_response);
             return false;
          }
          return true;
       }
       
-      protected function __onHitBtnClick(param1:MouseEvent) : void
+      protected function __onHitBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          _hitFlag = true;
@@ -405,10 +401,10 @@ package lanternriddles.view
          LanternRiddlesManager.instance.removeEventListener("lanternRiddles_skill",__onSetBtnEnable);
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -416,44 +412,44 @@ package lanternriddles.view
          }
       }
       
-      private function onResponseHander(param1:FrameEvent) : void
+      private function onResponseHander(e:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",onResponseHander);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alertFrame:* = null;
+         (e.currentTarget as BaseAlerFrame).removeEventListener("response",onResponseHander);
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             if(!checkMoney(false))
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-               _loc2_.addEventListener("response",_response);
+               alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+               alertFrame.addEventListener("response",_response);
                return;
             }
             SocketManager.Instance.out.sendLanternRiddlesUseSkill(_questionView.info.QuestionID,_questionView.info.QuestionIndex,!!_hitFlag?0:1,false);
          }
-         param1.currentTarget.dispose();
+         e.currentTarget.dispose();
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_response);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         (evt.currentTarget as BaseAlerFrame).removeEventListener("response",_response);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             LeavePageManager.leaveToFillPath();
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(evt.currentTarget);
       }
       
-      private function checkMoney(param1:Boolean) : Boolean
+      private function checkMoney(isBand:Boolean) : Boolean
       {
-         var _loc2_:int = !!_hitFlag?_hitPrice:int(_doublePrice);
-         if(param1)
+         var money:int = !!_hitFlag?_hitPrice:int(_doublePrice);
+         if(isBand)
          {
-            if(PlayerManager.Instance.Self.BandMoney < _loc2_)
+            if(PlayerManager.Instance.Self.BandMoney < money)
             {
                return false;
             }
          }
-         else if(PlayerManager.Instance.Self.Money < _loc2_)
+         else if(PlayerManager.Instance.Self.Money < money)
          {
             return false;
          }
@@ -462,7 +458,7 @@ package lanternriddles.view
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          super.dispose();
          removeEvent();
          if(_bg)
@@ -512,12 +508,11 @@ package lanternriddles.view
          }
          if(_rankVec)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _rankVec.length)
+            for(i = 0; i < _rankVec.length; )
             {
-               _rankVec[_loc1_].dispose();
-               _rankVec[_loc1_] = null;
-               _loc1_++;
+               _rankVec[i].dispose();
+               _rankVec[i] = null;
+               i++;
             }
             _rankVec.length = 0;
             _rankVec = null;

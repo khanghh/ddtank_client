@@ -17,13 +17,13 @@ package starling.scene.demonChiYou
       
       private function showCells() : void
       {
-         var _loc3_:Vector.<Texture> = DDTAssetManager.instance.starlingAsset.getTextures("demon_chi_you_scene_bg_");
-         var _loc1_:Image = new Image(_loc3_[0]);
-         addChild(_loc1_);
-         var _loc2_:Image = new Image(_loc3_[1]);
-         _loc2_.rotation = 3.14159265358979 / 2;
-         _loc2_.x = _loc1_.width + _loc2_.width;
-         addChild(_loc2_);
+         var textures:Vector.<Texture> = DDTAssetManager.instance.starlingAsset.getTextures("demon_chi_you_scene_bg_");
+         var image0:Image = new Image(textures[0]);
+         addChild(image0);
+         var image1:Image = new Image(textures[1]);
+         image1.rotation = 3.14159265358979 / 2;
+         image1.x = image0.width + image1.width;
+         addChild(image1);
       }
       
       override public function dispose() : void

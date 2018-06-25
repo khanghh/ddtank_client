@@ -33,10 +33,10 @@ package sevenday.view
          addChild(_rewardCompleteIcon);
       }
       
-      public function update(param1:ItemTemplateInfo, param2:int = 1) : void
+      public function update(value:ItemTemplateInfo, count:int = 1) : void
       {
-         _cell.info = param1;
-         _cell.setCount(param2);
+         _cell.info = value;
+         _cell.setCount(count);
       }
       
       public function get isGet() : Boolean
@@ -44,9 +44,9 @@ package sevenday.view
          return _isGet;
       }
       
-      public function set isGet(param1:Boolean) : void
+      public function set isGet(value:Boolean) : void
       {
-         _isGet = param1;
+         _isGet = value;
          _rewardCompleteIcon.visible = isGet;
       }
       

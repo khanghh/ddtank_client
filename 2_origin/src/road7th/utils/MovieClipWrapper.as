@@ -24,13 +24,13 @@ package road7th.utils
       
       private var _endFrame:int = -1;
       
-      public function MovieClipWrapper(param1:MovieClip, param2:Boolean = false, param3:Boolean = false, param4:Boolean = false)
+      public function MovieClipWrapper(movie:MovieClip, autoplay:Boolean = false, autodisappear:Boolean = false, repeat:Boolean = false)
       {
          super();
-         _movie = param1;
-         this.repeat = param4;
-         this.autoDisappear = param3;
-         if(!param2)
+         _movie = movie;
+         this.repeat = repeat;
+         this.autoDisappear = autodisappear;
+         if(!autoplay)
          {
             _movie.stop();
             _movie.addEventListener("addedToStage",__onAddStage);
@@ -41,31 +41,31 @@ package road7th.utils
          }
       }
       
-      public function set endFrame(param1:int) : void
+      public function set endFrame(value:int) : void
       {
-         _endFrame = param1;
+         _endFrame = value;
       }
       
-      private function __onAddStage(param1:Event) : void
+      private function __onAddStage(event:Event) : void
       {
          _movie.gotoAndStop(1);
       }
       
-      public function set x(param1:int) : void
+      public function set x(val:int) : void
       {
-         _x = param1;
+         _x = val;
          if(movie)
          {
-            movie.x = param1;
+            movie.x = val;
          }
       }
       
-      public function set y(param1:int) : void
+      public function set y(val:int) : void
       {
-         _y = param1;
+         _y = val;
          if(movie)
          {
-            movie.y = param1;
+            movie.y = val;
          }
       }
       
@@ -79,25 +79,25 @@ package road7th.utils
          return _y;
       }
       
-      public function gotoAndPlay(param1:Object) : void
+      public function gotoAndPlay(frame:Object) : void
       {
          _movie.addEventListener("enterFrame",__frameHandler);
-         _movie.gotoAndPlay(param1);
+         _movie.gotoAndPlay(frame);
       }
       
-      public function gotoAndStop(param1:Object) : void
+      public function gotoAndStop(frame:Object) : void
       {
          _movie.addEventListener("enterFrame",__frameHandler);
-         _movie.gotoAndStop(param1);
+         _movie.gotoAndStop(frame);
       }
       
-      public function addFrameScriptAt(param1:Number, param2:Function) : void
+      public function addFrameScriptAt(index:Number, func:Function) : void
       {
-         if(param1 == _movie.framesLoaded)
+         if(index == _movie.framesLoaded)
          {
             throw new Error("You can\'t add scprit at that frame,The MovieClipWrapper used for COMPLETE event!");
          }
-         _movie.addFrameScript(param1,param2);
+         _movie.addFrameScript(index,func);
       }
       
       public function play() : void
@@ -125,7 +125,7 @@ package road7th.utils
          }
       }
       
-      private function __frameHandler(param1:Event) : void
+      private function __frameHandler(e:Event) : void
       {
          if(_movie.currentFrame == _endFrame || _movie.currentFrame == _movie.totalFrames)
          {

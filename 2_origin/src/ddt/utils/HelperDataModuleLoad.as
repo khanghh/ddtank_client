@@ -29,49 +29,48 @@ package ddt.utils
          super();
       }
       
-      public function loadDataModule(param1:Array, param2:Function, param3:Array = null, param4:Boolean = false, param5:Boolean = true) : void
+      public function loadDataModule(list:Array, update:Function, params:Array = null, isReal:Boolean = false, isSmallLoading:Boolean = true) : void
       {
-         var _loc9_:int = 0;
-         var _loc8_:* = null;
-         var _loc6_:* = null;
-         _list = param1;
-         _update = param2;
-         _params = param3;
+         var i:int = 0;
+         var tempLoader:* = null;
+         var fileName:* = null;
+         _list = list;
+         _update = update;
+         _params = params;
          _loaderQueue = new QueueLoader();
-         var _loc7_:int = param1.length;
-         _loc9_ = 0;
-         while(_loc9_ < _loc7_)
+         var len:int = list.length;
+         for(i = 0; i < len; )
          {
-            if(param1[_loc9_] is BaseLoader)
+            if(list[i] is BaseLoader)
             {
-               _loc8_ = param1[_loc9_] as BaseLoader;
-               addr68:
-               _loc6_ = PathManager.getLoaderFileName(_loc8_.url);
-               if(param4 || _loadedDic[_loc6_] == null)
+               tempLoader = list[i] as BaseLoader;
+               addr91:
+               fileName = PathManager.getLoaderFileName(tempLoader.url);
+               if(isReal || _loadedDic[fileName] == null)
                {
-                  _loc8_.addEventListener("complete",__onDataLoadProgress);
-                  _loaderQueue.addLoader(_loc8_);
+                  tempLoader.addEventListener("complete",__onDataLoadProgress);
+                  _loaderQueue.addLoader(tempLoader);
                }
             }
-            else if(param1[_loc9_] is Function)
+            else if(list[i] is Function)
             {
-               _loc8_ = (param1[_loc9_] as Function).call();
-               §§goto(addr68);
+               tempLoader = (list[i] as Function).call();
+               §§goto(addr91);
             }
             else
             {
                trace("数据加载中有数据类型不匹配！");
             }
-            _loc9_++;
+            i++;
          }
          if(_loaderQueue.length <= 0)
          {
-            param2.apply(null,param3);
+            update.apply(null,params);
             _loaderQueue.dispose();
             _loaderQueue = null;
             return;
          }
-         if(param5)
+         if(isSmallLoading)
          {
             UIModuleSmallLoading.Instance.progress = 0;
             UIModuleSmallLoading.Instance.show();
@@ -81,7 +80,7 @@ package ddt.utils
          _loaderQueue.start();
       }
       
-      protected function __onClose(param1:Event) : void
+      protected function __onClose(event:Event) : void
       {
          removeSmallLoading();
          if(_loaderQueue && _loaderQueue.length <= 0)
@@ -97,19 +96,19 @@ package ddt.utils
          UIModuleSmallLoading.Instance.removeEventListener("close",__onClose);
       }
       
-      private function __onDataLoadProgress(param1:LoaderEvent) : void
+      private function __onDataLoadProgress(event:LoaderEvent) : void
       {
-         var _loc2_:BaseLoader = param1.currentTarget as BaseLoader;
-         _loc2_.removeEventListener("complete",__onDataLoadProgress);
-         var _loc4_:String = PathManager.getLoaderFileName(_loc2_.url);
-         _loadedDic[_loc4_] = 1;
-         _loc2_ = null;
+         var loader:BaseLoader = event.currentTarget as BaseLoader;
+         loader.removeEventListener("complete",__onDataLoadProgress);
+         var fileName:String = PathManager.getLoaderFileName(loader.url);
+         _loadedDic[fileName] = 1;
+         loader = null;
          _loadProgress = Number(_loadProgress) + 1;
-         var _loc3_:Number = _loadProgress / _list.length;
-         UIModuleSmallLoading.Instance.progress = _loc3_ * 100;
+         var realProgress:Number = _loadProgress / _list.length;
+         UIModuleSmallLoading.Instance.progress = realProgress * 100;
       }
       
-      private function __onDataLoadComplete(param1:Event) : void
+      private function __onDataLoadComplete(event:Event) : void
       {
          _update.apply(null,_params);
          _loaderQueue.removeEventListener("complete",__onDataLoadComplete);

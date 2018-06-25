@@ -57,7 +57,7 @@ package escort.view
          super();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
          if(!EscortManager.instance.isInGame)
          {
@@ -69,7 +69,7 @@ package escort.view
          InviteManager.Instance.enabled = false;
          CacheSysManager.lock("sevenDoubleInRoom");
          KeyboardShortcutsManager.Instance.forbiddenFull();
-         super.enter(param1,param2);
+         super.enter(prev,data);
          LayerManager.Instance.clearnGameDynamic();
          LayerManager.Instance.clearnStageDynamic();
          MainToolBar.Instance.hide();
@@ -122,38 +122,38 @@ package escort.view
          EscortManager.instance.addEventListener("escortArrive",arriveHandler);
       }
       
-      private function destroyHandler(param1:Event) : void
+      private function destroyHandler(e:Event) : void
       {
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("escort.timeEnd.tipTxt"),LanguageMgr.GetTranslation("ok"),"",true,false,false,1);
-         _loc2_.moveEnable = false;
-         _loc2_.addEventListener("response",returnMainState,false,0,true);
+         var confirmFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("escort.timeEnd.tipTxt"),LanguageMgr.GetTranslation("ok"),"",true,false,false,1);
+         confirmFrame.moveEnable = false;
+         confirmFrame.addEventListener("response",returnMainState,false,0,true);
          _mapView.endGame();
       }
       
-      private function arriveHandler(param1:EscortEvent) : void
+      private function arriveHandler(event:EscortEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:Object = param1.data;
-         if(_loc2_.zoneId == PlayerManager.Instance.Self.ZoneID && _loc2_.id == PlayerManager.Instance.Self.ID)
+         var confirmFrame:* = null;
+         var tmpData:Object = event.data;
+         if(tmpData.zoneId == PlayerManager.Instance.Self.ZoneID && tmpData.id == PlayerManager.Instance.Self.ID)
          {
-            _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("escort.arrive.tipTxt"),LanguageMgr.GetTranslation("ok"),"",true,false,false,1);
-            _loc3_.moveEnable = false;
-            _loc3_.addEventListener("response",returnMainState,false,0,true);
+            confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("escort.arrive.tipTxt"),LanguageMgr.GetTranslation("ok"),"",true,false,false,1);
+            confirmFrame.moveEnable = false;
+            confirmFrame.addEventListener("response",returnMainState,false,0,true);
             _mapView.runPercent = null;
             _runPercent.refreshView(22780);
             _mapView.endGame();
          }
       }
       
-      private function returnMainState(param1:FrameEvent) : void
+      private function returnMainState(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",returnMainState);
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",returnMainState);
          StateManager.setState("main");
       }
       
-      private function __startLoading(param1:Event) : void
+      private function __startLoading(e:Event) : void
       {
          StateManager.getInGame_Step_6 = true;
          ChatManager.Instance.input.faceEnabled = false;
@@ -162,32 +162,32 @@ package escort.view
          StateManager.getInGame_Step_7 = true;
       }
       
-      private function allReadyHandler(param1:EscortEvent) : void
+      private function allReadyHandler(event:EscortEvent) : void
       {
          if(_waitMc)
          {
             _waitMc.gotoAndStop(2);
          }
-         if(param1.data.isShowStartCountDown)
+         if(event.data.isShowStartCountDown)
          {
-            _gameStartCountDownView = new EscortStartCountDownView(doStartGame,[param1.data.endTime,param1.data.sprintEndTime]);
+            _gameStartCountDownView = new EscortStartCountDownView(doStartGame,[event.data.endTime,event.data.sprintEndTime]);
             addChild(_gameStartCountDownView);
          }
          else
          {
-            doStartGame(param1.data.endTime,param1.data.sprintEndTime);
+            doStartGame(event.data.endTime,event.data.sprintEndTime);
          }
       }
       
-      private function doStartGame(param1:Date, param2:Date) : void
+      private function doStartGame(endTime:Date, sprintEndTime:Date) : void
       {
          if(!_mapView)
          {
             return;
          }
          _mapView.startGame();
-         _countDownView.setCountDown(param1);
-         _sprintCountDownView.setCountDown(param2);
+         _countDownView.setCountDown(endTime);
+         _sprintCountDownView.setCountDown(sprintEndTime);
          _threeBtnView.mouseChildren = true;
          _threeBtnView.mouseEnabled = true;
       }
@@ -201,7 +201,7 @@ package escort.view
          EscortManager.instance.removeEventListener("escortArrive",arriveHandler);
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          InviteManager.Instance.enabled = true;
          CacheSysManager.unlock("sevenDoubleInRoom");
@@ -210,7 +210,7 @@ package escort.view
          LayerManager.Instance.clearnGameDynamic();
          LayerManager.Instance.clearnStageDynamic();
          removeEvent();
-         super.leaving(param1);
+         super.leaving(next);
          ObjectUtils.disposeObject(_mapView);
          _mapView = null;
          ObjectUtils.disposeObject(_exitBtn);

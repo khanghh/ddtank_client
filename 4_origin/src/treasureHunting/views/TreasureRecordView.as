@@ -80,29 +80,28 @@ package treasureHunting.views
          CaddyModel.instance.removeEventListener("treasure_change",_awardsChange);
       }
       
-      protected function _getAwards(param1:PkgEvent) : void
+      protected function _getAwards(event:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:PackageIn = param1.pkg;
-         _isMySelf = _loc3_.readBoolean();
-         var _loc2_:int = _loc3_.readInt();
+         var i:int = 0;
+         var info:* = null;
+         var pkg:PackageIn = event.pkg;
+         _isMySelf = pkg.readBoolean();
+         var count:int = pkg.readInt();
          tempArr = new Vector.<AwardsInfo>();
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         for(i = 0; i < count; )
          {
-            _loc4_ = new AwardsInfo();
-            _loc4_.name = _loc3_.readUTF();
-            _loc4_.TemplateId = _loc3_.readInt();
-            _loc4_.count = _loc3_.readInt();
-            _loc4_.zoneID = _loc3_.readInt();
-            _loc4_.isLong = _loc3_.readBoolean();
-            if(_loc4_.isLong)
+            info = new AwardsInfo();
+            info.name = pkg.readUTF();
+            info.TemplateId = pkg.readInt();
+            info.count = pkg.readInt();
+            info.zoneID = pkg.readInt();
+            info.isLong = pkg.readBoolean();
+            if(info.isLong)
             {
-               _loc4_.zone = _loc3_.readUTF();
+               info.zone = pkg.readUTF();
             }
-            tempArr.push(_loc4_);
-            _loc5_++;
+            tempArr.push(info);
+            i++;
          }
          if(_isMySelf)
          {
@@ -114,47 +113,46 @@ package treasureHunting.views
          }
       }
       
-      private function _awardsChange(param1:Event) : void
+      private function _awardsChange(e:Event) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _list.disposeAllChildren();
          _itemArr = [];
-         _loc2_ = 0;
-         while(_loc2_ < CaddyModel.instance.awardsList.length)
+         for(i = 0; i < CaddyModel.instance.awardsList.length; )
          {
-            addItem(CaddyModel.instance.awardsList[_loc2_]);
-            _loc2_++;
+            addItem(CaddyModel.instance.awardsList[i]);
+            i++;
          }
          _panel.invalidateViewport(true);
          _panel.vScrollbar.scrollValue = 0;
       }
       
-      public function addItem(param1:AwardsInfo) : void
+      public function addItem(info:AwardsInfo) : void
       {
-         var _loc2_:AwardsItem = new AwardsItem();
-         _loc2_.setTextFieldWidth(180);
-         _loc2_.info = param1;
-         _loc2_.addEventListener("goods_click_awardsItem",_showLinkGoodsInfo);
-         _list.addChild(_loc2_);
-         _itemArr.push(_loc2_);
+         var item:AwardsItem = new AwardsItem();
+         item.setTextFieldWidth(180);
+         item.info = info;
+         item.addEventListener("goods_click_awardsItem",_showLinkGoodsInfo);
+         _list.addChild(item);
+         _itemArr.push(item);
       }
       
-      private function _showLinkGoodsInfo(param1:CaddyEvent) : void
+      private function _showLinkGoodsInfo(e:CaddyEvent) : void
       {
-         _goodTipPos.x = param1.point.x;
-         _goodTipPos.y = param1.point.y;
-         showLinkGoodsInfo(param1.itemTemplateInfo);
+         _goodTipPos.x = e.point.x;
+         _goodTipPos.y = e.point.y;
+         showLinkGoodsInfo(e.itemTemplateInfo);
       }
       
-      private function showLinkGoodsInfo(param1:ItemTemplateInfo, param2:uint = 0) : void
+      private function showLinkGoodsInfo(item:ItemTemplateInfo, tipStageClickCount:uint = 0) : void
       {
-         if(param1.CategoryID == 18)
+         if(item.CategoryID == 18)
          {
             if(_cardTip == null)
             {
                _cardTip = new CardBoxTipPanel();
             }
-            _cardTip.tipData = param1;
+            _cardTip.tipData = item;
             setTipPos(_cardTip);
          }
          else
@@ -163,28 +161,28 @@ package treasureHunting.views
             {
                _goodTip = ComponentFactory.Instance.creatComponentByStylename("core.GoodsTip");
             }
-            _goodTip.showTip(param1);
+            _goodTip.showTip(item);
             setTipPos(_goodTip);
          }
-         _tipStageClickCount = param2;
+         _tipStageClickCount = tipStageClickCount;
       }
       
-      private function setTipPos(param1:BaseTip) : void
+      private function setTipPos(tip:BaseTip) : void
       {
-         param1.x = _goodTipPos.x - param1.width;
-         param1.y = _goodTipPos.y - param1.height - 10;
-         if(param1.y < 0)
+         tip.x = _goodTipPos.x - tip.width;
+         tip.y = _goodTipPos.y - tip.height - 10;
+         if(tip.y < 0)
          {
-            param1.y = 10;
+            tip.y = 10;
          }
-         StageReferance.stage.addChild(param1);
+         StageReferance.stage.addChild(tip);
          StageReferance.stage.addEventListener("click",__stageClickHandler);
       }
       
-      private function __stageClickHandler(param1:MouseEvent) : void
+      private function __stageClickHandler(event:MouseEvent) : void
       {
-         param1.stopImmediatePropagation();
-         param1.stopPropagation();
+         event.stopImmediatePropagation();
+         event.stopPropagation();
          if(_tipStageClickCount > 0)
          {
             if(_goodTip)
@@ -211,11 +209,11 @@ package treasureHunting.views
          removeEvents();
          var _loc3_:int = 0;
          var _loc2_:* = _itemArr;
-         for each(var _loc1_ in _itemArr)
+         for each(var item in _itemArr)
          {
-            _loc1_.removeEventListener("goods_click_awardsItem",_showLinkGoodsInfo);
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
+            item.removeEventListener("goods_click_awardsItem",_showLinkGoodsInfo);
+            ObjectUtils.disposeObject(item);
+            item = null;
          }
          ObjectUtils.disposeObject(_bg);
          _bg = null;

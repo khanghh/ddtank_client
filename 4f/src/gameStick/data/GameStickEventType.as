@@ -1,9 +1,2 @@
-package gameStick.data
-{
-   public class GameStickEventType
-   {
-       
-      
-      public function GameStickEventType(){super();}
-   }
-}
+package gameStick.data{   public class GameStickEventType   {                   public function GameStickEventType() { super(); }
+   }}

@@ -126,9 +126,9 @@ package feedback.view
          _submitFrame.feedbackInfo.goods_get_date = _getTimeTextInput.text;
       }
       
-      public function set submitFrame(param1:FeedbackSubmitFrame) : void
+      public function set submitFrame($submitFrame:FeedbackSubmitFrame) : void
       {
-         _submitFrame = param1;
+         _submitFrame = $submitFrame;
          if(_submitFrame.feedbackInfo.question_content)
          {
             _detailTextArea.text = _submitFrame.feedbackInfo.question_content;
@@ -144,74 +144,74 @@ package feedback.view
          __texeInput(null);
       }
       
-      private function __closeBtnClick(param1:MouseEvent) : void
+      private function __closeBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          FeedbackManager.instance.closeFrame();
       }
       
-      private function __submitBtnClick(param1:MouseEvent) : void
+      private function __submitBtnClick(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var info:* = null;
          SoundManager.instance.play("008");
          setFeedbackInfo();
          if(check)
          {
-            _loc2_ = new FeedbackInfo();
-            _loc2_.question_type = _submitFrame.feedbackInfo.question_type;
-            _loc2_.question_title = _submitFrame.feedbackInfo.question_title;
-            _loc2_.occurrence_date = _submitFrame.feedbackInfo.occurrence_date;
-            _loc2_.question_content = _submitFrame.feedbackInfo.question_content;
-            _loc2_.goods_get_method = _submitFrame.feedbackInfo.goods_get_method;
-            _loc2_.goods_get_date = _submitFrame.feedbackInfo.goods_get_date;
-            FeedbackManager.instance.submitFeedbackInfo(_loc2_);
+            info = new FeedbackInfo();
+            info.question_type = _submitFrame.feedbackInfo.question_type;
+            info.question_title = _submitFrame.feedbackInfo.question_title;
+            info.occurrence_date = _submitFrame.feedbackInfo.occurrence_date;
+            info.question_content = _submitFrame.feedbackInfo.question_content;
+            info.goods_get_method = _submitFrame.feedbackInfo.goods_get_method;
+            info.goods_get_date = _submitFrame.feedbackInfo.goods_get_date;
+            FeedbackManager.instance.submitFeedbackInfo(info);
          }
       }
       
-      private function __texeInput(param1:Event) : void
+      private function __texeInput(event:Event) : void
       {
          _infoText.text = LanguageMgr.GetTranslation("feedback.view.infoText",_detailTextArea.maxChars - _detailTextArea.textField.length);
       }
       
       private function _init() : void
       {
-         var _loc1_:* = null;
+         var rec:* = null;
          _acquirementTextImg = ComponentFactory.Instance.creatComponentByStylename("ddtfeedback.typeText");
          _acquirementTextImg.text = LanguageMgr.GetTranslation("feedback.view.Feedback.text9");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.propsAcquirementTextImgRec");
-         ObjectUtils.copyPropertyByRectangle(_acquirementTextImg,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.propsAcquirementTextImgRec");
+         ObjectUtils.copyPropertyByRectangle(_acquirementTextImg,rec);
          addChildAt(_acquirementTextImg,0);
          _acquirementTextInput = ComponentFactory.Instance.creatComponentByStylename("feedback.textInput");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.propsAcquirementInputRec");
-         ObjectUtils.copyPropertyByRectangle(_acquirementTextInput,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.propsAcquirementInputRec");
+         ObjectUtils.copyPropertyByRectangle(_acquirementTextInput,rec);
          addChildAt(_acquirementTextInput,0);
          _acquirementAsterisk = ComponentFactory.Instance.creatBitmap("asset.feedback.asteriskImg");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.propsAcquirementAsteriskRec");
-         ObjectUtils.copyPropertyByRectangle(_acquirementAsterisk,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.propsAcquirementAsteriskRec");
+         ObjectUtils.copyPropertyByRectangle(_acquirementAsterisk,rec);
          addChildAt(_acquirementAsterisk,0);
          _getTimeTextImg = ComponentFactory.Instance.creatComponentByStylename("ddtfeedback.typeText");
          _getTimeTextImg.text = LanguageMgr.GetTranslation("feedback.view.Feedback.text10");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.propsGetTimeTextImgRec");
-         ObjectUtils.copyPropertyByRectangle(_getTimeTextImg,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.propsGetTimeTextImgRec");
+         ObjectUtils.copyPropertyByRectangle(_getTimeTextImg,rec);
          addChildAt(_getTimeTextImg,0);
          _getTimeTextInput = ComponentFactory.Instance.creatComponentByStylename("feedback.textInput");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.propsGetTimeInputRec");
-         ObjectUtils.copyPropertyByRectangle(_getTimeTextInput,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.propsGetTimeInputRec");
+         ObjectUtils.copyPropertyByRectangle(_getTimeTextInput,rec);
          _getTimeTextInput.textField.restrict = "0-9\\-";
          addChildAt(_getTimeTextInput,0);
          _getTimeAsterisk = ComponentFactory.Instance.creatBitmap("asset.feedback.asteriskImg");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.propsGetTimeAsteriskRec");
-         ObjectUtils.copyPropertyByRectangle(_getTimeAsterisk,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.propsGetTimeAsteriskRec");
+         ObjectUtils.copyPropertyByRectangle(_getTimeAsterisk,rec);
          addChildAt(_getTimeAsterisk,0);
          _infoDateText = ComponentFactory.Instance.creatComponentByStylename("feedback.infoText");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.propsInfoDateTextRec");
-         ObjectUtils.copyPropertyByRectangle(_infoDateText,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.propsInfoDateTextRec");
+         ObjectUtils.copyPropertyByRectangle(_infoDateText,rec);
          _infoDateText.text = LanguageMgr.GetTranslation("feedback.view.infoDateText");
          addChildAt(_infoDateText,0);
          _detailTextImg = ComponentFactory.Instance.creatComponentByStylename("ddtfeedback.descriptionText");
          _detailTextImg.text = LanguageMgr.GetTranslation("feedback.view.Feedback.text6");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.propsDisappearDetailTextImgRec");
-         ObjectUtils.copyPropertyByRectangle(_detailTextImg,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.propsDisappearDetailTextImgRec");
+         ObjectUtils.copyPropertyByRectangle(_detailTextImg,rec);
          addChildAt(_detailTextImg,0);
          _csTelText = ComponentFactory.Instance.creatComponentByStylename("feedback.csTelText");
          _csTelText.text = LanguageMgr.GetTranslation("feedback.view.csTelNumber",PathManager.solveFeedbackTelNumber());
@@ -220,26 +220,26 @@ package feedback.view
             addChild(_csTelText);
          }
          _infoText = ComponentFactory.Instance.creatComponentByStylename("feedback.infoText");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.propsDisappearInfoTextRec");
-         ObjectUtils.copyPropertyByRectangle(_infoText,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.propsDisappearInfoTextRec");
+         ObjectUtils.copyPropertyByRectangle(_infoText,rec);
          _csTelText.y = 198;
          addChildAt(_infoText,0);
          _detailTextArea = ComponentFactory.Instance.creatComponentByStylename("feedback.simpleTextArea");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.propsDisappearDetailTextAreaRec");
-         ObjectUtils.copyPropertyByRectangle(_detailTextArea,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.propsDisappearDetailTextAreaRec");
+         ObjectUtils.copyPropertyByRectangle(_detailTextArea,rec);
          _detailTextArea.text = "";
          addChildAt(_detailTextArea,0);
          _infoText.text = LanguageMgr.GetTranslation("feedback.view.infoText",_detailTextArea.maxChars);
          _textInputBg = ComponentFactory.Instance.creatComponentByStylename("feedbackprop.textBgImg_style");
          addChildAt(_textInputBg,0);
          _submitBtn = ComponentFactory.Instance.creatComponentByStylename("feedback.btn");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.submitBtnRec");
-         ObjectUtils.copyPropertyByRectangle(_submitBtn,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.submitBtnRec");
+         ObjectUtils.copyPropertyByRectangle(_submitBtn,rec);
          _submitBtn.text = LanguageMgr.GetTranslation("feedback.view.FeedbackSubmitSp.submitBtnText");
          addChildAt(_submitBtn,0);
          _closeBtn = ComponentFactory.Instance.creatComponentByStylename("feedback.btn");
-         _loc1_ = ComponentFactory.Instance.creatCustomObject("feedback.closeBtnRec");
-         ObjectUtils.copyPropertyByRectangle(_closeBtn,_loc1_);
+         rec = ComponentFactory.Instance.creatCustomObject("feedback.closeBtnRec");
+         ObjectUtils.copyPropertyByRectangle(_closeBtn,rec);
          _closeBtn.text = LanguageMgr.GetTranslation("tank.invite.InviteView.close");
          addChildAt(_closeBtn,0);
          addEvent();

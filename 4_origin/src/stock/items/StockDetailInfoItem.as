@@ -21,16 +21,16 @@ package stock.items
          stockText3.text = LanguageMgr.GetTranslation("ddt.stock.allView.text31");
       }
       
-      public function set data(param1:*) : void
+      public function set data(value:*) : void
       {
          this.visible = true;
-         lablTime.text = param1.timeStr;
-         lblDealPrice.text = param1.dealPrice.toString();
-         var _loc2_:int = param1.dealPrice - (StockMgr.inst.model.stocks[StockMgr.inst.model.stockID] as StockData).dayCenterPrice;
-         var _loc3_:* = _loc2_.toString();
+         lablTime.text = value.timeStr;
+         lblDealPrice.text = value.dealPrice.toString();
+         var changeValue:int = value.dealPrice - (StockMgr.inst.model.stocks[StockMgr.inst.model.stockID] as StockData).dayCenterPrice;
+         var _loc3_:* = changeValue.toString();
          lblChangeG.text = _loc3_;
          lblChangeL.text = _loc3_;
-         _loc3_ = _loc2_ >= 0;
+         _loc3_ = changeValue >= 0;
          lblChangeG.visible = _loc3_;
          lblChangeL.visible = !_loc3_;
       }

@@ -21,25 +21,25 @@ package battleSkill.view
       
       private var _havaCount:int;
       
-      public function BattleSkillMaterialCell(param1:int, param2:int, param3:int, param4:int)
+      public function BattleSkillMaterialCell(itemTempID:int, needCount:int, haveCount:int, index:int)
       {
          super();
-         _templateID = param1;
-         _upNeedCount = param2;
-         _havaCount = param3;
-         _index = param4;
+         _templateID = itemTempID;
+         _upNeedCount = needCount;
+         _havaCount = haveCount;
+         _index = index;
          initView();
          addEvent();
       }
       
       private function initView() : void
       {
-         var _loc1_:InventoryItemInfo = new InventoryItemInfo();
-         _loc1_.TemplateID = _templateID;
-         _loc1_ = ItemManager.fill(_loc1_);
-         _loc1_.BindType = 4;
+         var info:InventoryItemInfo = new InventoryItemInfo();
+         info.TemplateID = _templateID;
+         info = ItemManager.fill(info);
+         info.BindType = 4;
          _bagCell = new BagCell(_index);
-         _bagCell.info = _loc1_;
+         _bagCell.info = info;
          _bagCell.PicPos = new Point(9,9);
          _bagCell.setBgVisible(false);
          _bagCell.setContentSize(59,59);
@@ -49,9 +49,9 @@ package battleSkill.view
       
       public function updateCount() : void
       {
-         var _loc1_:String = "";
-         _loc1_ = _havaCount + "/" + _upNeedCount;
-         _bagCell.setCount(_loc1_);
+         var temNum:String = "";
+         temNum = _havaCount + "/" + _upNeedCount;
+         _bagCell.setCount(temNum);
          _bagCell.refreshTbxPos();
       }
       

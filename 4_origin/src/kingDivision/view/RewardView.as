@@ -73,7 +73,7 @@ package kingDivision.view
          _selectedBtnGroup.removeEventListener("change",__typeChange);
       }
       
-      private function __typeChange(param1:Event) : void
+      private function __typeChange(evt:Event) : void
       {
          defaultShowThisZoneView();
       }
@@ -110,9 +110,9 @@ package kingDivision.view
          addToContent(_rewardPanel);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();

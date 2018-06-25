@@ -36,8 +36,8 @@ package totem.view
       
       public function updateData() : void
       {
-         var _loc1_:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(30000,true);
-         _txt.text = _loc1_ + "";
+         var count1:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(30000,true);
+         _txt.text = count1 + "";
       }
       
       public function dispose() : void

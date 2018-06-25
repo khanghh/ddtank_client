@@ -12,27 +12,26 @@ package ddt.utils
          super();
       }
       
-      chat_system static function readGoodsLinks(param1:ByteArray, param2:Boolean = false) : Array
+      chat_system static function readGoodsLinks(byte:ByteArray, isReadKey:Boolean = false) : Array
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = null;
-         var _loc3_:Array = [];
-         var _loc4_:uint = param1.readUnsignedByte();
-         _loc6_ = 0;
-         while(_loc6_ < _loc4_)
+         var i:int = 0;
+         var obj:* = null;
+         var re_arr:Array = [];
+         var count:uint = byte.readUnsignedByte();
+         for(i = 0; i < count; )
          {
-            _loc5_ = {};
-            _loc5_.index = param1.readInt();
-            _loc5_.TemplateID = param1.readInt();
-            _loc5_.ItemID = param1.readInt();
-            if(param2)
+            obj = {};
+            obj.index = byte.readInt();
+            obj.TemplateID = byte.readInt();
+            obj.ItemID = byte.readInt();
+            if(isReadKey)
             {
-               _loc5_.key = param1.readUTF();
+               obj.key = byte.readUTF();
             }
-            _loc3_.push(_loc5_);
-            _loc6_++;
+            re_arr.push(obj);
+            i++;
          }
-         return _loc3_;
+         return re_arr;
       }
    }
 }

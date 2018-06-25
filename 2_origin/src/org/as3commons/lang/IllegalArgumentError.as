@@ -4,9 +4,9 @@ package org.as3commons.lang
    {
        
       
-      public function IllegalArgumentError(param1:String = "")
+      public function IllegalArgumentError(message:String = "")
       {
-         super(param1);
+         super(message);
       }
    }
 }

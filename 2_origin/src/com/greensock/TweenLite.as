@@ -91,42 +91,42 @@ package com.greensock
       
       protected var _notifyPluginsOfEnabled:Boolean;
       
-      public function TweenLite(param1:Object, param2:Number, param3:Object)
+      public function TweenLite(target:Object, duration:Number, vars:Object)
       {
-         super(param2,param3);
-         if(param1 == null)
+         super(duration,vars);
+         if(target == null)
          {
             throw new Error("Cannot tween a null object.");
          }
-         this.target = param1;
+         this.target = target;
          if(this.target is TweenCore && this.vars.timeScale)
          {
             this.cachedTimeScale = 1;
          }
          propTweenLookup = {};
          _ease = defaultEase;
-         _overwrite = Number(param3.overwrite) <= -1 || !overwriteManager.enabled && param3.overwrite > 1?overwriteManager.mode:int(param3.overwrite);
-         var _loc5_:Array = masterList[param1];
-         if(!_loc5_)
+         _overwrite = Number(vars.overwrite) <= -1 || !overwriteManager.enabled && vars.overwrite > 1?overwriteManager.mode:int(vars.overwrite);
+         var a:Array = masterList[target];
+         if(!a)
          {
-            masterList[param1] = [this];
+            masterList[target] = [this];
          }
          else if(_overwrite == 1)
          {
             var _loc7_:int = 0;
-            var _loc6_:* = _loc5_;
-            for each(var _loc4_ in _loc5_)
+            var _loc6_:* = a;
+            for each(var sibling in a)
             {
-               if(!_loc4_.gc)
+               if(!sibling.gc)
                {
-                  _loc4_.setEnabled(false,false);
+                  sibling.setEnabled(false,false);
                }
             }
-            masterList[param1] = [this];
+            masterList[target] = [this];
          }
          else
          {
-            _loc5_[_loc5_.length] = this;
+            a[a.length] = this;
          }
          if(this.active || this.vars.immediateRender)
          {
@@ -153,125 +153,125 @@ package com.greensock
          }
       }
       
-      public static function to(param1:Object, param2:Number, param3:Object) : TweenLite
+      public static function to(target:Object, duration:Number, vars:Object) : TweenLite
       {
-         return new TweenLite(param1,param2,param3);
+         return new TweenLite(target,duration,vars);
       }
       
-      public static function from(param1:Object, param2:Number, param3:Object) : TweenLite
+      public static function from(target:Object, duration:Number, vars:Object) : TweenLite
       {
-         param3.runBackwards = true;
-         if(!("immediateRender" in param3))
+         vars.runBackwards = true;
+         if(!("immediateRender" in vars))
          {
-            param3.immediateRender = true;
+            vars.immediateRender = true;
          }
-         return new TweenLite(param1,param2,param3);
+         return new TweenLite(target,duration,vars);
       }
       
-      public static function delayedCall(param1:Number, param2:Function, param3:Array = null, param4:Boolean = false) : TweenLite
+      public static function delayedCall(delay:Number, onComplete:Function, onCompleteParams:Array = null, useFrames:Boolean = false) : TweenLite
       {
-         return new TweenLite(param2,0,{
-            "delay":param1,
-            "onComplete":param2,
-            "onCompleteParams":param3,
+         return new TweenLite(onComplete,0,{
+            "delay":delay,
+            "onComplete":onComplete,
+            "onCompleteParams":onCompleteParams,
             "immediateRender":false,
-            "useFrames":param4,
+            "useFrames":useFrames,
             "overwrite":0
          });
       }
       
-      protected static function updateAll(param1:Event = null) : void
+      protected static function updateAll(e:Event = null) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
+         var tgt:* = null;
+         var a:* = null;
+         var i:int = 0;
+         var ml:* = null;
          rootTimeline.renderTime((getTimer() * 0.001 - rootTimeline.cachedStartTime) * rootTimeline.cachedTimeScale,false,false);
          rootFrame = rootFrame + 1;
          rootFramesTimeline.renderTime((rootFrame - rootFramesTimeline.cachedStartTime) * rootFramesTimeline.cachedTimeScale,false,false);
          if(!(rootFrame % 60))
          {
-            _loc4_ = masterList;
+            ml = masterList;
             var _loc7_:int = 0;
-            var _loc6_:* = _loc4_;
-            for(_loc3_ in _loc4_)
+            var _loc6_:* = ml;
+            for(tgt in ml)
             {
-               _loc2_ = _loc4_[_loc3_];
-               _loc5_ = _loc2_.length;
+               a = ml[tgt];
+               i = a.length;
                while(true)
                {
-                  _loc5_--;
-                  if(_loc5_ <= -1)
+                  i--;
+                  if(i <= -1)
                   {
                      break;
                   }
-                  if(TweenLite(_loc2_[_loc5_]).gc)
+                  if(TweenLite(a[i]).gc)
                   {
-                     _loc2_.splice(_loc5_,1);
+                     a.splice(i,1);
                   }
                }
-               if(_loc2_.length == 0)
+               if(a.length == 0)
                {
-                  delete _loc4_[_loc3_];
+                  delete ml[tgt];
                }
             }
          }
       }
       
-      public static function killTweensOf(param1:Object, param2:Boolean = false, param3:Object = null) : void
+      public static function killTweensOf(target:Object, complete:Boolean = false, vars:Object = null) : void
       {
-         var _loc5_:* = null;
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         if(param1 in masterList)
+         var a:* = null;
+         var i:int = 0;
+         var tween:* = null;
+         if(target in masterList)
          {
-            _loc5_ = masterList[param1];
-            _loc6_ = _loc5_.length;
+            a = masterList[target];
+            i = a.length;
             while(true)
             {
-               _loc6_--;
-               if(_loc6_ <= -1)
+               i--;
+               if(i <= -1)
                {
                   break;
                }
-               _loc4_ = _loc5_[_loc6_];
-               if(!_loc4_.gc)
+               tween = a[i];
+               if(!tween.gc)
                {
-                  if(param2)
+                  if(complete)
                   {
-                     _loc4_.complete(false,false);
+                     tween.complete(false,false);
                   }
-                  if(param3 != null)
+                  if(vars != null)
                   {
-                     _loc4_.killVars(param3);
+                     tween.killVars(vars);
                   }
-                  if(param3 == null || _loc4_.cachedPT1 == null && _loc4_.initted)
+                  if(vars == null || tween.cachedPT1 == null && tween.initted)
                   {
-                     _loc4_.setEnabled(false,false);
+                     tween.setEnabled(false,false);
                   }
                }
             }
-            if(param3 == null)
+            if(vars == null)
             {
-               delete masterList[param1];
+               delete masterList[target];
             }
          }
       }
       
-      protected static function easeOut(param1:Number, param2:Number, param3:Number, param4:Number) : Number
+      protected static function easeOut(t:Number, b:Number, c:Number, d:Number) : Number
       {
-         param1 = 1 - param1 / param4;
-         return 1 - (1 - param1 / param4) * param1;
+         t = 1 - t / d;
+         return 1 - (1 - t / d) * t;
       }
       
       protected function init() : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = undefined;
-         var _loc1_:Boolean = false;
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var plugin:* = undefined;
+         var prioritize:Boolean = false;
+         var siblings:* = null;
+         var p:* = null;
+         var pt:* = null;
          if(this.vars.onInit)
          {
             this.vars.onInit.apply(null,this.vars.onInitParams);
@@ -289,36 +289,36 @@ package com.greensock
          this.propTweenLookup = {};
          var _loc8_:int = 0;
          var _loc7_:* = this.vars;
-         for(_loc2_ in this.vars)
+         for(p in this.vars)
          {
-            if(!(_loc2_ in _reservedProps && !(_loc2_ == "timeScale" && this.target is TweenCore)))
+            if(!(p in _reservedProps && !(p == "timeScale" && this.target is TweenCore)))
             {
-               if(_loc2_ in plugins && _loc5_.onInitTween(this.target,this.vars[_loc2_],this))
+               if(p in plugins && plugin.onInitTween(this.target,this.vars[p],this))
                {
-                  this.cachedPT1 = new PropTween(_loc5_,"changeFactor",0,1,_loc5_.overwriteProps.length == 1?_loc5_.overwriteProps[0]:"_MULTIPLE_",true,this.cachedPT1);
+                  this.cachedPT1 = new PropTween(plugin,"changeFactor",0,1,plugin.overwriteProps.length == 1?plugin.overwriteProps[0]:"_MULTIPLE_",true,this.cachedPT1);
                   if(this.cachedPT1.name == "_MULTIPLE_")
                   {
-                     _loc6_ = _loc5_.overwriteProps.length;
+                     i = plugin.overwriteProps.length;
                      while(true)
                      {
-                        _loc6_--;
-                        if(_loc6_ <= -1)
+                        i--;
+                        if(i <= -1)
                         {
                            break;
                         }
-                        this.propTweenLookup[_loc5_.overwriteProps[_loc6_]] = this.cachedPT1;
+                        this.propTweenLookup[plugin.overwriteProps[i]] = this.cachedPT1;
                      }
                   }
                   else
                   {
                      this.propTweenLookup[this.cachedPT1.name] = this.cachedPT1;
                   }
-                  if(_loc5_.priority)
+                  if(plugin.priority)
                   {
-                     this.cachedPT1.priority = _loc5_.priority;
-                     _loc1_ = true;
+                     this.cachedPT1.priority = plugin.priority;
+                     prioritize = true;
                   }
-                  if(_loc5_.onDisable || _loc5_.onEnable)
+                  if(plugin.onDisable || plugin.onEnable)
                   {
                      _notifyPluginsOfEnabled = true;
                   }
@@ -326,23 +326,23 @@ package com.greensock
                }
                else
                {
-                  this.cachedPT1 = new PropTween(this.target,_loc2_,Number(this.target[_loc2_]),typeof this.vars[_loc2_] == "number"?this.vars[_loc2_] - this.target[_loc2_]:Number(this.vars[_loc2_]),_loc2_,false,this.cachedPT1);
-                  this.propTweenLookup[_loc2_] = this.cachedPT1;
+                  this.cachedPT1 = new PropTween(this.target,p,Number(this.target[p]),typeof this.vars[p] == "number"?this.vars[p] - this.target[p]:Number(this.vars[p]),p,false,this.cachedPT1);
+                  this.propTweenLookup[p] = this.cachedPT1;
                }
             }
          }
-         if(_loc1_)
+         if(prioritize)
          {
             onPluginEvent("onInitAllProps",this);
          }
          if(this.vars.runBackwards)
          {
-            _loc3_ = this.cachedPT1;
-            while(_loc3_)
+            pt = this.cachedPT1;
+            while(pt)
             {
-               _loc3_.start = _loc3_.start + _loc3_.change;
-               _loc3_.change = -_loc3_.change;
-               _loc3_ = _loc3_.nextNode;
+               pt.start = pt.start + pt.change;
+               pt.change = -pt.change;
+               pt = pt.nextNode;
             }
          }
          _hasUpdate = this.vars.onUpdate != null;
@@ -354,9 +354,9 @@ package com.greensock
                this.setEnabled(false,false);
             }
          }
-         if(_overwrite > 1 && this.cachedPT1 && Boolean(masterList[this.target]) && _loc4_.length > 1)
+         if(_overwrite > 1 && this.cachedPT1 && Boolean(masterList[this.target]) && siblings.length > 1)
          {
-            if(overwriteManager.manageOverwrites(this,this.propTweenLookup,_loc4_,_overwrite))
+            if(overwriteManager.manageOverwrites(this,this.propTweenLookup,siblings,_overwrite))
             {
                init();
             }
@@ -364,66 +364,66 @@ package com.greensock
          this.initted = true;
       }
       
-      override public function renderTime(param1:Number, param2:Boolean = false, param3:Boolean = false) : void
+      override public function renderTime(time:Number, suppressEvents:Boolean = false, force:Boolean = false) : void
       {
-         var _loc4_:Boolean = false;
-         var _loc6_:Number = this.cachedTime;
-         if(param1 >= this.cachedDuration)
+         var isComplete:Boolean = false;
+         var prevTime:Number = this.cachedTime;
+         if(time >= this.cachedDuration)
          {
             var _loc7_:* = this.cachedDuration;
             this.cachedTime = _loc7_;
             this.cachedTotalTime = _loc7_;
             this.ratio = 1;
-            _loc4_ = true;
+            isComplete = true;
             if(this.cachedDuration == 0)
             {
-               if((param1 == 0 || _rawPrevTime < 0) && _rawPrevTime != param1)
+               if((time == 0 || _rawPrevTime < 0) && _rawPrevTime != time)
                {
-                  param3 = true;
+                  force = true;
                }
-               _rawPrevTime = param1;
+               _rawPrevTime = time;
             }
          }
-         else if(param1 <= 0)
+         else if(time <= 0)
          {
             _loc7_ = 0;
             this.ratio = _loc7_;
             _loc7_ = _loc7_;
             this.cachedTime = _loc7_;
             this.cachedTotalTime = _loc7_;
-            if(param1 < 0)
+            if(time < 0)
             {
                this.active = false;
                if(this.cachedDuration == 0)
                {
                   if(_rawPrevTime >= 0)
                   {
-                     param3 = true;
-                     _loc4_ = true;
+                     force = true;
+                     isComplete = true;
                   }
-                  _rawPrevTime = param1;
+                  _rawPrevTime = time;
                }
             }
-            if(this.cachedReversed && _loc6_ != 0)
+            if(this.cachedReversed && prevTime != 0)
             {
-               _loc4_ = true;
+               isComplete = true;
             }
          }
          else
          {
-            _loc7_ = param1;
+            _loc7_ = time;
             this.cachedTime = _loc7_;
             this.cachedTotalTime = _loc7_;
-            this.ratio = _ease(param1,0,1,this.cachedDuration);
+            this.ratio = _ease(time,0,1,this.cachedDuration);
          }
-         if(this.cachedTime == _loc6_ && !param3)
+         if(this.cachedTime == prevTime && !force)
          {
             return;
          }
          if(!this.initted)
          {
             init();
-            if(!_loc4_ && this.cachedTime)
+            if(!isComplete && this.cachedTime)
             {
                this.ratio = _ease(this.cachedTime,0,1,this.cachedDuration);
             }
@@ -432,89 +432,89 @@ package com.greensock
          {
             this.active = true;
          }
-         if(_loc6_ == 0 && this.vars.onStart && (this.cachedTime != 0 || this.cachedDuration == 0) && !param2)
+         if(prevTime == 0 && this.vars.onStart && (this.cachedTime != 0 || this.cachedDuration == 0) && !suppressEvents)
          {
             this.vars.onStart.apply(null,this.vars.onStartParams);
          }
-         var _loc5_:PropTween = this.cachedPT1;
-         while(_loc5_)
+         var pt:PropTween = this.cachedPT1;
+         while(pt)
          {
-            _loc5_.target[_loc5_.property] = _loc5_.start + this.ratio * _loc5_.change;
-            _loc5_ = _loc5_.nextNode;
+            pt.target[pt.property] = pt.start + this.ratio * pt.change;
+            pt = pt.nextNode;
          }
-         if(_hasUpdate && !param2)
+         if(_hasUpdate && !suppressEvents)
          {
             this.vars.onUpdate.apply(null,this.vars.onUpdateParams);
          }
-         if(_loc4_ && !this.gc)
+         if(isComplete && !this.gc)
          {
             if(_hasPlugins && this.cachedPT1)
             {
                onPluginEvent("onComplete",this);
             }
-            complete(true,param2);
+            complete(true,suppressEvents);
          }
       }
       
-      public function killVars(param1:Object, param2:Boolean = true) : Boolean
+      public function killVars(vars:Object, permanent:Boolean = true) : Boolean
       {
-         var _loc4_:* = null;
-         var _loc5_:Boolean = false;
-         var _loc3_:* = null;
+         var pt:* = null;
+         var changed:Boolean = false;
+         var p:* = null;
          if(_overwrittenProps == null)
          {
             _overwrittenProps = {};
          }
          var _loc7_:int = 0;
-         var _loc6_:* = param1;
-         for(_loc3_ in param1)
+         var _loc6_:* = vars;
+         for(p in vars)
          {
-            if(_loc3_ in propTweenLookup)
+            if(p in propTweenLookup)
             {
-               _loc4_ = propTweenLookup[_loc3_];
-               if(_loc4_.isPlugin && _loc4_.name == "_MULTIPLE_")
+               pt = propTweenLookup[p];
+               if(pt.isPlugin && pt.name == "_MULTIPLE_")
                {
-                  _loc4_.target.killProps(param1);
-                  if(_loc4_.target.overwriteProps.length == 0)
+                  pt.target.killProps(vars);
+                  if(pt.target.overwriteProps.length == 0)
                   {
-                     _loc4_.name = "";
+                     pt.name = "";
                   }
-                  if(_loc3_ != _loc4_.target.propName || _loc4_.name == "")
+                  if(p != pt.target.propName || pt.name == "")
                   {
-                     delete propTweenLookup[_loc3_];
+                     delete propTweenLookup[p];
                   }
                }
-               if(_loc4_.name != "_MULTIPLE_")
+               if(pt.name != "_MULTIPLE_")
                {
-                  if(_loc4_.nextNode)
+                  if(pt.nextNode)
                   {
-                     _loc4_.nextNode.prevNode = _loc4_.prevNode;
+                     pt.nextNode.prevNode = pt.prevNode;
                   }
-                  if(_loc4_.prevNode)
+                  if(pt.prevNode)
                   {
-                     _loc4_.prevNode.nextNode = _loc4_.nextNode;
+                     pt.prevNode.nextNode = pt.nextNode;
                   }
-                  else if(this.cachedPT1 == _loc4_)
+                  else if(this.cachedPT1 == pt)
                   {
-                     this.cachedPT1 = _loc4_.nextNode;
+                     this.cachedPT1 = pt.nextNode;
                   }
-                  if(_loc4_.isPlugin && _loc4_.target.onDisable)
+                  if(pt.isPlugin && pt.target.onDisable)
                   {
-                     _loc4_.target.onDisable();
-                     if(_loc4_.target.activeDisable)
+                     pt.target.onDisable();
+                     if(pt.target.activeDisable)
                      {
-                        _loc5_ = true;
+                        changed = true;
                      }
                   }
-                  delete propTweenLookup[_loc3_];
+                  delete propTweenLookup[p];
                }
             }
-            if(param2 && param1 != _overwrittenProps)
+            if(permanent && vars != _overwrittenProps)
             {
-               _overwrittenProps[_loc3_] = 1;
+               _overwrittenProps[p] = 1;
             }
          }
-         return _loc5_;
+         return changed;
       }
       
       override public function invalidate() : void
@@ -534,30 +534,30 @@ package com.greensock
          this.propTweenLookup = {};
       }
       
-      override public function setEnabled(param1:Boolean, param2:Boolean = false) : Boolean
+      override public function setEnabled(enabled:Boolean, ignoreTimeline:Boolean = false) : Boolean
       {
-         var _loc3_:* = null;
-         if(param1)
+         var a:* = null;
+         if(enabled)
          {
-            _loc3_ = TweenLite.masterList[this.target];
-            if(!_loc3_)
+            a = TweenLite.masterList[this.target];
+            if(!a)
             {
                TweenLite.masterList[this.target] = [this];
             }
             else
             {
-               _loc3_[_loc3_.length] = this;
+               a[a.length] = this;
             }
          }
-         super.setEnabled(param1,param2);
+         super.setEnabled(enabled,ignoreTimeline);
          if(_notifyPluginsOfEnabled && this.cachedPT1)
          {
-            return onPluginEvent(!!param1?"onEnable":"onDisable",this);
+            return onPluginEvent(!!enabled?"onEnable":"onDisable",this);
          }
          return false;
       }
       
-      protected function easeProxy(param1:Number, param2:Number, param3:Number, param4:Number) : Number
+      protected function easeProxy(t:Number, b:Number, c:Number, d:Number) : Number
       {
          return this.vars.proxiedEase.apply(null,arguments.concat(this.vars.easeParams));
       }

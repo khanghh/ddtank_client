@@ -58,9 +58,9 @@ package worldboss.model
          super();
       }
       
-      public function set total_Blood(param1:Number) : void
+      public function set total_Blood(value:Number) : void
       {
-         _total_Blood = param1;
+         _total_Blood = value;
       }
       
       public function get total_Blood() : Number
@@ -68,15 +68,15 @@ package worldboss.model
          return _total_Blood;
       }
       
-      public function set current_Blood(param1:Number) : void
+      public function set current_Blood(value:Number) : void
       {
-         if(_current_Blood == param1)
+         if(_current_Blood == value)
          {
             _cutValue = -1;
             return;
          }
-         _cutValue = _current_Blood - param1;
-         _current_Blood = param1;
+         _cutValue = _current_Blood - value;
+         _current_Blood = value;
          dispatchEvent(new Event("change"));
       }
       
@@ -85,9 +85,9 @@ package worldboss.model
          return _current_Blood;
       }
       
-      public function set isLiving(param1:Boolean) : void
+      public function set isLiving(value:Boolean) : void
       {
-         _isLiving = param1;
+         _isLiving = value;
          if(!_isLiving)
          {
             current_Blood = 0;
@@ -104,9 +104,9 @@ package worldboss.model
          return _begin_time;
       }
       
-      public function set begin_time(param1:Date) : void
+      public function set begin_time(value:Date) : void
       {
-         _begin_time = param1;
+         _begin_time = value;
       }
       
       public function get end_time() : Date
@@ -114,9 +114,9 @@ package worldboss.model
          return _end_time;
       }
       
-      public function set end_time(param1:Date) : void
+      public function set end_time(value:Date) : void
       {
-         _end_time = param1;
+         _end_time = value;
       }
       
       public function get fight_time() : int
@@ -124,17 +124,17 @@ package worldboss.model
          return _fight_time;
       }
       
-      public function set fight_time(param1:int) : void
+      public function set fight_time(value:int) : void
       {
-         _fight_time = param1;
+         _fight_time = value;
       }
       
       public function getLeftTime() : int
       {
-         var _loc1_:Number = TimeManager.Instance.TotalSecondToNow(begin_time);
-         if(_loc1_ > 0 && _loc1_ < fight_time * 60)
+         var left_time:Number = TimeManager.Instance.TotalSecondToNow(begin_time);
+         if(left_time > 0 && left_time < fight_time * 60)
          {
-            return fight_time * 60 - _loc1_;
+            return fight_time * 60 - left_time;
          }
          return 0;
       }
@@ -144,9 +144,9 @@ package worldboss.model
          return _fightOver;
       }
       
-      public function set fightOver(param1:Boolean) : void
+      public function set fightOver(value:Boolean) : void
       {
-         _fightOver = param1;
+         _fightOver = value;
       }
       
       public function get roomClose() : Boolean
@@ -154,9 +154,9 @@ package worldboss.model
          return _room_close;
       }
       
-      public function set roomClose(param1:Boolean) : void
+      public function set roomClose(value:Boolean) : void
       {
-         _room_close = param1;
+         _room_close = value;
       }
       
       public function get currentState() : int
@@ -164,14 +164,14 @@ package worldboss.model
          return _currentState;
       }
       
-      public function set currentState(param1:int) : void
+      public function set currentState(value:int) : void
       {
-         _currentState = param1;
+         _currentState = value;
       }
       
-      public function set ticketID(param1:int) : void
+      public function set ticketID(value:int) : void
       {
-         _ticketID = param1;
+         _ticketID = value;
       }
       
       public function get ticketID() : int
@@ -179,9 +179,9 @@ package worldboss.model
          return _ticketID;
       }
       
-      public function set need_ticket_count(param1:int) : void
+      public function set need_ticket_count(value:int) : void
       {
-         _need_ticket_count = param1;
+         _need_ticket_count = value;
       }
       
       public function get need_ticket_count() : int
@@ -194,9 +194,9 @@ package worldboss.model
          return _cutValue;
       }
       
-      public function set name(param1:String) : void
+      public function set name(value:String) : void
       {
-         _name = param1;
+         _name = value;
       }
       
       public function get name() : String
@@ -204,9 +204,9 @@ package worldboss.model
          return _name;
       }
       
-      public function set timeCD(param1:int) : void
+      public function set timeCD(value:int) : void
       {
-         _timeCD = param1;
+         _timeCD = value;
       }
       
       public function get timeCD() : int
@@ -214,9 +214,9 @@ package worldboss.model
          return _timeCD;
       }
       
-      public function set reviveMoney(param1:int) : void
+      public function set reviveMoney(value:int) : void
       {
-         _reviveMoney = param1;
+         _reviveMoney = value;
       }
       
       public function get reviveMoney() : int
@@ -229,24 +229,23 @@ package worldboss.model
          return _buffArray;
       }
       
-      public function getbuffInfoByID(param1:int) : WorldBossBuffInfo
+      public function getbuffInfoByID(id:int) : WorldBossBuffInfo
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _buffArray.length)
+         var i:int = 0;
+         for(i = 0; i < _buffArray.length; )
          {
-            if(param1 == (_buffArray[_loc2_] as WorldBossBuffInfo).ID)
+            if(id == (_buffArray[i] as WorldBossBuffInfo).ID)
             {
-               return _buffArray[_loc2_];
+               return _buffArray[i];
             }
-            _loc2_++;
+            i++;
          }
          return new WorldBossBuffInfo();
       }
       
-      public function set myPlayerVO(param1:PlayerVO) : void
+      public function set myPlayerVO(value:PlayerVO) : void
       {
-         _myPlayerVO = param1;
+         _myPlayerVO = value;
       }
       
       public function get myPlayerVO() : PlayerVO
@@ -254,9 +253,9 @@ package worldboss.model
          return _myPlayerVO;
       }
       
-      public function set playerDefaultPos(param1:Point) : void
+      public function set playerDefaultPos(value:Point) : void
       {
-         _playerDefaultPos = param1;
+         _playerDefaultPos = value;
       }
       
       public function get playerDefaultPos() : Point
@@ -269,9 +268,9 @@ package worldboss.model
          return _reFightMoney;
       }
       
-      public function set reFightMoney(param1:int) : void
+      public function set reFightMoney(value:int) : void
       {
-         _reFightMoney = param1;
+         _reFightMoney = value;
       }
       
       public function get addInjureBuffMoney() : int
@@ -279,9 +278,9 @@ package worldboss.model
          return _addInjureBuffMoney;
       }
       
-      public function set addInjureBuffMoney(param1:int) : void
+      public function set addInjureBuffMoney(value:int) : void
       {
-         _addInjureBuffMoney = param1;
+         _addInjureBuffMoney = value;
       }
       
       public function get addInjureValue() : int
@@ -289,9 +288,9 @@ package worldboss.model
          return _addInjureValue;
       }
       
-      public function set addInjureValue(param1:int) : void
+      public function set addInjureValue(value:int) : void
       {
-         _addInjureValue = param1;
+         _addInjureValue = value;
       }
    }
 }

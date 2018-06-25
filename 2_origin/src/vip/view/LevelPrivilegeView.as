@@ -63,28 +63,27 @@ package vip.view
       
       private function initItem() : void
       {
-         var j:int = 0;
-         while(j <= 7)
+         for(var j:int = 0; j <= 7; )
          {
             var item:PrivilegeViewItem = null;
             if(j == 3 || j == 4)
             {
                item = new PrivilegeViewItem(2,"asset.vip.star");
-               addr61:
+               addr73:
                item.itemTitleText = LanguageMgr.GetTranslation("ddt.vip.PrivilegeViewItem." + VIP_SETTINGS_FIELD[j]);
                if(j == 1)
                {
-                  item.contentInterceptor = function(param1:String):String
+                  item.contentInterceptor = function(val:String):String
                   {
-                     return Number(param1).toFixed(1);
+                     return Number(val).toFixed(1);
                   };
                }
                else if(j == 7)
                {
                   item.crossFilter = "100";
-                  item.contentInterceptor = function(param1:String):String
+                  item.contentInterceptor = function(val:String):String
                   {
-                     return (100 - param1).toString();
+                     return (100 - val).toString();
                   };
                }
                if(j == 4)
@@ -110,7 +109,7 @@ package vip.view
                {
                   item = new PrivilegeViewItem();
                }
-               §§goto(addr61);
+               §§goto(addr73);
             }
             j = Number(j) + 1;
          }
@@ -121,8 +120,7 @@ package vip.view
          parsePrivilegeItem(12,13);
          parsePrivilegeItem(15,19);
          var data:Vector.<String> = Vector.<String>(["1","1","1","1","1","1","1","1","1","1","1","1","1","1","1"]);
-         j = 14;
-         while(j <= 16)
+         for(j = 14; j <= 16; )
          {
             var item2:PrivilegeViewItem = new PrivilegeViewItem(0);
             item2.itemTitleText = LanguageMgr.GetTranslation("ddt.vip.PrivilegeViewItem." + VIP_SETTINGS_FIELD[j]);
@@ -140,156 +138,152 @@ package vip.view
       
       private function parseRewardTaskItem() : void
       {
-         var _loc2_:Vector.<String> = Vector.<String>(["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"]);
-         var _loc1_:PrivilegeViewItem = new PrivilegeViewItem(3);
-         _loc1_.itemTitleText = LanguageMgr.GetTranslation("ddt.vip.PrivilegeViewItem.VIPRewardTask");
-         _loc1_.itemContent = _loc2_;
-         _itemContainer.addChild(_loc1_);
+         var data:Vector.<String> = Vector.<String>(["1","2","3","4","5","6","7","8","9","10","11","12","13","14","15"]);
+         var item:PrivilegeViewItem = new PrivilegeViewItem(3);
+         item.itemTitleText = LanguageMgr.GetTranslation("ddt.vip.PrivilegeViewItem.VIPRewardTask");
+         item.itemContent = data;
+         _itemContainer.addChild(item);
       }
       
       private function parseVIPCryptBoss() : void
       {
-         var _loc2_:Vector.<String> = ServerConfigManager.instance.VIPRewardCryptCount;
-         var _loc1_:PrivilegeViewItem = new PrivilegeViewItem(3);
-         _loc1_.itemTitleText = LanguageMgr.GetTranslation("ddt.vip.PrivilegeViewItem." + VIP_SETTINGS_FIELD[18]);
-         _loc1_.itemContent = _loc2_;
-         _itemContainer.addChild(_loc1_);
+         var data:Vector.<String> = ServerConfigManager.instance.VIPRewardCryptCount;
+         var item:PrivilegeViewItem = new PrivilegeViewItem(3);
+         item.itemTitleText = LanguageMgr.GetTranslation("ddt.vip.PrivilegeViewItem." + VIP_SETTINGS_FIELD[18]);
+         item.itemContent = data;
+         _itemContainer.addChild(item);
       }
       
       private function parseVipIconItem() : void
       {
-         var _loc2_:Array = GiveYourselfOpenView.getVipinfo();
-         var _loc1_:PrivilegeViewItem = new PrivilegeViewItem(4);
-         _loc1_.itemTitleText = LanguageMgr.GetTranslation("ddt.vip.PrivilegeViewItem.VIPRwardInfo");
-         _loc1_.itemContentForIcontype = _loc2_;
-         _itemContainer.addChild(_loc1_);
+         var infoArr:Array = GiveYourselfOpenView.getVipinfo();
+         var item:PrivilegeViewItem = new PrivilegeViewItem(4);
+         item.itemTitleText = LanguageMgr.GetTranslation("ddt.vip.PrivilegeViewItem.VIPRwardInfo");
+         item.itemContentForIcontype = infoArr;
+         _itemContainer.addChild(item);
       }
       
-      private function parsePrivilegeItem(param1:int, param2:int) : void
+      private function parsePrivilegeItem(privilegeNo:int, itemIndex:int) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         var _loc5_:Array = [];
-         var _loc3_:int = ServerConfigManager.instance.getPrivilegeMinLevel(param1.toString());
-         _loc6_ = 1;
-         while(_loc6_ <= 15)
+         var i:int = 0;
+         var item:* = null;
+         var data:Array = [];
+         var minLevel:int = ServerConfigManager.instance.getPrivilegeMinLevel(privilegeNo.toString());
+         for(i = 1; i <= 15; )
          {
-            _loc5_.push(_loc6_ >= _loc3_?"1":"0");
-            _loc6_++;
+            data.push(i >= minLevel?"1":"0");
+            i++;
          }
-         if(param2 == 20)
+         if(itemIndex == 20)
          {
-            _loc4_ = new PrivilegeViewItem(5);
-            _loc4_.itemContent = Vector.<String>(ServerConfigManager.instance.analyzeData("VIPLevelGiftID"));
+            item = new PrivilegeViewItem(5);
+            item.itemContent = Vector.<String>(ServerConfigManager.instance.analyzeData("VIPLevelGiftID"));
          }
-         else if(param2 == 21)
+         else if(itemIndex == 21)
          {
-            _loc4_ = new PrivilegeViewItem(5);
-            _loc4_.itemContent = Vector.<String>(ServerConfigManager.instance.analyzeData("VIPSendFireRed"));
+            item = new PrivilegeViewItem(5);
+            item.itemContent = Vector.<String>(ServerConfigManager.instance.analyzeData("VIPSendFireRed"));
          }
          else
          {
-            _loc4_ = new PrivilegeViewItem(0);
-            _loc4_.itemContent = Vector.<String>(_loc5_);
+            item = new PrivilegeViewItem(0);
+            item.itemContent = Vector.<String>(data);
          }
-         _loc4_.itemTitleText = LanguageMgr.GetTranslation("ddt.vip.PrivilegeViewItem." + VIP_SETTINGS_FIELD[param2]);
-         _itemContainer.addChild(_loc4_);
+         item.itemTitleText = LanguageMgr.GetTranslation("ddt.vip.PrivilegeViewItem." + VIP_SETTINGS_FIELD[itemIndex]);
+         _itemContainer.addChild(item);
       }
       
       private function parseBenediction() : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = 0;
-         var _loc2_:int = 0;
-         var _loc1_:int = 17;
-         var _loc4_:Vector.<String> = Vector.<String>(["0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"]);
-         _loc6_ = 1;
-         while(_loc6_ <= 6)
+         var i:int = 0;
+         var j:* = 0;
+         var maxLevel:int = 0;
+         var itemIndex:int = 17;
+         var data:Vector.<String> = Vector.<String>(["0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"]);
+         for(i = 1; i <= 6; )
          {
-            _loc4_[ServerConfigManager.instance.getPrivilegeMinLevel(_loc6_.toString()) - 1] = _loc6_.toString();
-            _loc6_++;
+            data[ServerConfigManager.instance.getPrivilegeMinLevel(i.toString()) - 1] = i.toString();
+            i++;
          }
-         _loc2_ = ServerConfigManager.instance.getPrivilegeMinLevel("6");
-         _loc5_ = _loc2_;
-         while(_loc5_ < 15)
+         maxLevel = ServerConfigManager.instance.getPrivilegeMinLevel("6");
+         for(j = maxLevel; j < 15; )
          {
-            _loc4_[_loc5_] = "All";
-            _loc5_++;
+            data[j] = "All";
+            j++;
          }
-         var _loc3_:PrivilegeViewItem = new PrivilegeViewItem();
-         _loc3_.itemTitleText = LanguageMgr.GetTranslation("ddt.vip.PrivilegeViewItem." + VIP_SETTINGS_FIELD[_loc1_]);
-         _loc3_.analyzeFunction = benedictionAnalyzer;
-         _loc3_.itemContent = _loc4_;
-         _itemContainer.addChild(_loc3_);
+         var item:PrivilegeViewItem = new PrivilegeViewItem();
+         item.itemTitleText = LanguageMgr.GetTranslation("ddt.vip.PrivilegeViewItem." + VIP_SETTINGS_FIELD[itemIndex]);
+         item.analyzeFunction = benedictionAnalyzer;
+         item.itemContent = data;
+         _itemContainer.addChild(item);
       }
       
-      private function benedictionAnalyzer(param1:Vector.<String>) : Vector.<DisplayObject>
+      private function benedictionAnalyzer(content:Vector.<String>) : Vector.<DisplayObject>
       {
-         var _loc5_:* = null;
-         var _loc6_:* = null;
-         var _loc3_:Vector.<DisplayObject> = new Vector.<DisplayObject>();
-         var _loc4_:Point = ComponentFactory.Instance.creatCustomObject("vip.levelPrivilegeBenedctionItemTxtStartPos");
+         var txt:* = null;
+         var cross:* = null;
+         var result:Vector.<DisplayObject> = new Vector.<DisplayObject>();
+         var startPos:Point = ComponentFactory.Instance.creatCustomObject("vip.levelPrivilegeBenedctionItemTxtStartPos");
          var _loc8_:int = 0;
-         var _loc7_:* = param1;
-         for each(var _loc2_ in param1)
+         var _loc7_:* = content;
+         for each(var con in content)
          {
-            if(_loc2_ != "0")
+            if(con != "0")
             {
-               _loc5_ = ComponentFactory.Instance.creatComponentByStylename("vip.PrivilegeViewBenedctionItemTxt");
-               _loc5_.text = LanguageMgr.GetTranslation("ddt.vip.PrivilegeViewItem.MayneRand" + _loc2_);
-               PositionUtils.setPos(_loc5_,_loc4_);
-               _loc5_.x = _loc5_.x + 6;
-               _loc5_.y = _loc5_.y - 5;
-               _loc4_.x = _loc4_.x + 45;
-               _loc3_.push(_loc5_);
-               autoText(_loc5_);
+               txt = ComponentFactory.Instance.creatComponentByStylename("vip.PrivilegeViewBenedctionItemTxt");
+               txt.text = LanguageMgr.GetTranslation("ddt.vip.PrivilegeViewItem.MayneRand" + con);
+               PositionUtils.setPos(txt,startPos);
+               txt.x = txt.x + 6;
+               txt.y = txt.y - 5;
+               startPos.x = startPos.x + 45;
+               result.push(txt);
+               autoText(txt);
             }
             else
             {
-               _loc6_ = ComponentFactory.Instance.creatComponentByStylename("vip.PrivilegeViewItem.cross");
-               PositionUtils.setPos(_loc6_,_loc4_);
-               _loc6_.x = _loc4_.x + (40 - _loc6_.width);
-               _loc4_.x = _loc4_.x + 45;
-               _loc3_.push(_loc6_);
+               cross = ComponentFactory.Instance.creatComponentByStylename("vip.PrivilegeViewItem.cross");
+               PositionUtils.setPos(cross,startPos);
+               cross.x = startPos.x + (40 - cross.width);
+               startPos.x = startPos.x + 45;
+               result.push(cross);
             }
          }
-         return _loc3_;
+         return result;
       }
       
-      private function autoText(param1:FilterFrameText) : void
+      private function autoText(_txt:FilterFrameText) : void
       {
-         var _loc2_:* = null;
-         if(param1.numLines >= 2)
+         var txtFormat:* = null;
+         if(_txt.numLines >= 2)
          {
-            param1.width = 45;
-            param1.x = param1.x - 8;
-            _loc2_ = param1.getTextFormat();
-            _loc2_.size = 8;
-            param1.setTextFormat(_loc2_);
+            _txt.width = 45;
+            _txt.x = _txt.x - 8;
+            txtFormat = _txt.getTextFormat();
+            txtFormat.size = 8;
+            _txt.setTextFormat(txtFormat);
          }
       }
       
-      private function parseRingStation(param1:int) : void
+      private function parseRingStation(privilegeNo:int) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:Array = [];
-         var _loc2_:int = ServerConfigManager.instance.getPrivilegeMinLevel(param1.toString());
-         _loc5_ = 1;
-         while(_loc5_ <= 15)
+         var i:int = 0;
+         var data:Array = [];
+         var minLevel:int = ServerConfigManager.instance.getPrivilegeMinLevel(privilegeNo.toString());
+         for(i = 1; i <= 15; )
          {
-            _loc4_.push(_loc5_ >= _loc2_?"1":"0");
-            _loc5_++;
+            data.push(i >= minLevel?"1":"0");
+            i++;
          }
-         var _loc3_:PrivilegeViewItem = new PrivilegeViewItem(0);
-         _loc3_.itemTitleText = LanguageMgr.GetTranslation("ddt.vip.PrivilegeViewItem.VIPRingStation");
-         _loc3_.itemContent = Vector.<String>(_loc4_);
-         _itemContainer.addChild(_loc3_);
+         var item:PrivilegeViewItem = new PrivilegeViewItem(0);
+         item.itemTitleText = LanguageMgr.GetTranslation("ddt.vip.PrivilegeViewItem.VIPRingStation");
+         item.itemContent = Vector.<String>(data);
+         _itemContainer.addChild(item);
       }
       
       private function initView() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var icon:* = null;
          _bg = ComponentFactory.Instance.creatComponentByStylename("vip.LevelPrivilegeViewBg");
          _titleBg = ComponentFactory.Instance.creatComponentByStylename("vip.LevelPrivilegeTitleBg");
          _titleSeperators = ComponentFactory.Instance.creatComponentByStylename("vip.PrivilegeViewTitleItemSeperators");
@@ -305,26 +299,25 @@ package vip.view
          addChild(_titleTxt);
          addChild(_seperator);
          _titleIcons = new Vector.<Image>();
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         _loc4_ = 1;
-         while(_loc4_ <= 15)
+         var xPos:int = 0;
+         var yPos:int = 0;
+         for(i = 1; i <= 15; )
          {
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("vip.LevelPrivilegeView.VipIcon" + _loc4_);
-            _titleIcons.push(_loc1_);
-            addChild(_loc1_);
-            if(_loc4_ == 1)
+            icon = ComponentFactory.Instance.creatComponentByStylename("vip.LevelPrivilegeView.VipIcon" + i);
+            _titleIcons.push(icon);
+            addChild(icon);
+            if(i == 1)
             {
-               _loc3_ = _loc1_.x;
-               _loc2_ = _loc1_.y;
+               xPos = icon.x;
+               yPos = icon.y;
             }
             else
             {
-               _loc3_ = _loc3_ + 45;
-               _loc1_.x = _loc3_;
-               _loc1_.y = _loc2_;
+               xPos = xPos + 45;
+               icon.x = xPos;
+               icon.y = yPos;
             }
-            _loc4_++;
+            i++;
          }
          addChild(_currentVip);
          _itemScrollPanel = ComponentFactory.Instance.creatComponentByStylename("vip.LevelPrivilegeView.ItemScrollPanel");
@@ -337,9 +330,9 @@ package vip.view
       {
          var _loc3_:int = 0;
          var _loc2_:* = _titleIcons;
-         for each(var _loc1_ in _titleIcons)
+         for each(var img in _titleIcons)
          {
-            ObjectUtils.disposeObject(_loc1_);
+            ObjectUtils.disposeObject(img);
          }
          _titleIcons = null;
          ObjectUtils.disposeObject(_bg);

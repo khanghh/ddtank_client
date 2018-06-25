@@ -12,9 +12,9 @@ package oldPlayerRegress
       public static const REGRESS_ADD_REGRESSBTN:String = "regress_addbtn";
        
       
-      public function RegressEvent(param1:String, param2:Boolean = false, param3:Boolean = false)
+      public function RegressEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param2,param3);
+         super(type,bubbles,cancelable);
       }
    }
 }

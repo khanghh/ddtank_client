@@ -34,51 +34,51 @@ package com.pickgliss.effect
          return Number(_effectIDCounter);
       }
       
-      public function creatEffect(param1:int, param2:DisplayObject, ... rest) : IEffect
+      public function creatEffect(type:int, target:DisplayObject, ... args) : IEffect
       {
-         var _loc4_:IEffect = creatEffectByEffectType(param1);
-         _loc4_.initEffect(param2,rest);
-         _effects[_loc4_.id] = _loc4_;
-         return _loc4_;
+         var effect:IEffect = creatEffectByEffectType(type);
+         effect.initEffect(target,args);
+         _effects[effect.id] = effect;
+         return effect;
       }
       
-      public function getEffectByTarget(param1:DisplayObject) : IEffect
+      public function getEffectByTarget($target:DisplayObject) : IEffect
       {
          var _loc4_:int = 0;
          var _loc3_:* = _effects;
-         for each(var _loc2_ in _effects)
+         for each(var effect in _effects)
          {
-            if(param1 == _loc2_.target)
+            if($target == effect.target)
             {
-               return _loc2_;
+               return effect;
             }
          }
          return null;
       }
       
-      public function removeEffect(param1:IEffect) : void
+      public function removeEffect(effect:IEffect) : void
       {
-         param1.dispose();
+         effect.dispose();
       }
       
-      public function creatEffectByEffectType(param1:int) : IEffect
+      public function creatEffectByEffectType(type:int) : IEffect
       {
-         var _loc2_:* = null;
-         switch(int(param1) - 1)
+         var effect:* = null;
+         switch(int(type) - 1)
          {
             case 0:
-               _loc2_ = new AddMovieEffect(getEffectID());
+               effect = new AddMovieEffect(getEffectID());
                break;
             case 1:
-               _loc2_ = new ShinerAnimation(getEffectID());
+               effect = new ShinerAnimation(getEffectID());
                break;
             case 2:
-               _loc2_ = new AlphaShinerAnimation(getEffectID());
+               effect = new AlphaShinerAnimation(getEffectID());
                break;
             case 3:
-               _loc2_ = new LinearShinerAnimation(getEffectID());
+               effect = new LinearShinerAnimation(getEffectID());
          }
-         return _loc2_;
+         return effect;
       }
    }
 }

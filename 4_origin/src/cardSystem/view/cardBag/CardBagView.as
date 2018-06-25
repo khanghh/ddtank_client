@@ -75,76 +75,74 @@ package cardSystem.view.cardBag
          _sortBtn.removeEventListener("click",__clickHandler);
       }
       
-      private function __collectHandler(param1:MouseEvent) : void
+      private function __collectHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          CardControl.Instance.showCollectView();
       }
       
-      private function __upData(param1:DictionaryEvent) : void
+      private function __upData(event:DictionaryEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         var _loc6_:CardInfo = param1.data as CardInfo;
-         var _loc3_:int = _loc6_.Place % 4 == 0?_loc6_.Place / 4 - 2:Number(_loc6_.Place / 4 - 1);
-         var _loc2_:int = _loc6_.Place % 4 == 0?4:Number(_loc6_.Place % 4);
-         if(_bagList.vectorListModel.elements[_loc3_] == null)
+         var itemDate:* = null;
+         var newArr:* = null;
+         var info:CardInfo = event.data as CardInfo;
+         var m:int = info.Place % 4 == 0?info.Place / 4 - 2:Number(info.Place / 4 - 1);
+         var n:int = info.Place % 4 == 0?4:Number(info.Place % 4);
+         if(_bagList.vectorListModel.elements[m] == null)
          {
-            _loc4_ = [];
-            _loc4_[0] = _loc3_ + 1;
-            _loc4_[_loc2_] = _loc6_;
-            _bagList.vectorListModel.append(_loc4_);
+            itemDate = [];
+            itemDate[0] = m + 1;
+            itemDate[n] = info;
+            _bagList.vectorListModel.append(itemDate);
          }
          else
          {
-            _loc5_ = _bagList.vectorListModel.elements[_loc3_] as Array;
-            _loc5_[_loc2_] = _loc6_;
-            _bagList.vectorListModel.replaceAt(_loc3_,_loc5_);
+            newArr = _bagList.vectorListModel.elements[m] as Array;
+            newArr[n] = info;
+            _bagList.vectorListModel.replaceAt(m,newArr);
          }
       }
       
-      private function __remove(param1:DictionaryEvent) : void
+      private function __remove(event:DictionaryEvent) : void
       {
-         var _loc5_:CardInfo = param1.data as CardInfo;
-         var _loc3_:int = _loc5_.Place % 4 == 0?_loc5_.Place / 4 - 2:Number(_loc5_.Place / 4 - 1);
-         var _loc2_:int = _loc5_.Place % 4 == 0?4:Number(_loc5_.Place % 4);
-         var _loc4_:Array = _bagList.vectorListModel.elements[_loc3_] as Array;
-         _loc4_[_loc2_] = null;
-         _bagList.vectorListModel.replaceAt(_loc3_,_loc4_);
+         var info:CardInfo = event.data as CardInfo;
+         var m:int = info.Place % 4 == 0?info.Place / 4 - 2:Number(info.Place / 4 - 1);
+         var n:int = info.Place % 4 == 0?4:Number(info.Place % 4);
+         var newArr:Array = _bagList.vectorListModel.elements[m] as Array;
+         newArr[n] = null;
+         _bagList.vectorListModel.replaceAt(m,newArr);
       }
       
-      private function __clickHandler(param1:MouseEvent) : void
+      private function __clickHandler(event:MouseEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:* = undefined;
-         var _loc7_:int = 0;
-         var _loc4_:* = null;
+         var m:int = 0;
+         var idVec:* = undefined;
+         var j:int = 0;
+         var data:* = null;
          SoundManager.instance.play("008");
-         var _loc3_:Vector.<int> = new Vector.<int>();
-         var _loc2_:Vector.<SetsInfo> = CardManager.Instance.model.setsSortRuleVector;
-         _loc6_ = 0;
-         while(_loc6_ < _loc2_.length)
+         var sortData:Vector.<int> = new Vector.<int>();
+         var sortArr:Vector.<SetsInfo> = CardManager.Instance.model.setsSortRuleVector;
+         for(m = 0; m < sortArr.length; )
          {
-            _loc5_ = _loc2_[_loc6_].cardIdVec;
-            _loc7_ = 0;
-            while(_loc7_ < _loc5_.length)
+            idVec = sortArr[m].cardIdVec;
+            for(j = 0; j < idVec.length; )
             {
-               _loc4_ = PlayerManager.Instance.Self.cardBagDic;
+               data = PlayerManager.Instance.Self.cardBagDic;
                var _loc10_:int = 0;
-               var _loc9_:* = _loc4_;
-               for each(var _loc8_ in _loc4_)
+               var _loc9_:* = data;
+               for each(var info in data)
                {
-                  if(_loc8_.TemplateID == _loc5_[_loc7_])
+                  if(info.TemplateID == idVec[j])
                   {
-                     _loc3_.push(_loc8_.Place);
+                     sortData.push(info.Place);
                      break;
                   }
                }
-               _loc7_++;
+               j++;
             }
-            _loc6_++;
+            m++;
          }
-         SocketManager.Instance.out.sendSortCards(_loc3_);
+         SocketManager.Instance.out.sendSortCards(sortData);
       }
       
       public function dispose() : void

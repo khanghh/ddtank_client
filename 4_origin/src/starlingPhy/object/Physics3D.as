@@ -36,13 +36,13 @@ package starlingPhy.object
       
       protected var _wf:Number = 0;
       
-      public function Physics3D(param1:Number = 1, param2:Number = 1, param3:Number = 1, param4:Number = 1)
+      public function Physics3D(mass:Number = 1, gravityFactor:Number = 1, windFactor:Number = 1, airResitFactor:Number = 1)
       {
          super();
-         _mass = param1;
-         _gravityFactor = param2;
-         _windFactor = param3;
-         _airResitFactor = param4;
+         _mass = mass;
+         _gravityFactor = gravityFactor;
+         _windFactor = windFactor;
+         _airResitFactor = airResitFactor;
          _vx = new EulerVector(0,0,0);
          _vy = new EulerVector(0,0,0);
          _ef = new Point(0,0);
@@ -57,45 +57,45 @@ package starlingPhy.object
          return _layer;
       }
       
-      public function set layer(param1:int) : void
+      public function set layer(value:int) : void
       {
-         _layer = param1;
+         _layer = value;
       }
       
-      public function addExternForce(param1:Point) : void
+      public function addExternForce(force:Point) : void
       {
-         _ef.x = _ef.x + param1.x;
-         _ef.y = _ef.y + param1.y;
+         _ef.x = _ef.x + force.x;
+         _ef.y = _ef.y + force.y;
          if(!_isMoving && _map)
          {
             startMoving();
          }
       }
       
-      public function addSpeedXY(param1:Point) : void
+      public function addSpeedXY(vector:Point) : void
       {
-         _vx.x1 = _vx.x1 + param1.x;
-         _vy.x1 = _vy.x1 + param1.y;
+         _vx.x1 = _vx.x1 + vector.x;
+         _vy.x1 = _vy.x1 + vector.y;
          if(!_isMoving && _map)
          {
             startMoving();
          }
       }
       
-      public function setSpeedXY(param1:Point) : void
+      public function setSpeedXY(vector:Point) : void
       {
-         _vx.x1 = param1.x;
-         _vy.x1 = param1.y;
+         _vx.x1 = vector.x;
+         _vy.x1 = vector.y;
          if(!_isMoving && _map)
          {
             startMoving();
          }
       }
       
-      public function changeSpeedXY(param1:Number, param2:Number) : void
+      public function changeSpeedXY($x:Number, $y:Number) : void
       {
-         _vx.x1 = param1;
-         _vy.x1 = param2;
+         _vx.x1 = $x;
+         _vy.x1 = $y;
       }
       
       public function get Vx() : Number
@@ -130,9 +130,9 @@ package starlingPhy.object
          _isMoving = false;
       }
       
-      public function setMap(param1:Map3D) : void
+      public function setMap(map:Map3D) : void
       {
-         _map = param1;
+         _map = map;
          if(_map)
          {
             _arf = _map.airResistance * _airResitFactor;
@@ -141,10 +141,10 @@ package starlingPhy.object
          }
       }
       
-      protected function computeFallNextXY(param1:Number) : Point
+      protected function computeFallNextXY(dt:Number) : Point
       {
-         _vx.ComputeOneEulerStep(_mass,_arf,_wf + _ef.x,param1);
-         _vy.ComputeOneEulerStep(_mass,_arf,_gf + _ef.y,param1);
+         _vx.ComputeOneEulerStep(_mass,_arf,_wf + _ef.x,dt);
+         _vy.ComputeOneEulerStep(_mass,_arf,_gf + _ef.y,dt);
          return new Point(_vx.x0,_vy.x0);
       }
       
@@ -153,44 +153,44 @@ package starlingPhy.object
          return new Point(x,y);
       }
       
-      public function set pos(param1:Point) : void
+      public function set pos(value:Point) : void
       {
-         x = param1.x;
-         y = param1.y;
+         x = value.x;
+         y = value.y;
       }
       
-      public function update(param1:Number) : void
+      public function update(dt:Number) : void
       {
          if(_isMoving && _map)
          {
-            updatePosition(param1);
+            updatePosition(dt);
          }
       }
       
-      protected function updatePosition(param1:Number) : void
+      protected function updatePosition(dt:Number) : void
       {
-         moveTo(computeFallNextXY(param1));
+         moveTo(computeFallNextXY(dt));
          dispatchEvent(new Event("updatenamepos"));
       }
       
-      public function moveTo(param1:Point) : void
+      public function moveTo(p:Point) : void
       {
-         if(param1.x != x || param1.y != y)
+         if(p.x != x || p.y != y)
          {
-            pos = param1;
+            pos = p;
          }
       }
       
-      override public function set x(param1:Number) : void
+      override public function set x(value:Number) : void
       {
-         .super.x = param1;
-         _vx.x0 = param1;
+         .super.x = value;
+         _vx.x0 = value;
       }
       
-      override public function set y(param1:Number) : void
+      override public function set y(value:Number) : void
       {
-         .super.y = param1;
-         _vy.x0 = param1;
+         .super.y = value;
+         _vy.x0 = value;
       }
       
       override public function dispose() : void

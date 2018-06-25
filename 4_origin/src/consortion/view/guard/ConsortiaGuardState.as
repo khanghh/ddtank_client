@@ -37,9 +37,9 @@ package consortion.view.guard
          super();
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         super.enter(param1,param2);
+         super.enter(prev,data);
          ConsortiaGuardControl.Instance.showPlayer = !DailyButtunBar.Insance.hideFlag;
          BackgoundView.Instance.hide();
          InviteManager.Instance.enabled = false;
@@ -67,7 +67,7 @@ package consortion.view.guard
          ConsortiaGuardControl.Instance.addEventListener("updateActivity",__onUpdateActivity);
       }
       
-      private function __onUpdateActivity(param1:ConsortiaGuardEvent) : void
+      private function __onUpdateActivity(e:ConsortiaGuardEvent) : void
       {
          if(!ConsortiaGuardControl.Instance.model.isOpen)
          {
@@ -75,7 +75,7 @@ package consortion.view.guard
          }
       }
       
-      private function __startLoading(param1:Event) : void
+      private function __startLoading(e:Event) : void
       {
          LayerManager.Instance.clearnGameDynamic();
          LayerManager.Instance.clearnStageDynamic();
@@ -85,13 +85,13 @@ package consortion.view.guard
          StateManager.getInGame_Step_7 = true;
       }
       
-      private function __onClickShowBtn(param1:MouseEvent) : void
+      private function __onClickShowBtn(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          ConsortiaGuardControl.Instance.showPlayer = _showBtn.selected;
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          _showBtn.removeEventListener("click",__onClickShowBtn);
          ObjectUtils.disposeObject(_showBtn);
@@ -109,7 +109,7 @@ package consortion.view.guard
          CacheSysManager.getInstance().release("consortiaGuard");
          KeyboardShortcutsManager.Instance.cancelForbidden();
          ChatManager.Instance.lock = false;
-         super.leaving(param1);
+         super.leaving(next);
       }
       
       private function returnToMain() : void

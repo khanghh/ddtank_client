@@ -43,12 +43,12 @@ package ddt.view.caddyII.bead
       
       private function initView() : void
       {
-         var _loc1_:AlertInfo = new AlertInfo();
-         _loc1_.title = LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy");
-         _loc1_.submitLabel = LanguageMgr.GetTranslation("store.view.shortcutBuy.buyBtn");
-         _loc1_.showCancel = false;
-         _loc1_.moveEnable = false;
-         info = _loc1_;
+         var alertInfo:AlertInfo = new AlertInfo();
+         alertInfo.title = LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy");
+         alertInfo.submitLabel = LanguageMgr.GetTranslation("store.view.shortcutBuy.buyBtn");
+         alertInfo.showCancel = false;
+         alertInfo.moveEnable = false;
+         info = alertInfo;
          _item = new QuickBuyItem();
          _item.itemID = 112150;
          PositionUtils.setPos(_item,"cardBoxQuickBuy.pos");
@@ -85,13 +85,13 @@ package ddt.view.caddyII.bead
          _item.addEventListener("number_enter",_numberEnter);
       }
       
-      private function _numberChange(param1:Event) : void
+      private function _numberChange(e:Event) : void
       {
-         var _loc2_:int = 0;
+         var sum:int = 0;
          money = _item.count * ShopManager.Instance.getMoneyShopItemByTemplateID(_item.info.TemplateID).getItemPrice(1).bothMoneyValue;
       }
       
-      private function _numberEnter(param1:Event) : void
+      private function _numberEnter(e:Event) : void
       {
          if(money > 0)
          {
@@ -104,14 +104,14 @@ package ddt.view.caddyII.bead
          }
       }
       
-      private function _numberClose(param1:Event) : void
+      private function _numberClose(e:Event) : void
       {
          ObjectUtils.disposeObject(this);
       }
       
-      public function set money(param1:int) : void
+      public function set money(value:int) : void
       {
-         _money = param1;
+         _money = value;
          _moneyTxt.text = String(_money);
       }
       
@@ -120,20 +120,20 @@ package ddt.view.caddyII.bead
          return _money;
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(e:FrameEvent) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          SoundManager.instance.play("008");
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             if(money > 0)
             {
                if(PlayerManager.Instance.Self.Money < money)
                {
                   ObjectUtils.disposeObject(this);
-                  _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.comon.lack"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
-                  _loc2_.moveEnable = false;
-                  _loc2_.addEventListener("response",_responseI);
+                  alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.comon.lack"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,2);
+                  alert.moveEnable = false;
+                  alert.addEventListener("response",_responseI);
                   return;
                }
                buy();
@@ -157,35 +157,34 @@ package ddt.view.caddyII.bead
       
       private function buy() : void
       {
-         var _loc7_:int = 0;
-         var _loc1_:Array = [];
-         var _loc5_:Array = [];
-         var _loc2_:Array = [];
-         var _loc3_:Array = [];
-         var _loc6_:Array = [];
-         var _loc4_:Array = [];
-         _loc7_ = 0;
-         while(_loc7_ < _item.count)
+         var i:int = 0;
+         var items:Array = [];
+         var types:Array = [];
+         var colors:Array = [];
+         var dresses:Array = [];
+         var skins:Array = [];
+         var places:Array = [];
+         for(i = 0; i < _item.count; )
          {
-            _loc1_.push(ShopManager.Instance.getMoneyShopItemByTemplateID(_item.info.TemplateID).GoodsID);
-            _loc5_.push(1);
-            _loc2_.push("");
-            _loc3_.push(false);
-            _loc6_.push("");
-            _loc4_.push(-1);
-            _loc7_++;
+            items.push(ShopManager.Instance.getMoneyShopItemByTemplateID(_item.info.TemplateID).GoodsID);
+            types.push(1);
+            colors.push("");
+            dresses.push(false);
+            skins.push("");
+            places.push(-1);
+            i++;
          }
-         SocketManager.Instance.out.sendBuyGoods(_loc1_,_loc5_,_loc2_,_loc4_,_loc3_,_loc6_,5);
+         SocketManager.Instance.out.sendBuyGoods(items,types,colors,places,dresses,skins,5);
       }
       
-      private function _responseI(param1:FrameEvent) : void
+      private function _responseI(e:FrameEvent) : void
       {
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseI);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         (e.currentTarget as BaseAlerFrame).removeEventListener("response",_responseI);
+         if(e.responseCode == 3 || e.responseCode == 2)
          {
             LeavePageManager.showFillFrame();
          }
-         ObjectUtils.disposeObject(param1.target);
+         ObjectUtils.disposeObject(e.target);
       }
       
       override public function dispose() : void

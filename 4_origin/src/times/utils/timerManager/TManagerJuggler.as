@@ -23,34 +23,34 @@ package times.utils.timerManager
       
       private var _internalFlag:InternalFlag;
       
-      public function TManagerJuggler(param1:InternalFlag, param2:int)
+      public function TManagerJuggler(single:InternalFlag, IDLevel:int)
       {
          super();
-         _curID = param2;
+         _curID = IDLevel;
       }
       
-      function addTimer(param1:Number, param2:int, param3:Boolean, param4:String) : TimerJuggler
+      function addTimer(delay:Number, repeatCount:int, revise:Boolean, type:String) : TimerJuggler
       {
          _curID = Number(_curID) + 1;
-         var _loc5_:TimerJuggler = new TimerJuggler(_internalFlag,param1,param2,_curID,param3,param4);
-         _timerDic[_curID] = _loc5_;
-         return _loc5_;
+         var tj:TimerJuggler = new TimerJuggler(_internalFlag,delay,repeatCount,_curID,revise,type);
+         _timerDic[_curID] = tj;
+         return tj;
       }
       
-      function removeTimer(param1:uint) : void
+      function removeTimer(id:uint) : void
       {
       }
       
-      function getTimerDataByID(param1:int) : TimerJuggler
+      function getTimerDataByID(id:int) : TimerJuggler
       {
-         return _timerDic[param1];
+         return _timerDic[id];
       }
       
-      function init(param1:Number) : void
+      function init(delay:Number) : void
       {
-         _duration = param1;
+         _duration = delay;
          _timerDic = new Dictionary();
-         _sTimer = new Timer(param1,0);
+         _sTimer = new Timer(delay,0);
          _sTimer.addEventListener("timer",onTimer);
          _sTimer.start();
          _date = new Date();
@@ -68,23 +68,23 @@ package times.utils.timerManager
          _timerDic = null;
       }
       
-      protected function onTimer(param1:TimerEvent) : void
+      protected function onTimer(te:TimerEvent) : void
       {
          _date = new Date();
-         var _loc4_:Number = _date.time;
-         var _loc2_:Number = _loc4_ - _preTime;
-         _preTime = _loc4_;
+         var curTime:Number = _date.time;
+         var curDuration:Number = curTime - _preTime;
+         _preTime = curTime;
          var _loc6_:int = 0;
          var _loc5_:* = _timerDic;
-         for each(var _loc3_ in _timerDic)
+         for each(var value in _timerDic)
          {
-            if(_loc3_.revise)
+            if(value.revise)
             {
-               _loc3_.advance(_loc2_);
+               value.advance(curDuration);
             }
             else
             {
-               _loc3_.advance(_duration);
+               value.advance(_duration);
             }
          }
       }

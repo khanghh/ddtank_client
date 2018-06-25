@@ -79,9 +79,9 @@ package starling.display.sceneCharacter
          }
       }
       
-      protected function __onTouch(param1:TouchEvent) : void
+      protected function __onTouch(e:TouchEvent) : void
       {
-         param1.stopPropagation();
+         e.stopPropagation();
       }
       
       private function __change() : void
@@ -98,14 +98,14 @@ package starling.display.sceneCharacter
          dispatchEvent(new SceneCharacterEvent("characterArrivedNextStep"));
       }
       
-      public function playerWalk(param1:Array) : void
+      public function playerWalk(walkPath:Array) : void
       {
-         var _loc2_:Number = NaN;
+         var sec:Number = NaN;
          if(_walkPath != null && !isWalkPathChange && _isPlaying)
          {
             return;
          }
-         _walkPath = param1;
+         _walkPath = walkPath;
          isWalkPathChange = false;
          if(_walkPath && _walkPath.length > 0)
          {
@@ -114,8 +114,8 @@ package starling.display.sceneCharacter
             _walkPath0 = _walkPath[0] as Point;
             po1 = new Point(this.x,this.y);
             _walkDistance = Point.distance(_walkPath0,new Point(this.x,this.y));
-            _loc2_ = _walkDistance / _moveSpeed / 1000;
-            resetTween(_loc2_);
+            sec = _walkDistance / _moveSpeed / 1000;
+            resetTween(sec);
             _tween.animate("x",_walkPath[0].x);
             _tween.animate("y",_walkPath[0].y);
             Starling.juggler.add(_tween);
@@ -128,22 +128,22 @@ package starling.display.sceneCharacter
          }
       }
       
-      protected function resetTween(param1:Number) : void
+      protected function resetTween(sec:Number) : void
       {
-         _tween.reset(this,param1);
+         _tween.reset(this,sec);
          _tween.roundToInt = true;
          _tween.onUpdate = __change;
          _tween.onComplete = __finish;
       }
       
-      public function set sceneCharacterActionState(param1:String) : void
+      public function set sceneCharacterActionState(value:String) : void
       {
-         if(!_sceneCharacterState || _sceneCharacterState.setSceneCharacterActionState == param1)
+         if(!_sceneCharacterState || _sceneCharacterState.setSceneCharacterActionState == value)
          {
             return;
          }
-         _sceneCharacterState.setSceneCharacterActionState = param1;
-         dispatchEvent(new SceneCharacterEvent("characterActionChange",param1));
+         _sceneCharacterState.setSceneCharacterActionState = value;
+         dispatchEvent(new SceneCharacterEvent("characterActionChange",value));
       }
       
       public function get playerPoint() : Point
@@ -151,10 +151,10 @@ package starling.display.sceneCharacter
          return new Point(this.x,this.y);
       }
       
-      public function set playerPoint(param1:Point) : void
+      public function set playerPoint(value:Point) : void
       {
-         this.x = param1.x;
-         this.y = param1.y;
+         this.x = value.x;
+         this.y = value.y;
          _playerY = (this.y + Math.random()) * 10000;
       }
       
@@ -163,13 +163,13 @@ package starling.display.sceneCharacter
          return _moveSpeed;
       }
       
-      public function set moveSpeed(param1:Number) : void
+      public function set moveSpeed(value:Number) : void
       {
-         if(_moveSpeed == param1)
+         if(_moveSpeed == value)
          {
             return;
          }
-         _moveSpeed = param1;
+         _moveSpeed = value;
       }
       
       public function get walkPath() : Array
@@ -177,14 +177,14 @@ package starling.display.sceneCharacter
          return _walkPath;
       }
       
-      public function set walkPath(param1:Array) : void
+      public function set walkPath(value:Array) : void
       {
-         _walkPath = param1;
+         _walkPath = value;
       }
       
-      protected function set sceneCharacterState(param1:SceneCharacterState) : void
+      protected function set sceneCharacterState(value:SceneCharacterState) : void
       {
-         _sceneCharacterState = param1;
+         _sceneCharacterState = value;
       }
       
       public function update() : void
@@ -213,15 +213,15 @@ package starling.display.sceneCharacter
          return _sceneCharacterDirection;
       }
       
-      public function setCharacterFilter(param1:Boolean) : void
+      public function setCharacterFilter(value:Boolean) : void
       {
          if(!this._characterPlayer)
          {
             return;
          }
-         var _loc2_:FragmentFilter = this._characterPlayer.filter;
-         _loc2_ && _loc2_.dispose();
-         if(param1)
+         var lastFilter:FragmentFilter = this._characterPlayer.filter;
+         lastFilter && lastFilter.dispose();
+         if(value)
          {
             this._characterPlayer.filter = BlurFilter.createGlow(16776960,1,8,8);
          }
@@ -231,28 +231,28 @@ package starling.display.sceneCharacter
          }
       }
       
-      public function set sceneCharacterDirection(param1:SceneCharacterDirection) : void
+      public function set sceneCharacterDirection(value:SceneCharacterDirection) : void
       {
-         if(_sceneCharacterDirection == param1)
+         if(_sceneCharacterDirection == value)
          {
             return;
          }
-         _sceneCharacterDirection = param1;
+         _sceneCharacterDirection = value;
          changeCharacterDirection();
       }
       
       protected function changeCharacterDirection() : void
       {
-         var _loc1_:int = 0;
+         var scaleX:int = 0;
          if(_isDefaultCharacter)
          {
             this._characterPlayer.scaleX = 1;
          }
          else
          {
-            _loc1_ = !!sceneCharacterDirection.isMirror?-1:1;
-            this._characterPlayer.scaleX = _loc1_;
-            this._characterPlayer.x = -_loc1_ * Math.abs(this._characterPlayer.x);
+            scaleX = !!sceneCharacterDirection.isMirror?-1:1;
+            this._characterPlayer.scaleX = scaleX;
+            this._characterPlayer.x = -scaleX * Math.abs(this._characterPlayer.x);
          }
       }
       
@@ -284,9 +284,9 @@ package starling.display.sceneCharacter
          return _playerY;
       }
       
-      public function set playerY(param1:Number) : void
+      public function set playerY(value:Number) : void
       {
-         _playerY = param1;
+         _playerY = value;
       }
    }
 }

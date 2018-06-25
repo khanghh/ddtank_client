@@ -12,27 +12,27 @@ package farm.analyzer
       
       public var list:Dictionary;
       
-      public function FarmTreePoultryListAnalyzer(param1:Function)
+      public function FarmTreePoultryListAnalyzer(onCompleteCall:Function)
       {
          list = new Dictionary();
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc6_:XML = XML(param1);
-         var _loc4_:XMLList = _loc6_..item;
-         FarmModelController.MAXLEVEL = _loc4_.length() - 1;
+         var tmpFoodID:int = 0;
+         var foodList:* = null;
+         var xml:XML = XML(data);
+         var items:XMLList = xml..item;
+         FarmModelController.MAXLEVEL = items.length() - 1;
          var _loc8_:int = 0;
-         var _loc7_:* = _loc4_;
-         for each(var _loc5_ in _loc4_)
+         var _loc7_:* = items;
+         for each(var item in items)
          {
-            _loc2_ = new FarmPoultryInfo();
-            ObjectUtils.copyPorpertiesByXML(_loc2_,_loc5_);
-            _loc3_ = _loc5_.@Level;
-            list[_loc3_] = _loc2_;
+            foodList = new FarmPoultryInfo();
+            ObjectUtils.copyPorpertiesByXML(foodList,item);
+            tmpFoodID = item.@Level;
+            list[tmpFoodID] = foodList;
          }
          onAnalyzeComplete();
       }

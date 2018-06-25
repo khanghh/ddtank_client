@@ -70,44 +70,43 @@ package farm.view.compose
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc5_:* = null;
-         var _loc4_:* = null;
+         var index:int = 0;
+         var bg:* = null;
+         var item:* = null;
          _bg1 = ComponentFactory.Instance.creat("asset.farmHouse.composebg1");
          addChild(_bg1);
          _bg2 = ComponentFactory.Instance.creat("farm.farmHouse.composebg2");
          addChild(_bg2);
          _composeScroll = new ComposeMoveScroll();
          addChild(_composeScroll);
-         var _loc1_:Point = PositionUtils.creatPoint("farm.composeMoveScroll.point");
-         _composeScroll.x = _loc1_.x;
-         _composeScroll.y = _loc1_.y;
+         var composeScroll:Point = PositionUtils.creatPoint("farm.composeMoveScroll.point");
+         _composeScroll.x = composeScroll.x;
+         _composeScroll.y = composeScroll.y;
          _selectComposeBtn = ComponentFactory.Instance.creatComponentByStylename("farmHouse.btnSelectHouseCompose");
          addChild(_selectComposeBtn);
          _composeActionBtn = ComponentFactory.Instance.creatComponentByStylename("farmHouse.btnComposeAction");
          addChild(_composeActionBtn);
-         _loc2_ = 0;
-         while(_loc2_ < 4)
+         for(index = 0; index < 4; )
          {
-            _loc5_ = ComponentFactory.Instance.creat("asset.farm.baseImage5");
-            _loc4_ = ComponentFactory.Instance.creat("farmHouse.composeItem",[_loc5_]);
-            PositionUtils.setPos(_loc4_,"farm.houseCompose.point" + _loc2_);
-            _itemComposeVec.push(_loc4_);
-            addChild(_loc4_);
-            _loc2_++;
+            bg = ComponentFactory.Instance.creat("asset.farm.baseImage5");
+            item = ComponentFactory.Instance.creat("farmHouse.composeItem",[bg]);
+            PositionUtils.setPos(item,"farm.houseCompose.point" + index);
+            _itemComposeVec.push(item);
+            addChild(item);
+            index++;
          }
-         var _loc3_:Sprite = new Sprite();
-         _loc3_.graphics.beginFill(16777215,0);
-         _loc3_.graphics.drawRect(0,0,50,50);
-         _loc3_.graphics.endFill();
-         _result = new ShopItemCell(_loc3_);
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,50,50);
+         sp.graphics.endFill();
+         _result = new ShopItemCell(sp);
          _result.cellSize = 50;
          PositionUtils.setPos(_result,"farm.composePnl.cellPos");
          _selectComposeBtn.addChild(_result);
          _selectComposeBtn.mouseChildren = true;
-         var _loc6_:Object = {};
-         _loc6_["color"] = "gold";
-         _selectComposeBtnShine = EffectManager.Instance.creatEffect(3,_selectComposeBtn,_loc6_);
+         var shineData:Object = {};
+         shineData["color"] = "gold";
+         _selectComposeBtnShine = EffectManager.Instance.creatEffect(3,_selectComposeBtn,shineData);
          _selectComposeBtnShine.play();
          upComposeBtn();
       }
@@ -118,21 +117,21 @@ package farm.view.compose
          playSelectComposeBtnShine();
       }
       
-      private function setCellInfo(param1:int, param2:ItemTemplateInfo, param3:int = 1) : void
+      private function setCellInfo(index:int, info:ItemTemplateInfo, detail:int = 1) : void
       {
-         if(param1 < 0 || param1 > 4)
+         if(index < 0 || index > 4)
          {
             return;
          }
-         _itemComposeVec[param1].info = param2;
-         _itemComposeVec[param1].useCount = param3;
+         _itemComposeVec[index].info = info;
+         _itemComposeVec[index].useCount = detail;
          if(_maxCount == -1)
          {
-            _maxCount = _itemComposeVec[param1].maxCount;
+            _maxCount = _itemComposeVec[index].maxCount;
          }
          else
          {
-            _maxCount = _maxCount > _itemComposeVec[param1].maxCount?_itemComposeVec[param1].maxCount:int(_maxCount);
+            _maxCount = _maxCount > _itemComposeVec[index].maxCount?_itemComposeVec[index].maxCount:int(_maxCount);
          }
       }
       
@@ -146,12 +145,12 @@ package farm.view.compose
          PlayerManager.Instance.Self.getBag(14).addEventListener("update",__bagUpdate);
       }
       
-      protected function __bagUpdate(param1:Event) : void
+      protected function __bagUpdate(event:Event) : void
       {
          update();
       }
       
-      private function __showComfigCompose(param1:MouseEvent) : void
+      private function __showComfigCompose(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -172,7 +171,7 @@ package farm.view.compose
          }
       }
       
-      private function __showConfirmComposeFoodAlertFrame(param1:MouseEvent) : void
+      private function __showConfirmComposeFoodAlertFrame(e:MouseEvent) : void
       {
          stopSelectComposeBtnShine();
          SoundManager.instance.play("008");
@@ -197,10 +196,10 @@ package farm.view.compose
          }
       }
       
-      private function __confirmComposeFoodAlertFrameResponse(param1:FrameEvent) : void
+      private function __confirmComposeFoodAlertFrameResponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -209,11 +208,11 @@ package farm.view.compose
          playSelectComposeBtnShine();
       }
       
-      private function __selectFood(param1:SelectComposeItemEvent) : void
+      private function __selectFood(e:SelectComposeItemEvent) : void
       {
          stopSelectComposeBtnShine();
          SoundManager.instance.play("008");
-         _result.info = param1.data as ItemTemplateInfo;
+         _result.info = e.data as ItemTemplateInfo;
          _foodID = _result.info.TemplateID;
          if(_selectComposeBtn.backgound is MovieClip)
          {
@@ -228,30 +227,29 @@ package farm.view.compose
          closeConfirmComposeFoodAlertFrame();
       }
       
-      private function __configmCount(param1:SelectComposeItemEvent) : void
+      private function __configmCount(event:SelectComposeItemEvent) : void
       {
          _configmPnl.removeEventListener("compose_count",__configmCount);
-         var _loc2_:int = param1.data;
-         if(_foodID && int(_loc2_))
+         var count:int = event.data;
+         if(_foodID && int(count))
          {
             if(PetsBagManager.instance().haveTaskOrderByID(370))
             {
                PetsBagManager.instance().clearCurrentPetFarmGuildeArrow(112);
                PetsBagManager.instance().petModel.IsFinishTask5 = true;
             }
-            SocketManager.Instance.out.sendCompose(_foodID,_loc2_);
+            SocketManager.Instance.out.sendCompose(_foodID,count);
          }
       }
       
       public function clearInfo() : void
       {
-         var _loc1_:int = 0;
+         var index:int = 0;
          _result.info = null;
-         _loc1_ = 0;
-         while(_loc1_ < 4)
+         for(index = 0; index < 4; )
          {
-            setCellInfo(_loc1_,null,0);
-            _loc1_++;
+            setCellInfo(index,null,0);
+            index++;
          }
          if(_selectComposeBtn.backgound is MovieClip)
          {
@@ -284,7 +282,7 @@ package farm.view.compose
          }
       }
       
-      private function __onMouseDown(param1:MouseEvent) : void
+      private function __onMouseDown(e:MouseEvent) : void
       {
          if(_selectComposeBtn && _selectComposeBtn.backgound is MovieClip && _result.info)
          {
@@ -292,27 +290,27 @@ package farm.view.compose
          }
       }
       
-      private function __onMouseRollover(param1:MouseEvent) : void
+      private function __onMouseRollover(e:MouseEvent) : void
       {
          stopSelectComposeBtnShine();
       }
       
-      private function __onMouseRollout(param1:MouseEvent) : void
+      private function __onMouseRollout(e:MouseEvent) : void
       {
          playSelectComposeBtnShine();
       }
       
       private function update() : void
       {
-         var _loc1_:int = 0;
+         var index:int = 0;
          if(_foodID != 0)
          {
             var _loc4_:int = 0;
             var _loc3_:* = FarmComposeHouseController.instance().getComposeDetailByID(_foodID);
-            for each(var _loc2_ in FarmComposeHouseController.instance().getComposeDetailByID(_foodID))
+            for each(var itemInfo in FarmComposeHouseController.instance().getComposeDetailByID(_foodID))
             {
-               _loc1_++;
-               setCellInfo(_loc1_,ItemManager.Instance.getTemplateById(_loc2_.VegetableID),_loc2_.NeedCount);
+               index++;
+               setCellInfo(index,ItemManager.Instance.getTemplateById(itemInfo.VegetableID),itemInfo.NeedCount);
             }
             upComposeBtn();
          }
@@ -336,12 +334,12 @@ package farm.view.compose
          _foodID = 0;
          var _loc3_:int = 0;
          var _loc2_:* = _itemComposeVec;
-         for each(var _loc1_ in _itemComposeVec)
+         for each(var item in _itemComposeVec)
          {
-            if(_loc1_)
+            if(item)
             {
-               ObjectUtils.disposeObject(_loc1_);
-               _loc1_ = null;
+               ObjectUtils.disposeObject(item);
+               item = null;
             }
          }
          _itemComposeVec.splice(0,_itemComposeVec.length);

@@ -38,7 +38,7 @@ package consortion.view.selfConsortia
          SocketManager.Instance.out.queryConsortionCallBackInfo();
       }
       
-      private function onQueryConsortionCallBackInfo(param1:Event) : void
+      private function onQueryConsortionCallBackInfo(evt:Event) : void
       {
          initView();
          initEvent();
@@ -46,8 +46,8 @@ package consortion.view.selfConsortia
       
       private function initView() : void
       {
-         var _loc1_:Number = TimeManager.Instance.Now().time;
-         _isOpen = _loc1_ >= _callBackModel.startTime.time && _loc1_ <= _callBackModel.endTime.time;
+         var serverDateTime:Number = TimeManager.Instance.Now().time;
+         _isOpen = serverDateTime >= _callBackModel.startTime.time && serverDateTime <= _callBackModel.endTime.time;
          if(_isOpen)
          {
             UICreatShortcut.creatAndAdd("consortion.callBackView.titleBg",this);
@@ -73,22 +73,21 @@ package consortion.view.selfConsortia
       
       private function updateScrollPanel() : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
+         var item:* = null;
+         var i:int = 0;
          _list.removeAllChild();
-         var _loc1_:Array = _callBackModel.awardArr;
-         _loc3_ = 0;
-         while(_loc3_ < _loc1_.length)
+         var arr:Array = _callBackModel.awardArr;
+         for(i = 0; i < arr.length; )
          {
-            _loc2_ = new CallBackItem();
-            _loc2_.setData(_loc3_);
-            _list.addChild(_loc2_);
-            _loc3_++;
+            item = new CallBackItem();
+            item.setData(i);
+            _list.addChild(item);
+            i++;
          }
          _panel.invalidateViewport();
       }
       
-      private function onGetConsortionCallBackAward(param1:Event) : void
+      private function onGetConsortionCallBackAward(evt:Event) : void
       {
          updateScrollPanel();
       }
@@ -106,7 +105,7 @@ package consortion.view.selfConsortia
          ConsortionModelManager.Instance.removeEventListener("event_consortia_back_award",onGetConsortionCallBackAward);
       }
       
-      private function onClick(param1:MouseEvent) : void
+      private function onClick(evt:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          ConsortionModelManager.Instance.dispatchEvent(new Event("leave_call_back_view"));

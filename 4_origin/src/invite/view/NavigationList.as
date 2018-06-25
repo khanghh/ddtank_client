@@ -39,7 +39,7 @@ package invite.view
          return _type;
       }
       
-      public function set type(param1:int) : void
+      public function set type(val:int) : void
       {
       }
       
@@ -48,37 +48,36 @@ package invite.view
          return _listArr;
       }
       
-      public function set list(param1:Array) : void
+      public function set list(val:Array) : void
       {
       }
       
       public function get mode() : String
       {
-         var _loc2_:int = 0;
-         var _loc1_:String = "";
-         _loc2_ = 0;
-         while(_loc2_ < _modeArr.length)
+         var i:int = 0;
+         var string:String = "";
+         for(i = 0; i < _modeArr.length; )
          {
-            _loc1_ = _loc1_ + (_modeArr[_loc2_] + ",");
-            _loc2_++;
+            string = string + (_modeArr[i] + ",");
+            i++;
          }
-         return _loc1_.substr(0,_loc1_.length - 1);
+         return string.substr(0,string.length - 1);
       }
       
-      public function set mode(param1:String) : void
+      public function set mode(val:String) : void
       {
-         _modeArr = param1.split(",");
+         _modeArr = val.split(",");
       }
       
-      public function addNavButton(param1:NavButton, param2:int) : void
+      public function addNavButton(button:NavButton, type:int) : void
       {
-         var _loc3_:ButtonProxy = new ButtonProxy();
-         _loc3_.button = param1;
-         _loc3_.type = param2;
-         _buttons.push(_loc3_);
+         var proxy:ButtonProxy = new ButtonProxy();
+         proxy.button = button;
+         proxy.type = type;
+         _buttons.push(proxy);
       }
       
-      private function setNavigationPos(param1:int) : void
+      private function setNavigationPos(pos:int) : void
       {
       }
       

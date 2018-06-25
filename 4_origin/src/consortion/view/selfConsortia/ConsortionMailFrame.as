@@ -137,10 +137,10 @@ package consortion.view.selfConsortia
          SocketManager.Instance.removeEventListener(PkgEvent.format(129,29),__consortionMailResponse);
       }
       
-      private function __consortionMailResponse(param1:PkgEvent) : void
+      private function __consortionMailResponse(event:PkgEvent) : void
       {
-         var _loc2_:Boolean = param1.pkg.readBoolean();
-         if(_loc2_)
+         var bool:Boolean = event.pkg.readBoolean();
+         if(bool)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.consortion.mailFrame.success"));
             ConsortionModelManager.Instance.getConsortionList(ConsortionModelManager.Instance.selfConsortionComplete,1,6,PlayerManager.Instance.Self.consortiaInfo.ConsortiaName,-1,-1,-1,PlayerManager.Instance.Self.consortiaInfo.ConsortiaID);
@@ -153,24 +153,24 @@ package consortion.view.selfConsortia
          }
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();
          }
       }
       
-      private function _contentInputHandler(param1:TextEvent) : void
+      private function _contentInputHandler(event:TextEvent) : void
       {
          if(_content.text.length > 300)
          {
-            param1.preventDefault();
+            event.preventDefault();
          }
       }
       
-      private function __sendHandler(param1:MouseEvent) : void
+      private function __sendHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -193,13 +193,13 @@ package consortion.view.selfConsortia
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.emailII.WritingView.contentLength"));
             return;
          }
-         var _loc3_:String = FilterWordManager.filterWrod(_topic.text);
-         var _loc2_:String = FilterWordManager.filterWrod(_content.text);
-         SocketManager.Instance.out.sendConsortionMail(_loc3_,_loc2_);
+         var topic:String = FilterWordManager.filterWrod(_topic.text);
+         var content:String = FilterWordManager.filterWrod(_content.text);
+         SocketManager.Instance.out.sendConsortionMail(topic,content);
          _send.enable = false;
       }
       
-      private function __closeHandler(param1:MouseEvent) : void
+      private function __closeHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();

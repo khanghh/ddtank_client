@@ -105,8 +105,8 @@ package catchbeast.view
       
       private function initView() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var getAward:* = null;
          titleText = LanguageMgr.GetTranslation("catchBeast.view.Title");
          _bg = ComponentFactory.Instance.creat("catchBeast.view.bg");
          addToContent(_bg);
@@ -139,18 +139,17 @@ package catchbeast.view
          _careInfo.text = LanguageMgr.GetTranslation("catchBeast.view.careInfo");
          addToContent(_careInfo);
          _getAwardVec = new Vector.<MovieImage>();
-         var _loc1_:Point = PositionUtils.creatPoint("catchBeast.view.awardPos");
-         _loc3_ = 0;
-         while(_loc3_ < AWARD_NUM)
+         var awardPos:Point = PositionUtils.creatPoint("catchBeast.view.awardPos");
+         for(i = 0; i < AWARD_NUM; )
          {
-            _loc2_ = ComponentFactory.Instance.creat("catchBeast.view.getAwardMovie");
-            _loc2_.id = _loc3_;
-            _loc2_.x = _loc1_.x + _loc3_ * 83;
-            _loc2_.y = _loc1_.y;
-            addToContent(_loc2_);
-            _loc2_.movie.gotoAndStop(1);
-            _getAwardVec.push(_loc2_);
-            _loc3_++;
+            getAward = ComponentFactory.Instance.creat("catchBeast.view.getAwardMovie");
+            getAward.id = i;
+            getAward.x = awardPos.x + i * 83;
+            getAward.y = awardPos.y;
+            addToContent(getAward);
+            getAward.movie.gotoAndStop(1);
+            _getAwardVec.push(getAward);
+            i++;
          }
       }
       
@@ -177,25 +176,25 @@ package catchbeast.view
          _progress.mask = _progressMask;
       }
       
-      private function setProgressLength(param1:int) : void
+      private function setProgressLength(num:int) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         if(param1 >= _progressInfo[5].damage * 10000)
+         var i:int = 0;
+         var offX:int = 0;
+         if(num >= _progressInfo[5].damage * 10000)
          {
-            param1 = _progressInfo[5].damage * 10000;
+            num = _progressInfo[5].damage * 10000;
          }
-         _loc3_ = 1;
-         while(_loc3_ < _progressInfo.length)
+         i = 1;
+         while(i < _progressInfo.length)
          {
-            if(param1 <= _progressInfo[_loc3_].damage * 10000)
+            if(num <= _progressInfo[i].damage * 10000)
             {
-               _loc2_ = (_progressInfo[_loc3_].pos - _progressInfo[_loc3_ - 1].pos) * (param1 - _progressInfo[_loc3_ - 1].damage * 10000) / ((_progressInfo[_loc3_].damage - _progressInfo[_loc3_ - 1].damage) * 10000) + _progressInfo[_loc3_ - 1].pos;
+               offX = (_progressInfo[i].pos - _progressInfo[i - 1].pos) * (num - _progressInfo[i - 1].damage * 10000) / ((_progressInfo[i].damage - _progressInfo[i - 1].damage) * 10000) + _progressInfo[i - 1].pos;
                break;
             }
-            _loc3_++;
+            i++;
          }
-         _progressMask.x = _progressMask.x + _loc2_;
+         _progressMask.x = _progressMask.x + offX;
       }
       
       private function initEvent() : void
@@ -213,41 +212,40 @@ package catchbeast.view
          StateManager.getInGame_Step_1 = true;
       }
       
-      protected function __onHelpClick(param1:MouseEvent) : void
+      protected function __onHelpClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:DisplayObject = ComponentFactory.Instance.creat("catchBeast.HelpPrompt");
-         var _loc3_:HelpFrame = ComponentFactory.Instance.creat("catchBeast.HelpFrame");
-         _loc3_.setView(_loc2_);
-         _loc3_.titleText = LanguageMgr.GetTranslation("store.view.HelpButtonText");
-         LayerManager.Instance.addToLayer(_loc3_,1,true,1);
+         var helpBd:DisplayObject = ComponentFactory.Instance.creat("catchBeast.HelpPrompt");
+         var helpPage:HelpFrame = ComponentFactory.Instance.creat("catchBeast.HelpFrame");
+         helpPage.setView(helpBd);
+         helpPage.titleText = LanguageMgr.GetTranslation("store.view.HelpButtonText");
+         LayerManager.Instance.addToLayer(helpPage,1,true,1);
       }
       
-      private function __startLoading(param1:Event) : void
+      private function __startLoading(e:Event) : void
       {
          StateManager.getInGame_Step_6 = true;
          StateManager.setState("roomLoading",GameControl.Instance.Current);
          StateManager.getInGame_Step_7 = true;
       }
       
-      protected function __onSetViewInfo(param1:CrazyTankSocketEvent) : void
+      protected function __onSetViewInfo(event:CrazyTankSocketEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:PackageIn = param1.pkg;
-         _info.ChallengeNum = _loc3_.readInt();
-         _info.BuyBuffNum = _loc3_.readInt();
-         _info.BuffPrice = _loc3_.readInt();
-         _info.DamageNum = _loc3_.readInt();
-         var _loc2_:int = _loc3_.readInt();
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_)
+         var i:int = 0;
+         var pkg:PackageIn = event.pkg;
+         _info.ChallengeNum = pkg.readInt();
+         _info.BuyBuffNum = pkg.readInt();
+         _info.BuffPrice = pkg.readInt();
+         _info.DamageNum = pkg.readInt();
+         var length:int = pkg.readInt();
+         for(i = 0; i < length; )
          {
-            _getAwardVec[_loc4_].tipData = new GoodTipInfo();
-            _getAwardVec[_loc4_].tipData.itemInfo = setAwardBoxInfo(_loc3_.readInt());
-            InventoryItemInfo(_getAwardVec[_loc4_].tipData.itemInfo).IsBinds = true;
-            _progressInfo[_loc4_ + 1].damage = _loc3_.readInt() / 10000;
-            _info.BoxState.push(_loc3_.readInt());
-            _loc4_++;
+            _getAwardVec[i].tipData = new GoodTipInfo();
+            _getAwardVec[i].tipData.itemInfo = setAwardBoxInfo(pkg.readInt());
+            InventoryItemInfo(_getAwardVec[i].tipData.itemInfo).IsBinds = true;
+            _progressInfo[i + 1].damage = pkg.readInt() / 10000;
+            _info.BoxState.push(pkg.readInt());
+            i++;
          }
          _challengeBtn.enable = _info.ChallengeNum <= 0?false:true;
          _buyBuffBtn.enable = _info.BuyBuffNum <= 0?false:true;
@@ -259,83 +257,82 @@ package catchbeast.view
          setAwardBoxState();
       }
       
-      private function setProgressTipNum(param1:int) : void
+      private function setProgressTipNum(num:int) : void
       {
-         var _loc2_:String = param1.toString() + "/" + (_progressInfo[_progressInfo.length - 1].damage * 10000).toString();
-         _progressTips.tipData = LanguageMgr.GetTranslation("catchBeast.view.progressTips",_loc2_);
+         var str:String = num.toString() + "/" + (_progressInfo[_progressInfo.length - 1].damage * 10000).toString();
+         _progressTips.tipData = LanguageMgr.GetTranslation("catchBeast.view.progressTips",str);
       }
       
       private function setAwardBoxState() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _info.BoxState.length)
+         var i:int = 0;
+         for(i = 0; i < _info.BoxState.length; )
          {
-            if(_info.BoxState[_loc1_] == 2)
+            if(_info.BoxState[i] == 2)
             {
-               _getAwardVec[_loc1_].buttonMode = true;
-               _getAwardVec[_loc1_].addEventListener("click",__onGetAward);
+               _getAwardVec[i].buttonMode = true;
+               _getAwardVec[i].addEventListener("click",__onGetAward);
             }
-            _getAwardVec[_loc1_].movie.gotoAndStop(_info.BoxState[_loc1_]);
-            _loc1_++;
+            _getAwardVec[i].movie.gotoAndStop(_info.BoxState[i]);
+            i++;
          }
       }
       
-      protected function __onGetAward(param1:MouseEvent) : void
+      protected function __onGetAward(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:MovieImage = param1.currentTarget as MovieImage;
-         _getAwardVec[_loc2_.id].removeEventListener("click",__onGetAward);
-         SocketManager.Instance.out.sendCatchBeastGetAward(_loc2_.id);
+         var movie:MovieImage = event.currentTarget as MovieImage;
+         _getAwardVec[movie.id].removeEventListener("click",__onGetAward);
+         SocketManager.Instance.out.sendCatchBeastGetAward(movie.id);
       }
       
-      protected function __onIsGetAward(param1:CrazyTankSocketEvent) : void
+      protected function __onIsGetAward(event:CrazyTankSocketEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc3_:Boolean = _loc4_.readBoolean();
-         var _loc2_:int = _loc4_.readInt();
-         if(_loc3_)
+         var pkg:PackageIn = event.pkg;
+         var flag:Boolean = pkg.readBoolean();
+         var id:int = pkg.readInt();
+         if(flag)
          {
-            _getAwardVec[_loc2_].movie.gotoAndStop(3);
-            _getAwardVec[_loc2_].buttonMode = false;
+            _getAwardVec[id].movie.gotoAndStop(3);
+            _getAwardVec[id].buttonMode = false;
          }
       }
       
-      private function setAwardBoxInfo(param1:int) : InventoryItemInfo
+      private function setAwardBoxInfo(id:int) : InventoryItemInfo
       {
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         _loc2_.TemplateID = param1;
-         return ItemManager.fill(_loc2_);
+         var itemInfo:InventoryItemInfo = new InventoryItemInfo();
+         itemInfo.TemplateID = id;
+         return ItemManager.fill(itemInfo);
       }
       
-      protected function __onProgressOver(param1:MouseEvent) : void
+      protected function __onProgressOver(event:MouseEvent) : void
       {
          _progressTips.visible = true;
       }
       
-      protected function __onProgressOut(param1:MouseEvent) : void
+      protected function __onProgressOut(event:MouseEvent) : void
       {
          _progressTips.visible = false;
       }
       
-      protected function __onBuyBuffClick(param1:MouseEvent) : void
+      protected function __onBuyBuffClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("catchBeast.view.buyBuffInfoText",_info.BuffPrice),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false);
-         _loc2_.addEventListener("response",__alertBuyBuff);
+         var alertAsk:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("catchBeast.view.buyBuffInfoText",_info.BuffPrice),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false);
+         alertAsk.addEventListener("response",__alertBuyBuff);
       }
       
-      protected function __onIsBuyBuff(param1:CrazyTankSocketEvent) : void
+      protected function __onIsBuyBuff(event:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         _buyBuffBtn.enable = _loc2_ <= 0?false:true;
-         _buyBuffNumText.text = LanguageMgr.GetTranslation("catchBeast.view.challengeNum",_loc2_);
+         var pkg:PackageIn = event.pkg;
+         var buyNum:int = pkg.readInt();
+         _buyBuffBtn.enable = buyNum <= 0?false:true;
+         _buyBuffNumText.text = LanguageMgr.GetTranslation("catchBeast.view.challengeNum",buyNum);
       }
       
-      protected function __onChallengeClick(param1:MouseEvent) : void
+      protected function __onChallengeClick(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var alertAsk:* = null;
          SoundManager.instance.playButtonSound();
          if(_info.ChallengeNum < 0)
          {
@@ -343,22 +340,22 @@ package catchbeast.view
          }
          else
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("catchBeast.view.challengeInofText"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false,0);
-            _loc2_.addEventListener("response",__alertChallenge);
+            alertAsk = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("catchBeast.view.challengeInofText"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2,null,"SimpleAlert",60,false,0);
+            alertAsk.addEventListener("response",__alertChallenge);
          }
       }
       
-      protected function __alertChallenge(param1:FrameEvent) : void
+      protected function __alertChallenge(event:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__alertChallenge);
-         switch(int(param1.responseCode) - 2)
+         var frame:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__alertChallenge);
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
                SocketManager.Instance.out.sendCatchBeastChallenge();
          }
-         _loc2_.dispose();
+         frame.dispose();
       }
       
       private function sendPkg() : void
@@ -386,74 +383,74 @@ package catchbeast.view
          StateManager.getInGame_Step_8 = true;
       }
       
-      protected function __alertBuyBuff(param1:FrameEvent) : void
+      protected function __alertBuyBuff(event:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc3_.removeEventListener("response",__alertBuyBuff);
-         switch(int(param1.responseCode) - 2)
+         var alertFrame:* = null;
+         var frame:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__alertBuyBuff);
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
                if(PlayerManager.Instance.Self.bagLocked)
                {
                   BaglockedManager.Instance.show();
-                  ObjectUtils.disposeObject(param1.currentTarget);
+                  ObjectUtils.disposeObject(event.currentTarget);
                   return;
                }
-               if(_loc3_.isBand)
+               if(frame.isBand)
                {
                   if(!checkMoney(true))
                   {
-                     _loc3_.dispose();
-                     _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("buried.alertInfo.noBindMoney"),"",LanguageMgr.GetTranslation("cancel"),true,false,false,2);
-                     _loc2_.addEventListener("response",onResponseHander);
+                     frame.dispose();
+                     alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("buried.alertInfo.noBindMoney"),"",LanguageMgr.GetTranslation("cancel"),true,false,false,2);
+                     alertFrame.addEventListener("response",onResponseHander);
                      return;
                   }
                }
                else if(!checkMoney(false))
                {
-                  _loc3_.dispose();
-                  _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-                  _loc2_.addEventListener("response",_response);
+                  frame.dispose();
+                  alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+                  alertFrame.addEventListener("response",_response);
                   return;
                }
-               SocketManager.Instance.out.sendCatchBeastBuyBuff(_loc3_.isBand);
+               SocketManager.Instance.out.sendCatchBeastBuyBuff(frame.isBand);
                break;
          }
-         _loc3_.dispose();
+         frame.dispose();
       }
       
-      private function onResponseHander(param1:FrameEvent) : void
+      private function onResponseHander(e:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",onResponseHander);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alertFrame:* = null;
+         (e.currentTarget as BaseAlerFrame).removeEventListener("response",onResponseHander);
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             if(!checkMoney(false))
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-               _loc2_.addEventListener("response",_response);
+               alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+               alertFrame.addEventListener("response",_response);
                return;
             }
             SocketManager.Instance.out.sendCatchBeastBuyBuff(false);
          }
-         param1.currentTarget.dispose();
+         e.currentTarget.dispose();
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_response);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         (evt.currentTarget as BaseAlerFrame).removeEventListener("response",_response);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             LeavePageManager.leaveToFillPath();
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(evt.currentTarget);
       }
       
-      private function checkMoney(param1:Boolean) : Boolean
+      private function checkMoney(isBand:Boolean) : Boolean
       {
-         if(param1)
+         if(isBand)
          {
             if(PlayerManager.Instance.Self.BandMoney < _info.BuffPrice)
             {
@@ -467,10 +464,10 @@ package catchbeast.view
          return true;
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -480,7 +477,7 @@ package catchbeast.view
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          super.dispose();
          removeEvent();
          if(_bg)
@@ -525,16 +522,15 @@ package catchbeast.view
          }
          if(_getAwardVec)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _getAwardVec.length)
+            for(i = 0; i < _getAwardVec.length; )
             {
-               if(_getAwardVec[_loc1_])
+               if(_getAwardVec[i])
                {
-                  _getAwardVec[_loc1_].removeEventListener("click",__onGetAward);
-                  _getAwardVec[_loc1_].dispose();
-                  _getAwardVec[_loc1_] = null;
+                  _getAwardVec[i].removeEventListener("click",__onGetAward);
+                  _getAwardVec[i].dispose();
+                  _getAwardVec[i] = null;
                }
-               _loc1_++;
+               i++;
             }
             _getAwardVec.length = 0;
             _getAwardVec = null;

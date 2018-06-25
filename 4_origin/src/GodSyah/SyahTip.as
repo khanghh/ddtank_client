@@ -80,24 +80,24 @@ package GodSyah
          _buildUI();
       }
       
-      public function setTipInfo(param1:ItemTemplateInfo) : void
+      public function setTipInfo(info:ItemTemplateInfo) : void
       {
          if(SyahManager.Instance.inView)
          {
-            _mode = SyahManager.Instance.getSyahModeByInfo(param1);
+            _mode = SyahManager.Instance.getSyahModeByInfo(info);
             _buildTipInfo("syahview");
          }
          else
          {
-            _mode = SyahManager.Instance.getSyahModeByInfo(param1);
-            _mode.isValid = SyahManager.Instance.setModeValid(param1);
+            _mode = SyahManager.Instance.getSyahModeByInfo(info);
+            _mode.isValid = SyahManager.Instance.setModeValid(info);
             _buildTipInfo("bagandothers");
          }
       }
       
-      public function setBGWidth(param1:int = 0) : void
+      public function setBGWidth(bgWidth:int = 0) : void
       {
-         _bg.width = param1;
+         _bg.width = bgWidth;
       }
       
       private function _buildUI() : void
@@ -129,17 +129,17 @@ package GodSyah
          addChild(_valid);
       }
       
-      private function _buildTipInfo(param1:String) : void
+      private function _buildTipInfo(type:String) : void
       {
          _tipName.text = LanguageMgr.GetTranslation("ddt.GodSyah.tip.tipName");
          _valid.text = LanguageMgr.GetTranslation("ddt.GodSyah.tip.valid",_mode.valid);
          _line1.x = _tipName.x;
          _line1.y = _tipName.y + _tipName.height + 2;
-         if(param1 == "syahview")
+         if(type == "syahview")
          {
             _showAllDetails();
          }
-         else if(param1 == "bagandothers")
+         else if(type == "bagandothers")
          {
             if(_mode.isValid == false)
             {
@@ -162,7 +162,7 @@ package GodSyah
       
       private function _showAllDetails() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _hp.text = LanguageMgr.GetTranslation("ddt.GodSyah.tip.hp");
          _armor.text = LanguageMgr.GetTranslation("ddt.GodSyah.tip.armor");
          _damage.text = LanguageMgr.GetTranslation("ddt.GodSyah.tip.damage");
@@ -213,27 +213,27 @@ package GodSyah
             _powerVec.push(_damage);
             _powerVec.push(_damageValue);
          }
-         _loc1_ = 0;
-         while(_loc1_ < _powerVec.length)
+         i = 0;
+         while(i < _powerVec.length)
          {
-            if(parseInt(_powerVec[_loc1_ + 1].text) > 0)
+            if(parseInt(_powerVec[i + 1].text) > 0)
             {
-               addChild(_powerVec[_loc1_]);
-               addChild(_powerVec[_loc1_ + 1]);
-               if(_loc1_ == 0)
+               addChild(_powerVec[i]);
+               addChild(_powerVec[i + 1]);
+               if(i == 0)
                {
                   var _loc2_:* = _line1.y + _line1.height + 2;
-                  _powerVec[_loc1_ + 1].y = _loc2_;
-                  _powerVec[_loc1_].y = _loc2_;
+                  _powerVec[i + 1].y = _loc2_;
+                  _powerVec[i].y = _loc2_;
                }
                else
                {
-                  _loc2_ = _powerVec[_loc1_ - 1].y + _powerVec[_loc1_ - 1].height + 1;
-                  _powerVec[_loc1_ + 1].y = _loc2_;
-                  _powerVec[_loc1_].y = _loc2_;
+                  _loc2_ = _powerVec[i - 1].y + _powerVec[i - 1].height + 1;
+                  _powerVec[i + 1].y = _loc2_;
+                  _powerVec[i].y = _loc2_;
                }
             }
-            _loc1_ = _loc1_ + 2;
+            i = i + 2;
          }
          _line2.x = _tipName.x;
          _line2.y = _powerVec[_powerVec.length - 1].y + _powerVec[_powerVec.length - 1].height + 2;

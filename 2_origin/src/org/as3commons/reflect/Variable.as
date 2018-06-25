@@ -7,14 +7,14 @@ package org.as3commons.reflect
    {
        
       
-      public function Variable(param1:String, param2:String, param3:String, param4:Boolean, param5:ApplicationDomain, param6:HashArray = null)
+      public function Variable(name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null)
       {
-         super(param1,param2,param3,param4,param5,param6);
+         super(name,type,declaringType,isStatic,applicationDomain,metadata);
       }
       
-      public static function newInstance(param1:String, param2:String, param3:String, param4:Boolean, param5:ApplicationDomain, param6:HashArray = null) : Variable
+      public static function newInstance(name:String, type:String, declaringType:String, isStatic:Boolean, applicationDomain:ApplicationDomain, metadata:HashArray = null) : Variable
       {
-         return Variable(AbstractMember.newInstance(Variable,param1,param2,param3,param4,param5,param6));
+         return Variable(AbstractMember.newInstance(Variable,name,type,declaringType,isStatic,applicationDomain,metadata));
       }
    }
 }

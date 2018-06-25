@@ -106,23 +106,23 @@ package ddt.view.character
       
       private var _test:int = 0;
       
-      public function RoomCharacter(param1:PlayerInfo, param2:Boolean = false)
+      public function RoomCharacter(info:PlayerInfo, showGun:Boolean = false)
       {
          _faceRect = new Rectangle(40,0,250,232);
-         _currentAction = RoomPlayerAction.creatAction("standBy",param1.getShowSuits());
-         _showGun = param2;
-         super(param1,true);
+         _currentAction = RoomPlayerAction.creatAction("standBy",info.getShowSuits());
+         _showGun = showGun;
+         super(info,true);
       }
       
-      public static function getActionByWord(param1:String) : String
+      public static function getActionByWord(word:String) : String
       {
          var _loc4_:int = 0;
          var _loc3_:* = KEY_WORDS;
-         for(var _loc2_ in KEY_WORDS)
+         for(var key in KEY_WORDS)
          {
-            if(_keyWords[_loc2_].indexOf(param1) > -1)
+            if(_keyWords[key].indexOf(word) > -1)
             {
-               return _loc2_;
+               return key;
             }
          }
          return "standBy";
@@ -152,9 +152,9 @@ package ddt.view.character
          return _keyWords;
       }
       
-      override public function set showGun(param1:Boolean) : void
+      override public function set showGun(value:Boolean) : void
       {
-         _showGun = param1;
+         _showGun = value;
       }
       
       override protected function initLoader() : void
@@ -165,7 +165,7 @@ package ddt.view.character
       
       override protected function setContent() : void
       {
-         var _loc1_:* = null;
+         var _recordStyle:* = null;
          if(_loader != null)
          {
             if(_suitBmd && _suitBmd != _loader.getContent()[0])
@@ -217,8 +217,8 @@ package ddt.view.character
          if(_info.getSuitsType() == 1)
          {
             _body.y = -13;
-            _loc1_ = _info.Style.split(",");
-            if(ItemManager.Instance.getTemplateById(int(_loc1_[8].split("|")[0])).Property1 != "1")
+            _recordStyle = _info.Style.split(",");
+            if(ItemManager.Instance.getTemplateById(int(_recordStyle[8].split("|")[0])).Property1 != "1")
             {
                if(_wing)
                {
@@ -237,9 +237,9 @@ package ddt.view.character
          sortIndex();
       }
       
-      public function setBodySize(param1:Number = 0.7) : void
+      public function setBodySize(value:Number = 0.7) : void
       {
-         var _loc2_:* = param1;
+         var _loc2_:* = value;
          _body.scaleY = _loc2_;
          _body.scaleX = _loc2_;
       }
@@ -271,9 +271,9 @@ package ddt.view.character
          _rect = new Rectangle(0,0,_characterWidth,_characterHeight);
       }
       
-      protected function resetPicNum(param1:int, param2:int) : void
+      protected function resetPicNum(lines:int, perline:int) : void
       {
-         setPicNum(param1,param2);
+         setPicNum(lines,perline);
          createFrames();
       }
       
@@ -289,8 +289,8 @@ package ddt.view.character
       
       private function randomAction() : void
       {
-         var _loc1_:Number = Math.random();
-         if(_loc1_ < 0.5)
+         var seed:Number = Math.random();
+         if(seed < 0.5)
          {
             _currentAction = RoomPlayerAction.creatAction("close_Eyes",_info.getShowSuits());
          }
@@ -300,9 +300,9 @@ package ddt.view.character
          }
       }
       
-      override protected function __loadComplete(param1:ICharacterLoader) : void
+      override protected function __loadComplete(loader:ICharacterLoader) : void
       {
-         super.__loadComplete(param1);
+         super.__loadComplete(loader);
          updateLight();
       }
       
@@ -365,13 +365,13 @@ package ddt.view.character
          }
       }
       
-      private function callBack01(param1:BaseLightLayer) : void
+      private function callBack01($load:BaseLightLayer) : void
       {
          if(_light1 && _light1.parent)
          {
             _light1.parent.removeChild(_light1);
          }
-         _light1 = param1.getContent() as MovieClip;
+         _light1 = $load.getContent() as MovieClip;
          if(_light1 != null)
          {
             _container.addChildAt(_light1,0);
@@ -382,13 +382,13 @@ package ddt.view.character
          sortIndex();
       }
       
-      private function callBack02(param1:SinpleLightLayer) : void
+      private function callBack02($load:SinpleLightLayer) : void
       {
          if(_light2 && _light2.parent)
          {
             _light2.parent.removeChild(_light2);
          }
-         _light2 = param1.getContent() as MovieClip;
+         _light2 = $load.getContent() as MovieClip;
          if(_light2 != null)
          {
             _container.addChild(_light2);
@@ -437,88 +437,84 @@ package ddt.view.character
          }
       }
       
-      private function stopMovieClip(param1:MovieClip) : void
+      private function stopMovieClip(mc:MovieClip) : void
       {
-         var _loc2_:int = 0;
-         if(param1)
+         var i:int = 0;
+         if(mc)
          {
-            param1.gotoAndStop(1);
-            if(param1.numChildren > 0)
+            mc.gotoAndStop(1);
+            if(mc.numChildren > 0)
             {
-               _loc2_ = 0;
-               while(_loc2_ < param1.numChildren)
+               for(i = 0; i < mc.numChildren; )
                {
-                  stopMovieClip(param1.getChildAt(_loc2_) as MovieClip);
-                  _loc2_++;
+                  stopMovieClip(mc.getChildAt(i) as MovieClip);
+                  i++;
                }
             }
          }
       }
       
-      private function playMovieClip(param1:MovieClip) : void
+      private function playMovieClip(mc:MovieClip) : void
       {
-         var _loc2_:int = 0;
-         if(param1)
+         var i:int = 0;
+         if(mc)
          {
-            param1.gotoAndPlay(1);
-            if(param1.numChildren > 0)
+            mc.gotoAndPlay(1);
+            if(mc.numChildren > 0)
             {
-               _loc2_ = 0;
-               while(_loc2_ < param1.numChildren)
+               for(i = 0; i < mc.numChildren; )
                {
-                  playMovieClip(param1.getChildAt(_loc2_) as MovieClip);
-                  _loc2_++;
+                  playMovieClip(mc.getChildAt(i) as MovieClip);
+                  i++;
                }
             }
          }
       }
       
-      override public function doAction(param1:*) : void
+      override public function doAction(actionType:*) : void
       {
-         if(param1 == "")
+         if(actionType == "")
          {
             return;
          }
-         _currentAction = RoomPlayerAction.creatAction(param1,_info.getShowSuits());
+         _currentAction = RoomPlayerAction.creatAction(actionType,_info.getShowSuits());
       }
       
       override protected function createFrames() : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var j:int = 0;
+         var i:int = 0;
+         var m:* = null;
          super.createFrames();
          _faceFrames = [];
-         _loc2_ = 0;
-         while(_loc2_ < _picLines)
+         for(j = 0; j < _picLines; )
          {
-            _loc3_ = 0;
-            while(_loc3_ < _picsPerLine)
+            for(i = 0; i < _picsPerLine; )
             {
-               _loc1_ = new Rectangle(_loc3_ * 250,_loc2_ * 232,250,232);
-               _faceFrames.push(_loc1_);
-               _loc3_++;
+               m = new Rectangle(i * 250,j * 232,250,232);
+               _faceFrames.push(m);
+               i++;
             }
-            _loc2_++;
+            j++;
          }
       }
       
-      override public function drawFrame(param1:int, param2:int = 0, param3:Boolean = true) : void
+      override public function drawFrame(frame:int, type:int = 0, clearOld:Boolean = true) : void
       {
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
+         var hairMaxFrame:int = 0;
+         var armMaxFrame:int = 0;
          _body.bitmapData.fillRect(_rect,0);
          if(_info.getShowSuits() && _suitBmd)
          {
-            _body.bitmapData.copyPixels(_suitBmd,_frames[param1],new Point(0,0),null,null,true);
+            _body.bitmapData.copyPixels(_suitBmd,_frames[frame],new Point(0,0),null,null,true);
          }
          else if(_faceBmd != null && _faceUpBmd != null)
          {
-            _body.bitmapData.copyPixels(_faceBmd,_frames[param1],new Point(0,0),null,null,true);
+            _body.bitmapData.copyPixels(_faceBmd,_frames[frame],new Point(0,0),null,null,true);
             if(_hairBmd)
             {
-               _loc4_ = _hairBmd.width / characterWidth - 1;
-               if(_hairCurrentFrame >= _loc4_ * 3)
+               hairMaxFrame = _hairBmd.width / characterWidth - 1;
+               if(_hairCurrentFrame >= hairMaxFrame * 3)
                {
                   _hairCurrentFrame = 0;
                }
@@ -532,8 +528,8 @@ package ddt.view.character
          }
          if(_armBmd != null)
          {
-            _loc5_ = _armBmd.width / characterWidth - 1;
-            if(_armCurrentFrame >= _loc5_ * 3)
+            armMaxFrame = _armBmd.width / characterWidth - 1;
+            if(_armCurrentFrame >= armMaxFrame * 3)
             {
                _armCurrentFrame = 0;
             }
@@ -547,9 +543,9 @@ package ddt.view.character
       
       public function bodyOffset() : void
       {
-         var _loc1_:String = _info.Style;
-         var _loc2_:int = _loc1_.split(",")[7].split("|")[0];
-         if(!(int(_loc2_) - 13730))
+         var __style:String = _info.Style;
+         var suitID:int = __style.split(",")[7].split("|")[0];
+         if(!(int(suitID) - 13730))
          {
             _body.x = -12;
             _wing && _loc3_;

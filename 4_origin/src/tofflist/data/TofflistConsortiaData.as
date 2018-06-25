@@ -13,9 +13,9 @@ package tofflist.data
          super();
       }
       
-      public function set playerInfo(param1:TofflistPlayerInfo) : void
+      public function set playerInfo(info:TofflistPlayerInfo) : void
       {
-         this._playerInfo = param1;
+         this._playerInfo = info;
       }
       
       public function get playerInfo() : TofflistPlayerInfo
@@ -23,9 +23,9 @@ package tofflist.data
          return this._playerInfo;
       }
       
-      public function set consortiaInfo(param1:TofflistConsortiaInfo) : void
+      public function set consortiaInfo(info:TofflistConsortiaInfo) : void
       {
-         this._consortiaInfo = param1;
+         this._consortiaInfo = info;
       }
       
       public function get consortiaInfo() : TofflistConsortiaInfo

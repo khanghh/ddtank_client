@@ -31,17 +31,17 @@ package goldmine.model
          super();
       }
       
-      public function setValue(param1:int, param2:int, param3:int, param4:int, param5:int, param6:int, param7:int, param8:int, param9:int) : void
+      public function setValue($score:int, $maxTimes:int, $currentTimes:int, $usedTimes:int, $mineSmall:int, $mineMiddle:int, $mineBig:int, $nextScoreNeed:int, $goldNeed:int) : void
       {
-         score = param1;
-         maxTimes = param2;
-         currentTimes = param3;
-         usedTimes = param4;
-         mineSmall = param5;
-         mineMiddle = param6;
-         mineBig = param7;
-         nextScoreNeed = param8;
-         goldNeed = param9;
+         score = $score;
+         maxTimes = $maxTimes;
+         currentTimes = $currentTimes;
+         usedTimes = $usedTimes;
+         mineSmall = $mineSmall;
+         mineMiddle = $mineMiddle;
+         mineBig = $mineBig;
+         nextScoreNeed = $nextScoreNeed;
+         goldNeed = $goldNeed;
       }
    }
 }

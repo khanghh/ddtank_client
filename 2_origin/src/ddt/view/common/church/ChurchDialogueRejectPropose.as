@@ -42,9 +42,9 @@ package ddt.view.common.church
          return _msgInfo;
       }
       
-      public function set msgInfo(param1:String) : void
+      public function set msgInfo(value:String) : void
       {
-         _msgInfo = param1;
+         _msgInfo = value;
          _contentTxt.text = LanguageMgr.GetTranslation("common.church.ChurchDialogueRejectPropose.contentText.text",_msgInfo);
       }
       
@@ -71,9 +71,9 @@ package ddt.view.common.church
          addEventListener("response",onFrameResponse);
       }
       
-      private function onFrameResponse(param1:FrameEvent) : void
+      private function onFrameResponse(evt:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:

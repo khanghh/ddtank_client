@@ -31,18 +31,18 @@ package ddt.view.buff.buffButton
          this.useHandCursor = true;
       }
       
-      override protected function __onclick(param1:MouseEvent) : void
+      override protected function __onclick(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
-         super.__onclick(param1);
+         var viewPos:* = null;
+         super.__onclick(event);
          if(!_helpViewShow)
          {
-            param1.stopImmediatePropagation();
+            event.stopImmediatePropagation();
             _labyrinthBuffTipView = new LabyrinthBuffTipView();
             _helpViewShow = true;
-            _loc2_ = this.localToGlobal(new Point(this.x + this.width,this.y + this.height));
-            _loc2_.x = _loc2_.x - 252;
-            PositionUtils.setPos(_labyrinthBuffTipView,_loc2_);
+            viewPos = this.localToGlobal(new Point(this.x + this.width,this.y + this.height));
+            viewPos.x = viewPos.x - 252;
+            PositionUtils.setPos(_labyrinthBuffTipView,viewPos);
             LayerManager.Instance.addToLayer(_labyrinthBuffTipView,3);
             stage.addEventListener("click",__closeChairChnnel);
          }
@@ -54,13 +54,13 @@ package ddt.view.buff.buffButton
          }
       }
       
-      protected function __closeChairChnnel(param1:MouseEvent) : void
+      protected function __closeChairChnnel(event:MouseEvent) : void
       {
          if(!_labyrinthBuffTipView)
          {
             return;
          }
-         if(!(param1.stageX >= _labyrinthBuffTipView.x && param1.stageX <= _labyrinthBuffTipView.x + _labyrinthBuffTipView.width && param1.stageY >= _labyrinthBuffTipView.y && param1.stageY <= _labyrinthBuffTipView.y + _labyrinthBuffTipView.height))
+         if(!(event.stageX >= _labyrinthBuffTipView.x && event.stageX <= _labyrinthBuffTipView.x + _labyrinthBuffTipView.width && event.stageY >= _labyrinthBuffTipView.y && event.stageY <= _labyrinthBuffTipView.y + _labyrinthBuffTipView.height))
          {
             stage.removeEventListener("click",__closeChairChnnel);
             if(_labyrinthBuffTipView)
@@ -72,17 +72,16 @@ package ddt.view.buff.buffButton
          }
       }
       
-      private function checkIsVBoxChild(param1:*, param2:VBox) : Boolean
+      private function checkIsVBoxChild(target:*, buffItemVBox:VBox) : Boolean
       {
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < param2.numChildren)
+         var i:int = 0;
+         for(i = 0; i < buffItemVBox.numChildren; )
          {
-            if(param1 == param2.getChildAt(_loc3_))
+            if(target == buffItemVBox.getChildAt(i))
             {
                return true;
             }
-            _loc3_++;
+            i++;
          }
          return false;
       }

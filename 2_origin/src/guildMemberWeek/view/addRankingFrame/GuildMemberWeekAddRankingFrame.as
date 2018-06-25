@@ -60,15 +60,15 @@ package guildMemberWeek.view.addRankingFrame
          return _itemList;
       }
       
-      public function set itemList(param1:Vector.<AddRankingWorkItem>) : void
+      public function set itemList(Message:Vector.<AddRankingWorkItem>) : void
       {
-         this._itemList = param1;
+         this._itemList = Message;
       }
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          titleText = LanguageMgr.GetTranslation("guildMemberWeek.MainDataLabel.AddRankingGiftLabel");
          _BG = ComponentFactory.Instance.creat("asset.guildmemberweek.AddRankingFrameBG");
          _DeductTaxExplainBG = ComponentFactory.Instance.creat("asset.guildmemberweek.AddRankingFrameExplainBG");
@@ -98,14 +98,13 @@ package guildMemberWeek.view.addRankingFrame
          addToContent(_GetPointBookExplainText);
          _list = ComponentFactory.Instance.creatComponentByStylename("guildmemberweek.addRankingListBox");
          _itemList = new Vector.<AddRankingWorkItem>();
-         _loc2_ = 0;
-         while(_loc2_ < 10)
+         for(i = 0; i < 10; )
          {
-            _loc1_ = ComponentFactory.Instance.creatCustomObject("guildmemberweek.addRanking.AddRankingWorkItem");
-            _loc1_.initView(_loc2_ + 1);
-            itemList.push(_loc1_);
-            _list.addChild(itemList[_loc2_]);
-            _loc2_++;
+            item = ComponentFactory.Instance.creatCustomObject("guildmemberweek.addRanking.AddRankingWorkItem");
+            item.initView(i + 1);
+            itemList.push(item);
+            _list.addChild(itemList[i]);
+            i++;
          }
          _panel = ComponentFactory.Instance.creatComponentByStylename("guildmemberweek.addRankingFrame.panel");
          _panel.setView(_list);
@@ -135,15 +134,15 @@ package guildMemberWeek.view.addRankingFrame
          _NoBtn.removeEventListener("click",__CancelHandler);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             CancelThis();
          }
       }
       
-      private function __CancelHandler(param1:MouseEvent) : void
+      private function __CancelHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          CancelThis();
@@ -155,7 +154,7 @@ package guildMemberWeek.view.addRankingFrame
          GuildMemberWeekManager.instance.CloseAddRankingFrame();
       }
       
-      private function __OkHandler(param1:MouseEvent) : void
+      private function __OkHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.DutyLevel > 3 || !GuildMemberWeekManager.instance.model.CanAddPointBook)
@@ -163,44 +162,44 @@ package guildMemberWeek.view.addRankingFrame
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("guildMemberWeek.AddRankingFrame.CantNotAddPointBook"));
             return;
          }
-         var _loc4_:int = 0;
-         var _loc2_:int = _itemList.length;
-         var _loc3_:Array = [];
-         _loc4_;
-         while(_loc4_ < _loc2_)
+         var i:int = 0;
+         var L:int = _itemList.length;
+         var TempVector:Array = [];
+         i;
+         while(i < L)
          {
-            _loc3_.push(itemList[_loc4_].AddMoney);
-            _loc4_++;
+            TempVector.push(itemList[i].AddMoney);
+            i++;
          }
-         GuildMemberWeekManager.instance.model.PlayerAddPointBook = _loc3_.concat();
+         GuildMemberWeekManager.instance.model.PlayerAddPointBook = TempVector.concat();
          GuildMemberWeekManager.instance.Controller.CheckAddBookIsOK();
       }
       
-      public function ChangePointBookShow(param1:int, param2:int) : void
+      public function ChangePointBookShow(ItemID:int, Money:int) : void
       {
-         var _loc3_:int = param1 - 1;
-         itemList[_loc3_].ChangeGetPointBook(param2);
+         var i:int = ItemID - 1;
+         itemList[i].ChangeGetPointBook(Money);
       }
       
-      public function ChangePlayerMoneyShow(param1:Number) : void
+      public function ChangePlayerMoneyShow(Money:Number) : void
       {
-         _PlayerPointBookText.text = String(param1);
+         _PlayerPointBookText.text = String(Money);
       }
       
       private function disposeItems() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
+         var i:int = 0;
+         var L:int = 0;
          if(itemList)
          {
-            _loc2_ = 0;
-            _loc1_ = itemList.length;
-            _loc2_;
-            while(_loc2_ < _loc1_)
+            i = 0;
+            L = itemList.length;
+            i;
+            while(i < L)
             {
-               ObjectUtils.disposeObject(itemList[_loc2_]);
-               itemList[_loc2_] = null;
-               _loc2_++;
+               ObjectUtils.disposeObject(itemList[i]);
+               itemList[i] = null;
+               i++;
             }
             itemList = null;
          }

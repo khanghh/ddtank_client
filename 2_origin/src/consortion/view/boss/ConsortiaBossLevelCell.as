@@ -19,10 +19,10 @@ package consortion.view.boss
       
       private var _level:int;
       
-      public function ConsortiaBossLevelCell(param1:int)
+      public function ConsortiaBossLevelCell(level:int)
       {
          super();
-         _level = param1;
+         _level = level;
          this.buttonMode = true;
          _txt = ComponentFactory.Instance.creatComponentByStylename("consortion.bossFrame.levelShowTxt");
          PositionUtils.setPos(_txt,"consortiaBoss.levelView.cellTxtPos");
@@ -34,26 +34,26 @@ package consortion.view.boss
          addEventListener("mouseOut",outHandler,false,0,true);
       }
       
-      public function judgeMaxLevel(param1:int) : void
+      public function judgeMaxLevel(maxLevel:int) : void
       {
-         if(_level > param1)
+         if(_level > maxLevel)
          {
             this.mouseEnabled = false;
             this.filters = ComponentFactory.Instance.creatFilters("grayFilter");
          }
       }
       
-      public function update(param1:String) : void
+      public function update(langStr:String) : void
       {
-         _txt.text = LanguageMgr.GetTranslation(param1,_level);
+         _txt.text = LanguageMgr.GetTranslation(langStr,_level);
       }
       
-      public function changeLightSizePos(param1:int, param2:int, param3:int, param4:int) : void
+      public function changeLightSizePos(width:int, height:int, x:int, y:int) : void
       {
-         _light.width = param1;
-         _light.height = param2;
-         _light.x = param3;
-         _light.y = param4;
+         _light.width = width;
+         _light.height = height;
+         _light.x = x;
+         _light.y = y;
       }
       
       public function get level() : int
@@ -61,12 +61,12 @@ package consortion.view.boss
          return _level;
       }
       
-      private function overHandler(param1:MouseEvent) : void
+      private function overHandler(event:MouseEvent) : void
       {
          _light.visible = true;
       }
       
-      private function outHandler(param1:MouseEvent) : void
+      private function outHandler(event:MouseEvent) : void
       {
          _light.visible = false;
       }

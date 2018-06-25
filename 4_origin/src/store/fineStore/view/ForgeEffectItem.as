@@ -22,53 +22,52 @@ package store.fineStore.view
       
       private var _stateText:FilterFrameText;
       
-      public function ForgeEffectItem(param1:int, param2:String, param3:Array, param4:int)
+      public function ForgeEffectItem(type:int, value:String, dataList:Array, state:int)
       {
-         var _loc7_:int = 0;
-         var _loc5_:* = null;
+         var i:int = 0;
+         var text:* = null;
          super();
-         var _loc6_:Image = ComponentFactory.Instance.creatComponentByStylename("fineSuit.tips.image");
-         PositionUtils.setPos(_loc6_,"storeFine.tipsImagePos");
-         addChild(_loc6_);
-         _loc6_.setFrame(param1 + 1);
+         var image:Image = ComponentFactory.Instance.creatComponentByStylename("fineSuit.tips.image");
+         PositionUtils.setPos(image,"storeFine.tipsImagePos");
+         addChild(image);
+         image.setFrame(type + 1);
          _content = ComponentFactory.Instance.creatComponentByStylename("storeFine.effect.titleContent");
          addChild(_content);
          _titleText = ComponentFactory.Instance.creatComponentByStylename("storeFine.effect.titleText");
-         _titleText.text = param2;
+         _titleText.text = value;
          _content.addChild(_titleText);
-         _loc7_ = 0;
-         while(_loc7_ < param3.length)
+         for(i = 0; i < dataList.length; )
          {
-            _loc5_ = UICreatShortcut.creatAndAdd("storeFine.effect.contentText",this);
-            _loc5_.x = _loc7_ % 2 == 0?32:Number(130);
-            _loc5_.y = Math.ceil((_loc7_ + 1) / 2) * 19;
-            _loc5_.text = param3[_loc7_];
-            addChild(_loc5_);
-            _loc7_++;
+            text = UICreatShortcut.creatAndAdd("storeFine.effect.contentText",this);
+            text.x = i % 2 == 0?32:Number(130);
+            text.y = Math.ceil((i + 1) / 2) * 19;
+            text.text = dataList[i];
+            addChild(text);
+            i++;
          }
          updateTipData();
-         creatStateText(param4);
+         creatStateText(state);
       }
       
-      private function creatStateText(param1:int) : void
+      private function creatStateText(state:int) : void
       {
-         if(param1 > 0)
+         if(state > 0)
          {
             if(_stateText)
             {
                ObjectUtils.disposeObject(_stateText);
                _stateText = null;
             }
-            _stateText = ComponentFactory.Instance.creatComponentByStylename("storeFine.cell.stateText" + param1);
-            _stateText.text = LanguageMgr.GetTranslation("storeFine.forge.state" + param1);
+            _stateText = ComponentFactory.Instance.creatComponentByStylename("storeFine.cell.stateText" + state);
+            _stateText.text = LanguageMgr.GetTranslation("storeFine.forge.state" + state);
             addChild(_stateText);
          }
       }
       
-      public function updateTipData(param1:int = 0) : void
+      public function updateTipData(state:int = 0) : void
       {
          _content.tipData = PlayerManager.Instance.Self.fineSuitExp;
-         creatStateText(param1);
+         creatStateText(state);
       }
       
       public function dispose() : void

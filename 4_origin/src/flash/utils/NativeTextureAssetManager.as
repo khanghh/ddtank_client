@@ -21,85 +21,85 @@ package flash.utils
          _btmdAtlas = new Dictionary();
       }
       
-      public function addBitmapData(param1:String, param2:BitmapData) : void
+      public function addBitmapData(name:String, btmd:BitmapData) : void
       {
-         if(param1 in param2)
+         if(name in btmd)
          {
-            _btmds[param1].dispose();
+            _btmds[name].dispose();
          }
-         _btmds[param1] = param2;
+         _btmds[name] = btmd;
       }
       
-      public function addBitmapDataAtlas(param1:String, param2:NativeTextureAtlas) : void
+      public function addBitmapDataAtlas(name:String, atlas:NativeTextureAtlas) : void
       {
-         if(param1 in _btmdAtlas)
+         if(name in _btmdAtlas)
          {
-            _btmdAtlas[param1].dispose();
+            _btmdAtlas[name].dispose();
          }
-         _btmdAtlas[param1] = param2;
+         _btmdAtlas[name] = atlas;
       }
       
-      public function removeBitmapData(param1:String, param2:Boolean = true) : void
+      public function removeBitmapData(name:String, dispose:Boolean = true) : void
       {
-         if(param2 && param1 in _btmds)
+         if(dispose && name in _btmds)
          {
-            _btmds[param1].dispose();
-         }
-      }
-      
-      public function removeBitmapDataAtlas(param1:String, param2:Boolean = true) : void
-      {
-         if(param2 && param1 in _btmdAtlas)
-         {
-            _btmdAtlas[param1].dispose();
+            _btmds[name].dispose();
          }
       }
       
-      public function getBitmapData(param1:String) : BitmapData
+      public function removeBitmapDataAtlas(name:String, dispose:Boolean = true) : void
       {
-         if(param1 in _btmds)
+         if(dispose && name in _btmdAtlas)
          {
-            return (_btmds[param1] as BitmapData).clone();
+            _btmdAtlas[name].dispose();
+         }
+      }
+      
+      public function getBitmapData(name:String) : BitmapData
+      {
+         if(name in _btmds)
+         {
+            return (_btmds[name] as BitmapData).clone();
          }
          var _loc4_:int = 0;
          var _loc3_:* = _btmdAtlas;
-         for each(var _loc2_ in _btmdAtlas)
+         for each(var atlas in _btmdAtlas)
          {
-            if(_loc2_.getRegion(param1))
+            if(atlas.getRegion(name))
             {
-               return parseNativeTexture(param1,_loc2_);
+               return parseNativeTexture(name,atlas);
             }
          }
          return null;
       }
       
-      private function parseNativeTexture(param1:String, param2:NativeTextureAtlas) : BitmapData
+      private function parseNativeTexture(name:String, atlas:NativeTextureAtlas) : BitmapData
       {
-         var _loc3_:Rectangle = param2.getRegion(param1);
-         var _loc4_:Rectangle = param2.getFrame(param1) || new Rectangle();
-         var _loc6_:Rectangle = new Rectangle(_loc3_.x,_loc3_.y);
-         _loc6_.width = _loc4_.width || Number(_loc3_.width);
-         _loc6_.height = _loc4_.height || Number(_loc3_.height);
-         var _loc5_:BitmapData = new BitmapData(_loc6_.width,_loc6_.height,true,0);
-         _loc5_.copyPixels(param2.bitmapData,_loc6_,new Point(Math.abs(_loc4_.x),Math.abs(_loc4_.y)));
-         return _loc5_;
+         var region:Rectangle = atlas.getRegion(name);
+         var frame:Rectangle = atlas.getFrame(name) || new Rectangle();
+         var rect:Rectangle = new Rectangle(region.x,region.y);
+         rect.width = frame.width || Number(region.width);
+         rect.height = frame.height || Number(region.height);
+         var btmd:BitmapData = new BitmapData(rect.width,rect.height,true,0);
+         btmd.copyPixels(atlas.bitmapData,rect,new Point(Math.abs(frame.x),Math.abs(frame.y)));
+         return btmd;
       }
       
-      public function getBitmap(param1:String) : Bitmap
+      public function getBitmap(name:String) : Bitmap
       {
-         var _loc2_:BitmapData = getBitmapData(param1);
-         if(_loc2_ == null)
+         var btmd:BitmapData = getBitmapData(name);
+         if(btmd == null)
          {
             return null;
          }
-         return new Bitmap(_loc2_);
+         return new Bitmap(btmd);
       }
       
-      public function getBitmapDataAtlas(param1:String) : NativeTextureAtlas
+      public function getBitmapDataAtlas(name:String) : NativeTextureAtlas
       {
-         if(param1 in _btmdAtlas)
+         if(name in _btmdAtlas)
          {
-            return _btmdAtlas[param1];
+            return _btmdAtlas[name];
          }
          return null;
       }
@@ -115,15 +115,15 @@ package flash.utils
       {
          var _loc4_:int = 0;
          var _loc3_:* = _btmdAtlas;
-         for each(var _loc2_ in _btmdAtlas)
+         for each(var atlas in _btmdAtlas)
          {
-            _loc2_.dispose();
+            atlas.dispose();
          }
          var _loc6_:int = 0;
          var _loc5_:* = _btmds;
-         for each(var _loc1_ in _btmds)
+         for each(var btmd in _btmds)
          {
-            _loc1_.dispose();
+            btmd.dispose();
          }
          _btmdAtlas = null;
          _btmds = null;

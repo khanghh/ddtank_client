@@ -66,7 +66,7 @@ package christmas
       
       private var _chooseRoomFrame:ChristmasChooseRoomFrame;
       
-      public function ChristmasCoreController(param1:PrivateClass)
+      public function ChristmasCoreController(pct:PrivateClass)
       {
          _appearPos = [];
          ChristmasRoomController;
@@ -102,9 +102,9 @@ package christmas
          _manager.addEventListener("xmas_game_start",onEvent);
       }
       
-      private function onEvent(param1:ChrismasEvent) : void
+      private function onEvent(e:ChrismasEvent) : void
       {
-         var _loc2_:* = param1.type;
+         var _loc2_:* = e.type;
          if("xmas_show" !== _loc2_)
          {
             if("xmas_playing_snowman" !== _loc2_)
@@ -143,7 +143,7 @@ package christmas
                      }
                      else
                      {
-                        snowIsUpdata(param1.data as ChristmasSystemItemsInfo);
+                        snowIsUpdata(e.data as ChristmasSystemItemsInfo);
                      }
                   }
                   else
@@ -163,19 +163,19 @@ package christmas
          }
          else
          {
-            enterChristmasGame(param1.data as PackageIn);
+            enterChristmasGame(e.data as PackageIn);
          }
       }
       
-      private function enterChristmasGame(param1:PackageIn) : void
+      private function enterChristmasGame(pkg:PackageIn) : void
       {
          _manager._goods = ShopManager.Instance.getGoodsByTemplateID(201145,1);
-         _model.isEnter = param1.readBoolean();
+         _model.isEnter = pkg.readBoolean();
          if(_model.isEnter)
          {
-            _model.gameBeginTime = param1.readDate();
-            _model.gameEndTime = param1.readDate();
-            _model.count = param1.readInt();
+            _model.gameBeginTime = pkg.readDate();
+            _model.gameEndTime = pkg.readDate();
+            _model.count = pkg.readInt();
             playingSnowmanEnter();
          }
          else
@@ -184,74 +184,74 @@ package christmas
          }
       }
       
-      protected function __alertBuyTime(param1:FrameEvent) : void
+      protected function __alertBuyTime(event:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc3_.removeEventListener("response",__alertBuyTime);
-         switch(int(param1.responseCode) - 2)
+         var alertFrame:* = null;
+         var frame:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__alertBuyTime);
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
                if(PlayerManager.Instance.Self.bagLocked)
                {
                   BaglockedManager.Instance.show();
-                  ObjectUtils.disposeObject(param1.currentTarget);
+                  ObjectUtils.disposeObject(event.currentTarget);
                   return;
                }
-               if(_loc3_.isBand)
+               if(frame.isBand)
                {
                   if(!checkMoney(true))
                   {
-                     _loc3_.dispose();
-                     _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("buried.alertInfo.noBindMoney"),"",LanguageMgr.GetTranslation("cancel"),true,false,false,2);
-                     _loc2_.addEventListener("response",onResponseHander);
+                     frame.dispose();
+                     alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("buried.alertInfo.noBindMoney"),"",LanguageMgr.GetTranslation("cancel"),true,false,false,2);
+                     alertFrame.addEventListener("response",onResponseHander);
                      return;
                   }
                }
                else if(!checkMoney(false))
                {
-                  _loc3_.dispose();
-                  _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-                  _loc2_.addEventListener("response",_response);
+                  frame.dispose();
+                  alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+                  alertFrame.addEventListener("response",_response);
                   return;
                }
-               buyPlayingSnowmanVolumes(_loc3_.isBand);
+               buyPlayingSnowmanVolumes(frame.isBand);
                break;
          }
-         _loc3_.dispose();
+         frame.dispose();
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_response);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         (evt.currentTarget as BaseAlerFrame).removeEventListener("response",_response);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             LeavePageManager.leaveToFillPath();
          }
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(evt.currentTarget);
       }
       
-      private function onResponseHander(param1:FrameEvent) : void
+      private function onResponseHander(e:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",onResponseHander);
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var alertFrame:* = null;
+         (e.currentTarget as BaseAlerFrame).removeEventListener("response",onResponseHander);
+         if(e.responseCode == 2 || e.responseCode == 3)
          {
             if(!checkMoney(false))
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
-               _loc2_.addEventListener("response",_response);
+               alertFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.title"),LanguageMgr.GetTranslation("tank.room.RoomIIView2.notenoughmoney.content"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,true,2);
+               alertFrame.addEventListener("response",_response);
                return;
             }
             buyPlayingSnowmanVolumes(false);
          }
-         param1.currentTarget.dispose();
+         e.currentTarget.dispose();
       }
       
-      private function buyPlayingSnowmanVolumes(param1:Boolean) : void
+      private function buyPlayingSnowmanVolumes(isBand:Boolean) : void
       {
-         SocketManager.Instance.out.sendBuyPlayingSnowmanVolumes(param1);
+         SocketManager.Instance.out.sendBuyPlayingSnowmanVolumes(isBand);
       }
       
       public function playingSnowmanEnter() : void
@@ -295,12 +295,12 @@ package christmas
          SocketManager.Instance.out.enterChristmasRoomIsTrue();
       }
       
-      private function snowIsUpdata(param1:ChristmasSystemItemsInfo) : void
+      private function snowIsUpdata(curSnowmenUpInfo:ChristmasSystemItemsInfo) : void
       {
          if(_makingSnoFrame)
          {
             _makingSnoFrame.upDatafitCount();
-            _makingSnoFrame.snowmenAction(param1);
+            _makingSnoFrame.snowmenAction(curSnowmenUpInfo);
             _manager.dispatchEvent(new ChristmasRoomEvent("score_convert"));
          }
       }
@@ -313,10 +313,10 @@ package christmas
       
       public function getBagSnowPacksCount() : int
       {
-         var _loc3_:SelfInfo = PlayerManager.Instance.Self;
-         var _loc1_:BagInfo = _loc3_.getBag(1);
-         var _loc2_:int = _loc1_.getItemCountByTemplateId(201144);
-         return _loc2_;
+         var _selfInfo:SelfInfo = PlayerManager.Instance.Self;
+         var bagInfo:BagInfo = _selfInfo.getBag(1);
+         var conut:int = bagInfo.getItemCountByTemplateId(201144);
+         return conut;
       }
       
       public function _onClickChristmasIcon() : void
@@ -351,27 +351,27 @@ package christmas
       
       public function getCount() : int
       {
-         var _loc3_:SelfInfo = PlayerManager.Instance.Self;
-         var _loc1_:BagInfo = _loc3_.getBag(1);
-         var _loc2_:int = _loc1_.getItemCountByTemplateId(201144);
-         return _loc2_;
+         var _selfInfo:SelfInfo = PlayerManager.Instance.Self;
+         var bagInfo:BagInfo = _selfInfo.getBag(1);
+         var conut:int = bagInfo.getItemCountByTemplateId(201144);
+         return conut;
       }
       
-      public function showTransactionFrame(param1:String, param2:Function = null, param3:Function = null, param4:Sprite = null, param5:Boolean = true, param6:Boolean = false, param7:int = 0) : void
+      public function showTransactionFrame(str:String, payFun:Function = null, clickFun:Function = null, target:Sprite = null, isShow:Boolean = true, isAddFrame:Boolean = false, select:int = 0) : void
       {
          _snowPackDoubleFrame = ComponentFactory.Instance.creatComponentByStylename("christmas.views.SnowPackDoubleFrame");
-         _snowPackDoubleFrame.buyFunction = param2;
-         _snowPackDoubleFrame.clickFunction = param3;
-         _snowPackDoubleFrame.setIsShow(param5,param7);
-         _snowPackDoubleFrame.setTxt(param1);
-         _snowPackDoubleFrame.initAddView(param6);
-         _snowPackDoubleFrame.target = param4;
+         _snowPackDoubleFrame.buyFunction = payFun;
+         _snowPackDoubleFrame.clickFunction = clickFun;
+         _snowPackDoubleFrame.setIsShow(isShow,select);
+         _snowPackDoubleFrame.setTxt(str);
+         _snowPackDoubleFrame.initAddView(isAddFrame);
+         _snowPackDoubleFrame.target = target;
          LayerManager.Instance.addToLayer(_snowPackDoubleFrame,3,true,2);
       }
       
-      public function checkMoney(param1:Boolean) : Boolean
+      public function checkMoney(isBand:Boolean) : Boolean
       {
-         if(param1)
+         if(isBand)
          {
             if(PlayerManager.Instance.Self.BandMoney < _manager._goods.AValue1)
             {
@@ -399,20 +399,20 @@ package christmas
          }
       }
       
-      public function returnComponentBnt(param1:BaseButton, param2:String) : Component
+      public function returnComponentBnt(bnt:BaseButton, tipName:String) : Component
       {
-         var _loc3_:Component = new Component();
-         _loc3_.tipData = param2;
-         _loc3_.tipDirctions = "0,1,2";
-         _loc3_.tipStyle = "ddt.view.tips.OneLineTip";
-         _loc3_.tipGapH = 20;
-         _loc3_.width = param1.width;
-         _loc3_.x = param1.x;
-         _loc3_.y = param1.y;
-         param1.x = 0;
-         param1.y = 0;
-         _loc3_.addChild(param1);
-         return _loc3_;
+         var compoent:Component = new Component();
+         compoent.tipData = tipName;
+         compoent.tipDirctions = "0,1,2";
+         compoent.tipStyle = "ddt.view.tips.OneLineTip";
+         compoent.tipGapH = 20;
+         compoent.width = bnt.width;
+         compoent.x = bnt.x;
+         compoent.y = bnt.y;
+         bnt.x = 0;
+         bnt.y = 0;
+         compoent.addChild(bnt);
+         return compoent;
       }
       
       public function exitGame() : void
@@ -420,9 +420,9 @@ package christmas
          GameInSocketOut.sendGamePlayerExit();
       }
       
-      public function CanGetGift(param1:int) : Boolean
+      public function CanGetGift(step:int) : Boolean
       {
-         return (ChristmasCoreController.instance.model.awardState >> param1 & 1) == 0;
+         return (ChristmasCoreController.instance.model.awardState >> step & 1) == 0;
       }
       
       public function get model() : ChristmasModel
@@ -440,9 +440,9 @@ package christmas
          return _manager.canMakeSnowMen;
       }
       
-      public function set canMakeSnowMen(param1:Boolean) : void
+      public function set canMakeSnowMen(value:Boolean) : void
       {
-         _manager.canMakeSnowMen = param1;
+         _manager.canMakeSnowMen = value;
       }
       
       public function get christmasIcon() : MovieClip

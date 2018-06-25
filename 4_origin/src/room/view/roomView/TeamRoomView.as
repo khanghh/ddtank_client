@@ -13,9 +13,9 @@ package room.view.roomView
    {
        
       
-      public function TeamRoomView(param1:RoomInfo)
+      public function TeamRoomView(info:RoomInfo)
       {
-         super(param1);
+         super(info);
       }
       
       override protected function initView() : void
@@ -35,61 +35,57 @@ package room.view.roomView
          _crossZoneBtn.enable = false;
       }
       
-      override protected function __startClick(param1:MouseEvent) : void
+      override protected function __startClick(evt:MouseEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < 4)
+         var i:int = 0;
+         var num:int = 0;
+         for(i = 0; i < 4; )
          {
-            if(_playerItems[_loc3_].info)
+            if(_playerItems[i].info)
             {
-               _loc2_++;
+               num++;
             }
-            _loc3_++;
+            i++;
          }
-         if(_loc2_ < 2)
+         if(num < 2)
          {
             SoundManager.instance.play("008");
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("teamBattle.room.peopleAlert"));
             return;
          }
-         super.__startClick(param1);
+         super.__startClick(evt);
       }
       
       override protected function initPlayerItems() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < _playerItems.length)
+         var i:int = 0;
+         var item:* = null;
+         var viewerItem:* = null;
+         for(i = 0; i < _playerItems.length; )
          {
-            _loc2_ = _playerItems[_loc3_] as RoomPlayerItem;
-            _loc2_.info = _info.findPlayerByPlace(_loc3_);
-            _loc2_.opened = _info.placesState[_loc3_] != 0;
-            _loc3_++;
+            item = _playerItems[i] as RoomPlayerItem;
+            item.info = _info.findPlayerByPlace(i);
+            item.opened = _info.placesState[i] != 0;
+            i++;
          }
          if(isViewerRoom)
          {
-            _loc3_ = 0;
-            while(_loc3_ < 2)
+            for(i = 0; i < 2; i++)
             {
-               if(_viewerItems && _viewerItems[_loc3_])
+               if(_viewerItems && _viewerItems[i])
                {
-                  _loc1_ = _viewerItems[_loc3_] as RoomViewerItem;
+                  viewerItem = _viewerItems[i] as RoomViewerItem;
                   if(RoomManager.SPECIAL_BOSS_MAPID.indexOf(_info.mapId) > -1)
                   {
-                     _loc1_.info = null;
-                     _loc1_.opened = false;
+                     viewerItem.info = null;
+                     viewerItem.opened = false;
                   }
                   else
                   {
-                     _loc1_.info = _info.findPlayerByPlace(_loc3_ + 8);
-                     _loc1_.opened = false;
+                     viewerItem.info = _info.findPlayerByPlace(i + 8);
+                     viewerItem.opened = false;
                   }
                }
-               _loc3_++;
             }
          }
       }

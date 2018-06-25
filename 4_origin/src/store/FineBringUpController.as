@@ -83,7 +83,7 @@ package store
       
       private var _quickEatInfo:InventoryItemInfo;
       
-      public function FineBringUpController(param1:inner)
+      public function FineBringUpController(single:inner)
       {
          super();
       }
@@ -102,9 +102,9 @@ package store
          return _usingLock;
       }
       
-      public function set usingLock(param1:Boolean) : void
+      public function set usingLock(value:Boolean) : void
       {
-         _usingLock = param1;
+         _usingLock = value;
       }
       
       public function get needPlayMovie() : Boolean
@@ -120,24 +120,24 @@ package store
          SocketManager.Instance.removeEventListener(PkgEvent.format(308),onBringUpEatResult);
       }
       
-      public function setup(param1:Sprite) : void
+      public function setup($container:Sprite) : void
       {
          if(_hasSetedup)
          {
             return;
          }
          _hasSetedup = true;
-         _container = param1;
+         _container = $container;
          _onSending = false;
          expData = null;
          _state = "";
          SocketManager.Instance.addEventListener(PkgEvent.format(308),onBringUpEatResult);
       }
       
-      protected function onBringUpEatResult(param1:PkgEvent) : void
+      protected function onBringUpEatResult(e:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:Boolean = _loc3_.readBoolean();
+         var pkg:PackageIn = e.pkg;
+         var isSuccessful:Boolean = pkg.readBoolean();
          if(_state == "all" || _state == "all_remain" || _state == "all_Low")
          {
             eat(_state);
@@ -155,9 +155,9 @@ package store
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.bagII.cannotBringUp"),0,false,1);
       }
       
-      public function havePropertiesCanNotEaten(param1:InventoryItemInfo) : Boolean
+      public function havePropertiesCanNotEaten($item:InventoryItemInfo) : Boolean
       {
-         if(param1.hasComposeAttribte || param1.MagicLevel > 0 || param1.MagicExp > 0)
+         if($item.hasComposeAttribte || $item.MagicLevel > 0 || $item.MagicExp > 0)
          {
             return true;
          }
@@ -169,20 +169,20 @@ package store
          MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.bagII.bringup.canNotEatenProperties"),0,true,1);
       }
       
-      public function eatBtnClick(param1:InventoryItemInfo, param2:InventoryItemInfo = null) : void
+      public function eatBtnClick($info:InventoryItemInfo, $eatenInfo:InventoryItemInfo = null) : void
       {
          _eatBtnClk = true;
          completeNewHandGuide();
-         if(havePropertiesCanNotEaten(param2))
+         if(havePropertiesCanNotEaten($eatenInfo))
          {
             alertHavePropertiesCanNotEaten();
             dispatchEvent(new CEvent("eat_mouse_status_change","submited"));
             return;
          }
-         _tagItem = param1;
-         _tagTempleteItem = ItemManager.Instance.getTemplateById(param1.TemplateID);
-         _quickEatInfo = param2;
-         if(param2 == null)
+         _tagItem = $info;
+         _tagTempleteItem = ItemManager.Instance.getTemplateById($info.TemplateID);
+         _quickEatInfo = $eatenInfo;
+         if($eatenInfo == null)
          {
             _state = "one";
             eat(_state);
@@ -194,7 +194,7 @@ package store
          }
       }
       
-      public function eatAllBtnClick(param1:InventoryItemInfo) : void
+      public function eatAllBtnClick($info:InventoryItemInfo) : void
       {
          _eatBtnClk = true;
          if(needUpdate)
@@ -203,27 +203,27 @@ package store
             getCanBringUpData();
          }
          completeNewHandGuide();
-         _tagItem = param1;
-         _tagTempleteItem = ItemManager.Instance.getTemplateById(param1.TemplateID);
+         _tagItem = $info;
+         _tagTempleteItem = ItemManager.Instance.getTemplateById($info.TemplateID);
          _state = "all";
          _firstConfirm = true;
          eat(_state);
       }
       
-      public function isMaxLevel(param1:InventoryItemInfo) : Boolean
+      public function isMaxLevel($info:InventoryItemInfo) : Boolean
       {
-         return param1.FusionType == 0;
+         return $info.FusionType == 0;
       }
       
-      private function eat(param1:String, param2:ExpData = null) : void
+      private function eat($state:String, $expData:ExpData = null) : void
       {
-         $state = param1;
-         $expData = param2;
-         _responseEatAll = function(param1:FrameEvent):void
+         $state = $state;
+         $expData = $expData;
+         _responseEatAll = function(e:FrameEvent):void
          {
             SoundManager.instance.play("008");
-            (param1.currentTarget as BaseAlerFrame).removeEventListener("response",_responseEatAll);
-            switch(int(param1.responseCode))
+            (e.currentTarget as BaseAlerFrame).removeEventListener("response",_responseEatAll);
+            switch(int(e.responseCode))
             {
                case 0:
                case 1:
@@ -288,13 +288,13 @@ package store
                         break;
                   }
             }
-            (param1.currentTarget as BaseAlerFrame).dispose();
+            (e.currentTarget as BaseAlerFrame).dispose();
          };
-         onFirstShown = function(param1:FrameEvent):void
+         onFirstShown = function(e:FrameEvent):void
          {
             SoundManager.instance.play("008");
-            (param1.currentTarget as BaseAlerFrame).removeEventListener("response",onFirstShown);
-            switch(int(param1.responseCode) - 1)
+            (e.currentTarget as BaseAlerFrame).removeEventListener("response",onFirstShown);
+            switch(int(e.responseCode) - 1)
             {
                case 0:
                   _onSending = false;
@@ -360,8 +360,7 @@ package store
                aInfo.enableHtml = true;
                alert.info = aInfo;
                var experience:int = 0;
-               var i:int = 0;
-               while(i < expData.experienceArr.length)
+               for(var i:int = 0; i < expData.experienceArr.length; )
                {
                   if(expData.experienceArr[i] > experience)
                   {
@@ -392,8 +391,7 @@ package store
                aInfo.enableHtml = true;
                alert.info = aInfo;
                var experience:int = 0;
-               var i:int = 0;
-               while(i < expData.experienceArr.length)
+               for(var i:int = 0; i < expData.experienceArr.length; )
                {
                   if(expData.experienceArr[i] > experience)
                   {
@@ -424,8 +422,7 @@ package store
                aInfo.enableHtml = true;
                alert.info = aInfo;
                var experience:int = 0;
-               var i:int = 0;
-               while(i < expData.experienceArr.length)
+               for(var i:int = 0; i < expData.experienceArr.length; )
                {
                   if(expData.experienceArr[i] > experience)
                   {
@@ -450,25 +447,24 @@ package store
       
       private function sendEat() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
+         var args:* = null;
+         var len:int = 0;
+         var i:int = 0;
          _needPlayMovie = true;
          _onSending = true;
          if(expData != null && expData.placeArr.length > 0)
          {
-            _loc1_ = [];
-            _loc2_ = expData.placeArr.length;
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            args = [];
+            len = expData.placeArr.length;
+            for(i = 0; i < len; )
             {
-               _loc1_.push(0);
-               _loc1_.push(expData.placeArr.shift());
+               args.push(0);
+               args.push(expData.placeArr.shift());
                expData.experienceArr.shift();
                expData.nameArr.shift();
-               _loc3_++;
+               i++;
             }
-            GameInSocketOut.sendBringUpEat(_loc2_,_loc1_);
+            GameInSocketOut.sendBringUpEat(len,args);
          }
          if(!expData || expData.placeArr.length <= 0)
          {
@@ -478,90 +474,88 @@ package store
          }
       }
       
-      public function buyExp(param1:int, param2:int) : void
+      public function buyExp($type:int, $num:int) : void
       {
          _onSending = false;
          expData = null;
          _state = "";
-         GameInSocketOut.sendBringUpEat(0,param1,param2);
+         GameInSocketOut.sendBringUpEat(0,$type,$num);
       }
       
       private function alertLevel() : int
       {
-         var _loc1_:* = null;
-         var _loc4_:int = 0;
+         var item:* = null;
+         var i:int = 0;
          __alertLevel = 0;
-         var _loc2_:Array = _bagBringUpInfo.items.list;
-         var _loc3_:int = _loc2_.length;
+         var list:Array = _bagBringUpInfo.items.list;
+         var len:int = list.length;
          if(_state == "quick")
          {
-            _loc1_ = ItemManager.Instance.getTemplateById(_quickEatInfo.TemplateID);
-            __alertLevel = checkLevel(_loc1_);
+            item = ItemManager.Instance.getTemplateById(_quickEatInfo.TemplateID);
+            __alertLevel = checkLevel(item);
          }
          else
          {
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_)
+            for(i = 0; i < len; )
             {
-               if((_loc2_[_loc4_] as InventoryItemInfo).cellLocked != true)
+               if((list[i] as InventoryItemInfo).cellLocked != true)
                {
-                  if(!havePropertiesCanNotEaten(_loc2_[_loc4_]))
+                  if(!havePropertiesCanNotEaten(list[i]))
                   {
-                     _loc1_ = ItemManager.Instance.getTemplateById((_loc2_[_loc4_] as InventoryItemInfo).TemplateID);
-                     __alertLevel = checkLevel(_loc1_);
+                     item = ItemManager.Instance.getTemplateById((list[i] as InventoryItemInfo).TemplateID);
+                     __alertLevel = checkLevel(item);
                      if(!(_state == "all" && __alertLevel == 0 || _state == "all_Low" && __alertLevel > 1))
                      {
                         break;
                      }
                   }
                }
-               _loc4_++;
+               i++;
             }
          }
          return __alertLevel;
       }
       
-      private function checkLevel(param1:ItemTemplateInfo) : int
+      private function checkLevel($item:ItemTemplateInfo) : int
       {
-         var _loc2_:* = 0;
-         if(int(param1.Property1) >= 4)
+         var __level:* = 0;
+         if(int($item.Property1) >= 4)
          {
-            _loc2_ = 2 | _loc2_;
+            __level = 2 | __level;
          }
-         if(int(param1.Property3) > int(_tagTempleteItem.Property3) && int(param1.Property1) >= 2)
+         if(int($item.Property3) > int(_tagTempleteItem.Property3) && int($item.Property1) >= 2)
          {
-            _loc2_ = 4 | _loc2_;
+            __level = 4 | __level;
          }
-         return _loc2_;
+         return __level;
       }
       
-      private function getExperienceList(param1:InventoryItemInfo, param2:String) : ExpData
+      private function getExperienceList(tagItem:InventoryItemInfo, type:String) : ExpData
       {
-         tagItem = param1;
-         type = param2;
+         tagItem = tagItem;
+         type = type;
          search = function():void
          {
-            var _loc5_:int = 0;
-            var _loc1_:* = null;
-            var _loc2_:Number = NaN;
-            var _loc3_:Array = _bagBringUpInfo.items.list;
-            _loc3_.sortOn("Place",16);
-            var _loc4_:int = _loc3_.length;
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_)
+            var i:int = 0;
+            var item:* = null;
+            var expCanEat:Number = NaN;
+            var list:Array = _bagBringUpInfo.items.list;
+            list.sortOn("Place",16);
+            var len:int = list.length;
+            for(i = 0; i < len; )
             {
-               _loc1_ = _loc3_[_loc5_] as InventoryItemInfo;
-               if(_loc1_.cellLocked == false && _loc1_.getRemainDate() > 0 && tagItem.Place != _loc1_.Place)
+               item = list[i] as InventoryItemInfo;
+               if(item.cellLocked == false && item.getRemainDate() > 0 && tagItem.Place != item.Place)
                {
-                  if(!havePropertiesCanNotEaten(_loc1_))
+                  if(!havePropertiesCanNotEaten(item))
                   {
-                     if(!(_state == "all_Low" && checkLevel(_loc1_) > 1))
+                     if(!(_state == "all_Low" && checkLevel(item) > 1))
                      {
-                        _loc2_ = calculateExperience(tagItemTempleteID,_loc1_);
-                        obj.totalExp = obj.totalExp + _loc2_;
-                        obj.experienceArr.push(_loc2_);
-                        obj.placeArr.push(_loc1_.Place);
-                        obj.nameArr.push(_loc1_.Name);
+                        expCanEat = calculateExperience(tagItemTempleteID,item);
+                        obj.totalExp = obj.totalExp + expCanEat;
+                        obj.experienceArr.push(expCanEat);
+                        obj.placeArr.push(item.Place);
+                        obj.nameArr.push(item.Name);
                         if(!isAll)
                         {
                            break;
@@ -569,7 +563,7 @@ package store
                      }
                   }
                }
-               _loc5_++;
+               i++;
             }
          };
          var obj:ExpData = new ExpData();
@@ -587,63 +581,63 @@ package store
          return obj;
       }
       
-      private function calculateExperience(param1:int, param2:InventoryItemInfo) : Number
+      private function calculateExperience(tagItemTempleteID:int, beEatenItem:InventoryItemInfo) : Number
       {
-         var _loc5_:* = 0;
-         var _loc7_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(param1);
-         var _loc8_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(param2.TemplateID);
-         var _loc11_:int = _loc7_.Property1;
-         var _loc10_:int = _loc7_.Property3;
-         var _loc9_:int = _loc8_.Property1;
-         var _loc4_:int = _loc8_.Property2;
-         var _loc3_:* = int(_loc8_.Property3);
-         var _loc6_:* = int(param2.curExp);
-         if(_loc10_ < _loc3_)
+         var exp:* = 0;
+         var tagTempleteInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(tagItemTempleteID);
+         var beEatenTempleteInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(beEatenItem.TemplateID);
+         var tagLevel:int = tagTempleteInfo.Property1;
+         var tagQuality:int = tagTempleteInfo.Property3;
+         var eatenLevel:int = beEatenTempleteInfo.Property1;
+         var eatenOrigExp:int = beEatenTempleteInfo.Property2;
+         var eatenQuality:* = int(beEatenTempleteInfo.Property3);
+         var eatenCurExp:* = int(beEatenItem.curExp);
+         if(tagQuality < eatenQuality)
          {
-            _loc8_ = getTempleteInfoByLevel(_loc9_,_loc7_);
-            _loc9_;
-            _loc4_ = _loc8_.Property2;
-            _loc3_ = _loc10_;
-            _loc6_ = _loc4_;
+            beEatenTempleteInfo = getTempleteInfoByLevel(eatenLevel,tagTempleteInfo);
+            eatenLevel;
+            eatenOrigExp = beEatenTempleteInfo.Property2;
+            eatenQuality = tagQuality;
+            eatenCurExp = eatenOrigExp;
          }
-         if(_loc6_ == 0)
+         if(eatenCurExp == 0)
          {
-            _loc6_ = _loc4_;
+            eatenCurExp = eatenOrigExp;
          }
-         _loc5_ = Number(_loc6_);
-         return _loc5_;
+         exp = Number(eatenCurExp);
+         return exp;
       }
       
-      private function getTempleteInfoByLevel(param1:int, param2:ItemTemplateInfo) : ItemTemplateInfo
+      private function getTempleteInfoByLevel(eatenLevel:int, tagItemInfo:ItemTemplateInfo) : ItemTemplateInfo
       {
-         var _loc3_:int = param2.Property1;
-         if(_loc3_ > param1)
+         var curLevel:int = tagItemInfo.Property1;
+         if(curLevel > eatenLevel)
          {
-            while(_loc3_ > param1)
+            while(curLevel > eatenLevel)
             {
-               if(int(param2.Property4) != 0)
+               if(int(tagItemInfo.Property4) != 0)
                {
-                  param2 = ItemManager.Instance.getTemplateById(int(param2.Property4));
-                  _loc3_ = param2.Property1;
+                  tagItemInfo = ItemManager.Instance.getTemplateById(int(tagItemInfo.Property4));
+                  curLevel = tagItemInfo.Property1;
                   continue;
                }
                break;
             }
          }
-         else if(_loc3_ < param1)
+         else if(curLevel < eatenLevel)
          {
-            while(_loc3_ < param1)
+            while(curLevel < eatenLevel)
             {
-               if(param2.FusionType != 0)
+               if(tagItemInfo.FusionType != 0)
                {
-                  param2 = ItemManager.Instance.getTemplateById(param2.FusionType);
-                  _loc3_ = param2.Property1;
+                  tagItemInfo = ItemManager.Instance.getTemplateById(tagItemInfo.FusionType);
+                  curLevel = tagItemInfo.Property1;
                   continue;
                }
                break;
             }
          }
-         return param2;
+         return tagItemInfo;
       }
       
       public function getPlaceMap() : Dictionary
@@ -654,32 +648,32 @@ package store
          }
          getCanBringUpData();
          _placeMap = new Dictionary();
-         var _loc2_:int = 0;
+         var cellPlace:int = 0;
          var _loc4_:int = 0;
          var _loc3_:* = _bagBringUpInfo.items;
-         for each(var _loc1_ in _bagBringUpInfo.items)
+         for each(var value in _bagBringUpInfo.items)
          {
-            if(_loc1_.Place <= 15)
+            if(value.Place <= 15)
             {
-               _loc1_.cellLocked = true;
-               GameInSocketOut.sendBringUpLockStatusUpdate(_loc1_.BagType,_loc1_.Place,true);
+               value.cellLocked = true;
+               GameInSocketOut.sendBringUpLockStatusUpdate(value.BagType,value.Place,true);
             }
-            _placeMap[_loc2_] = _loc1_.Place;
-            _loc2_++;
+            _placeMap[cellPlace] = value.Place;
+            cellPlace++;
          }
          return _placeMap;
       }
       
-      public function getItem(param1:int) : InventoryItemInfo
+      public function getItem(itemPlace:int) : InventoryItemInfo
       {
-         var _loc3_:DictionaryData = _bagBringUpInfo.items;
+         var itms:DictionaryData = _bagBringUpInfo.items;
          var _loc5_:int = 0;
-         var _loc4_:* = _loc3_;
-         for each(var _loc2_ in _loc3_)
+         var _loc4_:* = itms;
+         for each(var v in itms)
          {
-            if(_loc2_.Place == param1)
+            if(v.Place == itemPlace)
             {
-               return _loc2_;
+               return v;
             }
          }
          return null;
@@ -687,9 +681,9 @@ package store
       
       public function getCanBringUpData() : BagInfo
       {
-         isNotWeddingRing = function(param1:InventoryItemInfo):Boolean
+         isNotWeddingRing = function(item:InventoryItemInfo):Boolean
          {
-            var _loc2_:* = param1.TemplateID;
+            var _loc2_:* = item.TemplateID;
             if(9022 !== _loc2_)
             {
                if(9122 !== _loc2_)
@@ -705,19 +699,19 @@ package store
                               return true;
                            }
                         }
-                        addr9:
+                        addr13:
                         return false;
                      }
-                     addr8:
-                     §§goto(addr9);
+                     addr12:
+                     §§goto(addr13);
                   }
-                  addr7:
-                  §§goto(addr8);
+                  addr11:
+                  §§goto(addr12);
                }
-               addr6:
-               §§goto(addr7);
+               addr10:
+               §§goto(addr11);
             }
-            §§goto(addr6);
+            §§goto(addr10);
          };
          var bagList:DictionaryData = PlayerManager.Instance.Self.Bag.items;
          _bagBringUpInfo = new BagInfo(0,21);
@@ -777,55 +771,55 @@ package store
          SocketManager.Instance.out.syncWeakStep(101);
       }
       
-      public function progress(param1:InventoryItemInfo) : int
+      public function progress($info:InventoryItemInfo) : int
       {
-         var _loc2_:Number = NaN;
-         var _loc4_:Number = NaN;
-         if(param1 == null)
+         var totalProgress:Number = NaN;
+         var curProress:Number = NaN;
+         if($info == null)
          {
             return 0;
          }
-         var _loc3_:int = ItemManager.Instance.getTemplateById(param1.TemplateID).FusionType;
-         if(_loc3_ == 0)
+         var next:int = ItemManager.Instance.getTemplateById($info.TemplateID).FusionType;
+         if(next == 0)
          {
             return 0;
          }
-         _loc2_ = int(ItemManager.Instance.getTemplateById(_loc3_).Property2);
-         _loc4_ = int(param1.curExp);
-         return _loc4_ / _loc2_ * 100;
+         totalProgress = int(ItemManager.Instance.getTemplateById(next).Property2);
+         curProress = int($info.curExp);
+         return curProress / totalProgress * 100;
       }
       
-      public function expDataArr(param1:ItemTemplateInfo) : Array
+      public function expDataArr($info:ItemTemplateInfo) : Array
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         if(param1 == null)
+         var _exp:int = 0;
+         var _UpExp:int = 0;
+         if($info == null)
          {
             return [0,0];
          }
-         if((param1 as InventoryItemInfo).curExp == 0)
+         if(($info as InventoryItemInfo).curExp == 0)
          {
-            _loc3_ = ItemManager.Instance.getTemplateById(param1.TemplateID).Property2;
+            _exp = ItemManager.Instance.getTemplateById($info.TemplateID).Property2;
          }
          else
          {
-            _loc3_ = (param1 as InventoryItemInfo).curExp;
+            _exp = ($info as InventoryItemInfo).curExp;
          }
-         if(param1.FusionType == 0)
+         if($info.FusionType == 0)
          {
-            _loc2_ = 0;
+            _UpExp = 0;
          }
          else
          {
-            _loc2_ = ItemManager.Instance.getTemplateById(param1.FusionType).Property2;
+            _UpExp = ItemManager.Instance.getTemplateById($info.FusionType).Property2;
          }
-         return [_loc3_,_loc2_];
+         return [_exp,_UpExp];
       }
       
-      public function progressTipData(param1:ItemTemplateInfo) : String
+      public function progressTipData($info:ItemTemplateInfo) : String
       {
-         var _loc2_:Array = expDataArr(param1);
-         return _loc2_[0].toString() + "/" + _loc2_[1].toString();
+         var arr:Array = expDataArr($info);
+         return arr[0].toString() + "/" + arr[1].toString();
       }
       
       public function needGuide() : Boolean

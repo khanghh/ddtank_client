@@ -38,19 +38,19 @@ package character
       
       protected var _soundEnabled:Boolean = false;
       
-      public function MovieClipCharacter(param1:Dictionary, param2:XML = null, param3:String = "", param4:Boolean = false)
+      public function MovieClipCharacter(assets:Dictionary, $description:XML = null, label:String = "", autoStop:Boolean = false)
       {
          this._registerPoint = new Point(0,0);
          super();
          this._type = CharacterType.MOVIECLIP_TYPE;
          this._actionSet = new ActionSet();
-         this._assets = param1;
-         this._autoStop = param4;
-         if(param2)
+         this._assets = assets;
+         this._autoStop = autoStop;
+         if($description)
          {
-            this.description = param2;
+            this.description = $description;
          }
-         this._label = param3;
+         this._label = label;
          addEventListener(Event.ENTER_FRAME,this.onEnterFrame);
       }
       
@@ -59,26 +59,26 @@ package character
          return this._soundEnabled;
       }
       
-      private function set _164832462soundEnabled(param1:Boolean) : void
+      private function set _164832462soundEnabled(value:Boolean) : void
       {
-         if(this._soundEnabled == param1)
+         if(this._soundEnabled == value)
          {
             return;
          }
-         this._soundEnabled = param1;
+         this._soundEnabled = value;
       }
       
-      public function getActionFrames(param1:String) : int
+      public function getActionFrames(action:String) : int
       {
-         var _loc2_:BaseAction = this._actionSet.getAction(param1);
-         if(_loc2_)
+         var act:BaseAction = this._actionSet.getAction(action);
+         if(act)
          {
-            return _loc2_.len;
+            return act.len;
          }
          return 0;
       }
       
-      private function onEnterFrame(param1:Event) : void
+      private function onEnterFrame(event:Event) : void
       {
          if(this._isPlaying)
          {
@@ -108,7 +108,7 @@ package character
          return this._actionSet.actions;
       }
       
-      public function set description(param1:XML) : void
+      public function set description(des:XML) : void
       {
          var action:XML = null;
          var r:String = null;
@@ -116,7 +116,6 @@ package character
          var resource:MovieClip = null;
          var a:MovieClipAction = null;
          var cls:Class = null;
-         var des:XML = param1;
          this._actionSet = new ActionSet();
          var actions:XMLList = des..action;
          this._label = des.@label;
@@ -169,17 +168,17 @@ package character
          this.currentAction = this._actionSet.currentAction as MovieClipAction;
       }
       
-      private function set currentAction(param1:MovieClipAction) : void
+      private function set currentAction(action:MovieClipAction) : void
       {
-         if(param1 == null)
+         if(action == null)
          {
             return;
          }
-         this._currentAction = param1;
+         this._currentAction = action;
          this._autoStop = this._currentAction.endStop;
-         var _loc2_:MovieClip = this._currentAction.asset as MovieClip;
-         _loc2_.gotoAndPlay(1);
-         addChild(_loc2_);
+         var movie:MovieClip = this._currentAction.asset as MovieClip;
+         movie.gotoAndPlay(1);
+         addChild(movie);
          if(this._currentAction.sound != "" && this._soundEnabled)
          {
             CharacterSoundManager.instance.play(this._currentAction.sound);
@@ -201,59 +200,59 @@ package character
          return this._label;
       }
       
-      private function set _102727412label(param1:String) : void
+      private function set _102727412label(value:String) : void
       {
-         this._label = param1;
+         this._label = value;
       }
       
-      public function hasAction(param1:String) : Boolean
+      public function hasAction(action:String) : Boolean
       {
-         return this._actionSet.getAction(param1) != null;
+         return this._actionSet.getAction(action) != null;
       }
       
-      public function doAction(param1:String) : void
+      public function doAction(action:String) : void
       {
-         var _loc3_:MovieClip = null;
-         var _loc2_:MovieClipAction = this._actionSet.getAction(param1) as MovieClipAction;
-         if(_loc2_)
+         var movie:MovieClip = null;
+         var a:MovieClipAction = this._actionSet.getAction(action) as MovieClipAction;
+         if(a)
          {
             if(this._currentAction != null)
             {
-               if(_loc2_.priority >= this._currentAction.priority)
+               if(a.priority >= this._currentAction.priority)
                {
-                  _loc3_ = this._currentAction.asset as MovieClip;
-                  _loc3_.gotoAndStop(1);
-                  if(contains(_loc3_))
+                  movie = this._currentAction.asset as MovieClip;
+                  movie.gotoAndStop(1);
+                  if(contains(movie))
                   {
-                     removeChild(_loc3_);
+                     removeChild(movie);
                   }
                   this._currentAction.reset();
-                  this.currentAction = _loc2_;
+                  this.currentAction = a;
                }
             }
             else
             {
-               this.currentAction = _loc2_;
+               this.currentAction = a;
             }
          }
       }
       
-      public function addAction(param1:BaseAction) : void
+      public function addAction(action:BaseAction) : void
       {
-         this._actionSet.addAction(param1);
-         dispatchEvent(new CharacterEvent(CharacterEvent.ADD_ACTION,param1));
+         this._actionSet.addAction(action);
+         dispatchEvent(new CharacterEvent(CharacterEvent.ADD_ACTION,action));
       }
       
       public function toXml() : XML
       {
-         var _loc1_:XML = <character></character>;
-         _loc1_.@type = this._type;
-         _loc1_.@label = this._label;
-         _loc1_.@registerX = this._registerPoint.x;
-         _loc1_.@registerY = this._registerPoint.y;
-         _loc1_.@rect = [this.rect.x,this.rect.y,this.rect.width,this.rect.height].join("|");
-         _loc1_.appendChild(this._actionSet.toXml());
-         return _loc1_;
+         var result:XML = <character></character>;
+         result.@type = this._type;
+         result.@label = this._label;
+         result.@registerX = this._registerPoint.x;
+         result.@registerY = this._registerPoint.y;
+         result.@rect = [this.rect.x,this.rect.y,this.rect.width,this.rect.height].join("|");
+         result.appendChild(this._actionSet.toXml());
+         return result;
       }
       
       public function get type() : int
@@ -261,21 +260,21 @@ package character
          return this._type;
       }
       
-      public function removeAction(param1:String) : void
+      public function removeAction(action:String) : void
       {
-         var _loc3_:MovieClip = null;
-         var _loc2_:BaseAction = this._actionSet.getAction(param1);
-         if(this._currentAction == _loc2_)
+         var movie:MovieClip = null;
+         var act:BaseAction = this._actionSet.getAction(action);
+         if(this._currentAction == act)
          {
-            _loc3_ = this._currentAction.asset as MovieClip;
-            _loc3_.gotoAndStop(1);
-            if(contains(_loc3_))
+            movie = this._currentAction.asset as MovieClip;
+            movie.gotoAndStop(1);
+            if(contains(movie))
             {
-               removeChild(_loc3_);
+               removeChild(movie);
             }
             this._currentAction = null;
          }
-         this._actionSet.removeAction(param1);
+         this._actionSet.removeAction(action);
          dispatchEvent(new CharacterEvent(CharacterEvent.REMOVE_ACTION));
       }
       
@@ -295,19 +294,19 @@ package character
       
       public function dispose() : void
       {
-         var _loc1_:MovieClip = null;
+         var mc:MovieClip = null;
          if(parent)
          {
             parent.removeChild(this);
          }
          removeEventListener(Event.ENTER_FRAME,this.onEnterFrame);
-         for each(_loc1_ in this._assets)
+         for each(mc in this._assets)
          {
-            if(_loc1_.parent)
+            if(mc.parent)
             {
-               _loc1_.parent.removeChild(_loc1_);
+               mc.parent.removeChild(mc);
             }
-            _loc1_.stop();
+            mc.stop();
          }
          this._actionSet.dispose();
          this._actionSet = null;
@@ -324,13 +323,13 @@ package character
          return this._realRender;
       }
       
-      private function set _2032707372realRender(param1:Boolean) : void
+      private function set _2032707372realRender(value:Boolean) : void
       {
-         if(this._realRender == param1)
+         if(this._realRender == value)
          {
             return;
          }
-         this._realRender = param1;
+         this._realRender = value;
          if(this._realRender)
          {
             if(this._currentAction && this._currentAction.asset)

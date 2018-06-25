@@ -16,46 +16,45 @@ package equipretrieve.view
    {
        
       
-      public function RetrieveBagEquipListView(param1:int, param2:int = 31, param3:int = 80)
+      public function RetrieveBagEquipListView(bagType:int, startIndex:int = 31, stopIndex:int = 80)
       {
-         super(param1,param2,param3);
+         super(bagType,startIndex,stopIndex);
       }
       
       override protected function createCells() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          _cells = new Dictionary();
          _cellMouseOverBg = ComponentFactory.Instance.creatBitmap("bagAndInfo.cell.bagCellOverBgAsset");
-         _loc2_ = _startIndex;
-         while(_loc2_ < _stopIndex)
+         for(i = _startIndex; i < _stopIndex; )
          {
-            _loc1_ = new RetrieveBagcell(_loc2_);
-            _loc1_.mouseOverEffBoolean = false;
-            addChild(_loc1_);
-            _loc1_.addEventListener("interactive_click",__clickHandler);
-            _loc1_.addEventListener("interactive_double_click",__doubleClickHandler);
-            _loc1_.addEventListener("dragStop",_stopDrag);
-            _loc1_.addEventListener("mouseOver",_cellOverEff);
-            _loc1_.addEventListener("mouseOut",_cellOutEff);
-            DoubleClickManager.Instance.enableDoubleClick(_loc1_);
-            _loc1_.bagType = _bagType;
-            _loc1_.addEventListener("lockChanged",__cellChanged);
-            _cells[_loc1_.place] = _loc1_;
-            _cellVec.push(_loc1_);
-            _loc2_++;
+            cell = new RetrieveBagcell(i);
+            cell.mouseOverEffBoolean = false;
+            addChild(cell);
+            cell.addEventListener("interactive_click",__clickHandler);
+            cell.addEventListener("interactive_double_click",__doubleClickHandler);
+            cell.addEventListener("dragStop",_stopDrag);
+            cell.addEventListener("mouseOver",_cellOverEff);
+            cell.addEventListener("mouseOut",_cellOutEff);
+            DoubleClickManager.Instance.enableDoubleClick(cell);
+            cell.bagType = _bagType;
+            cell.addEventListener("lockChanged",__cellChanged);
+            _cells[cell.place] = cell;
+            _cellVec.push(cell);
+            i++;
          }
       }
       
-      private function _stopDrag(param1:CellEvent) : void
+      private function _stopDrag(e:CellEvent) : void
       {
-         dispatchEvent(new CellEvent("dragStop",param1.currentTarget));
+         dispatchEvent(new CellEvent("dragStop",e.currentTarget));
       }
       
-      override public function setData(param1:BagInfo) : void
+      override public function setData(bag:BagInfo) : void
       {
-         var _loc3_:int = 0;
-         if(_bagdata == param1)
+         var infoSLevel:int = 0;
+         if(_bagdata == bag)
          {
             return;
          }
@@ -63,104 +62,103 @@ package equipretrieve.view
          {
             _bagdata.removeEventListener("update",__updateGoods);
          }
-         _bagdata = param1;
-         var _loc2_:Array = [];
+         _bagdata = bag;
+         var _infoArr:Array = [];
          var _loc6_:int = 0;
          var _loc5_:* = _bagdata.items;
-         for(var _loc4_ in _bagdata.items)
+         for(var i in _bagdata.items)
          {
-            if(_cells[_loc4_] != null && _bagdata.items[_loc4_] && ItemManager.Instance.getTemplateById(_bagdata.items[_loc4_].TemplateID).CanRecycle != 0)
+            if(_cells[i] != null && _bagdata.items[i] && ItemManager.Instance.getTemplateById(_bagdata.items[i].TemplateID).CanRecycle != 0)
             {
-               _loc3_ = _bagdata.items[_loc4_].StrengthenLevel;
-               if(_loc3_ < 7)
+               infoSLevel = _bagdata.items[i].StrengthenLevel;
+               if(infoSLevel < 7)
                {
-                  _cells[_loc4_].info = _bagdata.items[_loc4_];
-                  _loc2_.push(_cells[_loc4_]);
+                  _cells[i].info = _bagdata.items[i];
+                  _infoArr.push(_cells[i]);
                }
             }
          }
          _bagdata.addEventListener("update",__updateGoods);
-         _cellsSort(_loc2_);
+         _cellsSort(_infoArr);
       }
       
-      override public function setCellInfo(param1:int, param2:InventoryItemInfo) : void
+      override public function setCellInfo(index:int, info:InventoryItemInfo) : void
       {
-         var _loc3_:int = 0;
-         if(param1 >= _startIndex && param1 < _stopIndex)
+         var infoSLevel:int = 0;
+         if(index >= _startIndex && index < _stopIndex)
          {
-            if(param2 == null)
+            if(info == null)
             {
-               _cells[param1].info = null;
+               _cells[index].info = null;
                return;
             }
-            _loc3_ = param2.StrengthenLevel;
-            if(param2.Count > 0 && ItemManager.Instance.getTemplateById(param2.TemplateID).CanRecycle != 0 && _loc3_ < 7)
+            infoSLevel = info.StrengthenLevel;
+            if(info.Count > 0 && ItemManager.Instance.getTemplateById(info.TemplateID).CanRecycle != 0 && infoSLevel < 7)
             {
-               _cells[param1].info = param2;
+               _cells[index].info = info;
             }
             else
             {
-               _cells[param1].info = null;
+               _cells[index].info = null;
             }
          }
       }
       
-      private function _cellsSort(param1:Array) : void
+      private function _cellsSort(arr:Array) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:Number = NaN;
-         var _loc5_:Number = NaN;
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         if(param1.length <= 0)
+         var i:int = 0;
+         var oldx:Number = NaN;
+         var oldy:Number = NaN;
+         var n:int = 0;
+         var oldCell:* = null;
+         if(arr.length <= 0)
          {
             return;
          }
-         _loc6_ = 0;
-         while(_loc6_ < param1.length)
+         i = 0;
+         while(i < arr.length)
          {
-            _loc4_ = param1[_loc6_].x;
-            _loc5_ = param1[_loc6_].y;
-            _loc3_ = _cellVec.indexOf(param1[_loc6_]);
-            _loc2_ = _cellVec[_loc6_];
-            param1[_loc6_].x = _loc2_.x;
-            param1[_loc6_].y = _loc2_.y;
-            _loc2_.x = _loc4_;
-            _loc2_.y = _loc5_;
-            _cellVec[_loc6_] = param1[_loc6_];
-            _cellVec[_loc3_] = _loc2_ as RetrieveBagcell;
-            _loc6_++;
+            oldx = arr[i].x;
+            oldy = arr[i].y;
+            n = _cellVec.indexOf(arr[i]);
+            oldCell = _cellVec[i];
+            arr[i].x = oldCell.x;
+            arr[i].y = oldCell.y;
+            oldCell.x = oldx;
+            oldCell.y = oldy;
+            _cellVec[i] = arr[i];
+            _cellVec[n] = oldCell as RetrieveBagcell;
+            i++;
          }
       }
       
-      public function returnNullPoint(param1:Number, param2:Number) : Object
+      public function returnNullPoint(_dx:Number, _dy:Number) : Object
       {
-         var _loc5_:int = 0;
-         var _loc3_:Point = new Point(0,0);
-         var _loc4_:Object = {};
-         _loc5_ = _startIndex;
-         while(_loc5_ < _stopIndex)
+         var i:int = 0;
+         var point:Point = new Point(0,0);
+         var obj:Object = {};
+         for(i = _startIndex; i < _stopIndex; )
          {
-            if(_bagdata.items[_loc5_] == null)
+            if(_bagdata.items[i] == null)
             {
-               _loc3_.x = this.localToGlobal(new Point(_cells[_loc5_].x,_cells[_loc5_].y)).x;
-               _loc3_.y = this.localToGlobal(new Point(_cells[_loc5_].x,_cells[_loc5_].y)).y;
-               _loc4_.point = _loc3_;
-               _loc4_.bagType = 0;
-               _loc4_.place = _loc5_;
-               _loc4_.cell = _cells[_loc5_];
-               return _loc4_;
+               point.x = this.localToGlobal(new Point(_cells[i].x,_cells[i].y)).x;
+               point.y = this.localToGlobal(new Point(_cells[i].x,_cells[i].y)).y;
+               obj.point = point;
+               obj.bagType = 0;
+               obj.place = i;
+               obj.cell = _cells[i];
+               return obj;
             }
-            _loc5_++;
+            i++;
          }
-         _loc3_.x = 776;
-         _loc3_.y = 572;
-         _loc4_.point = _loc3_;
-         _loc4_.bagType = 0;
-         _loc4_.place = _loc5_;
-         _loc4_.cell = _cells[_loc5_];
+         point.x = 776;
+         point.y = 572;
+         obj.point = point;
+         obj.bagType = 0;
+         obj.place = i;
+         obj.cell = _cells[i];
          RetrieveModel.Instance.isFull = true;
-         return _loc4_;
+         return obj;
       }
    }
 }

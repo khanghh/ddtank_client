@@ -12,24 +12,24 @@ package littleGame.character
       
       private var _specialType:int;
       
-      public function LittleGameCharacterLayer(param1:ItemTemplateInfo, param2:String = "", param3:Boolean = true, param4:int = 1, param5:int = 0, param6:int = 0)
+      public function LittleGameCharacterLayer(info:ItemTemplateInfo, color:String = "", sex:Boolean = true, littleGameId:int = 1, specialType:int = 0, picId:int = 0)
       {
-         _sex = param3;
-         _specialType = param5;
-         super(param1,param2,false,1,String(param6));
+         _sex = sex;
+         _specialType = specialType;
+         super(info,color,false,1,String(picId));
       }
       
-      override protected function getUrl(param1:int) : String
+      override protected function getUrl(layer:int) : String
       {
          if(_specialType > 0)
          {
-            return PathManager.solveLitteGameCharacterPath(_specialType,_sex,1,param1,_pic);
+            return PathManager.solveLitteGameCharacterPath(_specialType,_sex,1,layer,_pic);
          }
          if(_info.CategoryID != 5)
          {
-            return PathManager.solveSceneCharacterLoaderPath(_info.CategoryID,_info.Pic,_sex,_info.NeedSex == 1,String(param1),1,"");
+            return PathManager.solveSceneCharacterLoaderPath(_info.CategoryID,_info.Pic,_sex,_info.NeedSex == 1,String(layer),1,"");
          }
-         return PathManager.solveLitteGameCharacterPath(_info.CategoryID,_sex,1,param1,_pic);
+         return PathManager.solveLitteGameCharacterPath(_info.CategoryID,_sex,1,layer,_pic);
       }
    }
 }

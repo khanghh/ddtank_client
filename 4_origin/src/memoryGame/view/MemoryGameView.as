@@ -66,14 +66,14 @@ package memoryGame.view
       
       private var _closeList:Array;
       
-      public function MemoryGameView(param1:MemoryGameFrame)
+      public function MemoryGameView(view:MemoryGameFrame)
       {
          super();
          init();
          initCell();
          initReward();
          initEvent();
-         _frame = param1;
+         _frame = view;
       }
       
       private function init() : void
@@ -103,7 +103,7 @@ package memoryGame.view
          _infoList = new Vector.<MemoryGameInfo>();
       }
       
-      private function __timeRemainHandler(param1:Event) : void
+      private function __timeRemainHandler(evt:Event) : void
       {
          if(_dayText)
          {
@@ -113,167 +113,161 @@ package memoryGame.view
       
       private function getTimeRemainStr() : String
       {
-         var _loc2_:Number = (MemoryGameManager.instance.endDate.time - TimeManager.Instance.Now().time) / 1000;
-         var _loc1_:Array = DateUtils.dateTimeRemainArr(_loc2_);
-         return LanguageMgr.GetTranslation("tank.timeRemain.msg1",_loc1_[0],_loc1_[1],_loc1_[2]);
+         var tempTime:Number = (MemoryGameManager.instance.endDate.time - TimeManager.Instance.Now().time) / 1000;
+         var timeArr:Array = DateUtils.dateTimeRemainArr(tempTime);
+         return LanguageMgr.GetTranslation("tank.timeRemain.msg1",timeArr[0],timeArr[1],timeArr[2]);
       }
       
       private function initCell() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          _cellList = new DictionaryData();
-         _loc2_ = 0;
-         while(_loc2_ < 16)
+         for(i = 0; i < 16; )
          {
-            _loc1_ = new MemoryGameCell(_loc2_ + 1);
-            _cellContainer.addChild(_loc1_);
-            _loc1_.x = _loc2_ % 4 * 96;
-            _loc1_.y = int(_loc2_ / 4) * 96;
-            _cellList.add(_loc2_ + 1,_loc1_);
-            _loc2_++;
+            cell = new MemoryGameCell(i + 1);
+            _cellContainer.addChild(cell);
+            cell.x = i % 4 * 96;
+            cell.y = int(i / 4) * 96;
+            _cellList.add(i + 1,cell);
+            i++;
          }
       }
       
       private function initReward() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          _rewardList = new DictionaryData();
-         _loc2_ = 0;
-         while(_loc2_ < 8)
+         for(i = 0; i < 8; )
          {
-            _loc1_ = new MemoryGameRewardCell();
-            _loc1_.x = _loc2_ % 4 * 74;
-            _loc1_.y = int(_loc2_ / 4) * 80;
-            _rewardContainer.addChild(_loc1_);
-            _rewardList.add(_loc2_,_loc1_);
-            _loc2_++;
+            cell = new MemoryGameRewardCell();
+            cell.x = i % 4 * 74;
+            cell.y = int(i / 4) * 80;
+            _rewardContainer.addChild(cell);
+            _rewardList.add(i,cell);
+            i++;
          }
       }
       
-      private function __onGameInfo(param1:PkgEvent) : void
+      private function __onGameInfo(e:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         MemoryGameManager.instance.count = param1.pkg.readInt();
-         MemoryGameManager.instance.score = param1.pkg.readInt();
+         var i:int = 0;
+         var info:* = null;
+         MemoryGameManager.instance.count = e.pkg.readInt();
+         MemoryGameManager.instance.score = e.pkg.readInt();
          if(_frame)
          {
             _frame.shopViewUpdate();
          }
          updateText();
-         var _loc2_:int = param1.pkg.readInt();
+         var len:int = e.pkg.readInt();
          _infoList.splice(0,_infoList.length);
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         for(i = 0; i < len; )
          {
-            _loc4_ = new MemoryGameInfo();
-            _loc4_.TemplateID = param1.pkg.readInt();
-            _loc4_.count = param1.pkg.readInt();
-            _loc4_.place1 = param1.pkg.readInt();
-            _loc4_.place2 = param1.pkg.readInt();
-            _loc4_.isGet = param1.pkg.readBoolean();
-            _loc4_.show1 = param1.pkg.readBoolean();
-            _loc4_.show2 = param1.pkg.readBoolean();
-            _infoList.push(_loc4_);
-            _loc5_++;
+            info = new MemoryGameInfo();
+            info.TemplateID = e.pkg.readInt();
+            info.count = e.pkg.readInt();
+            info.place1 = e.pkg.readInt();
+            info.place2 = e.pkg.readInt();
+            info.isGet = e.pkg.readBoolean();
+            info.show1 = e.pkg.readBoolean();
+            info.show2 = e.pkg.readBoolean();
+            _infoList.push(info);
+            i++;
          }
-         var _loc3_:Boolean = param1.pkg.readBoolean();
+         var isReset:Boolean = e.pkg.readBoolean();
          MemoryGameManager.instance.getRewardList.clear();
-         _loc2_ = param1.pkg.readInt();
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         len = e.pkg.readInt();
+         for(i = 0; i < len; )
          {
-            MemoryGameManager.instance.getRewardList.add(param1.pkg.readInt(),true);
-            _loc5_++;
+            MemoryGameManager.instance.getRewardList.add(e.pkg.readInt(),true);
+            i++;
          }
-         update(_loc3_);
-         if(!_loc3_)
+         update(isReset);
+         if(!isReset)
          {
             gameReset();
          }
       }
       
-      private function update(param1:Boolean) : void
+      private function update(isReset:Boolean) : void
       {
-         var _loc6_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
+         var i:int = 0;
+         var cell:* = null;
+         var id:int = 0;
+         var count:int = 0;
          var _loc8_:int = 0;
          var _loc7_:* = _cellList;
-         for each(var _loc5_ in _cellList)
+         for each(var item in _cellList)
          {
-            _loc5_.closeDefault();
+            item.closeDefault();
          }
-         _loc6_ = 0;
-         while(_loc6_ < _infoList.length)
+         for(i = 0; i < _infoList.length; )
          {
-            _loc4_ = _rewardList[_loc6_] as MemoryGameRewardCell;
-            _loc2_ = _infoList[_loc6_].TemplateID;
-            _loc3_ = _infoList[_loc6_].count;
-            _loc4_.info = ItemManager.Instance.getTemplateById(_loc2_);
-            _loc4_.setCount(_loc3_);
-            _loc4_.isGain = _infoList[_loc6_].isGet;
-            if(param1)
+            cell = _rewardList[i] as MemoryGameRewardCell;
+            id = _infoList[i].TemplateID;
+            count = _infoList[i].count;
+            cell.info = ItemManager.Instance.getTemplateById(id);
+            cell.setCount(count);
+            cell.isGain = _infoList[i].isGet;
+            if(isReset)
             {
-               _loc4_.playAction();
+               cell.playAction();
             }
-            if(_infoList[_loc6_].isGet)
+            if(_infoList[i].isGet)
             {
-               _cellList[_infoList[_loc6_].place1].openDefault(_loc2_,_loc3_);
-               _cellList[_infoList[_loc6_].place2].openDefault(_loc2_,_loc3_);
+               _cellList[_infoList[i].place1].openDefault(id,count);
+               _cellList[_infoList[i].place2].openDefault(id,count);
             }
             else
             {
-               if(_infoList[_loc6_].show1)
+               if(_infoList[i].show1)
                {
-                  _cellList[_infoList[_loc6_].place1].openDefault(_loc2_,_loc3_);
+                  _cellList[_infoList[i].place1].openDefault(id,count);
                }
-               if(_infoList[_loc6_].show2)
+               if(_infoList[i].show2)
                {
-                  _cellList[_infoList[_loc6_].place2].openDefault(_loc2_,_loc3_);
+                  _cellList[_infoList[i].place2].openDefault(id,count);
                }
             }
-            _loc6_++;
+            i++;
          }
       }
       
-      private function __onGameTurnover(param1:PkgEvent) : void
+      private function __onGameTurnover(e:PkgEvent) : void
       {
-         var _loc9_:int = 0;
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc8_:Boolean = false;
-         var _loc6_:Boolean = false;
-         var _loc4_:* = null;
+         var i:int = 0;
+         var TemplateID:int = 0;
+         var count:int = 0;
+         var index:int = 0;
+         var isOpen:Boolean = false;
+         var isGet:Boolean = false;
+         var cell:* = null;
          _closeList = [];
-         MemoryGameManager.instance.count = param1.pkg.readInt();
-         MemoryGameManager.instance.score = param1.pkg.readInt();
+         MemoryGameManager.instance.count = e.pkg.readInt();
+         MemoryGameManager.instance.score = e.pkg.readInt();
          updateText();
-         var _loc7_:int = param1.pkg.readInt();
-         _loc9_ = 0;
-         while(_loc9_ < _loc7_)
+         var len:int = e.pkg.readInt();
+         for(i = 0; i < len; )
          {
-            _loc5_ = param1.pkg.readInt();
-            _loc3_ = param1.pkg.readInt();
-            _loc2_ = param1.pkg.readInt();
-            _loc8_ = param1.pkg.readBoolean();
-            _loc6_ = param1.pkg.readBoolean();
-            _loc4_ = _cellList[_loc2_] as MemoryGameCell;
-            _loc4_.open(_loc5_,_loc3_);
-            if(_loc6_ && _loc9_ == 0)
+            TemplateID = e.pkg.readInt();
+            count = e.pkg.readInt();
+            index = e.pkg.readInt();
+            isOpen = e.pkg.readBoolean();
+            isGet = e.pkg.readBoolean();
+            cell = _cellList[index] as MemoryGameCell;
+            cell.open(TemplateID,count);
+            if(isGet && i == 0)
             {
-               rewardIsGet(_loc5_,_loc3_);
+               rewardIsGet(TemplateID,count);
                gameReset();
             }
-            else if(!_loc8_)
+            else if(!isOpen)
             {
-               _closeList.push(_loc4_);
+               _closeList.push(cell);
             }
-            _loc9_++;
+            i++;
          }
          if(_closeList.length >= 2)
          {
@@ -282,7 +276,7 @@ package memoryGame.view
          }
       }
       
-      private function __onEnter(param1:Event) : void
+      private function __onEnter(e:Event) : void
       {
          if(MemoryGameManager.instance.playOpenAllComplete())
          {
@@ -297,12 +291,11 @@ package memoryGame.view
          {
             var timeout:int = setTimeout(function():void
             {
-               var _loc1_:int = 0;
-               _loc1_ = 0;
-               while(_loc1_ < _closeList.length)
+               var i:int = 0;
+               for(i = 0; i < _closeList.length; )
                {
-                  _closeList[_loc1_].close();
-                  _loc1_++;
+                  _closeList[i].close();
+                  i++;
                }
                MemoryGameManager.instance.turning = false;
                _closeList.splice(0,_closeList.length);
@@ -314,26 +307,26 @@ package memoryGame.view
       {
          var _loc4_:int = 0;
          var _loc3_:* = _rewardList;
-         for each(var _loc2_ in _rewardList)
+         for each(var cell in _rewardList)
          {
-            if(!_loc2_.isGain)
+            if(!cell.isGain)
             {
                return;
             }
          }
-         var _loc1_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("memoryGame.gameover"),LanguageMgr.GetTranslation("ok"),"",false,true,true,2,null,"SimpleAlert",60,false);
-         _loc1_.addEventListener("response",onResponse);
+         var frame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("memoryGame.gameover"),LanguageMgr.GetTranslation("ok"),"",false,true,true,2,null,"SimpleAlert",60,false);
+         frame.addEventListener("response",onResponse);
       }
       
-      private function onResponse(param1:FrameEvent) : void
+      private function onResponse(e:FrameEvent) : void
       {
-         var _loc2_:* = null;
+         var frame:* = null;
          if(MemoryGameManager.instance.playActionAllComplete() && !MemoryGameManager.instance.turning)
          {
-            _loc2_ = param1.currentTarget as BaseAlerFrame;
-            _loc2_.removeEventListener("response",onResponse);
+            frame = e.currentTarget as BaseAlerFrame;
+            frame.removeEventListener("response",onResponse);
             SocketManager.Instance.out.sendMemoryGameReset(true,true);
-            _loc2_.dispose();
+            frame.dispose();
          }
          else
          {
@@ -341,23 +334,23 @@ package memoryGame.view
          }
       }
       
-      private function rewardIsGet(param1:int, param2:int) : void
+      private function rewardIsGet(TemplateID:int, count:int) : void
       {
          var _loc5_:int = 0;
          var _loc4_:* = _rewardList;
-         for each(var _loc3_ in _rewardList)
+         for each(var cell in _rewardList)
          {
-            if(_loc3_.info.TemplateID == param1 && _loc3_.getCount() == param2)
+            if(cell.info.TemplateID == TemplateID && cell.getCount() == count)
             {
-               _loc3_.isGain = true;
+               cell.isGain = true;
             }
          }
       }
       
-      private function __onResetClick(param1:MouseEvent) : void
+      private function __onResetClick(e:MouseEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var monery:int = 0;
+         var frame:* = null;
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -371,9 +364,9 @@ package memoryGame.view
          }
          if(MemoryGameManager.instance.playActionAllComplete() && !MemoryGameManager.instance.turning)
          {
-            _loc3_ = ServerConfigManager.instance.memoryGameResetMoney();
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("memoryGame.resetTips",_loc3_),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"SimpleAlert",60,false,1);
-            _loc2_.addEventListener("response",onResetConfirmResponse);
+            monery = ServerConfigManager.instance.memoryGameResetMoney();
+            frame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("memoryGame.resetTips",monery),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2,null,"SimpleAlert",60,false,1);
+            frame.addEventListener("response",onResetConfirmResponse);
          }
          else
          {
@@ -381,9 +374,9 @@ package memoryGame.view
          }
       }
       
-      private function onResetConfirmResponse(param1:FrameEvent) : void
+      private function onResetConfirmResponse(e:FrameEvent) : void
       {
-         e = param1;
+         e = e;
          var frame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
          frame.removeEventListener("response",onResetConfirmResponse);
          if(e.responseCode == 2 || e.responseCode == 3)
@@ -396,7 +389,7 @@ package memoryGame.view
          frame.dispose();
       }
       
-      private function __onBuyClick(param1:MouseEvent) : void
+      private function __onBuyClick(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
@@ -409,13 +402,13 @@ package memoryGame.view
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("memoryGame.activityTips"));
             return;
          }
-         var _loc2_:MemoryGameBuyView = ComponentFactory.Instance.creatComponentByStylename("memroyGame.MemoryGameBuyView");
-         _loc2_.show();
+         var frame:MemoryGameBuyView = ComponentFactory.Instance.creatComponentByStylename("memroyGame.MemoryGameBuyView");
+         frame.show();
       }
       
-      private function __onGameBuy(param1:PkgEvent) : void
+      private function __onGameBuy(e:PkgEvent) : void
       {
-         MemoryGameManager.instance.count = param1.pkg.readInt();
+         MemoryGameManager.instance.count = e.pkg.readInt();
          updateText();
       }
       

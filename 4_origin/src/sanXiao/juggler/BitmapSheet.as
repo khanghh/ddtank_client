@@ -21,11 +21,11 @@ package sanXiao.juggler
       
       protected var _bdRegionsList:Vector.<Rectangle>;
       
-      public function BitmapSheet(param1:BitmapData, param2:XML)
+      public function BitmapSheet(bitmapData:BitmapData, xml:XML)
       {
          super();
-         _bmpData = param1;
-         _xml = param2;
+         _bmpData = bitmapData;
+         _xml = xml;
          _mTextureRegions = new Dictionary();
          _mTextureFrames = new Dictionary();
          _bmpDataList = new Dictionary();
@@ -35,74 +35,74 @@ package sanXiao.juggler
          }
       }
       
-      private function parseAtlasXml(param1:XML) : void
+      private function parseAtlasXml(atlasXml:XML) : void
       {
-         var _loc6_:* = null;
-         var _loc12_:Number = NaN;
-         var _loc10_:Number = NaN;
-         var _loc3_:Number = NaN;
-         var _loc4_:Number = NaN;
-         var _loc8_:Number = NaN;
-         var _loc9_:Number = NaN;
-         var _loc7_:Number = NaN;
-         var _loc13_:Number = NaN;
-         var _loc2_:* = null;
-         var _loc5_:* = null;
+         var name:* = null;
+         var x:Number = NaN;
+         var y:Number = NaN;
+         var width:Number = NaN;
+         var height:Number = NaN;
+         var frameX:Number = NaN;
+         var frameY:Number = NaN;
+         var frameWidth:Number = NaN;
+         var frameHeight:Number = NaN;
+         var region:* = null;
+         var frame:* = null;
          var _loc15_:int = 0;
-         var _loc14_:* = param1.SubTexture;
-         for each(var _loc11_ in param1.SubTexture)
+         var _loc14_:* = atlasXml.SubTexture;
+         for each(var subTexture in atlasXml.SubTexture)
          {
-            _loc6_ = _loc11_.attribute("name");
-            _loc12_ = parseFloat(_loc11_.attribute("x"));
-            _loc10_ = parseFloat(_loc11_.attribute("y"));
-            _loc3_ = parseFloat(_loc11_.attribute("width"));
-            _loc4_ = parseFloat(_loc11_.attribute("height"));
-            _loc8_ = parseFloat(_loc11_.attribute("frameX"));
-            _loc9_ = parseFloat(_loc11_.attribute("frameY"));
-            _loc7_ = parseFloat(_loc11_.attribute("frameWidth"));
-            _loc13_ = parseFloat(_loc11_.attribute("frameHeight"));
-            _loc2_ = new Rectangle(_loc12_,_loc10_,_loc3_,_loc4_);
-            _loc5_ = _loc7_ > 0 && _loc13_ > 0?new Rectangle(_loc8_,_loc9_,_loc7_,_loc13_):null;
-            addRegion(_loc6_,_loc2_,_loc5_);
+            name = subTexture.attribute("name");
+            x = parseFloat(subTexture.attribute("x"));
+            y = parseFloat(subTexture.attribute("y"));
+            width = parseFloat(subTexture.attribute("width"));
+            height = parseFloat(subTexture.attribute("height"));
+            frameX = parseFloat(subTexture.attribute("frameX"));
+            frameY = parseFloat(subTexture.attribute("frameY"));
+            frameWidth = parseFloat(subTexture.attribute("frameWidth"));
+            frameHeight = parseFloat(subTexture.attribute("frameHeight"));
+            region = new Rectangle(x,y,width,height);
+            frame = frameWidth > 0 && frameHeight > 0?new Rectangle(frameX,frameY,frameWidth,frameHeight):null;
+            addRegion(name,region,frame);
          }
       }
       
-      private function addRegion(param1:String, param2:Rectangle, param3:Rectangle = null) : void
+      private function addRegion(name:String, region:Rectangle, frame:Rectangle = null) : void
       {
-         _mTextureRegions[param1] = param2;
-         if(param3)
+         _mTextureRegions[name] = region;
+         if(frame)
          {
-            _mTextureFrames[param1] = param3;
+            _mTextureFrames[name] = frame;
          }
       }
       
-      public function getRegion(param1:String) : Rectangle
+      public function getRegion(name:String) : Rectangle
       {
-         return _mTextureRegions[param1];
+         return _mTextureRegions[name];
       }
       
-      public function getRegionList(param1:String) : Vector.<Rectangle>
+      public function getRegionList(prefix:String) : Vector.<Rectangle>
       {
-         var _loc3_:* = null;
-         var _loc4_:Vector.<Rectangle> = new Vector.<Rectangle>(0);
-         var _loc2_:Vector.<String> = new Vector.<String>(0);
+         var name:* = null;
+         var rects:Vector.<Rectangle> = new Vector.<Rectangle>(0);
+         var names:Vector.<String> = new Vector.<String>(0);
          var _loc6_:int = 0;
          var _loc5_:* = _mTextureRegions;
-         for(_loc3_ in _mTextureRegions)
+         for(name in _mTextureRegions)
          {
-            if(_loc3_.indexOf(param1) == 0)
+            if(name.indexOf(prefix) == 0)
             {
-               _loc2_.push(_loc3_);
+               names.push(name);
             }
          }
-         _loc2_.sort(1);
+         names.sort(1);
          var _loc8_:int = 0;
-         var _loc7_:* = _loc2_;
-         for each(_loc3_ in _loc2_)
+         var _loc7_:* = names;
+         for each(name in names)
          {
-            _loc4_.push(_mTextureRegions[_loc3_]);
+            rects.push(_mTextureRegions[name]);
          }
-         return _loc4_;
+         return rects;
       }
       
       public function get bitmapData() : BitmapData
@@ -110,18 +110,18 @@ package sanXiao.juggler
          return _bmpData;
       }
       
-      public function getBitmapData(param1:String) : BitmapData
+      public function getBitmapData(name:String) : BitmapData
       {
-         var _loc2_:* = null;
-         var _loc3_:Rectangle = _mTextureRegions[param1];
-         var _loc4_:BitmapData = _bmpDataList[param1];
-         if(!_loc4_)
+         var s:* = null;
+         var r:Rectangle = _mTextureRegions[name];
+         var bd:BitmapData = _bmpDataList[name];
+         if(!bd)
          {
-            _loc4_ = new BitmapData(_loc3_.width,_loc3_.height);
-            _loc4_.copyPixels(_bmpData,_loc3_,new Point(0,0));
-            _bmpDataList[param1] = _loc4_;
+            bd = new BitmapData(r.width,r.height);
+            bd.copyPixels(_bmpData,r,new Point(0,0));
+            _bmpDataList[name] = bd;
          }
-         return _loc4_;
+         return bd;
       }
    }
 }

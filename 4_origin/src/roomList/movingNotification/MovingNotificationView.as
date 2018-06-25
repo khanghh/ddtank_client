@@ -48,11 +48,11 @@ package roomList.movingNotification
          return _list;
       }
       
-      public function set list(param1:Array) : void
+      public function set list(value:Array) : void
       {
-         if(param1 && _list != param1)
+         if(value && _list != value)
          {
-            _list = param1;
+            _list = value;
             updateTextFields();
             updateCurrentTTF();
          }
@@ -63,7 +63,7 @@ package roomList.movingNotification
          }
       }
       
-      private function stopEnterFrame(param1:TimerEvent) : void
+      private function stopEnterFrame(event:TimerEvent) : void
       {
          _timer.stop();
          addEventListener("enterFrame",moveFFT);
@@ -71,47 +71,46 @@ package roomList.movingNotification
       
       private function clearTextFields() : void
       {
-         var _loc1_:FilterFrameText = _textFields.shift();
-         while(_loc1_ != null)
+         var textField:FilterFrameText = _textFields.shift();
+         while(textField != null)
          {
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = _textFields.shift();
+            ObjectUtils.disposeObject(textField);
+            textField = _textFields.shift();
          }
       }
       
       private function updateTextFields() : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc3_:* = undefined;
-         var _loc4_:* = undefined;
+         var i:int = 0;
+         var tf:* = null;
+         var str:* = null;
+         var left:* = undefined;
+         var right:* = undefined;
          clearTextFields();
-         _loc5_ = 0;
-         while(_loc5_ < _list.length)
+         for(i = 0; i < _list.length; )
          {
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("asset.ddtroomList.MovingNotificationText");
-            _loc1_ = _list[_loc5_];
-            _loc3_ = new Vector.<uint>();
-            _loc4_ = new Vector.<uint>();
-            while(_loc1_.indexOf("{") > -1)
+            tf = ComponentFactory.Instance.creatComponentByStylename("asset.ddtroomList.MovingNotificationText");
+            str = _list[i];
+            left = new Vector.<uint>();
+            right = new Vector.<uint>();
+            while(str.indexOf("{") > -1)
             {
-               _loc3_.push(_loc1_.indexOf("{"));
-               _loc4_.push(_loc1_.indexOf("}"));
-               _loc1_ = _loc1_.replace("{","");
-               _loc1_ = _loc1_.replace("}","");
+               left.push(str.indexOf("{"));
+               right.push(str.indexOf("}"));
+               str = str.replace("{","");
+               str = str.replace("}","");
             }
-            _loc2_.text = _loc1_;
-            while(_loc3_.length > 0)
+            tf.text = str;
+            while(left.length > 0)
             {
-               _loc2_.setTextFormat(_keyWordTF,_loc3_.shift(),_loc4_.shift() - 1);
+               tf.setTextFormat(_keyWordTF,left.shift(),right.shift() - 1);
             }
-            _textFields.push(_loc2_);
-            if(!contains(_loc2_))
+            _textFields.push(tf);
+            if(!contains(tf))
             {
-               addChildAt(_loc2_,0);
+               addChildAt(tf,0);
             }
-            _loc5_++;
+            i++;
          }
       }
       
@@ -121,7 +120,7 @@ package roomList.movingNotification
          _currentMovingFFT = _textFields[_currentIndex];
       }
       
-      private function moveFFT(param1:Event) : void
+      private function moveFFT(e:Event) : void
       {
          if(_currentMovingFFT)
          {

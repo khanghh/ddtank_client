@@ -45,123 +45,122 @@ package ddt.manager
       
       private var _info:InventoryItemInfo;
       
-      public function DropGoodsManager(param1:Point, param2:Point)
+      public function DropGoodsManager(begin:Point, end:Point)
       {
          super();
          parentContainer = StageReferance.stage;
-         beginPoint = param1;
-         endPoint = param2;
+         beginPoint = begin;
+         endPoint = end;
          goodsList = new Vector.<ItemTemplateInfo>();
          goodsTipList = new Vector.<ItemTemplateInfo>();
          timeOutIdArr = [];
          tweenArr = [];
       }
       
-      public static function play(param1:Array, param2:Point = null, param3:Point = null, param4:Boolean = false) : void
+      public static function play(item:Array, begin:Point = null, end:Point = null, isEmailAniam:Boolean = false) : void
       {
-         var _loc8_:int = 0;
-         var _loc7_:* = null;
-         var _loc6_:* = null;
-         var _loc5_:* = 0;
-         _isEmailAniam = param4;
-         if(param2 == null)
+         var i:int = 0;
+         var itemInfo:* = null;
+         var cell:* = null;
+         var timeOutId:* = 0;
+         _isEmailAniam = isEmailAniam;
+         if(begin == null)
          {
-            param2 = ComponentFactory.Instance.creatCustomObject("dropGoodsManager.beginPoint");
+            begin = ComponentFactory.Instance.creatCustomObject("dropGoodsManager.beginPoint");
          }
-         if(param3 == null)
+         if(end == null)
          {
-            param3 = ComponentFactory.Instance.creatCustomObject("dropGoodsManager.bagPoint");
+            end = ComponentFactory.Instance.creatCustomObject("dropGoodsManager.bagPoint");
          }
-         var _loc9_:DropGoodsManager = new DropGoodsManager(param2,param3);
-         _loc9_.setGoodsList(param1);
-         _loc8_ = 0;
-         while(_loc8_ < _loc9_.goodsList.length)
+         var dgm:DropGoodsManager = new DropGoodsManager(begin,end);
+         dgm.setGoodsList(item);
+         for(i = 0; i < dgm.goodsList.length; )
          {
-            _loc7_ = _loc9_.goodsList[_loc8_];
-            _loc6_ = new BaseCell(new Sprite(),_loc7_);
-            _loc6_.setContentSize(48,48);
-            _loc5_ = uint(setTimeout(_loc9_.packUp,200 + _loc8_ * 200,_loc6_,_loc9_.onCompletePackUp));
-            _loc9_.timeOutIdArr.push(_loc5_);
-            _loc8_++;
+            itemInfo = dgm.goodsList[i];
+            cell = new BaseCell(new Sprite(),itemInfo);
+            cell.setContentSize(48,48);
+            timeOutId = uint(setTimeout(dgm.packUp,200 + i * 200,cell,dgm.onCompletePackUp));
+            dgm.timeOutIdArr.push(timeOutId);
+            i++;
          }
       }
       
-      private function onPetCompletePackUp(param1:DisplayObject) : void
+      private function onPetCompletePackUp(goods:DisplayObject) : void
       {
-         ObjectUtils.disposeObject(param1);
+         ObjectUtils.disposeObject(goods);
          dispose();
       }
       
-      private function packUp(param1:DisplayObject, param2:Function) : void
+      private function packUp(goods:DisplayObject, callBack:Function) : void
       {
          clearTimeout(timeOutIdArr.shift());
-         param1.x = beginPoint.x;
-         param1.y = beginPoint.y;
-         param1.alpha = 0.5;
-         param1.scaleX = 0.85;
-         param1.scaleY = 0.85;
-         parentContainer.addChild(param1);
-         var _loc3_:Point = endPoint;
-         var _loc5_:Point = new Point(beginPoint.x - (beginPoint.x - _loc3_.x) / 2,beginPoint.y - 100);
-         var _loc6_:Point = new Point(_loc5_.x - (_loc5_.x - beginPoint.x) / 2,beginPoint.y - 60);
-         var _loc4_:Point = new Point(_loc3_.x - (_loc3_.x - _loc5_.x) / 2,beginPoint.y + 30);
-         var _loc8_:TweenVars = ComponentFactory.Instance.creatCustomObject("dropGoodsManager.tweenVars1") as TweenVars;
-         var _loc9_:TweenVars = ComponentFactory.Instance.creatCustomObject("dropGoodsManager.tweenVars2") as TweenVars;
-         var _loc7_:TimelineLite = new TimelineLite();
-         _loc7_.append(TweenMax.to(param1,_loc8_.duration,{
-            "alpha":_loc8_.alpha,
-            "scaleX":_loc8_.scaleX,
-            "scaleY":_loc8_.scaleY,
+         goods.x = beginPoint.x;
+         goods.y = beginPoint.y;
+         goods.alpha = 0.5;
+         goods.scaleX = 0.85;
+         goods.scaleY = 0.85;
+         parentContainer.addChild(goods);
+         var p4:Point = endPoint;
+         var p2:Point = new Point(beginPoint.x - (beginPoint.x - p4.x) / 2,beginPoint.y - 100);
+         var p1:Point = new Point(p2.x - (p2.x - beginPoint.x) / 2,beginPoint.y - 60);
+         var p3:Point = new Point(p4.x - (p4.x - p2.x) / 2,beginPoint.y + 30);
+         var Vars1:TweenVars = ComponentFactory.Instance.creatCustomObject("dropGoodsManager.tweenVars1") as TweenVars;
+         var Vars2:TweenVars = ComponentFactory.Instance.creatCustomObject("dropGoodsManager.tweenVars2") as TweenVars;
+         var timeline:TimelineLite = new TimelineLite();
+         timeline.append(TweenMax.to(goods,Vars1.duration,{
+            "alpha":Vars1.alpha,
+            "scaleX":Vars1.scaleX,
+            "scaleY":Vars1.scaleY,
             "bezierThrough":[{
-               "x":_loc6_.x,
-               "y":_loc6_.y
+               "x":p1.x,
+               "y":p1.y
             },{
-               "x":_loc5_.x,
-               "y":_loc5_.y
+               "x":p2.x,
+               "y":p2.y
             }],
             "ease":Sine.easeInOut
          }));
-         _loc7_.append(TweenMax.to(param1,_loc9_.duration,{
-            "alpha":_loc9_.alpha,
-            "scaleX":_loc9_.scaleX,
-            "scaleY":_loc9_.scaleY,
+         timeline.append(TweenMax.to(goods,Vars2.duration,{
+            "alpha":Vars2.alpha,
+            "scaleX":Vars2.scaleX,
+            "scaleY":Vars2.scaleY,
             "bezierThrough":[{
-               "x":_loc4_.x,
-               "y":_loc4_.y
+               "x":p3.x,
+               "y":p3.y
             },{
-               "x":_loc3_.x,
-               "y":_loc3_.y
+               "x":p4.x,
+               "y":p4.y
             }],
             "ease":Sine.easeInOut,
-            "onComplete":param2,
-            "onCompleteParams":[param1]
+            "onComplete":callBack,
+            "onCompleteParams":[goods]
          }));
-         tweenArr.push(_loc7_);
+         tweenArr.push(timeline);
       }
       
-      private function onCompletePackUp(param1:DisplayObject) : void
+      private function onCompletePackUp(goods:DisplayObject) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         if(param1 && parentContainer.contains(param1))
+         var emailMc:* = null;
+         var bagMc:* = null;
+         if(goods && parentContainer.contains(goods))
          {
-            ObjectUtils.disposeObject(param1);
-            param1 = null;
+            ObjectUtils.disposeObject(goods);
+            goods = null;
          }
          if(_isEmailAniam)
          {
-            _loc3_ = getEmailAniam();
-            if(_loc3_.movie)
+            emailMc = getEmailAniam();
+            if(emailMc.movie)
             {
-               parentContainer.addChild(_loc3_.movie);
+               parentContainer.addChild(emailMc.movie);
             }
          }
          else
          {
-            _loc2_ = getBagAniam();
-            if(_loc2_.movie)
+            bagMc = getBagAniam();
+            if(bagMc.movie)
             {
-               parentContainer.addChild(_loc2_.movie);
+               parentContainer.addChild(bagMc.movie);
             }
          }
          SoundManager.instance.play("008");
@@ -177,107 +176,103 @@ package ddt.manager
       
       private function getBagAniam() : MovieClipWrapper
       {
-         var _loc1_:MovieClip = ClassUtils.CreatInstance("asset.toolbar.bagMCAsset") as MovieClip;
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("dropGoods.bagPoint");
-         _loc1_.x = _loc2_.x;
-         _loc1_.y = _loc2_.y;
-         var _loc3_:MovieClipWrapper = new MovieClipWrapper(_loc1_,true,true);
-         return _loc3_;
+         var mc:MovieClip = ClassUtils.CreatInstance("asset.toolbar.bagMCAsset") as MovieClip;
+         var pt:Point = ComponentFactory.Instance.creatCustomObject("dropGoods.bagPoint");
+         mc.x = pt.x;
+         mc.y = pt.y;
+         var bagmc:MovieClipWrapper = new MovieClipWrapper(mc,true,true);
+         return bagmc;
       }
       
       private function getEmailAniam() : MovieClipWrapper
       {
-         var _loc1_:MovieClip = ClassUtils.CreatInstance("asset.playerInfo.mail") as MovieClip;
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("dropGoods.emailPoint");
-         _loc1_.x = _loc2_.x;
-         _loc1_.y = _loc2_.y;
-         var _loc3_:MovieClipWrapper = new MovieClipWrapper(_loc1_,true,true);
-         return _loc3_;
+         var mc:MovieClip = ClassUtils.CreatInstance("asset.playerInfo.mail") as MovieClip;
+         var pt:Point = ComponentFactory.Instance.creatCustomObject("dropGoods.emailPoint");
+         mc.x = pt.x;
+         mc.y = pt.y;
+         var bagmc:MovieClipWrapper = new MovieClipWrapper(mc,true,true);
+         return bagmc;
       }
       
-      private function setGoodsList(param1:Array) : void
+      private function setGoodsList(item:Array) : void
       {
-         var _loc9_:int = 0;
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         var _loc8_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         var _loc7_:int = 0;
-         var _loc4_:Array = [];
-         _loc9_ = 0;
-         while(_loc9_ < param1.length)
+         var i:int = 0;
+         var j:int = 0;
+         var len:int = 0;
+         var typeNum:int = 0;
+         var itemObj:* = null;
+         var count:int = 0;
+         var k:int = 0;
+         var itemList:Array = [];
+         for(i = 0; i < item.length; )
          {
-            _loc6_ = 0;
+            j = 0;
             while(true)
             {
-               if(_loc6_ >= goodsList.length)
+               if(j >= goodsList.length)
                {
-                  _loc8_ = 0;
-                  _loc2_ = {};
-                  _loc6_ = 0;
-                  while(_loc6_ < param1.length)
+                  typeNum = 0;
+                  itemObj = {};
+                  for(j = 0; j < item.length; )
                   {
-                     if(param1[_loc9_].TemplateID == param1[_loc6_].TemplateID)
+                     if(item[i].TemplateID == item[j].TemplateID)
                      {
-                        _loc8_++;
+                        typeNum++;
                      }
-                     _loc6_++;
+                     j++;
                   }
-                  _loc2_.item = param1[_loc9_];
-                  _loc2_.count = _loc8_;
-                  _loc4_.push(_loc2_);
+                  itemObj.item = item[i];
+                  itemObj.count = typeNum;
+                  itemList.push(itemObj);
                   break;
                }
-               if(param1[_loc9_].TemplateID != goodsList[_loc6_].TemplateID)
+               if(item[i].TemplateID != goodsList[j].TemplateID)
                {
-                  _loc6_++;
+                  j++;
                   continue;
                }
                break;
             }
-            _loc9_++;
+            i++;
          }
-         if(_loc4_.length > 7)
+         if(itemList.length > 7)
          {
-            _loc9_ = 0;
-            while(_loc9_ < _loc4_.length && _loc9_ < 10)
+            i = 0;
+            while(i < itemList.length && i < 10)
             {
-               goodsList.push(_loc4_[_loc9_].item);
-               _loc9_++;
+               goodsList.push(itemList[i].item);
+               i++;
             }
          }
          else
          {
-            _loc9_ = 0;
-            while(_loc9_ < _loc4_.length)
+            i = 0;
+            while(i < itemList.length)
             {
-               _loc3_ = _loc4_[_loc9_].count;
-               if(_loc3_ == 1)
+               count = itemList[i].count;
+               if(count == 1)
                {
-                  goodsList.push(_loc4_[_loc9_].item);
+                  goodsList.push(itemList[i].item);
                }
-               else if(_loc3_ > 1 && _loc3_ <= 3)
+               else if(count > 1 && count <= 3)
                {
-                  _loc5_ = Math.random() * 2 + 2;
-                  _loc7_ = 0;
-                  while(_loc7_ < _loc5_)
+                  len = Math.random() * 2 + 2;
+                  for(k = 0; k < len; )
                   {
-                     goodsList.push(_loc4_[_loc9_].item);
-                     _loc7_++;
+                     goodsList.push(itemList[i].item);
+                     k++;
                   }
                }
-               else if(_loc3_ > 3)
+               else if(count > 3)
                {
-                  _loc5_ = Math.random() * 3 + 2;
-                  _loc7_ = 0;
-                  while(_loc7_ < _loc5_)
+                  len = Math.random() * 3 + 2;
+                  for(k = 0; k < len; )
                   {
-                     goodsList.push(_loc4_[_loc9_].item);
-                     _loc7_++;
+                     goodsList.push(itemList[i].item);
+                     k++;
                   }
                }
-               _loc9_++;
+               i++;
             }
          }
       }

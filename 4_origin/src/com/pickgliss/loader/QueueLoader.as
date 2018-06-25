@@ -18,9 +18,9 @@ package com.pickgliss.loader
          _loaders = new Vector.<BaseLoader>();
       }
       
-      public function addLoader(param1:BaseLoader) : void
+      public function addLoader(loader:BaseLoader) : void
       {
-         _loaders.push(param1);
+         _loaders.push(loader);
       }
       
       public function dispose() : void
@@ -31,59 +31,55 @@ package com.pickgliss.loader
       
       public function removeEvent() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _loaders.length)
+         var i:int = 0;
+         for(i = 0; i < _loaders.length; )
          {
-            _loaders[_loc1_].removeEventListener("complete",__loadNext);
-            _loc1_++;
+            _loaders[i].removeEventListener("complete",__loadNext);
+            i++;
          }
       }
       
       public function isAllComplete() : Boolean
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _loaders.length)
+         var i:int = 0;
+         for(i = 0; i < _loaders.length; )
          {
-            if(!_loaders[_loc1_].isComplete)
+            if(!_loaders[i].isComplete)
             {
                return false;
             }
-            _loc1_++;
+            i++;
          }
          return true;
       }
       
       public function isLoading() : Boolean
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _loaders.length)
+         var i:int = 0;
+         for(i = 0; i < _loaders.length; )
          {
-            if(_loaders[_loc1_].isLoading)
+            if(_loaders[i].isLoading)
             {
                return true;
             }
-            _loc1_++;
+            i++;
          }
          return false;
       }
       
       public function get completeCount() : int
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _loaders.length)
+         var i:int = 0;
+         var result:int = 0;
+         for(i = 0; i < _loaders.length; )
          {
-            if(_loaders[_loc2_].isComplete)
+            if(_loaders[i].isComplete)
             {
-               _loc1_++;
+               result++;
             }
-            _loc2_++;
+            i++;
          }
-         return _loc1_;
+         return result;
       }
       
       public function get length() : int
@@ -101,32 +97,31 @@ package com.pickgliss.loader
          tryLoadNext();
       }
       
-      private function __loadNext(param1:LoaderEvent) : void
+      private function __loadNext(event:LoaderEvent) : void
       {
-         var _loc2_:BaseLoader = param1.loader as BaseLoader;
-         _loc2_.removeEventListener("complete",__loadNext);
+         var loader:BaseLoader = event.loader as BaseLoader;
+         loader.removeEventListener("complete",__loadNext);
          dispatchEvent(new Event("change"));
          tryLoadNext();
       }
       
       private function tryLoadNext() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          if(_loaders == null)
          {
             return;
          }
-         var _loc1_:int = _loaders.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var loaderCount:int = _loaders.length;
+         for(i = 0; i < loaderCount; )
          {
-            if(!_loaders[_loc2_].isComplete)
+            if(!_loaders[i].isComplete)
             {
-               _loaders[_loc2_].addEventListener("complete",__loadNext);
-               LoadResourceManager.Instance.startLoad(_loaders[_loc2_]);
+               _loaders[i].addEventListener("complete",__loadNext);
+               LoadResourceManager.Instance.startLoad(_loaders[i]);
                return;
             }
-            _loc2_++;
+            i++;
          }
          dispatchEvent(new Event("complete"));
       }

@@ -21,74 +21,73 @@ package ddt.data.analyze
       
       public var isSelfPublishEquip:Boolean;
       
-      public function AcademyMemberListAnalyze(param1:Function)
+      public function AcademyMemberListAnalyze(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc6_:* = null;
-         var _loc7_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc5_:XML = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var player:* = null;
+         var state:* = null;
+         var academyPlayerInfo:* = null;
+         var xml:XML = new XML(data);
          academyMemberList = new Vector.<AcademyPlayerInfo>();
-         if(_loc5_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc6_ = _loc5_..Info;
-            _loc7_ = 0;
-            while(_loc7_ < _loc6_.length())
+            xmllist = xml..Info;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc3_ = new PlayerInfo();
-               _loc3_.beginChanges();
-               _loc3_.ID = _loc6_[_loc7_].@UserID;
-               _loc3_.NickName = _loc6_[_loc7_].@NickName;
-               _loc3_.ConsortiaID = _loc6_[_loc7_].@ConsortiaID;
-               _loc3_.ConsortiaName = _loc6_[_loc7_].@ConsortiaName;
-               _loc3_.Sex = converBoolean(_loc6_[_loc7_].@Sex);
-               _loc3_.WinCount = _loc6_[_loc7_].@Win;
-               _loc3_.TotalCount = _loc6_[_loc7_].@Total;
-               _loc3_.EscapeCount = _loc6_[_loc7_].@Escape;
-               _loc3_.GP = _loc6_[_loc7_].@GP;
-               _loc3_.Style = _loc6_[_loc7_].@Style;
-               _loc3_.Colors = _loc6_[_loc7_].@Colors;
-               _loc3_.Hide = _loc6_[_loc7_].@Hide;
-               _loc3_.Grade = _loc6_[_loc7_].@Grade;
-               _loc3_.playerState = new PlayerState(int(_loc6_[_loc7_].@State));
-               _loc3_.Repute = _loc6_[_loc7_].@Repute;
-               _loc3_.Skin = _loc6_[_loc7_].@Skin;
-               _loc3_.Offer = _loc6_[_loc7_].@Offer;
-               _loc3_.IsMarried = converBoolean(_loc6_[_loc7_].@IsMarried);
-               _loc3_.Nimbus = int(_loc6_[_loc7_].@Nimbus);
-               _loc3_.DutyName = _loc6_[_loc7_].@DutyName;
-               _loc3_.FightPower = _loc6_[_loc7_].@FightPower;
-               _loc3_.AchievementPoint = _loc6_[_loc7_].@AchievementPoint;
-               _loc3_.honor = _loc6_[_loc7_].@Rank;
-               _loc3_.typeVIP = _loc6_[_loc7_].@typeVIP;
-               _loc3_.VIPLevel = _loc6_[_loc7_].@VIPLevel;
-               _loc3_.SpouseID = _loc6_[_loc7_].@SpouseID;
-               _loc3_.SpouseName = _loc6_[_loc7_].@SpouseName;
-               _loc3_.WeaponID = _loc6_[_loc7_].@WeaponID;
-               _loc3_.graduatesCount = _loc6_[_loc7_].@GraduatesCount;
-               _loc3_.honourOfMaster = _loc6_[_loc7_].@HonourOfMaster;
-               _loc3_.badgeID = _loc6_[_loc7_].@BadgeID;
-               _loc3_.isOld = int(_loc6_[_loc7_].@OldPlayer) == 1;
-               _loc3_.isAttest = converBoolean(_loc6_[_loc7_].@IsBeauty);
-               _loc4_ = new PlayerState(_loc6_[_loc7_].@State);
-               _loc3_.playerState = _loc4_;
-               _loc2_ = new AcademyPlayerInfo();
-               _loc2_.IsPublishEquip = converBoolean(_loc6_[_loc7_].@IsPublishEquip);
-               _loc2_.Introduction = _loc6_[_loc7_].@Introduction;
-               _loc2_.info = _loc3_;
-               academyMemberList.push(_loc2_);
-               _loc3_.commitChanges();
-               _loc7_++;
+               player = new PlayerInfo();
+               player.beginChanges();
+               player.ID = xmllist[i].@UserID;
+               player.NickName = xmllist[i].@NickName;
+               player.ConsortiaID = xmllist[i].@ConsortiaID;
+               player.ConsortiaName = xmllist[i].@ConsortiaName;
+               player.Sex = converBoolean(xmllist[i].@Sex);
+               player.WinCount = xmllist[i].@Win;
+               player.TotalCount = xmllist[i].@Total;
+               player.EscapeCount = xmllist[i].@Escape;
+               player.GP = xmllist[i].@GP;
+               player.Style = xmllist[i].@Style;
+               player.Colors = xmllist[i].@Colors;
+               player.Hide = xmllist[i].@Hide;
+               player.Grade = xmllist[i].@Grade;
+               player.playerState = new PlayerState(int(xmllist[i].@State));
+               player.Repute = xmllist[i].@Repute;
+               player.Skin = xmllist[i].@Skin;
+               player.Offer = xmllist[i].@Offer;
+               player.IsMarried = converBoolean(xmllist[i].@IsMarried);
+               player.Nimbus = int(xmllist[i].@Nimbus);
+               player.DutyName = xmllist[i].@DutyName;
+               player.FightPower = xmllist[i].@FightPower;
+               player.AchievementPoint = xmllist[i].@AchievementPoint;
+               player.honor = xmllist[i].@Rank;
+               player.typeVIP = xmllist[i].@typeVIP;
+               player.VIPLevel = xmllist[i].@VIPLevel;
+               player.SpouseID = xmllist[i].@SpouseID;
+               player.SpouseName = xmllist[i].@SpouseName;
+               player.WeaponID = xmllist[i].@WeaponID;
+               player.graduatesCount = xmllist[i].@GraduatesCount;
+               player.honourOfMaster = xmllist[i].@HonourOfMaster;
+               player.badgeID = xmllist[i].@BadgeID;
+               player.isOld = int(xmllist[i].@OldPlayer) == 1;
+               player.isAttest = converBoolean(xmllist[i].@IsBeauty);
+               state = new PlayerState(xmllist[i].@State);
+               player.playerState = state;
+               academyPlayerInfo = new AcademyPlayerInfo();
+               academyPlayerInfo.IsPublishEquip = converBoolean(xmllist[i].@IsPublishEquip);
+               academyPlayerInfo.Introduction = xmllist[i].@Introduction;
+               academyPlayerInfo.info = player;
+               academyMemberList.push(academyPlayerInfo);
+               player.commitChanges();
+               i++;
             }
-            totalPage = Math.ceil(int(_loc5_.@total) / 9);
-            selfIsRegister = converBoolean(_loc5_.@isPlayerRegeisted);
-            if(_loc5_.@isPlayerRegeisted == "")
+            totalPage = Math.ceil(int(xml.@total) / 9);
+            selfIsRegister = converBoolean(xml.@isPlayerRegeisted);
+            if(xml.@isPlayerRegeisted == "")
             {
                isAlter = false;
             }
@@ -96,21 +95,21 @@ package ddt.data.analyze
             {
                isAlter = true;
             }
-            selfDescribe = _loc5_.@selfMessage;
-            isSelfPublishEquip = converBoolean(_loc5_.@isSelfPublishEquip);
+            selfDescribe = xml.@selfMessage;
+            isSelfPublishEquip = converBoolean(xml.@isSelfPublishEquip);
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc5_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }
       }
       
-      private function converBoolean(param1:String) : Boolean
+      private function converBoolean(str:String) : Boolean
       {
-         if(param1 == "true")
+         if(str == "true")
          {
             return true;
          }

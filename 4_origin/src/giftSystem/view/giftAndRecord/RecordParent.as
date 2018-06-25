@@ -36,19 +36,19 @@ package giftSystem.view.giftAndRecord
       {
       }
       
-      public function set playerInfo(param1:PlayerInfo) : void
+      public function set playerInfo(value:PlayerInfo) : void
       {
       }
       
-      public function setList(param1:RecordInfo, param2:int) : void
+      public function setList(info:RecordInfo, type:int) : void
       {
       }
       
-      private function setReceived(param1:RecordInfo) : void
+      private function setReceived(info:RecordInfo) : void
       {
       }
       
-      private function setSended(param1:RecordInfo) : void
+      private function setSended(info:RecordInfo) : void
       {
       }
       

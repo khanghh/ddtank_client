@@ -30,23 +30,23 @@ package farm
          FarmModelController.instance.addEventListener("openview",__onOpenView);
       }
       
-      public function __onOpenView(param1:CEvent) : void
+      public function __onOpenView(e:CEvent) : void
       {
-         var _loc2_:int = param1.data.type;
-         switch(int(_loc2_) - 1)
+         var type:int = e.data.type;
+         switch(int(type) - 1)
          {
             case 0:
                StateManager.setState("farm");
                break;
             case 1:
-               openPayFieldFrame(param1.data.fieldId);
+               openPayFieldFrame(e.data.fieldId);
          }
       }
       
-      public function openPayFieldFrame(param1:int) : void
+      public function openPayFieldFrame(fieldId:int) : void
       {
-         var _loc2_:FarmBuyFieldView = new FarmBuyFieldView(param1);
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var buyfield:FarmBuyFieldView = new FarmBuyFieldView(fieldId);
+         LayerManager.Instance.addToLayer(buyfield,3,true,1);
       }
    }
 }

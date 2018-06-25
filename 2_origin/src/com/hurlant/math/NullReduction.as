@@ -11,28 +11,28 @@ package com.hurlant.math
          super();
       }
       
-      public function reduce(param1:BigInteger) : void
+      public function reduce(x:BigInteger) : void
       {
       }
       
-      public function revert(param1:BigInteger) : BigInteger
+      public function revert(x:BigInteger) : BigInteger
       {
-         return param1;
+         return x;
       }
       
-      public function mulTo(param1:BigInteger, param2:BigInteger, param3:BigInteger) : void
+      public function mulTo(x:BigInteger, y:BigInteger, r:BigInteger) : void
       {
-         param1.multiplyTo(param2,param3);
+         x.multiplyTo(y,r);
       }
       
-      public function convert(param1:BigInteger) : BigInteger
+      public function convert(x:BigInteger) : BigInteger
       {
-         return param1;
+         return x;
       }
       
-      public function sqrTo(param1:BigInteger, param2:BigInteger) : void
+      public function sqrTo(x:BigInteger, r:BigInteger) : void
       {
-         param1.squareTo(param2);
+         x.squareTo(r);
       }
    }
 }

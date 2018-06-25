@@ -33,7 +33,7 @@ package calendar.view
          return _back.height;
       }
       
-      public function setContent(param1:ActiveEventsInfo) : void
+      public function setContent(info:ActiveEventsInfo) : void
       {
       }
       

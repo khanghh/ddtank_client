@@ -34,25 +34,24 @@ package flowerGiving.components
       
       public function FlowerFallMc()
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _tempv = 2 + Math.random() * 1000 / 1000 * 2 * 0.8 - 0.8;
          _tempr = Math.random() * 1000 / 1000 * _fsr * 2 - _fsr;
          super();
          _flowerArr = [];
-         _loc1_ = 0;
-         while(_loc1_ < 100)
+         for(i = 0; i < 100; )
          {
             _flowerMc = ComponentFactory.Instance.creat("asset.flowerGiving.flowerMc");
             _flowerArr.push(_flowerMc);
-            _loc1_++;
+            i++;
          }
          addEventListener("enterFrame",__update);
       }
       
-      private function __update(param1:Event) : void
+      private function __update(event:Event) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var flowerMc:* = null;
+         var flowerMc2:* = null;
          if(!isOver)
          {
             _flag = _flag + _frequency;
@@ -63,11 +62,11 @@ package flowerGiving.components
                {
                   return;
                }
-               _loc3_ = _flowerArr[_num] as MovieClip;
-               _loc3_.addEventListener("enterFrame",__flowerUpdate);
+               flowerMc = _flowerArr[_num] as MovieClip;
+               flowerMc.addEventListener("enterFrame",__flowerUpdate);
                _num = Number(_num) + 1;
-               initFlower(_loc3_);
-               addChild(_loc3_);
+               initFlower(flowerMc);
+               addChild(flowerMc);
             }
          }
          else
@@ -82,56 +81,55 @@ package flowerGiving.components
                   dispatchEvent(new Event("complete"));
                   return;
                }
-               _loc2_ = _flowerArr[_num] as MovieClip;
-               _loc2_.removeEventListener("enterFrame",__flowerUpdate);
-               if(_loc2_.parent)
+               flowerMc2 = _flowerArr[_num] as MovieClip;
+               flowerMc2.removeEventListener("enterFrame",__flowerUpdate);
+               if(flowerMc2.parent)
                {
-                  removeChild(_loc2_);
+                  removeChild(flowerMc2);
                }
-               _loc2_ = null;
+               flowerMc2 = null;
             }
          }
       }
       
-      private function initFlower(param1:MovieClip) : void
+      private function initFlower(flowerMc:MovieClip) : void
       {
-         param1.x = Math.random() * _loadingSpriteWidth;
-         param1.y = Math.random() * 10;
-         param1.gx = _tempv * Math.sin(_tempr);
-         param1.gy = 8 + _tempv * Math.cos(_tempr);
-         param1.rot = Math.random() * 1000 / 1000 * 2 * 8 - 8;
+         flowerMc.x = Math.random() * _loadingSpriteWidth;
+         flowerMc.y = Math.random() * 10;
+         flowerMc.gx = _tempv * Math.sin(_tempr);
+         flowerMc.gy = 8 + _tempv * Math.cos(_tempr);
+         flowerMc.rot = Math.random() * 1000 / 1000 * 2 * 8 - 8;
          var _loc2_:* = 0.7 * Math.random();
-         param1.scaleX = _loc2_;
-         param1.scaleY = _loc2_;
+         flowerMc.scaleX = _loc2_;
+         flowerMc.scaleY = _loc2_;
       }
       
-      private function __flowerUpdate(param1:Event) : void
+      private function __flowerUpdate(event:Event) : void
       {
-         var _loc2_:MovieClip = param1.target as MovieClip;
-         _loc2_.x = _loc2_.x + _loc2_.gx;
-         _loc2_.y = _loc2_.y + _loc2_.gy;
-         _loc2_.rotation = _loc2_.rotation + _loc2_.rot;
-         if(_loc2_.y > _loadingSpriteHeight)
+         var flowerMc:MovieClip = event.target as MovieClip;
+         flowerMc.x = flowerMc.x + flowerMc.gx;
+         flowerMc.y = flowerMc.y + flowerMc.gy;
+         flowerMc.rotation = flowerMc.rotation + flowerMc.rot;
+         if(flowerMc.y > _loadingSpriteHeight)
          {
-            initFlower(_loc2_);
+            initFlower(flowerMc);
          }
       }
       
       public function dispose() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < _flowerArr.length)
+         var i:int = 0;
+         var flowerMc:* = null;
+         for(i = 0; i < _flowerArr.length; )
          {
-            _loc1_ = _flowerArr[_loc2_] as MovieClip;
-            _loc1_.removeEventListener("enterFrame",__flowerUpdate);
-            if(_loc1_.parent)
+            flowerMc = _flowerArr[i] as MovieClip;
+            flowerMc.removeEventListener("enterFrame",__flowerUpdate);
+            if(flowerMc.parent)
             {
-               removeChild(_loc1_);
+               removeChild(flowerMc);
             }
-            _loc1_ = null;
-            _loc2_++;
+            flowerMc = null;
+            i++;
          }
          removeEventListener("enterFrame",__update);
       }

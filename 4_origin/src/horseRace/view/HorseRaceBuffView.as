@@ -69,7 +69,7 @@ package horseRace.view
          pingzhangDaojishi.visible = false;
       }
       
-      private function _showDaojishi(param1:TimerEvent) : void
+      private function _showDaojishi(e:TimerEvent) : void
       {
          pingzhangDaojishi.gotoAndStop(pingzhangCount);
          pingzhangCount = Number(pingzhangCount) - 1;
@@ -96,9 +96,9 @@ package horseRace.view
          pingzhangCount = Number(pingzhangCount) - 1;
       }
       
-      public function set buffItemType1(param1:int) : void
+      public function set buffItemType1($buffItemType1:int) : void
       {
-         _buffItemType1 = param1;
+         _buffItemType1 = $buffItemType1;
          if(_buffItemType1 != 0)
          {
             buffItem1.setShowBuffObj(_buffItemType1);
@@ -114,9 +114,9 @@ package horseRace.view
          return _buffItemType1;
       }
       
-      public function set buffItemType2(param1:int) : void
+      public function set buffItemType2($buffItemType2:int) : void
       {
-         _buffItemType2 = param1;
+         _buffItemType2 = $buffItemType2;
          if(_buffItemType2 != 0)
          {
             buffItem2.setShowBuffObj(_buffItemType2);
@@ -161,7 +161,7 @@ package horseRace.view
          pingzhangBnt.addEventListener("click",_pingzhangUse);
       }
       
-      private function _pingzhangUse(param1:MouseEvent) : void
+      private function _pingzhangUse(e:MouseEvent) : void
       {
          HorseRaceManager.Instance.dispatchEvent(new HorseRaceEvents("HORSERACE_USE_PINGZHANG"));
       }

@@ -59,13 +59,13 @@ package hall.hallInfo.playerInfo
          setPowerNum(_selfInfo.FightPower);
       }
       
-      public function setPowerNum(param1:int) : void
+      public function setPowerNum(value:int) : void
       {
          if(_powerNum)
          {
             ObjectUtils.disposeObject(_powerNum);
             _powerNum = null;
-            _powerNum = ImgNumConverter.instance.convertToImg(param1,"asset.hall.playerInfo.num",8);
+            _powerNum = ImgNumConverter.instance.convertToImg(value,"asset.hall.playerInfo.num",8);
             PositionUtils.setPos(_powerNum,"hall.playerInfo.powNumPos");
             _container.addChild(_powerNum);
          }

@@ -69,14 +69,14 @@ package beadSystem.controls
          resetProgress();
       }
       
-      public function set currentExp(param1:int) : void
+      public function set currentExp(value:int) : void
       {
-         _currentExp = param1;
+         _currentExp = value;
       }
       
-      public function set upLevelExp(param1:int) : void
+      public function set upLevelExp(value:int) : void
       {
-         _upLevelExp = param1;
+         _upLevelExp = value;
       }
       
       public function resetProgress() : void
@@ -92,21 +92,21 @@ package beadSystem.controls
          _taskFrames = new Dictionary();
       }
       
-      public function intProgress(param1:InventoryItemInfo) : void
+      public function intProgress(info:InventoryItemInfo) : void
       {
-         var _loc2_:Number = NaN;
-         var _loc3_:int = 0;
+         var rate:Number = NaN;
+         var tempFrame:int = 0;
          _currentFrame = 0;
          _currentLevel = 5;
          if(_upLevelExp > 0 && _currentExp < _upLevelExp)
          {
-            _loc2_ = _currentExp / _upLevelExp;
-            _loc3_ = Math.floor(_loc2_ * _total);
-            if(_loc3_ < 1 && _loc2_ > 0)
+            rate = _currentExp / _upLevelExp;
+            tempFrame = Math.floor(rate * _total);
+            if(tempFrame < 1 && rate > 0)
             {
-               _loc3_ = 1;
+               tempFrame = 1;
             }
-            _currentFrame = _loc3_;
+            _currentFrame = tempFrame;
          }
          setMask(_currentFrame);
          setExpPercent();
@@ -114,32 +114,32 @@ package beadSystem.controls
          _taskFrames = new Dictionary();
       }
       
-      public function setProgress(param1:InventoryItemInfo) : void
+      public function setProgress(info:InventoryItemInfo) : void
       {
          if(_currentLevel == 6)
          {
             _taskFrames[0] = _total;
             _currentLevel = 6;
          }
-         var _loc2_:Number = _currentExp / _upLevelExp;
-         var _loc3_:int = Math.floor(_loc2_ * _total);
-         if(_loc3_ < 1 && _loc2_ > 0)
+         var rate:Number = _currentExp / _upLevelExp;
+         var tempFrame:int = Math.floor(rate * _total);
+         if(tempFrame < 1 && rate > 0)
          {
-            _loc3_ = 1;
+            tempFrame = 1;
          }
-         if(_currentFrame == _loc3_)
+         if(_currentFrame == tempFrame)
          {
             if(_taskFrames[0] && int(_taskFrames[0]) != 0)
             {
                setStarVisible(true);
-               _taskFrames[1] = _loc3_;
+               _taskFrames[1] = tempFrame;
                startProgress();
             }
          }
          else
          {
             setStarVisible(true);
-            _taskFrames[1] = _loc3_;
+            _taskFrames[1] = tempFrame;
             startProgress();
          }
          setExpPercent();
@@ -150,22 +150,22 @@ package beadSystem.controls
          this.addEventListener("enterFrame",__startFrame);
       }
       
-      private function __startFrame(param1:Event) : void
+      private function __startFrame(event:Event) : void
       {
          _currentFrame = Number(_currentFrame) + 1;
          setMask(_currentFrame);
-         var _loc2_:int = 0;
+         var frameNum:int = 0;
          if(_taskFrames.hasOwnProperty(0))
          {
-            _loc2_ = _taskFrames[0];
+            frameNum = _taskFrames[0];
          }
-         if(_loc2_ == 0 && _taskFrames.hasOwnProperty(1))
+         if(frameNum == 0 && _taskFrames.hasOwnProperty(1))
          {
-            _loc2_ = _taskFrames[1];
+            frameNum = _taskFrames[1];
          }
-         if(_currentFrame >= _loc2_)
+         if(_currentFrame >= frameNum)
          {
-            if(_loc2_ >= _total)
+            if(frameNum >= _total)
             {
                _currentFrame = 0;
                _taskFrames[0] = 0;
@@ -175,26 +175,26 @@ package beadSystem.controls
                _taskFrames[1] = 0;
                this.removeEventListener("enterFrame",__startFrame);
                setStarVisible(false);
-               param1.stopImmediatePropagation();
+               event.stopImmediatePropagation();
             }
          }
       }
       
       private function setExpPercent() : void
       {
-         var _loc1_:* = NaN;
+         var expPercent:* = NaN;
          if(_currentExp == 0 || int(PlayerManager.Instance.Self.embedUpLevelCell.itemInfo.Hole1) == 21)
          {
             _progressLabel.text = "0%";
          }
          else
          {
-            _loc1_ = Number(int(_currentExp / _upLevelExp * 100));
-            if(isNaN(_loc1_))
+            expPercent = Number(int(_currentExp / _upLevelExp * 100));
+            if(isNaN(expPercent))
             {
-               _loc1_ = 0;
+               expPercent = 0;
             }
-            _progressLabel.text = _loc1_ + "%";
+            _progressLabel.text = expPercent + "%";
          }
          if(isNaN(_currentExp))
          {
@@ -214,25 +214,25 @@ package beadSystem.controls
          }
       }
       
-      private function setStarVisible(param1:Boolean) : void
+      private function setStarVisible(value:Boolean) : void
       {
-         _star.visible = param1;
+         _star.visible = value;
       }
       
-      private function setMask(param1:Number) : void
+      private function setMask(value:Number) : void
       {
-         var _loc2_:Number = param1 * _scaleValue;
-         if(isNaN(_loc2_) || _loc2_ == 0)
+         var tempWidth:Number = value * _scaleValue;
+         if(isNaN(tempWidth) || tempWidth == 0)
          {
             _progressBarMask.width = 0;
          }
          else
          {
-            if(_loc2_ >= _graphics_thuck.width)
+            if(tempWidth >= _graphics_thuck.width)
             {
-               _loc2_ = _loc2_ % _graphics_thuck.width;
+               tempWidth = tempWidth % _graphics_thuck.width;
             }
-            _progressBarMask.width = _loc2_;
+            _progressBarMask.width = tempWidth;
          }
          _star.x = _progressBarMask.x + _progressBarMask.width;
       }

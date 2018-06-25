@@ -8,22 +8,22 @@ package ddt.manager
       
       public var result:Boolean;
       
-      public function ChargeMoneyAnalyzer(param1:Function)
+      public function ChargeMoneyAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc2_:XML = new XML(param1);
-         if(_loc2_.@value == "true")
+         var xml:XML = new XML(data);
+         if(xml.@value == "true")
          {
             result = true;
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc2_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeComplete();
          }

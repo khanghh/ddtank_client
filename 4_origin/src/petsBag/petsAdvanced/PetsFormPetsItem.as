@@ -88,32 +88,39 @@ package petsBag.petsAdvanced
          addEventListener("mouseOut",__onMouseOut);
       }
       
-      public function setInfo(param1:int, param2:PetsFormData) : void
+      public function setInfo(id:int, info:PetsFormData) : void
       {
-         var _loc3_:* = null;
-         _itemId = param1;
-         _info = param2;
+         var tip:* = null;
+         _itemId = id;
+         _info = info;
          _petsName.text = "";
          ObjectUtils.disposeAllChildren(_pet);
-         if(param2)
+         if(info)
          {
-            _loc3_ = {};
-            _loc3_.title = param2.Name;
-            _loc3_.isActive = param2.State == 1;
-            _loc3_.state = param2.State == 1?LanguageMgr.GetTranslation("petsBag.form.petsWakeTxt"):LanguageMgr.GetTranslation("petsBag.form.petsUnWakeTxt");
-            _loc3_.activeValue = param2.Name + LanguageMgr.GetTranslation("petsBag.form.petsWakeCard");
-            _loc3_.propertyValue = LanguageMgr.GetTranslation("petsBag.form.petsListGuardTxt",param2.HeathUp) + "\n" + LanguageMgr.GetTranslation("petsBag.form.petsabsorbHurtTxt",param2.DamageReduce);
-            _loc3_.getValue = LanguageMgr.GetTranslation("petsBag.form.petsCrypt").toString().split(",")[param1];
-            if(param2.valid != null)
+            tip = {};
+            tip.title = info.Name;
+            tip.isActive = info.State == 1;
+            tip.state = info.State == 1?LanguageMgr.GetTranslation("petsBag.form.petsWakeTxt"):LanguageMgr.GetTranslation("petsBag.form.petsUnWakeTxt");
+            tip.activeValue = info.Name + LanguageMgr.GetTranslation("petsBag.form.petsWakeCard");
+            tip.propertyValue = LanguageMgr.GetTranslation("petsBag.form.petsListGuardTxt",info.HeathUp) + "\n" + LanguageMgr.GetTranslation("petsBag.form.petsabsorbHurtTxt",info.DamageReduce);
+            if(_info.TemplateID == 62023 || _info.TemplateID == 62024 || _info.TemplateID == 62020)
             {
-               _loc3_.valid = param2.valid;
+               tip.getValue = LanguageMgr.GetTranslation("petsBag.form.petsCrypt.other");
             }
-            tipData = _loc3_;
-            showBtn = param2.ShowBtn;
-            _petsName.text = param2.Name;
+            else
+            {
+               tip.getValue = LanguageMgr.GetTranslation("petsBag.form.petsCrypt").toString().split(",")[id];
+            }
+            if(info.valid != null)
+            {
+               tip.valid = info.valid;
+            }
+            tipData = tip;
+            showBtn = info.ShowBtn;
+            _petsName.text = info.Name;
             if(_pet.numChildren == 0)
             {
-               addPetBitmap(param2.Appearance);
+               addPetBitmap(info.Appearance);
             }
          }
          else
@@ -122,37 +129,37 @@ package petsBag.petsAdvanced
          }
       }
       
-      public function addPetBitmap(param1:String) : void
+      public function addPetBitmap(path:String) : void
       {
-         var _loc2_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.petsFormPath(param1,showBtn == 3?2:1),0);
-         _loc2_.addEventListener("complete",__onComplete);
-         LoadResourceManager.Instance.startLoad(_loc2_,true);
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.petsFormPath(path,showBtn == 3?2:1),0);
+         loader.addEventListener("complete",__onComplete);
+         LoadResourceManager.Instance.startLoad(loader,true);
       }
       
-      protected function __onComplete(param1:LoaderEvent) : void
+      protected function __onComplete(event:LoaderEvent) : void
       {
-         var _loc2_:BaseLoader = param1.loader;
-         _loc2_.removeEventListener("complete",__onComplete);
-         _loc2_.content.x = -_loc2_.content.width / 2;
-         _loc2_.content.y = -_loc2_.content.height;
+         var loader:BaseLoader = event.loader;
+         loader.removeEventListener("complete",__onComplete);
+         loader.content.x = -loader.content.width / 2;
+         loader.content.y = -loader.content.height;
          ObjectUtils.disposeAllChildren(_pet);
       }
       
-      protected function __onFollowClick(param1:MouseEvent) : void
+      protected function __onFollowClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          SocketManager.Instance.out.sendPetFollowOrCall(true,_info.TemplateID);
          SocketManager.Instance.out.sendUpdatePets(true,PlayerManager.Instance.Self.ID,_info.TemplateID);
       }
       
-      protected function __onCallBackClick(param1:MouseEvent) : void
+      protected function __onCallBackClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          SocketManager.Instance.out.sendPetFollowOrCall(false,_info.TemplateID);
          SocketManager.Instance.out.sendUpdatePets(false,PlayerManager.Instance.Self.ID,0);
       }
       
-      protected function __onWakeClick(param1:MouseEvent) : void
+      protected function __onWakeClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
@@ -160,10 +167,10 @@ package petsBag.petsAdvanced
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:InventoryItemInfo = PlayerManager.Instance.Self.getBag(1).getItemByTemplateId(_info.TemplateID);
-         if(_loc2_)
+         var bagInfo:InventoryItemInfo = PlayerManager.Instance.Self.getBag(1).getItemByTemplateId(_info.TemplateID);
+         if(bagInfo)
          {
-            SocketManager.Instance.out.sendUsePetTemporaryCard(_loc2_.BagType,_loc2_.Place);
+            SocketManager.Instance.out.sendUsePetTemporaryCard(bagInfo.BagType,bagInfo.Place);
          }
          else
          {
@@ -171,7 +178,7 @@ package petsBag.petsAdvanced
          }
       }
       
-      protected function __onMouseClick(param1:MouseEvent) : void
+      protected function __onMouseClick(event:MouseEvent) : void
       {
          if(_bg.getFrame < 2)
          {
@@ -180,50 +187,50 @@ package petsBag.petsAdvanced
          }
       }
       
-      protected function __onMouseOut(param1:MouseEvent) : void
+      protected function __onMouseOut(event:MouseEvent) : void
       {
          setBtnVisible(false);
       }
       
-      protected function __onMouseOver(param1:MouseEvent) : void
+      protected function __onMouseOver(event:MouseEvent) : void
       {
          setBtnVisible(true);
       }
       
-      private function setBtnVisible(param1:Boolean) : void
+      private function setBtnVisible(flag:Boolean) : void
       {
          if(_showBtnFlag == 1)
          {
-            _followBtn.visible = param1;
+            _followBtn.visible = flag;
          }
          else if(_showBtnFlag == 2)
          {
-            _callBackBtn.visible = param1;
+            _callBackBtn.visible = flag;
          }
          else if(_showBtnFlag == 3)
          {
-            _wakeBtn.visible = param1;
+            _wakeBtn.visible = flag;
          }
       }
       
-      public function set showBtn(param1:int) : void
+      public function set showBtn(value:int) : void
       {
-         _showBtnFlag = param1;
+         _showBtnFlag = value;
          var _loc2_:Boolean = true;
          this.mouseEnabled = _loc2_;
          this.mouseChildren = _loc2_;
          _bg.setFrame(1);
-         if(param1 == 1)
+         if(value == 1)
          {
             _callBackBtn.visible = false;
             _wakeBtn.visible = false;
          }
-         else if(param1 == 2)
+         else if(value == 2)
          {
             _followBtn.visible = false;
             _wakeBtn.visible = false;
          }
-         else if(param1 == 3)
+         else if(value == 3)
          {
             _followBtn.visible = false;
             _callBackBtn.visible = false;

@@ -24,16 +24,16 @@ package mx.core
       
       private var _verifyDigest:Boolean;
       
-      public function RSLData(param1:String = null, param2:String = null, param3:String = null, param4:String = null, param5:Boolean = false, param6:Boolean = false, param7:String = "default")
+      public function RSLData(rslURL:String = null, policyFileURL:String = null, digest:String = null, hashType:String = null, isSigned:Boolean = false, verifyDigest:Boolean = false, applicationDomainTarget:String = "default")
       {
          super();
-         this._rslURL = param1;
-         this._policyFileURL = param2;
-         this._digest = param3;
-         this._hashType = param4;
-         this._isSigned = param5;
-         this._verifyDigest = param6;
-         this._applicationDomainTarget = param7;
+         this._rslURL = rslURL;
+         this._policyFileURL = policyFileURL;
+         this._digest = digest;
+         this._hashType = hashType;
+         this._isSigned = isSigned;
+         this._verifyDigest = verifyDigest;
+         this._applicationDomainTarget = applicationDomainTarget;
          this._moduleFactory = this.moduleFactory;
       }
       
@@ -62,9 +62,9 @@ package mx.core
          return this._moduleFactory;
       }
       
-      public function set moduleFactory(param1:IFlexModuleFactory) : void
+      public function set moduleFactory(moduleFactory:IFlexModuleFactory) : void
       {
-         this._moduleFactory = param1;
+         this._moduleFactory = moduleFactory;
       }
       
       public function get policyFileURL() : String

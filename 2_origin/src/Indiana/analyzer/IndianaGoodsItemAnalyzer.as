@@ -9,27 +9,26 @@ package Indiana.analyzer
       
       public var itemList:Vector.<IndianaGoodsItemInfo>;
       
-      public function IndianaGoodsItemAnalyzer(param1:Function)
+      public function IndianaGoodsItemAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc2_:* = null;
-         var _loc6_:int = 0;
+         var itemData:* = null;
+         var i:int = 0;
          XML.ignoreWhitespace = true;
          itemList = new Vector.<IndianaGoodsItemInfo>();
-         var _loc3_:XML = new XML(param1);
-         var _loc5_:int = _loc3_.item.length();
-         var _loc4_:XMLList = _loc3_..Item;
-         _loc6_ = 0;
-         while(_loc6_ < _loc4_.length())
+         var xml:XML = new XML(data);
+         var len:int = xml.item.length();
+         var xmllist:XMLList = xml..Item;
+         for(i = 0; i < xmllist.length(); )
          {
-            _loc2_ = new IndianaGoodsItemInfo();
-            ObjectUtils.copyPorpertiesByXML(_loc2_,_loc4_[_loc6_]);
-            itemList.push(_loc2_);
-            _loc6_++;
+            itemData = new IndianaGoodsItemInfo();
+            ObjectUtils.copyPorpertiesByXML(itemData,xmllist[i]);
+            itemList.push(itemData);
+            i++;
          }
          onAnalyzeComplete();
       }

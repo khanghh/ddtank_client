@@ -39,59 +39,59 @@ package ddt.manager
          SocketManager.Instance.addEventListener(PkgEvent.format(39),__getDynamic);
       }
       
-      private function __getDynamic(param1:PkgEvent) : void
+      private function __getDynamic(event:PkgEvent) : void
       {
          if(PathManager.CommnuntyMicroBlog() && PathManager.CommnuntySinaSecondMicroBlog())
          {
-            __semdWeiBo(param1);
+            __semdWeiBo(event);
          }
          else
          {
-            __sendDynamic(param1);
+            __sendDynamic(event);
          }
       }
       
-      public function __sendDynamic(param1:CrazyTankSocketEvent) : void
+      public function __sendDynamic(event:CrazyTankSocketEvent) : void
       {
-         var _loc2_:* = null;
+         var snsFrame:* = null;
          if(SharedManager.Instance.isCommunity)
          {
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("core.SNSFrameView");
-            _loc2_.typeId = param1.pkg.readInt();
-            _loc2_.backgroundServerTxt = param1.pkg.readUTF();
-            _loc2_.receptionistTxt = param1.pkg.readUTF();
+            snsFrame = ComponentFactory.Instance.creatComponentByStylename("core.SNSFrameView");
+            snsFrame.typeId = event.pkg.readInt();
+            snsFrame.backgroundServerTxt = event.pkg.readUTF();
+            snsFrame.receptionistTxt = event.pkg.readUTF();
             if(CacheSysManager.isLock("alertInFight"))
             {
-               CacheSysManager.getInstance().cache("alertInFight",new FrameShowAction(_loc2_));
+               CacheSysManager.getInstance().cache("alertInFight",new FrameShowAction(snsFrame));
             }
             else if(CacheSysManager.isLock("alertInMovie"))
             {
-               CacheSysManager.getInstance().cache("alertInMovie",new FrameShowAction(_loc2_));
+               CacheSysManager.getInstance().cache("alertInMovie",new FrameShowAction(snsFrame));
             }
             else
             {
-               _loc2_.show();
+               snsFrame.show();
             }
          }
       }
       
-      public function __semdWeiBo(param1:CrazyTankSocketEvent) : void
+      public function __semdWeiBo(event:CrazyTankSocketEvent) : void
       {
-         var _loc2_:* = null;
+         var imageUrl:* = null;
          if(SharedManager.Instance.allowSnsSend || !PathManager.CommunityExist())
          {
             return;
          }
-         var _loc3_:Object = {};
-         var _loc4_:int = param1.pkg.readInt();
-         _loc2_ = "flash/CMFriendIcon/sinaweibo/weibo" + _loc4_ + ".jpg";
-         _loc2_ = PathManager.CommunitySinaWeibo(_loc2_);
-         _loc3_.title = param1.pkg.readUTF();
-         _loc3_.content = param1.pkg.readUTF();
+         var obj2:Object = {};
+         var typeId:int = event.pkg.readInt();
+         imageUrl = "flash/CMFriendIcon/sinaweibo/weibo" + typeId + ".jpg";
+         imageUrl = PathManager.CommunitySinaWeibo(imageUrl);
+         obj2.title = event.pkg.readUTF();
+         obj2.content = event.pkg.readUTF();
          if(ExternalInterface.available)
          {
-            ExternalInterface.call("sendWeiboFeed",_loc3_.title,_loc3_.content,_loc2_);
-            SocketManager.Instance.out.sendSnsMsg(_loc4_);
+            ExternalInterface.call("sendWeiboFeed",obj2.title,obj2.content,imageUrl);
+            SocketManager.Instance.out.sendSnsMsg(typeId);
          }
       }
       

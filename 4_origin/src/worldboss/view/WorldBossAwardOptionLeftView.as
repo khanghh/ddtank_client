@@ -39,19 +39,28 @@ package worldboss.view
          addChild(_ddtlittlegamebg);
          _ddtlittlegamebg1 = ComponentFactory.Instance.creatComponentByStylename("ddtlittleGameLeftViewBG1");
          addChild(_ddtlittlegamebg1);
-         _previewLoader = LoadResourceManager.Instance.createLoader(WorldBossManager.Instance.getWorldbossResource() + "/preview/previewmap.png",0);
-         _previewLoader.addEventListener("complete",__previewMapComplete);
-         LoadResourceManager.Instance.startLoad(_previewLoader);
+         if(false)
+         {
+            _rankingView = ComponentFactory.Instance.creatComponentByStylename("worldBossAward.rankingView");
+            _rankingView.rankingInfos = WorldBossManager.Instance.rankingInfos;
+            addChild(_rankingView);
+         }
+         else
+         {
+            _previewLoader = LoadResourceManager.Instance.createLoader(WorldBossManager.Instance.getWorldbossResource() + "/preview/previewmap.png",0);
+            _previewLoader.addEventListener("complete",__previewMapComplete);
+            LoadResourceManager.Instance.startLoad(_previewLoader);
+         }
       }
       
-      private function __previewMapComplete(param1:LoaderEvent) : void
+      private function __previewMapComplete(evt:LoaderEvent) : void
       {
-         if(param1.loader.isSuccess)
+         if(evt.loader.isSuccess)
          {
-            param1.loader.removeEventListener("complete",__previewMapComplete);
+            evt.loader.removeEventListener("complete",__previewMapComplete);
             ObjectUtils.disposeObject(_previewMap);
             _previewMap = null;
-            _previewMap = param1.loader.content as Bitmap;
+            _previewMap = evt.loader.content as Bitmap;
             addChildAt(_previewMap,1);
             PositionUtils.setPos(_previewMap,"asset.worldbossAwardRoom.previewMap");
          }

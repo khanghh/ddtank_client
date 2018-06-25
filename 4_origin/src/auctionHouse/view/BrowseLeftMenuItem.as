@@ -20,12 +20,12 @@ package auctionHouse.view
       
       private var _hideIcon:Boolean;
       
-      public function BrowseLeftMenuItem(param1:BrowserLeftStripAsset, param2:CateCoryInfo, param3:Boolean = false)
+      public function BrowseLeftMenuItem($accect:BrowserLeftStripAsset, $info:CateCoryInfo, $hideIcon:Boolean = false)
       {
          super();
-         accect = param1;
-         _info = param2;
-         _hideIcon = param3;
+         accect = $accect;
+         _info = $info;
+         _hideIcon = $hideIcon;
          buttonMode = true;
          addChild(accect);
          initView();
@@ -91,9 +91,9 @@ package auctionHouse.view
          return _isOpen;
       }
       
-      public function set isOpen(param1:Boolean) : void
+      public function set isOpen(b:Boolean) : void
       {
-         _isOpen = param1;
+         _isOpen = b;
          if(_isOpen && _hasIcon)
          {
             accect.icon.setFrame(2);
@@ -111,9 +111,9 @@ package auctionHouse.view
          }
       }
       
-      public function set enable(param1:Boolean) : void
+      public function set enable(b:Boolean) : void
       {
-         if(param1)
+         if(b)
          {
             accect.bg.setFrame(1);
             accect.setFrameOnImage(2);
@@ -129,9 +129,9 @@ package auctionHouse.view
          }
       }
       
-      private function btnClickHandler(param1:MouseEvent) : void
+      private function btnClickHandler(e:MouseEvent) : void
       {
-         var _loc2_:* = param1.type;
+         var _loc2_:* = e.type;
          if("click" !== _loc2_)
          {
             if("rollOver" !== _loc2_)

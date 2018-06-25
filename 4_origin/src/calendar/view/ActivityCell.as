@@ -30,10 +30,10 @@ package calendar.view
       
       private var _selected:Boolean = false;
       
-      public function ActivityCell(param1:ActiveEventsInfo)
+      public function ActivityCell(info:ActiveEventsInfo)
       {
          super();
-         _info = param1;
+         _info = info;
          buttonMode = true;
          configUI();
          addEvent();
@@ -48,7 +48,7 @@ package calendar.view
       {
       }
       
-      private function __detailClick(param1:MouseEvent) : void
+      private function __detailClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          CalendarControl.getInstance().setState(_info);
@@ -60,7 +60,7 @@ package calendar.view
       
       private function configUI() : void
       {
-         var _loc1_:int = 0;
+         var tempIndex:int = 0;
          _back = ComponentFactory.Instance.creatComponentByStylename("ddtcalendar.ActivityCellBg");
          DisplayUtils.setFrame(_back,!!_selected?2:1);
          addChild(_back);
@@ -68,10 +68,10 @@ package calendar.view
          _titleField.htmlText = "<b>·</b> " + _info.Title;
          if(_titleField.textWidth > 90)
          {
-            _loc1_ = _titleField.getCharIndexAtPoint(_titleField.x + 86,_titleField.y + 2);
-            if(_loc1_ != -1)
+            tempIndex = _titleField.getCharIndexAtPoint(_titleField.x + 86,_titleField.y + 2);
+            if(tempIndex != -1)
             {
-               _titleField.htmlText = "<b>·</b> " + _info.Title.substring(0,_loc1_) + "...";
+               _titleField.htmlText = "<b>·</b> " + _info.Title.substring(0,tempIndex) + "...";
             }
          }
          addChild(_titleField);
@@ -97,30 +97,30 @@ package calendar.view
          addChild(_quanMC);
       }
       
-      private function getActivityDispType(param1:int) : int
+      private function getActivityDispType(pIconID:int) : int
       {
-         var _loc2_:int = 0;
-         switch(int(param1) - 1)
+         var result:int = 0;
+         switch(int(pIconID) - 1)
          {
             case 0:
-               _loc2_ = 1;
+               result = 1;
                break;
             case 1:
-               _loc2_ = 2;
+               result = 2;
                break;
             case 2:
-               _loc2_ = 3;
+               result = 3;
                break;
             case 3:
-               _loc2_ = 4;
+               result = 4;
                break;
             case 4:
-               _loc2_ = 5;
+               result = 5;
                break;
             case 5:
-               _loc2_ = 6;
+               result = 6;
          }
-         return _loc2_;
+         return result;
       }
       
       public function get selected() : Boolean
@@ -128,13 +128,13 @@ package calendar.view
          return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         if(_selected == param1)
+         if(_selected == value)
          {
             return;
          }
-         _selected = param1;
+         _selected = value;
          DisplayUtils.setFrame(_back,!!_selected?2:1);
          DisplayUtils.setFrame(_titleField,!!_selected?2:1);
       }

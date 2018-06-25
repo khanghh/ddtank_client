@@ -46,11 +46,11 @@ package boguAdventure.player
       
       private var _focus:Point;
       
-      public function BoguAdventurePlayer(param1:Function = null)
+      public function BoguAdventurePlayer(callBack:Function = null)
       {
          _dir = SceneCharacterDirection.RB;
-         super(param1);
-         _callBack = param1;
+         super(callBack);
+         _callBack = callBack;
          initialize();
       }
       
@@ -66,17 +66,17 @@ package boguAdventure.player
       
       private function sceneCharacterStateNatural() : void
       {
-         var _loc1_:BitmapLoader = LoaderManager.Instance.creatLoader(PathManager.solveBoguAdventurePath(),0);
-         _loc1_.addEventListener("complete",__onLoaderPlayerStateImageComplete);
-         LoaderManager.Instance.startLoad(_loc1_);
+         var image:BitmapLoader = LoaderManager.Instance.creatLoader(PathManager.solveBoguAdventurePath(),0);
+         image.addEventListener("complete",__onLoaderPlayerStateImageComplete);
+         LoaderManager.Instance.startLoad(image);
       }
       
-      private function __onLoaderPlayerStateImageComplete(param1:LoaderEvent) : void
+      private function __onLoaderPlayerStateImageComplete(e:LoaderEvent) : void
       {
-         var _loc6_:* = null;
-         param1.loader.removeEventListener("complete",__onLoaderPlayerStateImageComplete);
-         var _loc8_:BitmapData = (param1.loader as BitmapLoader).bitmapData;
-         if(!_loc8_)
+         var actionBmp:* = null;
+         e.loader.removeEventListener("complete",__onLoaderPlayerStateImageComplete);
+         var playerImage:BitmapData = (e.loader as BitmapLoader).bitmapData;
+         if(!playerImage)
          {
             if(_callBack != null)
             {
@@ -84,30 +84,30 @@ package boguAdventure.player
             }
             return;
          }
-         var _loc7_:Rectangle = new Rectangle(0,0,_loc8_.width,_loc8_.height);
-         _loc6_ = new BitmapData(_loc7_.width,_loc7_.height,true,0);
-         _loc6_.copyPixels(_loc8_,_loc7_,new Point(0,0));
-         _playerSetNatural.push(new SceneCharacterItem("NaturalBody","NaturalAction",_loc6_,3,11,playerWitdh,playerHeight,3));
-         var _loc5_:SceneCharacterActionItem = new SceneCharacterActionItem("bogustop",[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,10,10,10,10,10,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6,6,7,7,8,8,9,9,9,9,8,8,7,7,6,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,10,10,10,10,10,10,0,0,0,0],true);
-         _playerActionSetNatural.push(_loc5_);
-         var _loc4_:SceneCharacterActionItem = new SceneCharacterActionItem("boguwalk",[1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6],true);
-         _playerActionSetNatural.push(_loc4_);
-         var _loc3_:SceneCharacterActionItem = new SceneCharacterActionItem("boguweep",[14,14,14,15,15,15,16,16,16],true);
-         _playerActionSetNatural.push(_loc3_);
-         var _loc2_:SceneCharacterActionItem = new SceneCharacterActionItem("bogulaugh",[11,11,12,12,13,13],true);
-         _playerActionSetNatural.push(_loc2_);
-         var _loc9_:SceneCharacterStateItem = new SceneCharacterStateItem("natural",_playerSetNatural,_playerActionSetNatural);
-         _playerStateSet.push(_loc9_);
+         var _rectangle:Rectangle = new Rectangle(0,0,playerImage.width,playerImage.height);
+         actionBmp = new BitmapData(_rectangle.width,_rectangle.height,true,0);
+         actionBmp.copyPixels(playerImage,_rectangle,new Point(0,0));
+         _playerSetNatural.push(new SceneCharacterItem("NaturalBody","NaturalAction",actionBmp,3,11,playerWitdh,playerHeight,3));
+         var sceneCharacterActionItem1:SceneCharacterActionItem = new SceneCharacterActionItem("bogustop",[0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,10,10,10,10,10,10,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,6,6,7,7,8,8,9,9,9,9,8,8,7,7,6,6,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,10,10,10,10,10,10,0,0,0,0],true);
+         _playerActionSetNatural.push(sceneCharacterActionItem1);
+         var sceneCharacterActionItem2:SceneCharacterActionItem = new SceneCharacterActionItem("boguwalk",[1,1,1,2,2,2,3,3,3,4,4,4,5,5,5,6,6,6],true);
+         _playerActionSetNatural.push(sceneCharacterActionItem2);
+         var sceneCharacterActionItem3:SceneCharacterActionItem = new SceneCharacterActionItem("boguweep",[14,14,14,15,15,15,16,16,16],true);
+         _playerActionSetNatural.push(sceneCharacterActionItem3);
+         var sceneCharacterActionItem4:SceneCharacterActionItem = new SceneCharacterActionItem("bogulaugh",[11,11,12,12,13,13],true);
+         _playerActionSetNatural.push(sceneCharacterActionItem4);
+         var _sceneCharacterStateItemNatural:SceneCharacterStateItem = new SceneCharacterStateItem("natural",_playerSetNatural,_playerActionSetNatural);
+         _playerStateSet.push(_sceneCharacterStateItemNatural);
          .super.sceneCharacterStateSet = _playerStateSet;
       }
       
-      public function set dir(param1:SceneCharacterDirection) : void
+      public function set dir(value:SceneCharacterDirection) : void
       {
-         if(param1 == null || _dir == param1)
+         if(value == null || _dir == value)
          {
             return;
          }
-         _dir = param1;
+         _dir = value;
          if(_dir == SceneCharacterDirection.LB)
          {
             if(this.scaleX == -1)

@@ -13,25 +13,25 @@ package com.pickgliss.ui
          super();
       }
       
-      public static function creatAndAdd(param1:String = "", param2:DisplayObjectContainer = null) : *
+      public static function creatAndAdd(stylename:String = "", container:DisplayObjectContainer = null) : *
       {
-         var _loc3_:DisplayObject = ComponentFactory.Instance.creat(param1);
-         if(param2 == null)
+         var component:DisplayObject = ComponentFactory.Instance.creat(stylename);
+         if(container == null)
          {
-            return _loc3_;
+            return component;
          }
-         return param2.addChild(_loc3_);
+         return container.addChild(component);
       }
       
-      public static function creatTextAndAdd(param1:String = "", param2:String = "", param3:DisplayObjectContainer = null) : *
+      public static function creatTextAndAdd(stylename:String = "", label:String = "", container:DisplayObjectContainer = null) : *
       {
-         var _loc4_:TextField = ComponentFactory.Instance.creat(param1);
-         _loc4_.text = param2;
-         if(param3 == null)
+         var component:TextField = ComponentFactory.Instance.creat(stylename);
+         component.text = label;
+         if(container == null)
          {
-            return _loc4_;
+            return component;
          }
-         return param3.addChild(_loc4_);
+         return container.addChild(component);
       }
    }
 }

@@ -41,11 +41,11 @@ package christmas.info
          return _state;
       }
       
-      public function set State(param1:int) : void
+      public function set State(value:int) : void
       {
-         if(_state != param1)
+         if(_state != value)
          {
-            _state = param1;
+            _state = value;
             dispatchEvent(new ChristmasMonsterEvent("update_monster_state",_state));
          }
       }

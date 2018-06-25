@@ -48,28 +48,28 @@ package farm.viewx.helper
          addEventListener("rollOut",__mouseOut);
       }
       
-      private function __mouseOver(param1:MouseEvent) : void
+      private function __mouseOver(event:MouseEvent) : void
       {
          _bgImg.alpha = 1;
       }
       
-      private function __mouseOut(param1:MouseEvent) : void
+      private function __mouseOut(event:MouseEvent) : void
       {
          _bgImg.alpha = 0;
       }
       
-      private function __click(param1:MouseEvent) : void
+      private function __click(event:MouseEvent) : void
       {
-         var _loc3_:Object = {};
-         _loc3_.id = _id;
-         var _loc2_:SelectComposeItemEvent = new SelectComposeItemEvent("selectSeed",_loc3_);
-         dispatchEvent(_loc2_);
+         var obj:Object = {};
+         obj.id = _id;
+         var evt:SelectComposeItemEvent = new SelectComposeItemEvent("selectSeed",obj);
+         dispatchEvent(evt);
       }
       
-      public function set info(param1:ShopItemInfo) : void
+      public function set info(info:ShopItemInfo) : void
       {
-         _nameTxt.text = param1.TemplateInfo.Name;
-         _id = param1.TemplateInfo.TemplateID;
+         _nameTxt.text = info.TemplateInfo.Name;
+         _id = info.TemplateInfo.TemplateID;
       }
       
       public function dispose() : void

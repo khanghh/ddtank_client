@@ -61,19 +61,19 @@ package tofflist.view
          addChild(_title4);
       }
       
-      public function setData(param1:Object) : void
+      public function setData(data:Object) : void
       {
-         _title.text = param1.titleText;
-         _contentText.text = param1.content;
-         _requireText.text = param1.rightRequiredText;
-         _title1.textFormatStyle = param1.title1;
-         _title2.textFormatStyle = param1.title2;
-         _title3.textFormatStyle = param1.title3;
-         _title4.textFormatStyle = param1.title4;
-         _title1.text = param1.titleName1;
-         _title2.text = param1.titleName2;
-         _title3.text = param1.titleName3;
-         _title4.text = param1.titleName4;
+         _title.text = data.titleText;
+         _contentText.text = data.content;
+         _requireText.text = data.rightRequiredText;
+         _title1.textFormatStyle = data.title1;
+         _title2.textFormatStyle = data.title2;
+         _title3.textFormatStyle = data.title3;
+         _title4.textFormatStyle = data.title4;
+         _title1.text = data.titleName1;
+         _title2.text = data.titleName2;
+         _title3.text = data.titleName3;
+         _title4.text = data.titleName4;
          _title1.x = _title2.x;
       }
       

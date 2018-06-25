@@ -55,12 +55,12 @@ package worldboss.view
       
       public function updateInfo() : void
       {
-         var _loc1_:int = WorldBossManager.Instance.bossInfo.myPlayerVO.buffLevel;
-         _levelTxt.text = _loc1_.toString();
-         var _loc2_:int = WorldBossManager.Instance.bossInfo.myPlayerVO.buffInjure;
-         _tipTitleTxt.text = LanguageMgr.GetTranslation("worldboss.buffIcon.tip.title",_loc2_);
-         _tipDescTxt.text = LanguageMgr.GetTranslation("worldboss.buffIcon.tip.desc",_loc2_);
-         this.visible = _loc1_ != 0?true:false;
+         var tmpLevel:int = WorldBossManager.Instance.bossInfo.myPlayerVO.buffLevel;
+         _levelTxt.text = tmpLevel.toString();
+         var tmpEnhanceValue:int = WorldBossManager.Instance.bossInfo.myPlayerVO.buffInjure;
+         _tipTitleTxt.text = LanguageMgr.GetTranslation("worldboss.buffIcon.tip.title",tmpEnhanceValue);
+         _tipDescTxt.text = LanguageMgr.GetTranslation("worldboss.buffIcon.tip.desc",tmpEnhanceValue);
+         this.visible = tmpLevel != 0?true:false;
       }
       
       private function addEvent() : void
@@ -70,19 +70,19 @@ package worldboss.view
          WorldBossManager.Instance.addEventListener("change",__update);
       }
       
-      protected function __update(param1:Event) : void
+      protected function __update(event:Event) : void
       {
          updateInfo();
       }
       
-      private function showTip(param1:MouseEvent) : void
+      private function showTip(event:MouseEvent) : void
       {
          _tipBg.visible = true;
          _tipTitleTxt.visible = true;
          _tipDescTxt.visible = true;
       }
       
-      private function hideTip(param1:MouseEvent) : void
+      private function hideTip(event:MouseEvent) : void
       {
          _tipBg.visible = false;
          _tipTitleTxt.visible = false;

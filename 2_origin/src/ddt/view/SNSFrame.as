@@ -91,37 +91,37 @@ package ddt.view
       
       private function _getStr() : String
       {
-         var _loc1_:String = "";
+         var str:String = "";
          switch(int(typeId) - 1)
          {
             case 0:
-               _loc1_ = LanguageMgr.GetTranslation("ddt.view.SnsFrame.inputTextI");
+               str = LanguageMgr.GetTranslation("ddt.view.SnsFrame.inputTextI");
                break;
             case 1:
-               _loc1_ = LanguageMgr.GetTranslation("ddt.view.SnsFrame.inputTextII");
+               str = LanguageMgr.GetTranslation("ddt.view.SnsFrame.inputTextII");
                break;
             case 2:
-               _loc1_ = LanguageMgr.GetTranslation("ddt.view.SnsFrame.inputTextIII");
+               str = LanguageMgr.GetTranslation("ddt.view.SnsFrame.inputTextIII");
                break;
             case 3:
-               _loc1_ = LanguageMgr.GetTranslation("ddt.view.SnsFrame.inputTextIV");
+               str = LanguageMgr.GetTranslation("ddt.view.SnsFrame.inputTextIV");
                break;
             case 4:
             case 5:
             case 6:
             case 7:
-               _loc1_ = LanguageMgr.GetTranslation("ddt.view.SnsFrame.inputTextV");
+               str = LanguageMgr.GetTranslation("ddt.view.SnsFrame.inputTextV");
                break;
             case 8:
-               _loc1_ = LanguageMgr.GetTranslation("ddt.view.SnsFrame.inputTextVI");
+               str = LanguageMgr.GetTranslation("ddt.view.SnsFrame.inputTextVI");
                break;
             case 9:
-               _loc1_ = LanguageMgr.GetTranslation("ddt.view.SnsFrame.inputTextVII");
+               str = LanguageMgr.GetTranslation("ddt.view.SnsFrame.inputTextVII");
                break;
             case 10:
-               _loc1_ = LanguageMgr.GetTranslation("ddt.view.SnsFrame.inputTextVIII");
+               str = LanguageMgr.GetTranslation("ddt.view.SnsFrame.inputTextVIII");
          }
-         return _loc1_;
+         return str;
       }
       
       private function addEvent() : void
@@ -143,13 +143,13 @@ package ddt.view
          StageReferance.stage.removeEventListener("click",_clickStage);
       }
       
-      private function _clickInputText(param1:MouseEvent) : void
+      private function _clickInputText(e:MouseEvent) : void
       {
          _inputText.removeEventListener("click",_clickInputText);
          _inputText.text = "";
       }
       
-      private function _clickStage(param1:MouseEvent) : void
+      private function _clickStage(e:MouseEvent) : void
       {
          if(_inputText.text == "" && StageReferance.stage.focus != _inputText.textField)
          {
@@ -157,22 +157,22 @@ package ddt.view
          }
       }
       
-      protected function __shareBtnClick(param1:MouseEvent) : void
+      protected function __shareBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          sendDynamic();
       }
       
-      protected function __visibleBtnClick(param1:MouseEvent) : void
+      protected function __visibleBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SharedManager.Instance.autoSnsSend = _visibleBtn.selected;
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -187,13 +187,13 @@ package ddt.view
          }
       }
       
-      public function set receptionistTxt(param1:String) : void
+      public function set receptionistTxt($txt:String) : void
       {
-         if(_text.text == param1)
+         if(_text.text == $txt)
          {
             return;
          }
-         _text.text = param1;
+         _text.text = $txt;
       }
       
       public function show() : void
@@ -223,10 +223,10 @@ package ddt.view
       
       private function sendDynamic() : void
       {
-         var _loc1_:URLVariables = new URLVariables();
-         _loc1_.typeId = typeId;
-         _loc1_.playerTest = _getStr();
-         var _loc3_:* = _loc1_.typeId;
+         var uv:URLVariables = new URLVariables();
+         uv.typeId = typeId;
+         uv.playerTest = _getStr();
+         var _loc3_:* = uv.typeId;
          if(6 !== _loc3_)
          {
             if(7 !== _loc3_)
@@ -241,32 +241,32 @@ package ddt.view
                         {
                         }
                      }
-                     addr26:
-                     _loc1_.typeId = _loc1_.typeId - 3;
+                     addr35:
+                     uv.typeId = uv.typeId - 3;
                   }
-                  §§goto(addr26);
+                  §§goto(addr35);
                }
-               addr52:
-               _loc1_.serverId = ServerManager.Instance.AgentID;
-               _loc1_.fuid = PlayerManager.Instance.Account.Account;
-               _loc1_.inviteCaption = backgroundServerTxt;
+               addr68:
+               uv.serverId = ServerManager.Instance.AgentID;
+               uv.fuid = PlayerManager.Instance.Account.Account;
+               uv.inviteCaption = backgroundServerTxt;
                if(_inputText)
                {
-                  _loc1_.playerTest = _inputText.text;
+                  uv.playerTest = _inputText.text;
                }
-               _loc1_.ran = Math.random();
+               uv.ran = Math.random();
                SocketManager.Instance.out.sendSnsMsg(typeId);
-               var _loc2_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.getSnsPath(),6,_loc1_);
-               LoadResourceManager.Instance.startLoad(_loc2_);
+               var load:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.getSnsPath(),6,uv);
+               LoadResourceManager.Instance.startLoad(load);
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("socialContact.microcobol.succeed"));
                dispose();
                return;
             }
-            addr19:
-            _loc1_.typeId = 4;
-            §§goto(addr52);
+            addr27:
+            uv.typeId = 4;
+            §§goto(addr68);
          }
-         §§goto(addr19);
+         §§goto(addr27);
       }
       
       override public function dispose() : void

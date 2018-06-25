@@ -10,10 +10,10 @@ package equipretrieve
       
       public var obj:Object;
       
-      public function EquipretrieveEvt(param1:String, param2:Boolean = false, param3:Boolean = false)
+      public function EquipretrieveEvt(type:String, bubbles:Boolean = false, cancelable:Boolean = false)
       {
          obj = {};
-         super(param1,param2,param3);
+         super(type,bubbles,cancelable);
       }
    }
 }

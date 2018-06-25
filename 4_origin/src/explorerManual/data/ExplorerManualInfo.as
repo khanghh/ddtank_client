@@ -66,9 +66,9 @@ package explorerManual.data
          return _proLevMaxProgress;
       }
       
-      public function set proLevMaxProgress(param1:int) : void
+      public function set proLevMaxProgress(value:int) : void
       {
-         _proLevMaxProgress = param1;
+         _proLevMaxProgress = value;
       }
       
       public function beginChanges() : void
@@ -120,19 +120,19 @@ package explorerManual.data
          }
       }
       
-      protected function onPropertiesChanged(param1:String = null) : void
+      protected function onPropertiesChanged(propName:String = null) : void
       {
          if(_changedPropeties == null)
          {
             return;
          }
-         if(_changedPropeties[param1])
+         if(_changedPropeties[propName])
          {
             return;
          }
-         if(param1 != null)
+         if(propName != null)
          {
-            _changedPropeties[param1] = true;
+            _changedPropeties[propName] = true;
          }
          invalidate();
       }
@@ -142,9 +142,9 @@ package explorerManual.data
          return _debrisInfo;
       }
       
-      public function set debrisInfo(param1:ManualPageDebrisInfo) : void
+      public function set debrisInfo(value:ManualPageDebrisInfo) : void
       {
-         _debrisInfo = param1;
+         _debrisInfo = value;
          onPropertiesChanged("debrisInfo");
       }
       
@@ -153,9 +153,9 @@ package explorerManual.data
          return _conditionCount;
       }
       
-      public function set conditionCount(param1:int) : void
+      public function set conditionCount(value:int) : void
       {
-         _conditionCount = param1;
+         _conditionCount = value;
       }
       
       public function get havePage() : int
@@ -163,9 +163,9 @@ package explorerManual.data
          return _havePage;
       }
       
-      public function set havePage(param1:int) : void
+      public function set havePage(value:int) : void
       {
-         _havePage = param1;
+         _havePage = value;
       }
       
       public function get upgradeCondition() : UpgradeConditonBase
@@ -173,9 +173,9 @@ package explorerManual.data
          return _upgradeCondition;
       }
       
-      public function set upgradeCondition(param1:UpgradeConditonBase) : void
+      public function set upgradeCondition(value:UpgradeConditonBase) : void
       {
-         _upgradeCondition = param1;
+         _upgradeCondition = value;
       }
       
       public function get maxProgress() : int
@@ -183,10 +183,10 @@ package explorerManual.data
          return _maxProgress;
       }
       
-      public function set maxProgress(param1:int) : void
+      public function set maxProgress(value:int) : void
       {
          proLevMaxProgress = _maxProgress;
-         _maxProgress = param1;
+         _maxProgress = value;
          if(proLevMaxProgress == 0)
          {
             proLevMaxProgress = _maxProgress;
@@ -198,33 +198,32 @@ package explorerManual.data
          return _activePageID;
       }
       
-      public function set activePageID(param1:Array) : void
+      public function set activePageID(value:Array) : void
       {
-         _activePageID = param1;
+         _activePageID = value;
          onPropertiesChanged("activePageID");
       }
       
-      public function chapterProgress(param1:int) : String
+      public function chapterProgress(chapterID:int) : String
       {
-         var _loc5_:int = 0;
-         var _loc3_:Array = ExplorerManualManager.instance.getAllPageByChapterID(param1);
-         var _loc2_:int = _loc3_.length;
-         var _loc4_:int = 0;
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         var i:int = 0;
+         var pageInfo:Array = ExplorerManualManager.instance.getAllPageByChapterID(chapterID);
+         var total:int = pageInfo.length;
+         var active:int = 0;
+         for(i = 0; i < total; )
          {
-            if(checkPageActiveByPageID(_loc3_[_loc5_].ID))
+            if(checkPageActiveByPageID(pageInfo[i].ID))
             {
-               _loc4_++;
+               active++;
             }
-            _loc5_++;
+            i++;
          }
-         return "<FONT FACE=\'Arial\' SIZE=\'14\' COLOR=\'#FF0000\' ><B>" + _loc4_ + "</B></FONT>" + "/" + _loc2_;
+         return "<FONT FACE=\'Arial\' SIZE=\'14\' COLOR=\'#FF0000\' ><B>" + active + "</B></FONT>" + "/" + total;
       }
       
-      public function checkPageActiveByPageID(param1:int) : Boolean
+      public function checkPageActiveByPageID(pageID:int) : Boolean
       {
-         return activePageID.indexOf(param1) != -1;
+         return activePageID.indexOf(pageID) != -1;
       }
       
       public function get pageAllPro() : PageItemAllProInfo
@@ -232,9 +231,9 @@ package explorerManual.data
          return _pageAllPro;
       }
       
-      public function set pageAllPro(param1:PageItemAllProInfo) : void
+      public function set pageAllPro(value:PageItemAllProInfo) : void
       {
-         _pageAllPro = param1;
+         _pageAllPro = value;
       }
       
       public function get nextPro() : ManualLevelProInfo
@@ -242,9 +241,9 @@ package explorerManual.data
          return _nextPro;
       }
       
-      public function set nextPro(param1:ManualLevelProInfo) : void
+      public function set nextPro(value:ManualLevelProInfo) : void
       {
-         _nextPro = param1;
+         _nextPro = value;
       }
       
       public function get curPro() : ManualLevelProInfo
@@ -252,9 +251,9 @@ package explorerManual.data
          return _curPro;
       }
       
-      public function set curPro(param1:ManualLevelProInfo) : void
+      public function set curPro(value:ManualLevelProInfo) : void
       {
-         _curPro = param1;
+         _curPro = value;
       }
       
       public function get progress() : int
@@ -262,13 +261,13 @@ package explorerManual.data
          return _progress;
       }
       
-      public function set progress(param1:int) : void
+      public function set progress(value:int) : void
       {
-         if(_progress == param1)
+         if(_progress == value)
          {
             return;
          }
-         _progress = param1;
+         _progress = value;
          onPropertiesChanged("progress");
       }
       
@@ -277,9 +276,9 @@ package explorerManual.data
          return _manualLev;
       }
       
-      public function set manualLev(param1:int) : void
+      public function set manualLev(value:int) : void
       {
-         if(_manualLev == param1)
+         if(_manualLev == value)
          {
             return;
          }
@@ -287,18 +286,18 @@ package explorerManual.data
          {
             onPropertiesChanged("manualLev");
          }
-         _manualLev = param1;
+         _manualLev = value;
          updatePro();
       }
       
       private function updatePro() : void
       {
-         var _loc1_:ManualItemInfo = ExplorerManualManager.instance.getAddProItemInfo(manualLev);
-         _curPro.update(_loc1_);
-         var _loc2_:ManualItemInfo = ExplorerManualManager.instance.getAddProItemInfo(manualLev + 1);
-         if(_loc2_)
+         var curProInfo:ManualItemInfo = ExplorerManualManager.instance.getAddProItemInfo(manualLev);
+         _curPro.update(curProInfo);
+         var NextProInfo:ManualItemInfo = ExplorerManualManager.instance.getAddProItemInfo(manualLev + 1);
+         if(NextProInfo)
          {
-            _nextPro.update(_loc2_);
+            _nextPro.update(NextProInfo);
          }
          else
          {

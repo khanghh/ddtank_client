@@ -102,83 +102,82 @@ package beadSystem.views
       
       private function initView() : void
       {
-         var _loc10_:int = 0;
-         var _loc7_:* = null;
+         var i:int = 0;
+         var stoneCell:* = null;
          _Cells = new DictionaryData();
          _bg = ComponentFactory.Instance.creatBitmap("beadSystem.info.bg");
          getCellsPoint();
          addChild(_bg);
-         var _loc8_:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[1,1]);
-         _loc8_.x = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint1")).x;
-         _loc8_.y = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint1")).y;
-         _loc8_.StoneType = 1;
-         addChild(_loc8_);
-         _Cells.add(1,_loc8_);
-         var _loc11_:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[2,2]);
-         _loc11_.x = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint2")).x;
-         _loc11_.y = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint2")).y;
-         _loc11_.StoneType = 2;
-         addChild(_loc11_);
-         _Cells.add(2,_loc11_);
-         var _loc9_:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[3,2]);
-         _loc9_.x = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint3")).x;
-         _loc9_.y = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint3")).y;
-         _loc9_.StoneType = 2;
-         addChild(_loc9_);
-         _Cells.add(3,_loc9_);
-         _loc10_ = 4;
-         while(_loc10_ <= 12)
+         var stoneAttackCell:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[1,1]);
+         stoneAttackCell.x = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint1")).x;
+         stoneAttackCell.y = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint1")).y;
+         stoneAttackCell.StoneType = 1;
+         addChild(stoneAttackCell);
+         _Cells.add(1,stoneAttackCell);
+         var stoneDefanceCell1:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[2,2]);
+         stoneDefanceCell1.x = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint2")).x;
+         stoneDefanceCell1.y = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint2")).y;
+         stoneDefanceCell1.StoneType = 2;
+         addChild(stoneDefanceCell1);
+         _Cells.add(2,stoneDefanceCell1);
+         var stoneDefanceCell2:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[3,2]);
+         stoneDefanceCell2.x = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint3")).x;
+         stoneDefanceCell2.y = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint3")).y;
+         stoneDefanceCell2.StoneType = 2;
+         addChild(stoneDefanceCell2);
+         _Cells.add(3,stoneDefanceCell2);
+         for(i = 4; i <= 12; )
          {
-            _loc7_ = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[_loc10_,3]);
-            _loc7_.StoneType = 3;
-            _loc7_.x = _pointArray[_loc10_ - 1].x;
-            _loc7_.y = _pointArray[_loc10_ - 1].y;
-            addChild(_loc7_);
-            _Cells.add(_loc10_,_loc7_);
-            _loc10_++;
+            stoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[i,3]);
+            stoneCell.StoneType = 3;
+            stoneCell.x = _pointArray[i - 1].x;
+            stoneCell.y = _pointArray[i - 1].y;
+            addChild(stoneCell);
+            _Cells.add(i,stoneCell);
+            i++;
          }
-         var _loc3_:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[13,3]);
-         _loc3_.x = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint13")).x;
-         _loc3_.y = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint13")).y;
-         _loc3_.StoneType = 3;
-         addChild(_loc3_);
-         _Cells.add(13,_loc3_);
-         _HoleOpen.add(13,_loc3_);
-         var _loc4_:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[14,3]);
-         _loc4_.x = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint14")).x;
-         _loc4_.y = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint14")).y;
-         _loc4_.StoneType = 3;
-         addChild(_loc4_);
-         _Cells.add(14,_loc4_);
-         _HoleOpen.add(14,_loc4_);
-         var _loc1_:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[15,3]);
-         _loc1_.x = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint15")).x;
-         _loc1_.y = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint15")).y;
-         _loc1_.StoneType = 3;
-         addChild(_loc1_);
-         _Cells.add(15,_loc1_);
-         _HoleOpen.add(15,_loc1_);
-         var _loc2_:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[16,3]);
-         _loc2_.x = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint16")).x;
-         _loc2_.y = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint16")).y;
-         _loc2_.StoneType = 3;
-         addChild(_loc2_);
-         _Cells.add(16,_loc2_);
-         _HoleOpen.add(16,_loc2_);
-         var _loc6_:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[17,3]);
-         _loc6_.x = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint17")).x;
-         _loc6_.y = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint17")).y;
-         _loc6_.StoneType = 3;
-         addChild(_loc6_);
-         _Cells.add(17,_loc6_);
-         _HoleOpen.add(17,_loc6_);
-         var _loc5_:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[18,3]);
-         _loc5_.x = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint18")).x;
-         _loc5_.y = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint18")).y;
-         _loc5_.StoneType = 3;
-         addChild(_loc5_);
-         _Cells.add(18,_loc5_);
-         _HoleOpen.add(18,_loc5_);
+         var stoneNeedOpen1:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[13,3]);
+         stoneNeedOpen1.x = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint13")).x;
+         stoneNeedOpen1.y = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint13")).y;
+         stoneNeedOpen1.StoneType = 3;
+         addChild(stoneNeedOpen1);
+         _Cells.add(13,stoneNeedOpen1);
+         _HoleOpen.add(13,stoneNeedOpen1);
+         var stoneNeedOpen2:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[14,3]);
+         stoneNeedOpen2.x = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint14")).x;
+         stoneNeedOpen2.y = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint14")).y;
+         stoneNeedOpen2.StoneType = 3;
+         addChild(stoneNeedOpen2);
+         _Cells.add(14,stoneNeedOpen2);
+         _HoleOpen.add(14,stoneNeedOpen2);
+         var stoneNeedOpen3:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[15,3]);
+         stoneNeedOpen3.x = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint15")).x;
+         stoneNeedOpen3.y = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint15")).y;
+         stoneNeedOpen3.StoneType = 3;
+         addChild(stoneNeedOpen3);
+         _Cells.add(15,stoneNeedOpen3);
+         _HoleOpen.add(15,stoneNeedOpen3);
+         var stoneNeedOpen4:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[16,3]);
+         stoneNeedOpen4.x = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint16")).x;
+         stoneNeedOpen4.y = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint16")).y;
+         stoneNeedOpen4.StoneType = 3;
+         addChild(stoneNeedOpen4);
+         _Cells.add(16,stoneNeedOpen4);
+         _HoleOpen.add(16,stoneNeedOpen4);
+         var stoneNeedOpen5:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[17,3]);
+         stoneNeedOpen5.x = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint17")).x;
+         stoneNeedOpen5.y = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint17")).y;
+         stoneNeedOpen5.StoneType = 3;
+         addChild(stoneNeedOpen5);
+         _Cells.add(17,stoneNeedOpen5);
+         _HoleOpen.add(17,stoneNeedOpen5);
+         var stoneNeedOpen6:EmbedStoneCell = ComponentFactory.Instance.creatCustomObject("ddtstore.StoreEmbedBG.EmbedStoneCell",[18,3]);
+         stoneNeedOpen6.x = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint18")).x;
+         stoneNeedOpen6.y = Point(ComponentFactory.Instance.creatCustomObject("bead.Embedpoint18")).y;
+         stoneNeedOpen6.StoneType = 3;
+         addChild(stoneNeedOpen6);
+         _Cells.add(18,stoneNeedOpen6);
+         _HoleOpen.add(18,stoneNeedOpen6);
          _progressLevel = ComponentFactory.Instance.creatComponentByStylename("beadSystem.FeedProgress");
          _progressLevel.tipStyle = "ddt.view.tips.OneLineTip";
          _progressLevel.tipDirctions = "3,7,6";
@@ -222,13 +221,13 @@ package beadSystem.views
          BeadModel._BeadCells = _HoleOpen;
       }
       
-      override public function set visible(param1:Boolean) : void
+      override public function set visible(value:Boolean) : void
       {
          if(this.visible)
          {
             _beadGetView.removeTimer();
          }
-         .super.visible = param1;
+         .super.visible = value;
       }
       
       private function loadStateList() : void
@@ -236,10 +235,10 @@ package beadSystem.views
          _stateList.dataList = BeadModel.getDrillsIgnoreBindState().list.sort(drillSortFun);
       }
       
-      private function __stateSelectClick(param1:MouseEvent) : void
+      private function __stateSelectClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
          if(_stateList.parent == null)
          {
             addChild(_stateList);
@@ -251,22 +250,22 @@ package beadSystem.views
          }
       }
       
-      private function drillSortFun(param1:DrillItemInfo, param2:DrillItemInfo) : int
+      private function drillSortFun(a:DrillItemInfo, b:DrillItemInfo) : int
       {
-         return param1.itemInfo.Level - param2.itemInfo.Level;
+         return a.itemInfo.Level - b.itemInfo.Level;
       }
       
-      private function __feedCellChanged(param1:BeadEvent) : void
+      private function __feedCellChanged(pEvent:BeadEvent) : void
       {
-         var _loc2_:EmbedUpLevelCell = param1.currentTarget as EmbedUpLevelCell;
-         if(_loc2_.info)
+         var c:EmbedUpLevelCell = pEvent.currentTarget as EmbedUpLevelCell;
+         if(c.info)
          {
-            _progressLevel.currentExp = _loc2_.invenItemInfo.Hole2;
-            if(_loc2_.invenItemInfo.Hole1 < _max)
+            _progressLevel.currentExp = c.invenItemInfo.Hole2;
+            if(c.invenItemInfo.Hole1 < _max)
             {
-               _progressLevel.upLevelExp = ServerConfigManager.instance.getBeadUpgradeExp()[_loc2_.invenItemInfo.Hole1 + 1];
+               _progressLevel.upLevelExp = ServerConfigManager.instance.getBeadUpgradeExp()[c.invenItemInfo.Hole1 + 1];
             }
-            _progressLevel.intProgress(_loc2_.invenItemInfo);
+            _progressLevel.intProgress(c.invenItemInfo);
          }
          else
          {
@@ -274,7 +273,7 @@ package beadSystem.views
          }
       }
       
-      private function __onOpenHoleClick(param1:MouseEvent) : void
+      private function __onOpenHoleClick(pEvent:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -282,29 +281,29 @@ package beadSystem.views
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:int = getSelectedHoleIndex();
-         if(_loc2_ == -1)
+         var index:int = getSelectedHoleIndex();
+         if(index == -1)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.beadSystem.tipHoleNotSelected"));
             return;
          }
          var _loc5_:int = 0;
          var _loc4_:* = _HoleOpen;
-         for each(var _loc3_ in _HoleOpen)
+         for each(var o in _HoleOpen)
          {
-            if(_loc3_.selected)
+            if(o.selected)
             {
-               if(_loc3_.HoleLv == int(LanguageMgr.GetTranslation("ddt.beadSystem.MaxHoleLevel")))
+               if(o.HoleLv == int(LanguageMgr.GetTranslation("ddt.beadSystem.MaxHoleLevel")))
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.beadSystem.MaxHoleLevelText"));
                }
-               else if(_loc2_ >= 0 && _stateSelectBtn.DrillItem)
+               else if(index >= 0 && _stateSelectBtn.DrillItem)
                {
-                  if(_loc3_.HoleLv == _stateSelectBtn.DrillItem.Level - 1)
+                  if(o.HoleLv == _stateSelectBtn.DrillItem.Level - 1)
                   {
                      if(PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(_stateSelectBtn.DrillItem.TemplateID) > 0)
                      {
-                        toShowNumberSelect(_loc2_,_stateSelectBtn.DrillItem.TemplateID);
+                        toShowNumberSelect(index,_stateSelectBtn.DrillItem.TemplateID);
                      }
                      else
                      {
@@ -325,13 +324,13 @@ package beadSystem.views
          }
       }
       
-      private function toShowNumberSelect(param1:int, param2:int) : void
+      private function toShowNumberSelect(index:int, templateID:int) : void
       {
-         index = param1;
-         templateID = param2;
-         onNumberSelected = function(param1:int):void
+         index = index;
+         templateID = templateID;
+         onNumberSelected = function(num:int):void
          {
-            SocketManager.Instance.out.sendBeadOpenHole(index,templateID,param1);
+            SocketManager.Instance.out.sendBeadOpenHole(index,templateID,num);
          };
          var alert:OpenHoleNumAlertFrame = ComponentFactory.Instance.creatComponentByStylename("gemstone.openHoleNumAlertFrame");
          alert.curItemID = templateID;
@@ -352,22 +351,22 @@ package beadSystem.views
          _stateSelectBtn.filters = BeadModel.getDrills().length > 0?null:ComponentFactory.Instance.creatFilters("grayFilter");
       }
       
-      public function startShine(param1:ItemTemplateInfo) : void
+      public function startShine(info:ItemTemplateInfo) : void
       {
-         var _loc3_:InventoryItemInfo = param1 as InventoryItemInfo;
+         var itemInfo:InventoryItemInfo = info as InventoryItemInfo;
          var _loc5_:int = 0;
          var _loc4_:* = _Cells;
-         for each(var _loc2_ in _Cells)
+         for each(var c in _Cells)
          {
-            if(!_loc2_.info && param1.Property2 == _loc2_.StoneType.toString() && _loc2_.isOpend)
+            if(!c.info && info.Property2 == c.StoneType.toString() && c.isOpend)
             {
-               if(_loc2_.ID < 13)
+               if(c.ID < 13)
                {
-                  _loc2_.startShine();
+                  c.startShine();
                }
-               else if(beadSystemManager.Instance.judgeLevel(int(_loc3_.Hole1),_loc2_.HoleLv))
+               else if(beadSystemManager.Instance.judgeLevel(int(itemInfo.Hole1),c.HoleLv))
                {
-                  _loc2_.startShine();
+                  c.startShine();
                }
             }
          }
@@ -377,52 +376,52 @@ package beadSystem.views
       {
          var _loc3_:int = 0;
          var _loc2_:* = _Cells;
-         for each(var _loc1_ in _Cells)
+         for each(var c in _Cells)
          {
-            _loc1_.stopShine();
+            c.stopShine();
          }
       }
       
       private function getSelectedHoleIndex() : int
       {
-         var _loc1_:int = -1;
+         var vResult:int = -1;
          var _loc4_:int = 0;
          var _loc3_:* = _HoleOpen;
-         for each(var _loc2_ in _HoleOpen)
+         for each(var c in _HoleOpen)
          {
-            if(_loc2_.selected)
+            if(c.selected)
             {
-               _loc1_ = _loc2_.ID;
+               vResult = c.ID;
                break;
             }
          }
-         return getHoleIndex(_loc1_);
+         return getHoleIndex(vResult);
       }
       
-      private function getHoleIndex(param1:int) : int
+      private function getHoleIndex(pID:int) : int
       {
-         var _loc2_:int = -1;
-         switch(int(param1) - 13)
+         var vResult:int = -1;
+         switch(int(pID) - 13)
          {
             case 0:
-               _loc2_ = 0;
+               vResult = 0;
                break;
             case 1:
-               _loc2_ = 1;
+               vResult = 1;
                break;
             case 2:
-               _loc2_ = 2;
+               vResult = 2;
                break;
             case 3:
-               _loc2_ = 3;
+               vResult = 3;
                break;
             case 4:
-               _loc2_ = 4;
+               vResult = 4;
                break;
             case 5:
-               _loc2_ = 5;
+               vResult = 5;
          }
-         return _loc2_;
+         return vResult;
       }
       
       private function initEvent() : void
@@ -442,10 +441,10 @@ package beadSystem.views
          }
          var _loc3_:int = 0;
          var _loc2_:* = _Cells;
-         for each(var _loc1_ in _Cells)
+         for each(var o in _Cells)
          {
-            _loc1_.addEventListener("itemclick",__clickHandler);
-            _loc1_.addEventListener("doubleclick",__doubleClickHandler);
+            o.addEventListener("itemclick",__clickHandler);
+            o.addEventListener("doubleclick",__doubleClickHandler);
          }
       }
       
@@ -466,7 +465,7 @@ package beadSystem.views
          }
       }
       
-      private function __beadEnterClickHandler(param1:MouseEvent) : void
+      private function __beadEnterClickHandler(evt:MouseEvent) : void
       {
          openBeadAvanceFrame();
       }
@@ -477,12 +476,12 @@ package beadSystem.views
          LayerManager.Instance.addToLayer(_frame,3,true,1,true);
       }
       
-      protected function __onPropBagUpdate(param1:Event) : void
+      protected function __onPropBagUpdate(event:Event) : void
       {
          updateBtn();
       }
       
-      private function __hideStateList(param1:MouseEvent) : void
+      private function __hideStateList(event:MouseEvent) : void
       {
          if(_stateList.parent)
          {
@@ -490,7 +489,7 @@ package beadSystem.views
          }
       }
       
-      private function __onOpenHole(param1:BeadEvent) : void
+      private function __onOpenHole(pEvent:BeadEvent) : void
       {
          initHoleExp();
       }
@@ -515,12 +514,12 @@ package beadSystem.views
          }
       }
       
-      private function __LightBtn(param1:BeadEvent) : void
+      private function __LightBtn(pEvent:BeadEvent) : void
       {
-         _beadGetView.buttonState(param1.CellId);
+         _beadGetView.buttonState(pEvent.CellId);
       }
       
-      private function __beadCellChanged(param1:Event) : void
+      private function __beadCellChanged(pEvent:Event) : void
       {
          initBeadEquip();
       }
@@ -529,39 +528,39 @@ package beadSystem.views
       {
          var _loc3_:int = 0;
          var _loc2_:* = _HoleOpen;
-         for each(var _loc1_ in _HoleOpen)
+         for each(var c in _HoleOpen)
          {
-            if(_loc1_.selected)
+            if(c.selected)
             {
-               if(_loc1_.HoleLv > BeadModel.tempHoleLv)
+               if(c.HoleLv > BeadModel.tempHoleLv)
                {
-                  _loc1_.holeLvUp();
-                  BeadModel.tempHoleLv = _loc1_.HoleLv;
-                  showDrill(_loc1_.HoleLv);
+                  c.holeLvUp();
+                  BeadModel.tempHoleLv = c.HoleLv;
+                  showDrill(c.HoleLv);
                }
-               _holeExpBar.setProgress(_loc1_.HoleExp,BeadModel.getHoleExpByLv(_loc1_.HoleLv));
-               _holeExpBar.tipData = _loc1_.HoleLv + LanguageMgr.GetTranslation("store.embem.HoleTip.Level") + _loc1_.HoleExp + "/" + BeadModel.getHoleExpByLv(_loc1_.HoleLv);
+               _holeExpBar.setProgress(c.HoleExp,BeadModel.getHoleExpByLv(c.HoleLv));
+               _holeExpBar.tipData = c.HoleLv + LanguageMgr.GetTranslation("store.embem.HoleTip.Level") + c.HoleExp + "/" + BeadModel.getHoleExpByLv(c.HoleLv);
                break;
             }
          }
       }
       
-      protected function __clickHandler(param1:CellEvent) : void
+      protected function __clickHandler(evt:CellEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc3_:EmbedStoneCell = param1.currentTarget as EmbedStoneCell;
-         if(_loc3_.selected)
+         var cell:EmbedStoneCell = evt.currentTarget as EmbedStoneCell;
+         if(cell.selected)
          {
-            _loc3_.dragStart();
+            cell.dragStart();
             return;
          }
          var _loc6_:int = 0;
          var _loc5_:* = _Cells;
-         for each(var _loc4_ in _Cells)
+         for each(var o in _Cells)
          {
-            if(_loc4_.ID < 16)
+            if(o.ID < 16)
             {
-               if(_loc4_.ID == _loc3_.ID)
+               if(o.ID == cell.ID)
                {
                   _holeExpBar.setProgress(0);
                   _holeExpBar.tipData = LanguageMgr.GetTranslation("ddt.beadSystem.HoleNoSelect");
@@ -571,88 +570,87 @@ package beadSystem.views
          }
          var _loc8_:int = 0;
          var _loc7_:* = _HoleOpen;
-         for each(var _loc2_ in _HoleOpen)
+         for each(var c in _HoleOpen)
          {
-            if(_loc2_.ID == _loc3_.ID)
+            if(c.ID == cell.ID)
             {
-               BeadModel.tempHoleLv = _loc2_.HoleLv;
-               _loc3_.selected = true;
-               _holeExpBar.setProgress(_loc2_.HoleExp,BeadModel.getHoleExpByLv(_loc2_.HoleLv));
-               _holeExpBar.tipData = _loc2_.HoleLv + LanguageMgr.GetTranslation("store.embem.HoleTip.Level") + _loc2_.HoleExp + "/" + BeadModel.getHoleExpByLv(_loc2_.HoleLv);
-               showDrill(_loc2_.HoleLv);
+               BeadModel.tempHoleLv = c.HoleLv;
+               cell.selected = true;
+               _holeExpBar.setProgress(c.HoleExp,BeadModel.getHoleExpByLv(c.HoleLv));
+               _holeExpBar.tipData = c.HoleLv + LanguageMgr.GetTranslation("store.embem.HoleTip.Level") + c.HoleExp + "/" + BeadModel.getHoleExpByLv(c.HoleLv);
+               showDrill(c.HoleLv);
             }
             else
             {
-               _loc2_.selected = false;
+               c.selected = false;
             }
          }
-         if(_loc3_.ID < 13)
+         if(cell.ID < 13)
          {
-            _loc3_.dragStart();
+            cell.dragStart();
          }
       }
       
-      private function showDrill(param1:int) : void
+      private function showDrill(value:int) : void
       {
-         var _loc2_:int = 0;
-         switch(int(param1))
+         var itemID:int = 0;
+         switch(int(value))
          {
             case 0:
-               _loc2_ = 11035;
+               itemID = 11035;
                break;
             case 1:
-               _loc2_ = 11036;
+               itemID = 11036;
                break;
             case 2:
-               _loc2_ = 11026;
+               itemID = 11026;
                break;
             case 3:
-               _loc2_ = 11027;
+               itemID = 11027;
                break;
             case 4:
-               _loc2_ = 11034;
+               itemID = 11034;
          }
-         var _loc4_:Array = PlayerManager.Instance.Self.PropBag.findItemsByTempleteID(_loc2_);
-         if(_loc4_.length == 0 || param1 == 5)
+         var itemInfo:Array = PlayerManager.Instance.Self.PropBag.findItemsByTempleteID(itemID);
+         if(itemInfo.length == 0 || value == 5)
          {
-            if(param1 != 5)
+            if(value != 5)
             {
-               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.Embed.OpenHole.NoDrill",param1 + 1));
+               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.Embed.OpenHole.NoDrill",value + 1));
             }
             return;
          }
-         var _loc3_:int = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(_loc2_);
-         var _loc5_:DrillItemInfo = new DrillItemInfo();
-         _loc5_.itemInfo = _loc4_[0];
-         _loc5_.amount = _loc3_;
-         _stateSelectBtn.setValue(_loc5_);
+         var AllCount:int = PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(itemID);
+         var drillInfo:DrillItemInfo = new DrillItemInfo();
+         drillInfo.itemInfo = itemInfo[0];
+         drillInfo.amount = AllCount;
+         _stateSelectBtn.setValue(drillInfo);
       }
       
-      private function __doubleClickHandler(param1:CellEvent) : void
+      private function __doubleClickHandler(event:CellEvent) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:EmbedStoneCell = param1.data as EmbedStoneCell;
-         var _loc3_:InventoryItemInfo = _loc2_.info as InventoryItemInfo;
-         SocketManager.Instance.out.sendBeadEquip(_loc3_.Place,-1);
+         var cell:EmbedStoneCell = event.data as EmbedStoneCell;
+         var info:InventoryItemInfo = cell.info as InventoryItemInfo;
+         SocketManager.Instance.out.sendBeadEquip(info.Place,-1);
          return;
-         §§push(trace(_loc3_));
+         §§push(trace(info));
       }
       
       private function getCellsPoint() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var point:* = null;
          _pointArray = new Vector.<Point>();
-         _loc2_ = 1;
-         while(_loc2_ <= 19)
+         for(i = 1; i <= 19; )
          {
-            _loc1_ = ComponentFactory.Instance.creatCustomObject("bead.Embedpoint" + _loc2_);
-            _pointArray.push(_loc1_);
-            _loc2_++;
+            point = ComponentFactory.Instance.creatCustomObject("bead.Embedpoint" + i);
+            _pointArray.push(point);
+            i++;
          }
       }
       
@@ -661,17 +659,17 @@ package beadSystem.views
          trace("init Bead Equip.......");
          var _loc4_:* = 0;
          var _loc3_:* = _Cells;
-         for each(var _loc2_ in _Cells)
+         for each(var o in _Cells)
          {
-            _loc2_.info = null;
+            o.info = null;
          }
          var _loc6_:int = 0;
          var _loc5_:* = _Cells;
-         for each(var _loc1_ in _Cells)
+         for each(var e in _Cells)
          {
-            _loc1_.itemInfo = PlayerManager.Instance.Self.BeadBag.getItemAt(_loc1_.ID);
-            _loc1_.info = PlayerManager.Instance.Self.BeadBag.getItemAt(_loc1_.ID);
-            if(!PlayerManager.Instance.Self.isNewOnceFinish(126) && _loc1_.info)
+            e.itemInfo = PlayerManager.Instance.Self.BeadBag.getItemAt(e.ID);
+            e.info = PlayerManager.Instance.Self.BeadBag.getItemAt(e.ID);
+            if(!PlayerManager.Instance.Self.isNewOnceFinish(126) && e.info)
             {
                NewHandContainer.Instance.clearArrowByID(142);
                SocketManager.Instance.out.syncWeakStep(126);
@@ -683,12 +681,12 @@ package beadSystem.views
          _beadFeedCell.info = PlayerManager.Instance.Self.BeadBag.getItemAt(31);
       }
       
-      private function __onFeedCellClick(param1:CellEvent) : void
+      private function __onFeedCellClick(pEvent:CellEvent) : void
       {
-         var _loc2_:EmbedUpLevelCell = param1.currentTarget as EmbedUpLevelCell;
-         if(_loc2_.info)
+         var cell:EmbedUpLevelCell = pEvent.currentTarget as EmbedUpLevelCell;
+         if(cell.info)
          {
-            _loc2_.dragStart();
+            cell.dragStart();
          }
       }
       
@@ -751,11 +749,11 @@ package beadSystem.views
          {
             var _loc3_:int = 0;
             var _loc2_:* = _Cells;
-            for each(var _loc1_ in _Cells)
+            for each(var o in _Cells)
             {
-               _loc1_.removeEventListener("itemclick",__clickHandler);
-               _loc1_.removeEventListener("doubleclick",__doubleClickHandler);
-               ObjectUtils.disposeObject(_loc1_);
+               o.removeEventListener("itemclick",__clickHandler);
+               o.removeEventListener("doubleclick",__doubleClickHandler);
+               ObjectUtils.disposeObject(o);
             }
          }
          if(_helpButton)

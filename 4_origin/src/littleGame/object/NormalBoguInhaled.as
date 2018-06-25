@@ -94,37 +94,36 @@ package littleGame.object
       
       override public function toString() : String
       {
-         var _loc1_:String = "[NormalBoguInhaled:(";
-         return _loc1_ + ")]";
+         var output:String = "[NormalBoguInhaled:(";
+         return output + ")]";
       }
       
-      public function initialize(param1:Scenario, param2:PackageIn) : void
+      public function initialize(scene:Scenario, pkg:PackageIn) : void
       {
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         _scene = param1;
-         _id = param2.readInt();
-         _self = _scene.findLiving(param2.readInt()) as LittleSelf;
-         _target = _scene.findLiving(param2.readInt());
-         _totalClick = param2.readInt();
-         _totalScore = param2.readInt();
-         _clickScore = param2.readInt();
-         _time = param2.readInt();
-         var _loc7_:int = param2.readInt();
-         var _loc4_:GameScene = LittleGameManager.Instance.gameScene;
+         var i:int = 0;
+         var livingID:int = 0;
+         var gameLiving:* = null;
+         _scene = scene;
+         _id = pkg.readInt();
+         _self = _scene.findLiving(pkg.readInt()) as LittleSelf;
+         _target = _scene.findLiving(pkg.readInt());
+         _totalClick = pkg.readInt();
+         _totalScore = pkg.readInt();
+         _clickScore = pkg.readInt();
+         _time = pkg.readInt();
+         var livingCount:int = pkg.readInt();
+         var gameScene:GameScene = LittleGameManager.Instance.gameScene;
          _gameLivings = new Dictionary();
-         _gameLivings[_target.id] = _loc4_.findGameLiving(_target.id);
-         _loc6_ = 0;
-         while(_loc6_ < _loc7_)
+         _gameLivings[_target.id] = gameScene.findGameLiving(_target.id);
+         for(i = 0; i < livingCount; )
          {
-            _loc5_ = param2.readInt();
-            _loc3_ = _loc4_.findGameLiving(_loc5_);
-            if(_loc3_)
+            livingID = pkg.readInt();
+            gameLiving = gameScene.findGameLiving(livingID);
+            if(gameLiving)
             {
-               _gameLivings[_loc5_] = _loc3_;
+               _gameLivings[livingID] = gameLiving;
             }
-            _loc6_++;
+            i++;
          }
          drawInhaleAsset();
          execute();
@@ -136,77 +135,75 @@ package littleGame.object
       
       protected function lockLivings() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc6_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:Array = [];
+         var gameLiving:* = null;
+         var livingContainer:* = null;
+         var pos:* = null;
+         var i:int = 0;
+         var sortList:Array = [];
          var _loc8_:int = 0;
          var _loc7_:* = _gameLivings;
-         for(var _loc4_ in _gameLivings)
+         for(var key in _gameLivings)
          {
-            _loc2_ = _gameLivings[_loc4_];
-            if(_loc2_ && _loc2_.parent && _loc2_.inGame)
+            gameLiving = _gameLivings[key];
+            if(gameLiving && gameLiving.parent && gameLiving.inGame)
             {
-               _loc2_.lock = true;
-               _loc6_ = _loc2_.parent.localToGlobal(new Point(_loc2_.living.dx * _loc2_.living.speed,_loc2_.living.dy * _loc2_.living.speed));
-               _loc6_ = globalToLocal(_loc6_);
-               _loc2_.x = _loc6_.x;
-               _loc2_.y = _loc6_.y;
-               _loc3_.push(_loc2_);
+               gameLiving.lock = true;
+               pos = gameLiving.parent.localToGlobal(new Point(gameLiving.living.dx * gameLiving.living.speed,gameLiving.living.dy * gameLiving.living.speed));
+               pos = globalToLocal(pos);
+               gameLiving.x = pos.x;
+               gameLiving.y = pos.y;
+               sortList.push(gameLiving);
             }
          }
-         _loc3_.sortOn("y",16);
-         _loc5_ = _loc3_.length;
-         while(_loc5_ > 0)
+         sortList.sortOn("y",16);
+         for(i = sortList.length; i > 0; )
          {
-            addChildAt(_loc3_[_loc5_ - 1],0);
-            _loc5_--;
+            addChildAt(sortList[i - 1],0);
+            i--;
          }
       }
       
       protected function releaseLivings() : void
       {
-         var _loc2_:* = null;
-         var _loc5_:* = null;
-         var _loc1_:* = null;
-         var _loc7_:int = 0;
-         var _loc4_:Array = [];
+         var gameLiving:* = null;
+         var living:* = null;
+         var livingContainer:* = null;
+         var i:int = 0;
+         var sortList:Array = [];
          var _loc9_:int = 0;
          var _loc8_:* = _gameLivings;
-         for(var _loc6_ in _gameLivings)
+         for(var key in _gameLivings)
          {
-            _loc2_ = _gameLivings[_loc6_];
-            if(_loc2_)
+            gameLiving = _gameLivings[key];
+            if(gameLiving)
             {
-               _loc2_.setInhaled(false);
+               gameLiving.setInhaled(false);
             }
-            if(_loc2_.inGame)
+            if(gameLiving.inGame)
             {
-               _loc2_.lock = false;
-               _loc2_.living.stand();
-               _loc2_.living.doAction("stand");
-               _loc2_.x = _loc2_.living.pos.x * _loc2_.living.speed;
-               _loc2_.y = _loc2_.living.pos.y * _loc2_.living.speed;
-               _loc4_.push(_loc2_);
+               gameLiving.lock = false;
+               gameLiving.living.stand();
+               gameLiving.living.doAction("stand");
+               gameLiving.x = gameLiving.living.pos.x * gameLiving.living.speed;
+               gameLiving.y = gameLiving.living.pos.y * gameLiving.living.speed;
+               sortList.push(gameLiving);
             }
          }
-         _loc4_.sortOn("y",16);
-         var _loc3_:GameScene = LittleGameManager.Instance.gameScene;
-         _loc7_ = 0;
-         while(_loc7_ < _loc4_.length)
+         sortList.sortOn("y",16);
+         var gameScene:GameScene = LittleGameManager.Instance.gameScene;
+         for(i = 0; i < sortList.length; )
          {
-            _loc3_.addToLayer(_loc4_[_loc7_] as DisplayObject,0);
-            _loc7_++;
+            gameScene.addToLayer(sortList[i] as DisplayObject,0);
+            i++;
          }
       }
       
       protected function drawBackground() : void
       {
-         var _loc1_:Graphics = graphics;
-         _loc1_.beginFill(0,0);
-         _loc1_.drawRect(0,0,StageReferance.stageWidth,StageReferance.stageHeight);
-         _loc1_.endFill();
+         var g:Graphics = graphics;
+         g.beginFill(0,0);
+         g.drawRect(0,0,StageReferance.stageWidth,StageReferance.stageHeight);
+         g.endFill();
       }
       
       protected function drawMark() : void
@@ -223,7 +220,7 @@ package littleGame.object
          addChild(_markBar);
       }
       
-      public function invoke(param1:PackageIn) : void
+      public function invoke(pkg:PackageIn) : void
       {
       }
       
@@ -242,7 +239,7 @@ package littleGame.object
          }
       }
       
-      protected function __mark(param1:TimerEvent) : void
+      protected function __mark(event:TimerEvent) : void
       {
          if(_markBar)
          {
@@ -250,10 +247,10 @@ package littleGame.object
          }
       }
       
-      protected function __markComplete(param1:TimerEvent) : void
+      protected function __markComplete(event:TimerEvent) : void
       {
-         var _loc2_:Timer = param1.currentTarget as Timer;
-         _loc2_.removeEventListener("timerComplete",__markComplete);
+         var timer:Timer = event.currentTarget as Timer;
+         timer.removeEventListener("timerComplete",__markComplete);
          removeEventListener("click",__click);
          complete();
       }
@@ -263,7 +260,7 @@ package littleGame.object
          addEventListener("click",__click);
       }
       
-      protected function __click(param1:MouseEvent) : void
+      protected function __click(event:MouseEvent) : void
       {
          _clickCount = Number(_clickCount) + 1;
          if(_clickCount >= _totalClick)
@@ -328,9 +325,9 @@ package littleGame.object
          _target = null;
          var _loc3_:int = 0;
          var _loc2_:* = _gameLivings;
-         for(var _loc1_ in _gameLivings)
+         for(var key in _gameLivings)
          {
-            delete _gameLivings[_loc1_];
+            delete _gameLivings[key];
          }
          _gameLivings = null;
       }

@@ -44,11 +44,11 @@ package tofflist
       
       private function celeTotalPrestigeData() : void
       {
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.creatAndStartLoad(PathManager.solveRequestPath("CelebByTotalPrestige.xml"),5);
-         _loc1_.analyzer = new CeleTotalPrestigeAnalyer(completeHander2);
+         var loader:BaseLoader = LoadResourceManager.Instance.creatAndStartLoad(PathManager.solveRequestPath("CelebByTotalPrestige.xml"),5);
+         loader.analyzer = new CeleTotalPrestigeAnalyer(completeHander2);
       }
       
-      public function completeHander2(param1:CeleTotalPrestigeAnalyer) : void
+      public function completeHander2(analyzer:CeleTotalPrestigeAnalyer) : void
       {
       }
       
@@ -57,9 +57,9 @@ package tofflist
          return _view;
       }
       
-      override public function enter(param1:BaseStateView, param2:Object = null) : void
+      override public function enter(prev:BaseStateView, data:Object = null) : void
       {
-         super.enter(param1,param2);
+         super.enter(prev,data);
          init();
          _view.addEvent();
          ConsortionModelManager.Instance.getConsortionList(ConsortionModelManager.Instance.selfConsortionComplete,1,6,PlayerManager.Instance.Self.ConsortiaName,-1,-1,-1,PlayerManager.Instance.Self.ConsortiaID);
@@ -83,10 +83,10 @@ package tofflist
          }
       }
       
-      override public function leaving(param1:BaseStateView) : void
+      override public function leaving(next:BaseStateView) : void
       {
          dispose();
-         super.leaving(param1);
+         super.leaving(next);
       }
       
       override public function getBackType() : String
@@ -99,11 +99,11 @@ package tofflist
          return "tofflist";
       }
       
-      public function loadFormData(param1:String, param2:String, param3:String) : void
+      public function loadFormData(_dataInfo:String, _url:String, _type:String) : void
       {
-         _dataInfo = param1;
-         _url = param2;
-         _type = param3;
+         _dataInfo = _dataInfo;
+         _url = _url;
+         _type = _type;
          _temporaryTofflistListData = _dataInfo;
          if(!TofflistModel.Instance[_temporaryTofflistListData])
          {
@@ -141,19 +141,19 @@ package tofflist
          }
       }
       
-      private function __teamResult(param1:TofflistListThirdAnalyzer) : void
+      private function __teamResult(analyzer:TofflistListThirdAnalyzer) : void
       {
-         TofflistModel.Instance[_temporaryTofflistListData] = param1.data;
+         TofflistModel.Instance[_temporaryTofflistListData] = analyzer.data;
       }
       
-      private function __personalResult(param1:TofflistListTwoAnalyzer) : void
+      private function __personalResult(analyzer:TofflistListTwoAnalyzer) : void
       {
-         TofflistModel.Instance[_temporaryTofflistListData] = param1.data;
+         TofflistModel.Instance[_temporaryTofflistListData] = analyzer.data;
       }
       
-      private function __sociatyResult(param1:TofflistListAnalyzer) : void
+      private function __sociatyResult(analyzer:TofflistListAnalyzer) : void
       {
-         TofflistModel.Instance[_temporaryTofflistListData] = param1.data;
+         TofflistModel.Instance[_temporaryTofflistListData] = analyzer.data;
       }
       
       public function clearDisplayContent() : void
@@ -161,18 +161,18 @@ package tofflist
          _view.clearDisplayContent();
       }
       
-      public function loadList(param1:int) : void
+      public function loadList(type:int) : void
       {
       }
       
-      private function _loadXml(param1:String, param2:DataAnalyzer, param3:int, param4:String = "") : void
+      private function _loadXml($url:String, $dataAnalyzer:DataAnalyzer, $requestType:int, $loadErrorMessage:String = "") : void
       {
          _view.rightView.gridBox.orderList.clearList();
-         var _loc5_:URLVariables = RequestVairableCreater.creatWidthKey(true);
-         var _loc6_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath(param1),param3,_loc5_);
-         _loc6_.loadErrorMessage = param4;
-         _loc6_.analyzer = param2;
-         LoadResourceManager.Instance.startLoad(_loc6_);
+         var args:URLVariables = RequestVairableCreater.creatWidthKey(true);
+         var loadSelfConsortiaMemberList:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath($url),$requestType,args);
+         loadSelfConsortiaMemberList.loadErrorMessage = $loadErrorMessage;
+         loadSelfConsortiaMemberList.analyzer = $dataAnalyzer;
+         LoadResourceManager.Instance.startLoad(loadSelfConsortiaMemberList);
       }
    }
 }

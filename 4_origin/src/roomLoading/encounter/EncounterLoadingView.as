@@ -62,9 +62,9 @@ package roomLoading.encounter
       
       protected var girlIdx:int = 1;
       
-      public function EncounterLoadingView(param1:GameInfo)
+      public function EncounterLoadingView($info:GameInfo)
       {
-         super(param1);
+         super($info);
       }
       
       override protected function init() : void
@@ -100,8 +100,8 @@ package roomLoading.encounter
          {
             addChild(_dungeonMapItem);
          }
-         var _loc1_:int = RoomManager.Instance.current.type == 4 || RoomManager.Instance.current.type == 11 || RoomManager.Instance.current.type == 123?94:64;
-         _countDownTimer = new Timer(1000,_loc1_);
+         var time:int = RoomManager.Instance.current.type == 4 || RoomManager.Instance.current.type == 11 || RoomManager.Instance.current.type == 123?94:64;
+         _countDownTimer = new Timer(1000,time);
          _countDownTimer.addEventListener("timer",__countDownTick);
          _countDownTimer.addEventListener("timerComplete",__countDownComplete);
          _countDownTimer.start();
@@ -109,78 +109,78 @@ package roomLoading.encounter
          GameControl.Instance.addEventListener("selectComplete",__pairingComplete);
       }
       
-      protected function __pairingComplete(param1:GameEvent) : void
+      protected function __pairingComplete(event:GameEvent) : void
       {
-         var _loc2_:* = null;
+         var timer:* = null;
          if(!_showArrowComplete)
          {
             showArrow();
-            _loc2_ = new Timer(1000,2);
-            _loc2_.start();
-            _loc2_.addEventListener("timerComplete",__showPairing);
+            timer = new Timer(1000,2);
+            timer.start();
+            timer.addEventListener("timerComplete",__showPairing);
             _showArrowComplete = true;
          }
       }
       
-      protected function __showPairing(param1:TimerEvent) : void
+      protected function __showPairing(event:TimerEvent) : void
       {
          hideArrow();
-         var _loc6_:EncounterLoadingCharacterItem = getItemByTeam(1,true);
-         var _loc5_:EncounterLoadingCharacterItem = getItemByTeam(1,false);
-         var _loc8_:EncounterLoadingCharacterItem = getItemByTeam(2,true);
-         var _loc7_:EncounterLoadingCharacterItem = getItemByTeam(2,false);
-         var _loc2_:Point = PositionUtils.creatPoint("asset.roomLoading.EncounterLoadingCharacterItemBoyPos_1");
-         var _loc4_:Point = PositionUtils.creatPoint("asset.roomLoading.EncounterLoadingCharacterItemGirlPos_1");
-         var _loc3_:Point = PositionUtils.creatPoint("asset.roomLoading.EncounterLoadingCharacterItemBoyToPos_1");
-         var _loc10_:Point = PositionUtils.creatPoint("asset.roomLoading.EncounterLoadingCharacterItemBoyToPos_2");
-         var _loc11_:Point = PositionUtils.creatPoint("ddtroomLoading.EncounterLoadingView.lovePos");
-         var _loc9_:Point = PositionUtils.creatPoint("ddtroomLoading.EncounterLoadingView.lovePos1");
-         if(_loc6_)
+         var boyItem1:EncounterLoadingCharacterItem = getItemByTeam(1,true);
+         var grilItem1:EncounterLoadingCharacterItem = getItemByTeam(1,false);
+         var boyItem2:EncounterLoadingCharacterItem = getItemByTeam(2,true);
+         var grilItem2:EncounterLoadingCharacterItem = getItemByTeam(2,false);
+         var pos1:Point = PositionUtils.creatPoint("asset.roomLoading.EncounterLoadingCharacterItemBoyPos_1");
+         var pos2:Point = PositionUtils.creatPoint("asset.roomLoading.EncounterLoadingCharacterItemGirlPos_1");
+         var pos3:Point = PositionUtils.creatPoint("asset.roomLoading.EncounterLoadingCharacterItemBoyToPos_1");
+         var pos4:Point = PositionUtils.creatPoint("asset.roomLoading.EncounterLoadingCharacterItemBoyToPos_2");
+         var pos5:Point = PositionUtils.creatPoint("ddtroomLoading.EncounterLoadingView.lovePos");
+         var pos6:Point = PositionUtils.creatPoint("ddtroomLoading.EncounterLoadingView.lovePos1");
+         if(boyItem1)
          {
-            TweenMax.to(_loc6_,2,{
-               "x":_loc2_.x,
-               "y":_loc2_.y
+            TweenMax.to(boyItem1,2,{
+               "x":pos1.x,
+               "y":pos1.y
             });
          }
-         if(_loc5_)
+         if(grilItem1)
          {
-            TweenMax.to(_loc5_,2,{
-               "x":_loc3_.x,
-               "y":_loc3_.y
+            TweenMax.to(grilItem1,2,{
+               "x":pos3.x,
+               "y":pos3.y
             });
          }
-         if(_loc8_)
+         if(boyItem2)
          {
-            TweenMax.to(_loc8_,2,{
-               "x":_loc10_.x,
-               "y":_loc10_.y
+            TweenMax.to(boyItem2,2,{
+               "x":pos4.x,
+               "y":pos4.y
             });
          }
-         if(_loc7_)
+         if(grilItem2)
          {
-            TweenMax.to(_loc7_,2,{
-               "x":_loc4_.x,
-               "y":_loc4_.y,
+            TweenMax.to(grilItem2,2,{
+               "x":pos2.x,
+               "y":pos2.y,
                "onComplete":pairingComplete
             });
          }
          if(_selfItem.info.team == 1)
          {
             TweenMax.to(_love,2,{
-               "x":_loc11_.x,
-               "y":_loc11_.y
+               "x":pos5.x,
+               "y":pos5.y
             });
-            _loveII.x = _loc11_.x;
-            _loveII.y = _loc11_.y;
+            _loveII.x = pos5.x;
+            _loveII.y = pos5.y;
          }
          else
          {
             TweenMax.to(_love,2,{
-               "x":_loc9_.x,
-               "y":_loc9_.y
+               "x":pos6.x,
+               "y":pos6.y
             });
-            _loveII.x = _loc9_.x;
-            _loveII.y = _loc9_.y;
+            _loveII.x = pos6.x;
+            _loveII.y = pos6.y;
          }
          _loveII.visible = true;
       }
@@ -194,116 +194,114 @@ package roomLoading.encounter
       {
          var _loc3_:int = 0;
          var _loc2_:* = _playerItems;
-         for each(var _loc1_ in _playerItems)
+         for each(var i in _playerItems)
          {
-            if(_loc1_)
+            if(i)
             {
-               _loc1_.arrowVisible = false;
-               _loc1_.buttonMode = false;
+               i.arrowVisible = false;
+               i.buttonMode = false;
             }
          }
       }
       
       protected function showArrow() : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc1_:int = 0;
-         var _loc4_:int = 0;
-         var _loc5_:Array = GameControl.Instance.selectList;
+         var item1:* = null;
+         var item2:* = null;
+         var pos1:int = 0;
+         var pos2:int = 0;
+         var selectList:Array = GameControl.Instance.selectList;
          var _loc8_:int = 0;
-         var _loc7_:* = _loc5_;
-         for each(var _loc6_ in _loc5_)
+         var _loc7_:* = selectList;
+         for each(var i in selectList)
          {
-            if(_loc6_["selectID"] != -1)
+            if(i["selectID"] != -1)
             {
-               _loc3_ = getItem(_loc6_["id"],_loc6_["zoneID"]);
-               _loc2_ = getItem(_loc6_["selectID"],_loc6_["selectZoneID"]);
-               _loc1_ = getPosition(_loc6_["id"],_loc6_["zoneID"]);
-               _loc4_ = getPosition(_loc6_["selectID"],_loc6_["selectZoneID"]);
+               item1 = getItem(i["id"],i["zoneID"]);
+               item2 = getItem(i["selectID"],i["selectZoneID"]);
+               pos1 = getPosition(i["id"],i["zoneID"]);
+               pos2 = getPosition(i["selectID"],i["selectZoneID"]);
             }
             else
             {
-               _loc3_ = getItem(_loc6_["id"],_loc6_["zoneID"]);
-               _loc2_ = getItem(getTeammateID(_loc3_),getTeammateZoneID(_loc3_));
-               _loc1_ = getPosition(_loc6_["id"],_loc6_["zoneID"]);
-               _loc4_ = getPosition(getTeammateID(_loc3_),getTeammateZoneID(_loc3_));
+               item1 = getItem(i["id"],i["zoneID"]);
+               item2 = getItem(getTeammateID(item1),getTeammateZoneID(item1));
+               pos1 = getPosition(i["id"],i["zoneID"]);
+               pos2 = getPosition(getTeammateID(item1),getTeammateZoneID(item1));
             }
-            _loc3_.selectObject = getArrowType(_loc1_,_loc4_);
+            item1.selectObject = getArrowType(pos1,pos2);
          }
       }
       
-      protected function getTeammateID(param1:RoomLoadingCharacterItem) : int
+      protected function getTeammateID(item:RoomLoadingCharacterItem) : int
       {
-         var _loc3_:int = 0;
-         var _loc2_:Array = GameControl.Instance.Current.roomPlayers;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_.length)
+         var i:int = 0;
+         var players:Array = GameControl.Instance.Current.roomPlayers;
+         for(i = 0; i < players.length; )
          {
-            if(_loc2_[_loc3_].team == param1.info.team && _loc2_[_loc3_].playerInfo.ID != param1.info.playerInfo.ID)
+            if(players[i].team == item.info.team && players[i].playerInfo.ID != item.info.playerInfo.ID)
             {
-               return _loc2_[_loc3_].playerInfo.ID;
+               return players[i].playerInfo.ID;
             }
-            _loc3_++;
+            i++;
          }
          return -1;
       }
       
-      protected function getTeammateZoneID(param1:RoomLoadingCharacterItem) : int
+      protected function getTeammateZoneID(item:RoomLoadingCharacterItem) : int
       {
-         var _loc3_:int = 0;
-         var _loc2_:Array = GameControl.Instance.Current.roomPlayers;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_.length)
+         var i:int = 0;
+         var players:Array = GameControl.Instance.Current.roomPlayers;
+         for(i = 0; i < players.length; )
          {
-            if(_loc2_[_loc3_].team == param1.info.team && _loc2_[_loc3_].playerInfo.ID != param1.info.playerInfo.ID && _loc2_[_loc3_].playerInfo.ZoneID != param1.info.playerInfo.ZoneID)
+            if(players[i].team == item.info.team && players[i].playerInfo.ID != item.info.playerInfo.ID && players[i].playerInfo.ZoneID != item.info.playerInfo.ZoneID)
             {
-               return _loc2_[_loc3_].playerInfo.ZoneID;
+               return players[i].playerInfo.ZoneID;
             }
-            _loc3_++;
+            i++;
          }
          return -1;
       }
       
-      protected function getArrowType(param1:int, param2:int) : int
+      protected function getArrowType(pos1:int, pos2:int) : int
       {
-         if(Math.abs(param1 - param2) == 2)
+         if(Math.abs(pos1 - pos2) == 2)
          {
             return 1;
          }
-         if(param1 - param2 == 3)
+         if(pos1 - pos2 == 3)
          {
             return 2;
          }
-         if(param1 - param2 == 1)
+         if(pos1 - pos2 == 1)
          {
             return 3;
          }
-         if(param1 - param2 == -3)
+         if(pos1 - pos2 == -3)
          {
             return 3;
          }
-         if(param1 - param2 == -1)
+         if(pos1 - pos2 == -1)
          {
             return 2;
          }
          return -1;
       }
       
-      protected function getPosition(param1:int, param2:int) : int
+      protected function getPosition(id:int, zoneID:int) : int
       {
-         var _loc3_:RoomLoadingCharacterItem = getItem(param1,param2);
-         if(_loc3_ && _loc3_.info.playerInfo.Sex)
+         var item:RoomLoadingCharacterItem = getItem(id,zoneID);
+         if(item && item.info.playerInfo.Sex)
          {
-            if(_loc3_.index == 1)
+            if(item.index == 1)
             {
                return 1;
             }
             return 2;
          }
-         if(_loc3_ && !_loc3_.info.playerInfo.Sex)
+         if(item && !item.info.playerInfo.Sex)
          {
-            if(_loc3_.index == 1)
+            if(item.index == 1)
             {
                return 3;
             }
@@ -312,94 +310,91 @@ package roomLoading.encounter
          return -1;
       }
       
-      protected function getItemByTeam(param1:int, param2:Boolean) : EncounterLoadingCharacterItem
+      protected function getItemByTeam(team:int, sex:Boolean) : EncounterLoadingCharacterItem
       {
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < _playerItems.length)
+         var i:int = 0;
+         for(i = 0; i < _playerItems.length; )
          {
-            if(_playerItems[_loc3_].info.team == param1 && _playerItems[_loc3_].info.playerInfo.Sex == param2)
+            if(_playerItems[i].info.team == team && _playerItems[i].info.playerInfo.Sex == sex)
             {
-               return _playerItems[_loc3_];
+               return _playerItems[i];
             }
-            _loc3_++;
+            i++;
          }
          return null;
       }
       
-      protected function getItem(param1:int, param2:int) : EncounterLoadingCharacterItem
+      protected function getItem(id:int, zoneID:int) : EncounterLoadingCharacterItem
       {
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < _playerItems.length)
+         var i:int = 0;
+         for(i = 0; i < _playerItems.length; )
          {
-            if(_playerItems[_loc3_].info.playerInfo.ID == param1 && _playerItems[_loc3_].info.playerInfo.ZoneID == param2)
+            if(_playerItems[i].info.playerInfo.ID == id && _playerItems[i].info.playerInfo.ZoneID == zoneID)
             {
-               return _playerItems[_loc3_];
+               return _playerItems[i];
             }
-            _loc3_++;
+            i++;
          }
          return null;
       }
       
       override protected function initLoadingItems() : void
       {
-         var _loc9_:int = 0;
-         var _loc14_:int = 0;
-         var _loc11_:int = 0;
-         var _loc13_:int = 0;
-         var _loc4_:* = null;
-         var _loc17_:* = null;
-         var _loc6_:* = null;
-         var _loc8_:* = null;
-         var _loc15_:* = null;
-         var _loc3_:* = null;
-         var _loc12_:int = 0;
-         var _loc10_:int = _gameInfo.roomPlayers.length;
-         var _loc16_:Array = _gameInfo.roomPlayers;
-         LoadBombManager.Instance.loadFullRoomPlayersBomb(_loc16_);
+         var blueLen:int = 0;
+         var redLen:int = 0;
+         var team:int = 0;
+         var i:int = 0;
+         var roomPlayer:* = null;
+         var item:* = null;
+         var gameplayer:* = null;
+         var currentPet:* = null;
+         var skill:* = null;
+         var ball:* = null;
+         var j:int = 0;
+         var len:int = _gameInfo.roomPlayers.length;
+         var roomPlayers:Array = _gameInfo.roomPlayers;
+         LoadBombManager.Instance.loadFullRoomPlayersBomb(roomPlayers);
          if(!StartupResourceLoader.firstEnterHall)
          {
             LoadBombManager.Instance.loadSpecialBomb();
          }
          var _loc19_:int = 0;
-         var _loc18_:* = _loc16_;
-         for each(var _loc1_ in _loc16_)
+         var _loc18_:* = roomPlayers;
+         for each(var rp1 in roomPlayers)
          {
-            if(PlayerManager.Instance.Self.ID == _loc1_.playerInfo.ID)
+            if(PlayerManager.Instance.Self.ID == rp1.playerInfo.ID)
             {
-               _loc11_ = _loc1_.team;
+               team = rp1.team;
             }
          }
          var _loc21_:int = 0;
-         var _loc20_:* = _loc16_;
-         for each(var _loc2_ in _loc16_)
+         var _loc20_:* = roomPlayers;
+         for each(var rp in roomPlayers)
          {
-            if(!_loc2_.isViewer)
+            if(!rp.isViewer)
             {
-               if(_loc2_.team == 1)
+               if(rp.team == 1)
                {
-                  _loc9_++;
-                  §§push(_loc9_);
+                  blueLen++;
+                  §§push(blueLen);
                }
                else
                {
-                  _loc14_++;
-                  §§push(int(_loc14_));
+                  redLen++;
+                  §§push(int(redLen));
                }
                §§pop();
-               if(!(RoomManager.Instance.current.type == 0 && _loc2_.team != _loc11_))
+               if(!(RoomManager.Instance.current.type == 0 && rp.team != team))
                {
-                  IMManager.Instance.saveRecentContactsID(_loc2_.playerInfo.ID);
+                  IMManager.Instance.saveRecentContactsID(rp.playerInfo.ID);
                }
             }
          }
-         _loc13_ = 0;
-         while(_loc13_ < _loc10_)
+         for(i = 0; i < len; )
          {
-            _loc4_ = _gameInfo.roomPlayers[_loc13_];
-            _loc4_.addEventListener("progressChange",__onLoadingFinished);
-            if(_loc4_.isViewer)
+            roomPlayer = _gameInfo.roomPlayers[i];
+            roomPlayer.addEventListener("progressChange",__onLoadingFinished);
+            if(roomPlayer.isViewer)
             {
                if(contains(_tipsItem))
                {
@@ -409,36 +404,36 @@ package roomLoading.encounter
             }
             else
             {
-               _loc17_ = new EncounterLoadingCharacterItem(_loc4_);
-               initRoomItem(_loc17_);
-               _loc6_ = _gameInfo.findLivingByPlayerID(_loc4_.playerInfo.ID,_loc4_.playerInfo.ZoneID);
-               initCharacter(_loc6_,_loc17_);
-               _loc8_ = _loc6_.playerInfo.currentPet;
-               if(_loc8_)
+               item = new EncounterLoadingCharacterItem(roomPlayer);
+               initRoomItem(item);
+               gameplayer = _gameInfo.findLivingByPlayerID(roomPlayer.playerInfo.ID,roomPlayer.playerInfo.ZoneID);
+               initCharacter(gameplayer,item);
+               currentPet = gameplayer.playerInfo.currentPet;
+               if(currentPet)
                {
-                  LoadResourceManager.Instance.creatAndStartLoad(PathManager.solvePetGameAssetUrl(_loc8_.GameAssetUrl),4);
+                  LoadResourceManager.Instance.creatAndStartLoad(PathManager.solvePetGameAssetUrl(currentPet.GameAssetUrl),4);
                   var _loc23_:int = 0;
-                  var _loc22_:* = _loc8_.equipdSkills;
-                  for each(var _loc5_ in _loc8_.equipdSkills)
+                  var _loc22_:* = currentPet.equipdSkills;
+                  for each(var skillid in currentPet.equipdSkills)
                   {
-                     if(_loc5_ > 0)
+                     if(skillid > 0)
                      {
-                        _loc15_ = PetSkillManager.getSkillByID(_loc5_);
-                        if(_loc15_.EffectPic)
+                        skill = PetSkillManager.getSkillByID(skillid);
+                        if(skill.EffectPic)
                         {
-                           LoadResourceManager.Instance.creatAndStartLoad(PathManager.solvePetSkillEffect(_loc15_.EffectPic),4);
+                           LoadResourceManager.Instance.creatAndStartLoad(PathManager.solvePetSkillEffect(skill.EffectPic),4);
                         }
-                        if(_loc15_.NewBallID != -1)
+                        if(skill.NewBallID != -1)
                         {
-                           _loc3_ = BallManager.instance.findBall(_loc15_.NewBallID);
-                           _loc3_.loadBombAsset();
-                           _loc3_.loadCraterBitmap();
+                           ball = BallManager.instance.findBall(skill.NewBallID);
+                           ball.loadBombAsset();
+                           ball.loadCraterBitmap();
                         }
                      }
                   }
                }
             }
-            _loc13_++;
+            i++;
          }
          if(blueBig)
          {
@@ -450,17 +445,16 @@ package roomLoading.encounter
          }
          if(!StartupResourceLoader.firstEnterHall)
          {
-            _loc12_ = 0;
-            while(_loc12_ < _gameInfo.neededMovies.length)
+            for(j = 0; j < _gameInfo.neededMovies.length; )
             {
-               _gameInfo.neededMovies[_loc12_].startLoad();
-               _loc12_++;
+               _gameInfo.neededMovies[j].startLoad();
+               j++;
             }
             var _loc25_:int = 0;
             var _loc24_:* = _gameInfo.neededPetSkillResource;
-            for each(var _loc7_ in _gameInfo.neededPetSkillResource)
+            for each(var skillRes in _gameInfo.neededPetSkillResource)
             {
-               _loc7_.startLoad();
+               skillRes.startLoad();
             }
          }
          _gameInfo.loaderMap = new MapLoader(MapManager.getMapInfo(_gameInfo.mapIndex));
@@ -491,179 +485,179 @@ package roomLoading.encounter
          }
       }
       
-      override protected function initRoomItem(param1:RoomLoadingCharacterItem) : void
+      override protected function initRoomItem(item:RoomLoadingCharacterItem) : void
       {
-         var _loc2_:* = null;
-         if(param1.info.playerInfo.Sex)
+         var fromPos:* = null;
+         if(item.info.playerInfo.Sex)
          {
             if(boyIdx == 1)
             {
-               PositionUtils.setPos(param1,"asset.roomLoading.EncounterLoadingCharacterItemBoyPos_" + boyIdx.toString());
-               _loc2_ = ComponentFactory.Instance.creatCustomObject("asset.roomLoading.EncounterLoadingCharacterItemBoyToPos_" + boyIdx.toString());
-               blueBig = param1;
+               PositionUtils.setPos(item,"asset.roomLoading.EncounterLoadingCharacterItemBoyPos_" + boyIdx.toString());
+               fromPos = ComponentFactory.Instance.creatCustomObject("asset.roomLoading.EncounterLoadingCharacterItemBoyToPos_" + boyIdx.toString());
+               blueBig = item;
                boyIdx = Number(boyIdx) + 1;
             }
             else
             {
-               PositionUtils.setPos(param1,"asset.roomLoading.EncounterLoadingCharacterItemBoyPos_" + boyIdx.toString());
-               _loc2_ = ComponentFactory.Instance.creatCustomObject("asset.roomLoading.EncounterLoadingCharacterItemBoyToPos_" + boyIdx.toString());
+               PositionUtils.setPos(item,"asset.roomLoading.EncounterLoadingCharacterItemBoyPos_" + boyIdx.toString());
+               fromPos = ComponentFactory.Instance.creatCustomObject("asset.roomLoading.EncounterLoadingCharacterItemBoyToPos_" + boyIdx.toString());
             }
          }
          else if(girlIdx == 1)
          {
-            PositionUtils.setPos(param1,"asset.roomLoading.EncounterLoadingCharacterItemGirlPos_" + girlIdx.toString());
-            _loc2_ = ComponentFactory.Instance.creatCustomObject("asset.roomLoading.EncounterLoadingCharacterItemGirlToPos_" + girlIdx.toString());
-            redBig = param1;
+            PositionUtils.setPos(item,"asset.roomLoading.EncounterLoadingCharacterItemGirlPos_" + girlIdx.toString());
+            fromPos = ComponentFactory.Instance.creatCustomObject("asset.roomLoading.EncounterLoadingCharacterItemGirlToPos_" + girlIdx.toString());
+            redBig = item;
             girlIdx = Number(girlIdx) + 1;
          }
          else
          {
-            PositionUtils.setPos(param1,"asset.roomLoading.EncounterLoadingCharacterItemGirlPos_" + girlIdx.toString());
-            _loc2_ = ComponentFactory.Instance.creatCustomObject("asset.roomLoading.EncounterLoadingCharacterItemGirlToPos_" + girlIdx.toString());
+            PositionUtils.setPos(item,"asset.roomLoading.EncounterLoadingCharacterItemGirlPos_" + girlIdx.toString());
+            fromPos = ComponentFactory.Instance.creatCustomObject("asset.roomLoading.EncounterLoadingCharacterItemGirlToPos_" + girlIdx.toString());
          }
-         _playerItems.push(param1);
-         addChild(param1);
-         if(!param1.info.playerInfo.isSelf && param1.info.playerInfo.Sex != PlayerManager.Instance.Self.Sex)
+         _playerItems.push(item);
+         addChild(item);
+         if(!item.info.playerInfo.isSelf && item.info.playerInfo.Sex != PlayerManager.Instance.Self.Sex)
          {
-            param1.buttonMode = true;
-            param1.addEventListener("click",__onSelectObject);
+            item.buttonMode = true;
+            item.addEventListener("click",__onSelectObject);
          }
-         if(param1.info.playerInfo.isSelf)
+         if(item.info.playerInfo.isSelf)
          {
-            _selfItem = param1 as EncounterLoadingCharacterItem;
+            _selfItem = item as EncounterLoadingCharacterItem;
          }
       }
       
-      protected function __onSelectObject(param1:MouseEvent) : void
+      protected function __onSelectObject(event:MouseEvent) : void
       {
-         var _loc2_:EncounterLoadingCharacterItem = param1.currentTarget as EncounterLoadingCharacterItem;
-         _loc2_.buttonMode = false;
-         _loc2_.removeEventListener("click",__onSelectObject);
-         _loc2_.bubbleVisible = false;
-         GameInSocketOut.sendSelectObject(_loc2_.info.playerInfo.ID,_loc2_.info.playerInfo.ZoneID);
+         var item:EncounterLoadingCharacterItem = event.currentTarget as EncounterLoadingCharacterItem;
+         item.buttonMode = false;
+         item.removeEventListener("click",__onSelectObject);
+         item.bubbleVisible = false;
+         GameInSocketOut.sendSelectObject(item.info.playerInfo.ID,item.info.playerInfo.ZoneID);
          var _loc5_:int = 0;
          var _loc4_:* = _playerItems;
-         for each(var _loc3_ in _playerItems)
+         for each(var i in _playerItems)
          {
-            if(_loc3_)
+            if(i)
             {
-               _loc3_.buttonMode = false;
-               _loc3_.bubbleVisible = false;
+               i.buttonMode = false;
+               i.bubbleVisible = false;
             }
          }
       }
       
-      override protected function initCharacter(param1:Player, param2:RoomLoadingCharacterItem) : void
+      override protected function initCharacter(gameplayer:Player, item:RoomLoadingCharacterItem) : void
       {
-         var _loc4_:Rectangle = ComponentFactory.Instance.creatCustomObject("asset.roomloading.BigCharacterSize");
-         var _loc3_:Rectangle = ComponentFactory.Instance.creatCustomObject("asset.roomloading.SuitCharacterSize");
-         param1.movie = param2.info.movie;
-         param1.character = param2.info.character;
-         if(param2.info.playerInfo.Sex)
+         var size:Rectangle = ComponentFactory.Instance.creatCustomObject("asset.roomloading.BigCharacterSize");
+         var suitSize:Rectangle = ComponentFactory.Instance.creatCustomObject("asset.roomloading.SuitCharacterSize");
+         gameplayer.movie = item.info.movie;
+         gameplayer.character = item.info.character;
+         if(item.info.playerInfo.Sex)
          {
-            param1.character.showWithSize(false,-1,_loc4_.width,_loc4_.height);
-            PositionUtils.setPos(param1.character,"roomLoading.encounter.characterPos");
-            param2.index = blueCharacterIndex;
+            gameplayer.character.showWithSize(false,-1,size.width,size.height);
+            PositionUtils.setPos(gameplayer.character,"roomLoading.encounter.characterPos");
+            item.index = blueCharacterIndex;
             blueCharacterIndex = Number(blueCharacterIndex) + 1;
          }
          else
          {
-            param1.character.showWithSize(false,1,_loc4_.width,_loc4_.height);
-            PositionUtils.setPos(param1.character,"roomLoading.encounter.characterPos1");
-            param2.index = redCharacterIndex;
+            gameplayer.character.showWithSize(false,1,size.width,size.height);
+            PositionUtils.setPos(gameplayer.character,"roomLoading.encounter.characterPos1");
+            item.index = redCharacterIndex;
             redCharacterIndex = Number(redCharacterIndex) + 1;
          }
-         param1.movie.show(true,-1);
+         gameplayer.movie.show(true,-1);
       }
       
       override protected function checkProgress() : Boolean
       {
-         var _loc6_:* = null;
-         var _loc9_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc11_:int = 0;
+         var gameplayer:* = null;
+         var currentPet:* = null;
+         var skill:* = null;
+         var ball:* = null;
+         var i:int = 0;
          _unloadedmsg = "";
-         var _loc1_:int = 0;
-         var _loc10_:int = 0;
+         var total:int = 0;
+         var finished:int = 0;
          var _loc16_:int = 0;
          var _loc15_:* = _gameInfo.roomPlayers;
-         for each(var _loc12_ in _gameInfo.roomPlayers)
+         for each(var info in _gameInfo.roomPlayers)
          {
-            if(!_loc12_.isViewer)
+            if(!info.isViewer)
             {
                if(!_pairingComplete)
                {
-                  _loc1_++;
+                  total++;
                }
-               _loc6_ = _gameInfo.findLivingByPlayerID(_loc12_.playerInfo.ID,_loc12_.playerInfo.ZoneID);
-               if(_loc6_.character.completed)
+               gameplayer = _gameInfo.findLivingByPlayerID(info.playerInfo.ID,info.playerInfo.ZoneID);
+               if(gameplayer.character.completed)
                {
-                  _loc10_++;
-               }
-               else
-               {
-                  _unloadedmsg = _unloadedmsg + (_loc12_.playerInfo.NickName + "gameplayer.character.completed false\n");
-                  _unloadedmsg = _unloadedmsg + _loc6_.character.getCharacterLoadLog();
-               }
-               _loc1_++;
-               if(_loc6_.movie.completed)
-               {
-                  _loc10_++;
+                  finished++;
                }
                else
                {
-                  _unloadedmsg = _unloadedmsg + (_loc12_.playerInfo.NickName + "gameplayer.movie.completed false\n");
+                  _unloadedmsg = _unloadedmsg + (info.playerInfo.NickName + "gameplayer.character.completed false\n");
+                  _unloadedmsg = _unloadedmsg + gameplayer.character.getCharacterLoadLog();
                }
-               _loc1_++;
-               if(LoadBombManager.Instance.getLoadBombComplete(_loc12_.currentWeapInfo))
+               total++;
+               if(gameplayer.movie.completed)
                {
-                  _loc10_++;
+                  finished++;
                }
                else
                {
-                  _unloadedmsg = _unloadedmsg + ("LoadBombManager.getLoadBombComplete(info.currentWeapInfo) false" + LoadBombManager.Instance.getUnloadedBombString(_loc12_.currentWeapInfo) + "\n");
+                  _unloadedmsg = _unloadedmsg + (info.playerInfo.NickName + "gameplayer.movie.completed false\n");
                }
-               _loc1_++;
-               _loc9_ = _loc6_.playerInfo.currentPet;
-               if(_loc9_)
+               total++;
+               if(LoadBombManager.Instance.getLoadBombComplete(info.currentWeapInfo))
                {
-                  if(_loc9_.assetReady)
+                  finished++;
+               }
+               else
+               {
+                  _unloadedmsg = _unloadedmsg + ("LoadBombManager.getLoadBombComplete(info.currentWeapInfo) false" + LoadBombManager.Instance.getUnloadedBombString(info.currentWeapInfo) + "\n");
+               }
+               total++;
+               currentPet = gameplayer.playerInfo.currentPet;
+               if(currentPet)
+               {
+                  if(currentPet.assetReady)
                   {
-                     _loc10_++;
+                     finished++;
                   }
-                  _loc1_++;
+                  total++;
                   var _loc14_:int = 0;
-                  var _loc13_:* = _loc9_.equipdSkills;
-                  for each(var _loc5_ in _loc9_.equipdSkills)
+                  var _loc13_:* = currentPet.equipdSkills;
+                  for each(var skillid in currentPet.equipdSkills)
                   {
-                     if(_loc5_ > 0)
+                     if(skillid > 0)
                      {
-                        _loc4_ = PetSkillManager.getSkillByID(_loc5_);
-                        if(_loc4_.EffectPic)
+                        skill = PetSkillManager.getSkillByID(skillid);
+                        if(skill.EffectPic)
                         {
-                           if(ModuleLoader.hasDefinition(_loc4_.EffectClassLink))
+                           if(ModuleLoader.hasDefinition(skill.EffectClassLink))
                            {
-                              _loc10_++;
+                              finished++;
                            }
                            else
                            {
-                              _unloadedmsg = _unloadedmsg + ("ModuleLoader.hasDefinition(skill.EffectClassLink):" + _loc4_.EffectClassLink + " false\n");
+                              _unloadedmsg = _unloadedmsg + ("ModuleLoader.hasDefinition(skill.EffectClassLink):" + skill.EffectClassLink + " false\n");
                            }
-                           _loc1_++;
+                           total++;
                         }
-                        if(_loc4_.NewBallID != -1)
+                        if(skill.NewBallID != -1)
                         {
-                           _loc3_ = BallManager.instance.findBall(_loc4_.NewBallID);
-                           if(_loc3_.isComplete())
+                           ball = BallManager.instance.findBall(skill.NewBallID);
+                           if(ball.isComplete())
                            {
-                              _loc10_++;
+                              finished++;
                            }
                            else
                            {
-                              _unloadedmsg = _unloadedmsg + ("BallManager.findBall(skill.NewBallID):" + _loc4_.NewBallID + "false\n");
+                              _unloadedmsg = _unloadedmsg + ("BallManager.findBall(skill.NewBallID):" + skill.NewBallID + "false\n");
                            }
-                           _loc1_++;
+                           total++;
                         }
                      }
                   }
@@ -672,95 +666,94 @@ package roomLoading.encounter
                continue;
             }
          }
-         _loc11_ = 0;
-         while(_loc11_ < _gameInfo.neededMovies.length)
+         for(i = 0; i < _gameInfo.neededMovies.length; )
          {
-            if(_gameInfo.neededMovies[_loc11_].type == 2)
+            if(_gameInfo.neededMovies[i].type == 2)
             {
-               if(ModuleLoader.hasDefinition(_gameInfo.neededMovies[_loc11_].classPath))
+               if(ModuleLoader.hasDefinition(_gameInfo.neededMovies[i].classPath))
                {
-                  _loc10_++;
+                  finished++;
                }
                else
                {
-                  _unloadedmsg = _unloadedmsg + ("ModuleLoader.hasDefinition(_gameInfo.neededMovies[i].classPath):" + _gameInfo.neededMovies[_loc11_].classPath + " false\n");
+                  _unloadedmsg = _unloadedmsg + ("ModuleLoader.hasDefinition(_gameInfo.neededMovies[i].classPath):" + _gameInfo.neededMovies[i].classPath + " false\n");
                }
-               _loc1_++;
+               total++;
             }
-            else if(_gameInfo.neededMovies[_loc11_].type == 1)
+            else if(_gameInfo.neededMovies[i].type == 1)
             {
-               if(LoadBombManager.Instance.getLivingBombComplete(_gameInfo.neededMovies[_loc11_].bombId))
+               if(LoadBombManager.Instance.getLivingBombComplete(_gameInfo.neededMovies[i].bombId))
                {
-                  _loc10_++;
+                  finished++;
                }
                else
                {
-                  _unloadedmsg = _unloadedmsg + ("LoadBombManager.getLivingBombComplete(_gameInfo.neededMovies[i].bombId):" + _gameInfo.neededMovies[_loc11_].bombId + " false\n");
+                  _unloadedmsg = _unloadedmsg + ("LoadBombManager.getLivingBombComplete(_gameInfo.neededMovies[i].bombId):" + _gameInfo.neededMovies[i].bombId + " false\n");
                }
-               _loc1_++;
+               total++;
             }
-            _loc11_++;
+            i++;
          }
          var _loc18_:int = 0;
          var _loc17_:* = _gameInfo.neededPetSkillResource;
-         for each(var _loc8_ in _gameInfo.neededPetSkillResource)
+         for each(var skillRes in _gameInfo.neededPetSkillResource)
          {
-            if(_loc8_.effect)
+            if(skillRes.effect)
             {
-               if(ModuleLoader.hasDefinition(_loc8_.effectClassLink))
+               if(ModuleLoader.hasDefinition(skillRes.effectClassLink))
                {
-                  _loc10_++;
+                  finished++;
                }
                else
                {
-                  _unloadedmsg = _unloadedmsg + ("ModuleLoader.hasDefinition(" + _loc8_.effectClassLink + ") false\n");
+                  _unloadedmsg = _unloadedmsg + ("ModuleLoader.hasDefinition(" + skillRes.effectClassLink + ") false\n");
                }
-               _loc1_++;
+               total++;
             }
          }
          if(_gameInfo.loaderMap.completed)
          {
-            _loc10_++;
+            finished++;
          }
          else
          {
             _unloadedmsg = _unloadedmsg + ("_gameInfo.loaderMap.completed false,pic: " + _gameInfo.loaderMap.info.Pic + "id:" + _gameInfo.loaderMap.info.ID + "\n");
          }
-         _loc1_++;
+         total++;
          if(!StartupResourceLoader.firstEnterHall)
          {
             if(LoadBombManager.Instance.getLoadSpecialBombComplete())
             {
-               _loc10_++;
+               finished++;
             }
             else
             {
                _unloadedmsg = _unloadedmsg + ("LoadBombManager.getLoadSpecialBombComplete() false  " + LoadBombManager.Instance.getUnloadedSpecialBombString() + "\n");
             }
-            _loc1_++;
+            total++;
          }
          if(_trainerLoad)
          {
             if(_trainerLoad.completed)
             {
-               _loc10_++;
+               finished++;
             }
             else
             {
                _unloadedmsg = _unloadedmsg + "_trainerLoad.completed false\n";
             }
-            _loc1_++;
+            total++;
          }
-         var _loc7_:* = Number(int(_loc10_ / _loc1_ * 100));
-         var _loc2_:* = _loc1_ == _loc10_;
-         if(_loc2_ && (!checkAnimationIsFinished() || !checkIsEnoughDelayTime()))
+         var pro:* = Number(int(finished / total * 100));
+         var res:* = total == finished;
+         if(res && (!checkAnimationIsFinished() || !checkIsEnoughDelayTime()))
          {
-            _loc7_ = 99;
-            _loc2_ = false;
+            pro = 99;
+            res = false;
          }
-         GameInSocketOut.sendLoadingProgress(_loc7_);
-         RoomManager.Instance.current.selfRoomPlayer.progress = _loc7_;
-         return _loc2_;
+         GameInSocketOut.sendLoadingProgress(pro);
+         RoomManager.Instance.current.selfRoomPlayer.progress = pro;
+         return res;
       }
       
       override protected function leave() : void
@@ -771,9 +764,9 @@ package roomLoading.encounter
       {
          var _loc3_:int = 0;
          var _loc2_:* = _characterItems;
-         for each(var _loc1_ in _characterItems)
+         for each(var item in _characterItems)
          {
-            if(!_loc1_.isAnimationFinished)
+            if(!item.isAnimationFinished)
             {
                return false;
             }
@@ -787,7 +780,7 @@ package roomLoading.encounter
       
       override public function dispose() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          GameControl.Instance.removeEventListener("selectComplete",__pairingComplete);
          KeyboardShortcutsManager.Instance.cancelForbidden();
          _countDownTimer.removeEventListener("timer",__countDownTick);
@@ -804,19 +797,18 @@ package roomLoading.encounter
          ObjectUtils.disposeObject(_viewerItem);
          var _loc4_:int = 0;
          var _loc3_:* = _gameInfo.roomPlayers;
-         for each(var _loc1_ in _gameInfo.roomPlayers)
+         for each(var rp in _gameInfo.roomPlayers)
          {
-            _loc1_.removeEventListener("progressChange",__onLoadingFinished);
+            rp.removeEventListener("progressChange",__onLoadingFinished);
          }
          TweenMax.killAll(false,false,false);
-         _loc2_ = 0;
-         while(_loc2_ < _playerItems.length)
+         for(i = 0; i < _playerItems.length; )
          {
-            TweenMax.killTweensOf(_playerItems[_loc2_]);
-            _playerItems[_loc2_].removeEventListener("click",__onSelectObject);
-            _playerItems[_loc2_].dispose();
-            _playerItems[_loc2_] = null;
-            _loc2_++;
+            TweenMax.killTweensOf(_playerItems[i]);
+            _playerItems[i].removeEventListener("click",__onSelectObject);
+            _playerItems[i].dispose();
+            _playerItems[i] = null;
+            i++;
          }
          if(_love)
          {

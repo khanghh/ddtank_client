@@ -45,10 +45,10 @@ package anotherDimension.view
       
       private var minuteTime:Number = 60000.0;
       
-      public function AnotherDimensionOtherTip(param1:AnotherDimensionResourceInfo)
+      public function AnotherDimensionOtherTip(info:AnotherDimensionResourceInfo)
       {
          super();
-         _info = param1;
+         _info = info;
          _bg = ComponentFactory.Instance.creatComponentByStylename("core.GoodsTipBg");
          _bg.width = 210;
          _bg.height = 120;
@@ -70,12 +70,12 @@ package anotherDimension.view
          addChild(_canLueduoTitleTxt);
          _chanchuText = ComponentFactory.Instance.creatComponentByStylename("anotherDimension.anotherDimensionOtherItemTip.chanchuText");
          addChild(_chanchuText);
-         var _loc3_:int = param1.itemId;
-         var _loc2_:String = ItemManager.Instance.getTemplateById(_loc3_).Name;
-         _chanchuText.text = _loc2_;
+         var itemId:int = info.itemId;
+         var itemName:String = ItemManager.Instance.getTemplateById(itemId).Name;
+         _chanchuText.text = itemName;
          _chanliangText = ComponentFactory.Instance.creatComponentByStylename("anotherDimension.anotherDimensionOtherItemTip.chanliangText");
          addChild(_chanliangText);
-         _chanliangText.text = LanguageMgr.GetTranslation("anotherDimension.itemCountTxt",param1.itemCountPerHour);
+         _chanliangText.text = LanguageMgr.GetTranslation("anotherDimension.itemCountTxt",info.itemCountPerHour);
          _canLueduoText = ComponentFactory.Instance.creatComponentByStylename("anotherDimension.anotherDimensionOtherItemTip.canLueduoText");
          addChild(_canLueduoText);
          _haveItemText = ComponentFactory.Instance.creatComponentByStylename("anotherDimension.anotherDimensionOtherItemTip.haveItemText");
@@ -83,7 +83,7 @@ package anotherDimension.view
          _haveItemText.visible = false;
       }
       
-      public function setSelfTipStyle(param1:AnotherDimensionResourceInfo) : void
+      public function setSelfTipStyle(data:AnotherDimensionResourceInfo) : void
       {
          _bg.height = 150;
          _line2 = ComponentFactory.Instance.creatComponentByStylename("HRuleAsset");
@@ -92,107 +92,107 @@ package anotherDimension.view
          _line2.y = 116;
          addChild(_line2);
          _haveItemText.visible = true;
-         var _loc2_:int = getItemCountByTime2(param1);
-         _haveItemText.text = LanguageMgr.GetTranslation("anotherDimensionitemCountTxt.alreadGetTxt",_loc2_);
+         var count:int = getItemCountByTime2(data);
+         _haveItemText.text = LanguageMgr.GetTranslation("anotherDimensionitemCountTxt.alreadGetTxt",count);
       }
       
-      private function getItemCountByTime(param1:AnotherDimensionResourceInfo) : int
+      private function getItemCountByTime(data:AnotherDimensionResourceInfo) : int
       {
-         var _loc9_:Date = param1.haveResourceTime;
-         if(_loc9_ == null)
+         var zhanlingTime:Date = data.haveResourceTime;
+         if(zhanlingTime == null)
          {
             return 0;
          }
-         var _loc8_:Date = TimeManager.Instance.Now();
-         var _loc3_:Number = _loc9_.getTime();
-         var _loc2_:Number = _loc8_.getTime();
-         var _loc7_:Number = _loc2_ - _loc3_;
-         var _loc5_:int = Math.floor(_loc7_ / minuteTime);
-         if(_loc5_ >= param1.lastMaxMunites)
+         var nowTime:Date = TimeManager.Instance.Now();
+         var zhanlingTotal:Number = zhanlingTime.getTime();
+         var nowTimeTotal:Number = nowTime.getTime();
+         var between:Number = nowTimeTotal - zhanlingTotal;
+         var betweenMinute:int = Math.floor(between / minuteTime);
+         if(betweenMinute >= data.lastMaxMunites)
          {
-            _loc5_ = param1.lastMaxMunites;
+            betweenMinute = data.lastMaxMunites;
          }
-         var _loc4_:int = Math.floor(param1.itemCountPerHour * _loc5_ / 120);
-         var _loc6_:int = Math.floor(_loc4_ / 3);
-         if(_loc6_ <= 0)
+         var itemCount:int = Math.floor(data.itemCountPerHour * betweenMinute / 120);
+         var itemCount1:int = Math.floor(itemCount / 3);
+         if(itemCount1 <= 0)
          {
-            _loc6_ = 1;
+            itemCount1 = 1;
          }
-         return _loc6_;
+         return itemCount1;
       }
       
-      private function getItemCountByTime2(param1:AnotherDimensionResourceInfo) : int
+      private function getItemCountByTime2(data:AnotherDimensionResourceInfo) : int
       {
-         var _loc8_:Date = param1.haveResourceTime;
-         if(_loc8_ == null)
+         var zhanlingTime:Date = data.haveResourceTime;
+         if(zhanlingTime == null)
          {
             return 0;
          }
-         var _loc7_:Date = TimeManager.Instance.Now();
-         var _loc3_:Number = _loc8_.getTime();
-         var _loc2_:Number = _loc7_.getTime();
-         var _loc6_:Number = _loc2_ - _loc3_;
-         var _loc5_:int = Math.floor(_loc6_ / minuteTime);
-         if(_loc5_ >= param1.lastMaxMunites)
+         var nowTime:Date = TimeManager.Instance.Now();
+         var zhanlingTotal:Number = zhanlingTime.getTime();
+         var nowTimeTotal:Number = nowTime.getTime();
+         var between:Number = nowTimeTotal - zhanlingTotal;
+         var betweenMinute:int = Math.floor(between / minuteTime);
+         if(betweenMinute >= data.lastMaxMunites)
          {
-            _loc5_ = param1.lastMaxMunites;
+            betweenMinute = data.lastMaxMunites;
          }
-         var _loc4_:int = Math.floor(param1.itemCountPerHour * _loc5_ / 120);
-         if(_loc4_ <= 0)
+         var itemCount:int = Math.floor(data.itemCountPerHour * betweenMinute / 120);
+         if(itemCount <= 0)
          {
-            _loc4_ = 1;
+            itemCount = 1;
          }
-         return _loc4_;
+         return itemCount;
       }
       
-      public function refreshView(param1:AnotherDimensionResourceInfo) : void
+      public function refreshView(data:AnotherDimensionResourceInfo) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         if(param1.monsterId == 0)
+         var lastTime:int = 0;
+         var shijiankongzhiCount:int = 0;
+         if(data.monsterId == 0)
          {
-            _titleTxt.text = param1.resourcePlayerInfo.NickName;
+            _titleTxt.text = data.resourcePlayerInfo.NickName;
             _canLueduoTitleTxt.text = LanguageMgr.GetTranslation("anotherDimension.anotherDimensionOtherItemTip.canlueduotxt");
-            _canLueduoText.htmlText = getItemCountByTime(param1) + LanguageMgr.GetTranslation("anotherDimensionitemCountTxt.txt");
+            _canLueduoText.htmlText = getItemCountByTime(data) + LanguageMgr.GetTranslation("anotherDimensionitemCountTxt.txt");
          }
          else
          {
             _canLueduoTitleTxt.text = LanguageMgr.GetTranslation("anotherDimension.anotherDimensionOtherItemTip.canzhanlingtxt");
-            _loc3_ = param1.haveResourceLast / 60;
-            if(_loc3_ == 0)
+            lastTime = data.haveResourceLast / 60;
+            if(lastTime == 0)
             {
-               _loc3_ = 2;
+               lastTime = 2;
             }
             if(AnotherDimensionManager.Instance.anotherDimensionInfo.timeControlLv == 0)
             {
-               _loc2_ = 0;
+               shijiankongzhiCount = 0;
             }
             else
             {
-               _loc2_ = getTimeControlExpBylv(AnotherDimensionManager.Instance.anotherDimensionInfo.timeControlLv)[2];
+               shijiankongzhiCount = getTimeControlExpBylv(AnotherDimensionManager.Instance.anotherDimensionInfo.timeControlLv)[2];
             }
-            _canLueduoText.htmlText = LanguageMgr.GetTranslation("anotherDimensionitemCountTxt.hourtxt",_loc3_,_loc2_);
-            if(param1.resourceLevel == 1)
+            _canLueduoText.htmlText = LanguageMgr.GetTranslation("anotherDimensionitemCountTxt.hourtxt",lastTime,shijiankongzhiCount);
+            if(data.resourceLevel == 1)
             {
                _titleTxt.text = LanguageMgr.GetTranslation("anotherDimension.anotherDimensionOtherItemTip.downLevel");
             }
-            else if(param1.resourceLevel == 2)
+            else if(data.resourceLevel == 2)
             {
                _titleTxt.text = LanguageMgr.GetTranslation("anotherDimension.anotherDimensionOtherItemTip.middleLevel");
             }
-            else if(param1.resourceLevel == 3)
+            else if(data.resourceLevel == 3)
             {
                _titleTxt.text = LanguageMgr.GetTranslation("anotherDimension.anotherDimensionOtherItemTip.topLevel");
             }
          }
       }
       
-      private function getTimeControlExpBylv(param1:int) : Array
+      private function getTimeControlExpBylv(lv:int) : Array
       {
-         var _loc2_:Array = ServerConfigManager.instance.getTimeControl();
-         var _loc4_:String = _loc2_[param1 - 1];
-         var _loc3_:Array = _loc4_.split(",");
-         return _loc3_;
+         var arr:Array = ServerConfigManager.instance.getTimeControl();
+         var info:String = arr[lv - 1];
+         var infoArr:Array = info.split(",");
+         return infoArr;
       }
       
       public function dispose() : void

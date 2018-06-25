@@ -16,14 +16,14 @@ package yyvip.view
       
       private var _itemCountTxt:FilterFrameText;
       
-      public function YYVipLevelAwardItemCell(param1:Object)
+      public function YYVipLevelAwardItemCell(info:Object)
       {
          super();
          _itemCell = new BagCell(1,null,true,null,false);
          _itemCell.setBgVisible(false);
-         _itemCell.info = param1.itemInfo;
+         _itemCell.info = info.itemInfo;
          _itemCountTxt = ComponentFactory.Instance.creatComponentByStylename("yyvip.levelAwardCell.tipTxt");
-         _itemCountTxt.text = "X " + param1.itemCount;
+         _itemCountTxt.text = "X " + info.itemCount;
          PositionUtils.setPos(_itemCountTxt,"yyvip.levelAwardCell.itemCellCountTxtPos");
          addChild(_itemCell);
          addChild(_itemCountTxt);

@@ -98,10 +98,10 @@ package mysteriousRoullete.view
          PositionUtils.setPos(_startBtnLight,"mysteriousRoulette.mc.startBtnLightPos");
          addChild(_startBtnLight);
          _startBtnLight.visible = false;
-         var _loc1_:int = MysteriousManager.instance.selectIndex;
-         if(_loc1_ > 0)
+         var index:int = MysteriousManager.instance.selectIndex;
+         if(index > 0)
          {
-            _rouletteRun.select(_loc1_);
+            _rouletteRun.select(index);
             _startBtn.mouseEnabled = false;
          }
       }
@@ -115,12 +115,12 @@ package mysteriousRoullete.view
       
       private function initData() : void
       {
-         var _loc1_:Date = MysteriousManager.instance.startTime;
-         var _loc2_:Date = MysteriousManager.instance.endTime;
-         _dateTxt.text = _loc1_.getFullYear() + "." + (_loc1_.getMonth() + 1) + "." + _loc1_.getDate() + "-" + _loc2_.getFullYear() + "." + (_loc2_.getMonth() + 1) + "." + _loc2_.getDate();
+         var startDate:Date = MysteriousManager.instance.startTime;
+         var endDate:Date = MysteriousManager.instance.endTime;
+         _dateTxt.text = startDate.getFullYear() + "." + (startDate.getMonth() + 1) + "." + startDate.getDate() + "-" + endDate.getFullYear() + "." + (endDate.getMonth() + 1) + "." + endDate.getDate();
       }
       
-      private function onStartBtnDown(param1:MouseEvent) : void
+      private function onStartBtnDown(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _startBtn.mouseEnabled = false;
@@ -133,7 +133,7 @@ package mysteriousRoullete.view
          SocketManager.Instance.out.sendRouletteRun();
       }
       
-      protected function onRouletteRunComplete(param1:Event) : void
+      protected function onRouletteRunComplete(event:Event) : void
       {
          _rouletteRun.removeEventListener("complete",onRouletteRunComplete);
          _endBtnLight.visible = true;
@@ -154,30 +154,30 @@ package mysteriousRoullete.view
          MysteriousManager.instance.selectIndex = selectedIndex;
       }
       
-      private function onShopBtnClick(param1:MouseEvent) : void
+      private function onShopBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispatchEvent(new MysteriousEvent("changeView",1));
       }
       
-      private function __dawnLottery(param1:PkgEvent) : void
+      private function __dawnLottery(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         selectedIndex = _loc2_.readInt();
+         var pkg:PackageIn = event.pkg;
+         selectedIndex = pkg.readInt();
          _lightUnstart.visible = false;
          _lightStart.visible = true;
          _rouletteRun.run(selectedIndex);
          _rouletteRun.addEventListener("complete",onRouletteRunComplete);
       }
       
-      protected function onEnterFrame(param1:Event) : void
+      protected function onEnterFrame(event:Event) : void
       {
-         if((param1.target as MovieClip).currentFrame == (param1.target as MovieClip).totalFrames)
+         if((event.target as MovieClip).currentFrame == (event.target as MovieClip).totalFrames)
          {
-            (param1.target as MovieClip).stop();
-            (param1.target as MovieClip).visible = false;
-            (param1.target as MovieClip).gotoAndStop(1);
-            (param1.target as MovieClip).removeEventListener("enterFrame",onEnterFrame);
+            (event.target as MovieClip).stop();
+            (event.target as MovieClip).visible = false;
+            (event.target as MovieClip).gotoAndStop(1);
+            (event.target as MovieClip).removeEventListener("enterFrame",onEnterFrame);
          }
       }
       

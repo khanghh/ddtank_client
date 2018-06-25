@@ -8,15 +8,15 @@ package character.action
       
       private var _index:int;
       
-      public function ComplexBitmapAction(param1:Vector.<FrameByFrameItem>, param2:String = "", param3:String = "", param4:uint = 0, param5:Boolean = false)
+      public function ComplexBitmapAction(assets:Vector.<FrameByFrameItem>, name:String = "", nextAction:String = "", priority:uint = 0, endStop:Boolean = false)
       {
-         var _loc6_:FrameByFrameItem = null;
-         super(param2,param3,param4,param5);
+         var item:FrameByFrameItem = null;
+         super(name,nextAction,priority,endStop);
          _type = BaseAction.COMPLEX_ACTION;
-         this._assets = param1;
-         for each(_loc6_ in this._assets)
+         this._assets = assets;
+         for each(item in this._assets)
          {
-            _len = Math.max(_len,_loc6_.totalFrames);
+            _len = Math.max(_len,item.totalFrames);
          }
          this._index = 0;
       }
@@ -28,10 +28,10 @@ package character.action
       
       override public function reset() : void
       {
-         var _loc1_:FrameByFrameItem = null;
-         for each(_loc1_ in this._assets)
+         var item:FrameByFrameItem = null;
+         for each(item in this._assets)
          {
-            _loc1_.reset();
+            item.reset();
          }
          this._index = 0;
       }
@@ -59,16 +59,14 @@ package character.action
       
       override public function toXml() : XML
       {
-         var _loc3_:FrameByFrameItem = null;
-         var _loc1_:XML = super.toXml();
-         var _loc2_:int = 0;
-         while(_loc2_ < this._assets.length)
+         var item:FrameByFrameItem = null;
+         var result:XML = super.toXml();
+         for(var i:int = 0; i < this._assets.length; i++)
          {
-            _loc3_ = this._assets[_loc2_];
-            _loc1_.appendChild(_loc3_.toXml());
-            _loc2_++;
+            item = this._assets[i];
+            result.appendChild(item.toXml());
          }
-         return _loc1_;
+         return result;
       }
    }
 }

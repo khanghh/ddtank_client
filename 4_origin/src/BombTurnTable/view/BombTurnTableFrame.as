@@ -19,10 +19,10 @@ package BombTurnTable.view
       
       private var _helpBtn:BaseButton;
       
-      public function BombTurnTableFrame(param1:BombTurnTableControls)
+      public function BombTurnTableFrame(control:BombTurnTableControls)
       {
          super();
-         _control = param1;
+         _control = control;
          initView();
          initEvent();
       }
@@ -56,11 +56,11 @@ package BombTurnTable.view
          }
       }
       
-      public function updateView(param1:TurnTableEvent) : void
+      public function updateView(evt:TurnTableEvent) : void
       {
          if(_turnTableView && _control != null)
          {
-            _turnTableView.updateView(param1.data as BombTurnTableInfo);
+            _turnTableView.updateView(evt.data as BombTurnTableInfo);
             _turnTableView.updateLotteryTicket(_control.getLotteryTicket());
          }
       }

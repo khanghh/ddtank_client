@@ -23,10 +23,10 @@ package calendar.view
       
       private var _received:Boolean = false;
       
-      public function NavigItem(param1:int)
+      public function NavigItem(count:int)
       {
          super();
-         _count = param1;
+         _count = count;
          mouseChildren = false;
          buttonMode = true;
          configUI();
@@ -49,13 +49,13 @@ package calendar.view
          return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         if(_selected == param1)
+         if(_selected == value)
          {
             return;
          }
-         _selected = param1;
+         _selected = value;
          if(_selected)
          {
             _textField.setFrame(2);
@@ -73,13 +73,13 @@ package calendar.view
          return _received;
       }
       
-      public function set received(param1:Boolean) : void
+      public function set received(value:Boolean) : void
       {
-         if(_received == param1)
+         if(_received == value)
          {
             return;
          }
-         _received = param1;
+         _received = value;
          mouseEnabled = !_received;
          if(_received)
          {

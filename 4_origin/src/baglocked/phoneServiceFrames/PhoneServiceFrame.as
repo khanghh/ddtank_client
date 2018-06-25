@@ -50,15 +50,15 @@ package baglocked.phoneServiceFrames
          super();
       }
       
-      public function init2(param1:int) : void
+      public function init2(type:int) : void
       {
-         this.type = param1;
+         this.type = type;
          _BG = ComponentFactory.Instance.creatComponentByStylename("baglocked.phoneServiceBG");
          addToContent(_BG);
          _checkBtn1 = ComponentFactory.Instance.creatComponentByStylename("baglocked.changePhone");
          _checkBtn2 = ComponentFactory.Instance.creatComponentByStylename("baglocked.deleteQuestion");
          addToContent(_checkBtn2);
-         switch(int(param1))
+         switch(int(type))
          {
             case 0:
                this.titleText = LanguageMgr.GetTranslation("tank.view.bagII.baglocked.phoneService");
@@ -86,9 +86,9 @@ package baglocked.phoneServiceFrames
          addEvent();
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -97,9 +97,9 @@ package baglocked.phoneServiceFrames
          }
       }
       
-      public function set bagLockedController(param1:BagLockedController) : void
+      public function set bagLockedController(value:BagLockedController) : void
       {
-         _bagLockedController = param1;
+         _bagLockedController = value;
       }
       
       public function show() : void
@@ -107,7 +107,7 @@ package baglocked.phoneServiceFrames
          LayerManager.Instance.addToLayer(this,3,true,1);
       }
       
-      protected function __nextBtnClick(param1:MouseEvent) : void
+      protected function __nextBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          switch(int(type))
@@ -153,12 +153,12 @@ package baglocked.phoneServiceFrames
          }
       }
       
-      protected function __itemClick(param1:Event) : void
+      protected function __itemClick(event:Event) : void
       {
          SoundManager.instance.play("008");
       }
       
-      protected function __cancelBtnClick(param1:MouseEvent) : void
+      protected function __cancelBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _bagLockedController.close();

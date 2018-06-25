@@ -45,9 +45,9 @@ package condiscount.view
       
       private function initView() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var j:int = 0;
+         var item:* = null;
          _timeTxt = ComponentFactory.Instance.creatComponentByStylename("condiscount.view.timeText");
          addToContent(_timeTxt);
          _timeTxt.text = LanguageMgr.GetTranslation("ddt.condiscount.view.time",CondiscountManager.instance.model.beginTime,CondiscountManager.instance.model.endTime);
@@ -66,76 +66,72 @@ package condiscount.view
          itemList = [];
          box = new Sprite();
          addToContent(box);
-         _loc4_ = 0;
-         while(_loc4_ < 4)
+         for(i = 0; i < 4; )
          {
-            itemList[_loc4_] = [];
-            _loc3_ = 0;
-            while(_loc3_ < 4)
+            itemList[i] = [];
+            for(j = 0; j < 4; )
             {
-               _loc1_ = new CondiscountItem();
-               box.addChild(_loc1_);
+               item = new CondiscountItem();
+               box.addChild(item);
                var _loc6_:int = 0;
                var _loc5_:* = CondiscountManager.instance.model.giftbagArray;
-               for each(var _loc2_ in CondiscountManager.instance.model.giftbagArray)
+               for each(var itemInfo in CondiscountManager.instance.model.giftbagArray)
                {
-                  if(_loc2_.rewardMark == _loc4_ && _loc2_.giftbagOrder == _loc3_)
+                  if(itemInfo.rewardMark == i && itemInfo.giftbagOrder == j)
                   {
-                     _loc1_.setInfo(_loc2_);
+                     item.setInfo(itemInfo);
                   }
                }
-               itemList[_loc4_].push(_loc1_);
-               _loc1_.x = _loc4_ * 171 + 112;
-               _loc1_.y = _loc3_ * 109 + 112;
-               _loc3_++;
+               itemList[i].push(item);
+               item.x = i * 171 + 112;
+               item.y = j * 109 + 112;
+               j++;
             }
-            _loc4_++;
+            i++;
          }
          setItemData();
       }
       
       private function setItemData() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc4_ = 0;
-         while(_loc4_ < 4)
+         var i:int = 0;
+         var j:int = 0;
+         var item:* = null;
+         for(i = 0; i < 4; )
          {
-            _loc3_ = 0;
-            while(_loc3_ < 4)
+            for(j = 0; j < 4; )
             {
-               _loc2_ = itemList[_loc4_][_loc3_];
-               if(WonderfulActivityManager.Instance.activityInitData[_loc2_.info.activityId].giftInfoDic[_loc2_.info.giftbagId].times == 1)
+               item = itemList[i][j];
+               if(WonderfulActivityManager.Instance.activityInitData[item.info.activityId].giftInfoDic[item.info.giftbagId].times == 1)
                {
-                  _loc2_.changeData(0);
+                  item.changeData(0);
                }
-               else if(_loc3_ == 0)
+               else if(j == 0)
                {
-                  _loc2_.changeData(2);
+                  item.changeData(2);
                }
                else
                {
                   var _loc6_:int = 0;
                   var _loc5_:* = CondiscountManager.instance.model.giftbagArray;
-                  for each(var _loc1_ in CondiscountManager.instance.model.giftbagArray)
+                  for each(var checkInfo in CondiscountManager.instance.model.giftbagArray)
                   {
-                     if(_loc1_.rewardMark == _loc4_ && _loc1_.giftbagOrder == _loc3_ - 1)
+                     if(checkInfo.rewardMark == i && checkInfo.giftbagOrder == j - 1)
                      {
-                        if(WonderfulActivityManager.Instance.activityInitData[_loc1_.activityId].giftInfoDic[_loc1_.giftbagId].times == 1)
+                        if(WonderfulActivityManager.Instance.activityInitData[checkInfo.activityId].giftInfoDic[checkInfo.giftbagId].times == 1)
                         {
-                           _loc2_.changeData(2);
+                           item.changeData(2);
                         }
                         else
                         {
-                           _loc2_.changeData(1);
+                           item.changeData(1);
                         }
                      }
                   }
                }
-               _loc3_++;
+               j++;
             }
-            _loc4_++;
+            i++;
          }
       }
       
@@ -151,15 +147,15 @@ package condiscount.view
          WonderfulActivityManager.Instance.addEventListener("refresh",refreshActivity);
       }
       
-      private function refreshActivity(param1:WonderfulActivityEvent = null) : void
+      private function refreshActivity(event:WonderfulActivityEvent = null) : void
       {
          setItemData();
       }
       
-      protected function _responseHandle(param1:FrameEvent) : void
+      protected function _responseHandle(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
                dispose();

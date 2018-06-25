@@ -26,9 +26,9 @@ package ddt.manager
       
       private var _hall:HallStateView;
       
-      public function PyramidManager(param1:IEventDispatcher = null)
+      public function PyramidManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : PyramidManager
@@ -46,74 +46,72 @@ package ddt.manager
          SocketManager.Instance.addEventListener("pyramid_system",pkgHandler);
       }
       
-      public function templateDataSetup(param1:Array) : void
+      public function templateDataSetup(dataList:Array) : void
       {
-         PyramidManager.instance.model.items = param1;
+         PyramidManager.instance.model.items = dataList;
       }
       
-      private function pkgHandler(param1:CrazyTankSocketEvent) : void
+      private function pkgHandler(event:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = param1.cmd;
-         switch(int(_loc2_))
+         var pkg:PackageIn = event.pkg;
+         var cmd:int = event.cmd;
+         switch(int(cmd))
          {
             case 0:
-               openOrclose(_loc3_);
+               openOrclose(pkg);
                break;
             case 1:
-               iconEnter(_loc3_);
+               iconEnter(pkg);
                break;
             case 2:
-               dispatchEvent(new PyramidEvent("start_or_stop",null,_loc3_));
+               dispatchEvent(new PyramidEvent("start_or_stop",null,pkg));
                break;
             case 3:
-               dispatchEvent(new PyramidEvent("card_result",null,_loc3_));
+               dispatchEvent(new PyramidEvent("card_result",null,pkg));
                break;
             case 4:
-               dispatchEvent(new PyramidEvent("die_event",null,_loc3_));
+               dispatchEvent(new PyramidEvent("die_event",null,pkg));
                break;
             case 5:
-               dispatchEvent(new PyramidEvent("score_convert",null,_loc3_));
+               dispatchEvent(new PyramidEvent("score_convert",null,pkg));
          }
       }
       
-      protected function iconEnter(param1:PackageIn) : void
+      protected function iconEnter(pkg:PackageIn) : void
       {
-         var _loc5_:int = 0;
-         var _loc8_:int = 0;
-         var _loc6_:int = 0;
-         var _loc4_:int = 0;
-         var _loc7_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
+         var layer:int = 0;
+         var i:int = 0;
+         var tempLayer:int = 0;
+         var count:int = 0;
+         var j:int = 0;
+         var templateID:int = 0;
+         var position:int = 0;
          model.isUp = false;
-         model.currentLayer = param1.readInt();
-         model.maxLayer = param1.readInt();
-         model.totalPoint = param1.readInt();
-         model.turnPoint = param1.readInt();
-         model.pointRatio = param1.readInt();
-         model.currentFreeCount = param1.readInt();
-         model.currentReviveCount = param1.readInt();
-         model.isPyramidStart = param1.readBoolean();
+         model.currentLayer = pkg.readInt();
+         model.maxLayer = pkg.readInt();
+         model.totalPoint = pkg.readInt();
+         model.turnPoint = pkg.readInt();
+         model.pointRatio = pkg.readInt();
+         model.currentFreeCount = pkg.readInt();
+         model.currentReviveCount = pkg.readInt();
+         model.isPyramidStart = pkg.readBoolean();
          if(model.isPyramidStart)
          {
-            _loc5_ = param1.readInt();
+            layer = pkg.readInt();
             model.selectLayerItems = new Dictionary();
-            _loc8_ = 1;
-            while(_loc8_ <= _loc5_)
+            for(i = 1; i <= layer; )
             {
-               _loc6_ = param1.readInt();
-               model.selectLayerItems[_loc6_] = new Dictionary();
-               _loc4_ = param1.readInt();
-               _loc7_ = 0;
-               while(_loc7_ < _loc4_)
+               tempLayer = pkg.readInt();
+               model.selectLayerItems[tempLayer] = new Dictionary();
+               count = pkg.readInt();
+               for(j = 0; j < count; )
                {
-                  _loc3_ = param1.readInt();
-                  _loc2_ = param1.readInt();
-                  model.selectLayerItems[_loc6_][_loc2_] = _loc3_;
-                  _loc7_++;
+                  templateID = pkg.readInt();
+                  position = pkg.readInt();
+                  model.selectLayerItems[tempLayer][position] = templateID;
+                  j++;
                }
-               _loc8_++;
+               i++;
             }
          }
          if(StateManager.currentStateType != "pyramid")
@@ -122,25 +120,24 @@ package ddt.manager
          }
       }
       
-      private function openOrclose(param1:PackageIn) : void
+      private function openOrclose(pkg:PackageIn) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         model.isOpen = param1.readBoolean();
-         model.isScoreExchange = param1.readBoolean();
+         var revivePriceCount:int = 0;
+         var i:int = 0;
+         model.isOpen = pkg.readBoolean();
+         model.isScoreExchange = pkg.readBoolean();
          if(model.isOpen)
          {
-            model.beginTime = param1.readDate();
-            model.endTime = param1.readDate();
-            model.freeCount = param1.readInt();
-            model.turnCardPrice = param1.readInt();
+            model.beginTime = pkg.readDate();
+            model.endTime = pkg.readDate();
+            model.freeCount = pkg.readInt();
+            model.turnCardPrice = pkg.readInt();
             model.revivePrice = [];
-            _loc2_ = param1.readInt();
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_)
+            revivePriceCount = pkg.readInt();
+            for(i = 0; i < revivePriceCount; )
             {
-               model.revivePrice.push(param1.readInt());
-               _loc3_++;
+               model.revivePrice.push(pkg.readInt());
+               i++;
             }
          }
          if(model.isOpen)
@@ -157,7 +154,7 @@ package ddt.manager
          }
       }
       
-      public function onClickPyramidIcon(param1:MouseEvent) : void
+      public function onClickPyramidIcon(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          GameInSocketOut.sendRequestEnterPyramidSystem();
@@ -180,7 +177,7 @@ package ddt.manager
          }
       }
       
-      protected function __onPyramidClick(param1:MouseEvent) : void
+      protected function __onPyramidClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.enterPyramid();

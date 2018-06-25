@@ -6,9 +6,9 @@ package starling.events
       public static const ENTER_FRAME:String = "enterFrame";
        
       
-      public function EnterFrameEvent(param1:String, param2:Number, param3:Boolean = false)
+      public function EnterFrameEvent(type:String, passedTime:Number, bubbles:Boolean = false)
       {
-         super(param1,param3,param2);
+         super(type,bubbles,passedTime);
       }
       
       public function get passedTime() : Number

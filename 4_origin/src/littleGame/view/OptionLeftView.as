@@ -42,14 +42,14 @@ package littleGame.view
          LoadResourceManager.Instance.startLoad(_previewLoader);
       }
       
-      private function __previewMapComplete(param1:LoaderEvent) : void
+      private function __previewMapComplete(evt:LoaderEvent) : void
       {
-         if(param1.loader.isSuccess)
+         if(evt.loader.isSuccess)
          {
-            param1.loader.removeEventListener("complete",__previewMapComplete);
+            evt.loader.removeEventListener("complete",__previewMapComplete);
             ObjectUtils.disposeObject(_previewMap);
             _previewMap = null;
-            _previewMap = param1.loader.content as Bitmap;
+            _previewMap = evt.loader.content as Bitmap;
             addChildAt(_previewMap,1);
             PositionUtils.setPos(_previewMap,"littleGame.previewMap.pos");
          }

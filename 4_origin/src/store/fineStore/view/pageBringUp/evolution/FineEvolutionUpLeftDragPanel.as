@@ -18,7 +18,7 @@ package store.fineStore.view.pageBringUp.evolution
          super();
       }
       
-      public function dragDrop(param1:DragEffect) : void
+      public function dragDrop(effect:DragEffect) : void
       {
          DragManager.acceptDrag(this,"none");
          if(PlayerManager.Instance.Self.bagLocked)
@@ -26,10 +26,10 @@ package store.fineStore.view.pageBringUp.evolution
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         if(_loc2_)
+         var tmp:InventoryItemInfo = effect.data as InventoryItemInfo;
+         if(tmp)
          {
-            SocketManager.Instance.out.sendMoveGoods(_loc2_.BagType,_loc2_.Place,12,0);
+            SocketManager.Instance.out.sendMoveGoods(tmp.BagType,tmp.Place,12,0);
          }
       }
    }

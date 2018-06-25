@@ -43,13 +43,13 @@ package com.pickgliss.ui.text
          _frameTextFormat = new Vector.<TextFormat>();
       }
       
-      public static function getStringWidthByTextField(param1:String, param2:int = 14, param3:String = "Arial", param4:String = "left", param5:Boolean = true) : Number
+      public static function getStringWidthByTextField(str:String, size:int = 14, font:String = "Arial", autoSize:String = "left", bold:Boolean = true) : Number
       {
-         var _loc6_:FilterFrameText = new FilterFrameText();
-         _loc6_.defaultTextFormat = new TextFormat(param3,param2,0,param5);
-         _loc6_.autoSize = param4;
-         _loc6_.text = param1;
-         return _loc6_.width;
+         var text:FilterFrameText = new FilterFrameText();
+         text.defaultTextFormat = new TextFormat(font,size,0,bold);
+         text.autoSize = autoSize;
+         text.text = str;
+         return text.width;
       }
       
       public function dispose() : void
@@ -62,24 +62,24 @@ package com.pickgliss.ui.text
          ComponentFactory.Instance.removeComponent(_id);
       }
       
-      public function set filterString(param1:String) : void
+      public function set filterString(filters:String) : void
       {
-         if(_filterString == param1)
+         if(_filterString == filters)
          {
             return;
          }
-         _filterString = param1;
+         _filterString = filters;
          frameFilters = ComponentFactory.Instance.creatFrameFilters(_filterString);
          setFrame(1);
       }
       
-      public function set frameFilters(param1:Array) : void
+      public function set frameFilters(filter:Array) : void
       {
-         if(_frameFilter == param1)
+         if(_frameFilter == filter)
          {
             return;
          }
-         _frameFilter = param1;
+         _frameFilter = filter;
       }
       
       public function get id() : int
@@ -87,9 +87,9 @@ package com.pickgliss.ui.text
          return _id;
       }
       
-      public function set id(param1:int) : void
+      public function set id(value:int) : void
       {
-         _id = param1;
+         _id = value;
       }
       
       public function setFocus() : void
@@ -97,46 +97,45 @@ package com.pickgliss.ui.text
          StageReferance.stage.focus = this;
       }
       
-      public function setFrame(param1:int) : void
+      public function setFrame(frameIndex:int) : void
       {
-         _currentFrameIndex = param1;
-         if(_frameFilter != null && _frameFilter.length >= param1)
+         _currentFrameIndex = frameIndex;
+         if(_frameFilter != null && _frameFilter.length >= frameIndex)
          {
-            filters = _frameFilter[param1 - 1];
+            filters = _frameFilter[frameIndex - 1];
          }
-         if(_frameTextFormat != null && _frameTextFormat.length >= param1)
+         if(_frameTextFormat != null && _frameTextFormat.length >= frameIndex)
          {
-            textFormat = _frameTextFormat[param1 - 1];
+            textFormat = _frameTextFormat[frameIndex - 1];
          }
       }
       
-      protected function set textFormat(param1:TextFormat) : void
+      protected function set textFormat(tf:TextFormat) : void
       {
-         if(param1 == null)
+         if(tf == null)
          {
             return;
          }
-         setTextFormat(param1);
-         defaultTextFormat = param1;
+         setTextFormat(tf);
+         defaultTextFormat = tf;
       }
       
-      public function set textFormatStyle(param1:String) : void
+      public function set textFormatStyle(stylename:String) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         if(_textFormatStyle == param1)
+         var i:int = 0;
+         var format:* = null;
+         if(_textFormatStyle == stylename)
          {
             return;
          }
-         _textFormatStyle = param1;
-         var _loc2_:Array = ComponentFactory.parasArgs(_textFormatStyle);
+         _textFormatStyle = stylename;
+         var frameTextFormats:Array = ComponentFactory.parasArgs(_textFormatStyle);
          _frameTextFormat = new Vector.<TextFormat>();
-         _loc4_ = 0;
-         while(_loc4_ < _loc2_.length)
+         for(i = 0; i < frameTextFormats.length; )
          {
-            _loc3_ = ComponentFactory.Instance.model.getSet(_loc2_[_loc4_]);
-            _frameTextFormat.push(_loc3_);
-            _loc4_++;
+            format = ComponentFactory.Instance.model.getSet(frameTextFormats[i]);
+            _frameTextFormat.push(format);
+            i++;
          }
          setFrame(1);
       }
@@ -146,24 +145,24 @@ package com.pickgliss.ui.text
          return _textFormatStyle;
       }
       
-      public function set isAutoFitLength(param1:Boolean) : void
+      public function set isAutoFitLength(value:Boolean) : void
       {
-         _isAutoFitLength = param1;
+         _isAutoFitLength = value;
       }
       
-      override public function set visible(param1:Boolean) : void
+      override public function set visible(value:Boolean) : void
       {
-         .super.visible = param1;
+         .super.visible = value;
       }
       
-      override public function set text(param1:String) : void
+      override public function set text(value:String) : void
       {
-         var _loc2_:int = 0;
-         .super.text = param1;
+         var tempIndex:int = 0;
+         .super.text = value;
          if(_isAutoFitLength && textWidth > width)
          {
-            _loc2_ = getCharIndexAtPoint(width - 22,5);
-            .super.text = text.substring(0,_loc2_) + "...";
+            tempIndex = getCharIndexAtPoint(width - 22,5);
+            .super.text = text.substring(0,tempIndex) + "...";
          }
          if(_width > 0 || _height > 0)
          {
@@ -175,7 +174,7 @@ package com.pickgliss.ui.text
          setFrame(_currentFrameIndex);
       }
       
-      override public function set htmlText(param1:String) : void
+      override public function set htmlText(value:String) : void
       {
          if(_width > 0 || _height > 0)
          {
@@ -185,28 +184,28 @@ package com.pickgliss.ui.text
             }
          }
          setFrame(_currentFrameIndex);
-         .super.htmlText = param1;
+         .super.htmlText = value;
       }
       
-      override public function set width(param1:Number) : void
+      override public function set width(value:Number) : void
       {
-         _width = param1;
-         .super.width = param1;
+         _width = value;
+         .super.width = value;
       }
       
-      override public function set height(param1:Number) : void
+      override public function set height(value:Number) : void
       {
-         _height = param1;
-         .super.height = param1;
+         _height = value;
+         .super.height = value;
       }
       
-      override public function set type(param1:String) : void
+      override public function set type(value:String) : void
       {
-         if(param1 == "input")
+         if(value == "input")
          {
             mouseEnabled = true;
          }
-         .super.type = param1;
+         .super.type = value;
       }
    }
 }

@@ -18,28 +18,29 @@ package morn.editor
          isEditor = true;
       }
       
-      public static function callBack(param1:Object) : void
+      public static function callBack(data:Object) : void
       {
-         if(param1)
+         if(data)
          {
-            if(param1 != null)
+            if(data != null)
             {
-               setLang(String(param1));
+               setLang(String(data));
             }
          }
       }
       
-      private static function setLang(param1:String) : void
+      private static function setLang(text:String) : void
       {
-         var _loc3_:XML = null;
-         var _loc4_:XML = null;
-         var _loc2_:Object = {};
-         if(Boolean(param1))
+         var xml:* = null;
+         var obj:Object = {};
+         if(text)
          {
-            _loc3_ = new XML(param1);
-            for each(_loc4_ in _loc3_.item)
+            xml = new XML(text);
+            var _loc6_:int = 0;
+            var _loc5_:* = xml.item;
+            for each(var item in xml.item)
             {
-               App.lang.add(_loc4_.@key,String(_loc4_.@value));
+               App.lang.add(item.@key,String(item.@value));
             }
          }
       }

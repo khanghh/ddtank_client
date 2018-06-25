@@ -11,7 +11,7 @@ package ddt.notification
       
       private var _p1Dic:Dictionary;
       
-      public function SocketNotificationManager(param1:inner)
+      public function SocketNotificationManager(single:inner)
       {
          super();
          _p1Dic = new Dictionary();
@@ -26,84 +26,82 @@ package ddt.notification
          return instance;
       }
       
-      public function addNotificationListener(param1:int, param2:int, param3:Function) : void
+      public function addNotificationListener(lv1:int, lv2:int, handler:Function) : void
       {
-         var _loc5_:Dictionary = _p1Dic[param1];
-         if(_loc5_ == null)
+         var __p2:Dictionary = _p1Dic[lv1];
+         if(__p2 == null)
          {
-            _loc5_ = new Dictionary();
+            __p2 = new Dictionary();
          }
-         var _loc4_:Array = _loc5_[param2];
-         if(_loc4_ == null)
+         var handlerList:Array = __p2[lv2];
+         if(handlerList == null)
          {
-            _loc4_ = [];
+            handlerList = [];
          }
-         _loc4_.push(param3);
-         _loc5_[param2] = _loc4_;
-         _p1Dic[param1] = _loc5_;
+         handlerList.push(handler);
+         __p2[lv2] = handlerList;
+         _p1Dic[lv1] = __p2;
       }
       
-      public function removeNotificationListener(param1:int, param2:int, param3:Function) : void
+      public function removeNotificationListener(lv1:int, lv2:int, handler:Function) : void
       {
-         var _loc5_:* = null;
-         var _loc7_:int = 0;
-         var _loc8_:int = 0;
-         var _loc6_:Dictionary = _p1Dic[param1];
-         if(_loc6_ != null)
+         var hdlrArr:* = null;
+         var len:int = 0;
+         var i:int = 0;
+         var __p2:Dictionary = _p1Dic[lv1];
+         if(__p2 != null)
          {
-            _loc5_ = _loc6_[param2];
-            if(_loc5_ != null)
+            hdlrArr = __p2[lv2];
+            if(hdlrArr != null)
             {
-               _loc7_ = _loc5_.length;
-               _loc8_ = 0;
-               while(_loc8_ < _loc7_)
+               len = hdlrArr.length;
+               for(i = 0; i < len; )
                {
-                  if(_loc5_[_loc8_] == param3)
+                  if(hdlrArr[i] == handler)
                   {
-                     if(_loc8_ + 1 == _loc7_)
+                     if(i + 1 == len)
                      {
-                        _loc5_.pop();
+                        hdlrArr.pop();
                      }
                      else
                      {
-                        _loc5_[_loc8_] = _loc5_.pop();
+                        hdlrArr[i] = hdlrArr.pop();
                      }
-                     if(_loc5_.length == 0)
+                     if(hdlrArr.length == 0)
                      {
-                        delete _loc6_[param2];
+                        delete __p2[lv2];
                         var _loc10_:int = 0;
-                        var _loc9_:* = _p1Dic[param1];
-                        for each(var _loc4_ in _p1Dic[param1])
+                        var _loc9_:* = _p1Dic[lv1];
+                        for each(var v in _p1Dic[lv1])
                         {
                            return;
                         }
-                        delete _p1Dic[param1];
+                        delete _p1Dic[lv1];
                      }
                      break;
                   }
-                  _loc8_++;
+                  i++;
                }
             }
          }
       }
       
-      public function dispatchNotification(param1:int, param2:int, param3:PackageIn) : void
+      public function dispatchNotification(lv1:int, lv2:int, pkg:PackageIn) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc6_:int = 0;
-         var _loc7_:Dictionary = _p1Dic[param1];
-         if(_loc7_ != null)
+         var handlerList:* = null;
+         var len:int = 0;
+         var i:int = 0;
+         var p2Dic:Dictionary = _p1Dic[lv1];
+         if(p2Dic != null)
          {
-            _loc4_ = _loc7_[param2];
-            if(_loc4_ != null)
+            handlerList = p2Dic[lv2];
+            if(handlerList != null)
             {
-               _loc5_ = _loc4_.length;
-               _loc6_ = 0;
-               while(_loc6_ < _loc5_)
+               len = handlerList.length;
+               for(i = 0; i < len; )
                {
-                  _loc4_[_loc6_](param3);
-                  _loc6_++;
+                  handlerList[i](pkg);
+                  i++;
                }
             }
          }

@@ -31,16 +31,15 @@ package guardCore.tips
       
       private function updateView() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _vBox.disposeAllChildren();
-         var _loc2_:Array = _tipData as Array;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_.length)
+         var list:Array = _tipData as Array;
+         for(i = 0; i < list.length; )
          {
-            _loc1_ = new GuardCoreBuffTipsItem(_loc2_[_loc3_] as GuardCoreInfo);
-            _vBox.addChild(_loc1_);
-            _loc3_++;
+            item = new GuardCoreBuffTipsItem(list[i] as GuardCoreInfo);
+            _vBox.addChild(item);
+            i++;
          }
          var _loc4_:* = _vBox.width + _vBox.x * 2;
          _bg.width = _loc4_;
@@ -50,9 +49,9 @@ package guardCore.tips
          this.height = _loc4_;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(value:Object) : void
       {
-         _tipData = param1;
+         _tipData = value;
          updateView();
       }
       

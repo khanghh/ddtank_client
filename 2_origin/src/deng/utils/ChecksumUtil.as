@@ -15,82 +15,79 @@ package deng.utils
       
       private static function makeCRCTable() : Array
       {
-         var _loc4_:* = 0;
-         var _loc3_:* = 0;
-         var _loc1_:* = 0;
-         var _loc2_:Array = [];
-         _loc4_ = uint(0);
-         while(_loc4_ < 256)
+         var i:* = 0;
+         var j:* = 0;
+         var c:* = 0;
+         var table:Array = [];
+         for(i = uint(0); i < 256; )
          {
-            _loc1_ = _loc4_;
-            _loc3_ = uint(0);
-            while(_loc3_ < 8)
+            c = i;
+            for(j = uint(0); j < 8; )
             {
-               if(_loc1_ & 1)
+               if(c & 1)
                {
-                  _loc1_ = uint(3988292384 ^ _loc1_ >>> 1);
+                  c = uint(3988292384 ^ c >>> 1);
                }
                else
                {
-                  _loc1_ = uint(_loc1_ >>> 1);
+                  c = uint(c >>> 1);
                }
-               _loc3_++;
+               j++;
             }
-            _loc2_.push(_loc1_);
-            _loc4_++;
+            table.push(c);
+            i++;
          }
-         return _loc2_;
+         return table;
       }
       
-      public static function CRC32(param1:ByteArray, param2:uint = 0, param3:uint = 0) : uint
+      public static function CRC32(data:ByteArray, start:uint = 0, len:uint = 0) : uint
       {
-         var _loc5_:* = 0;
-         if(param2 >= param1.length)
+         var i:* = 0;
+         if(start >= data.length)
          {
-            param2 = param1.length;
+            start = data.length;
          }
-         if(param3 == 0)
+         if(len == 0)
          {
-            param3 = param1.length - param2;
+            len = data.length - start;
          }
-         if(param3 + param2 > param1.length)
+         if(len + start > data.length)
          {
-            param3 = param1.length - param2;
+            len = data.length - start;
          }
-         var _loc4_:* = 4294967295;
-         _loc5_ = param2;
-         while(_loc5_ < param3)
+         var c:* = 4294967295;
+         for(i = start; i < len; )
          {
-            _loc4_ = uint(uint(crcTable[(_loc4_ ^ param1[_loc5_]) & 255]) ^ _loc4_ >>> 8);
-            _loc5_++;
+            c = uint(uint(crcTable[(c ^ data[i]) & 255]) ^ c >>> 8);
+            i++;
          }
-         return _loc4_ ^ 4294967295;
+         return c ^ 4294967295;
       }
       
-      public static function Adler32(param1:ByteArray, param2:uint = 0, param3:uint = 0) : uint
+      public static function Adler32(data:ByteArray, start:uint = 0, len:uint = 0) : uint
       {
-         if(param2 >= param1.length)
+         if(start >= data.length)
          {
-            param2 = param1.length;
+            start = data.length;
          }
-         if(param3 == 0)
+         if(len == 0)
          {
-            param3 = param1.length - param2;
+            len = data.length - start;
          }
-         if(param3 + param2 > param1.length)
+         if(len + start > data.length)
          {
-            param3 = param1.length - param2;
+            len = data.length - start;
          }
-         var _loc6_:* = param2;
-         var _loc5_:uint = 1;
-         var _loc4_:uint = 0;
-         while(_loc6_ < param2 + param3)
+         var i:* = start;
+         var a:uint = 1;
+         var b:uint = 0;
+         while(i < start + len)
          {
-            _loc5_ = (_loc5_ + param1[_loc6_]) % 65521;
-            _loc4_ = (_loc5_ + _loc4_) % 65521;
-            _loc6_++;
+            a = (a + data[i]) % 65521;
+            b = (a + b) % 65521;
+            i++;
          }
-         return _loc4_ << 16 | _loc5_;
+         return b << 16 | a;
       }
    }
 }

@@ -29,12 +29,12 @@ package wonderfulActivity.items
       
       private var _selecetHander:Function;
       
-      public function LimitListItem(param1:ActiveEventsInfo, param2:Function, param3:Function)
+      public function LimitListItem(info:ActiveEventsInfo, func:Function, selecteHander:Function)
       {
          super();
-         _info = param1;
-         _func = param2;
-         _selecetHander = param3;
+         _info = info;
+         _func = func;
+         _selecetHander = selecteHander;
          initView();
       }
       
@@ -48,9 +48,9 @@ package wonderfulActivity.items
          initTxt();
       }
       
-      public function setSelectBtn(param1:Boolean) : void
+      public function setSelectBtn(bool:Boolean) : void
       {
-         _isSeleted = param1;
+         _isSeleted = bool;
          DisplayUtils.setFrame(_btn,!!_isSeleted?2:1);
          initTxt();
          dispatchEvent(new Event("itemChange"));
@@ -77,17 +77,17 @@ package wonderfulActivity.items
       
       private function changeTitle() : String
       {
-         var _loc2_:* = "";
-         var _loc1_:String = "· " + _info.Title;
-         if(_loc1_.length > 8)
+         var str:* = "";
+         var title:String = "· " + _info.Title;
+         if(title.length > 8)
          {
-            _loc2_ = _loc1_.substr(0,8) + "...";
+            str = title.substr(0,8) + "...";
          }
          else
          {
-            _loc2_ = _loc1_;
+            str = title;
          }
-         return _loc2_;
+         return str;
       }
       
       public function initRightView() : Function
@@ -95,7 +95,7 @@ package wonderfulActivity.items
          return _func(_info);
       }
       
-      protected function clickHander(param1:MouseEvent) : void
+      protected function clickHander(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_isSeleted)

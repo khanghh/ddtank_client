@@ -11,23 +11,23 @@ package fightLib.script.MeasureScree
    {
        
       
-      public function DifficultMeasureScreenScript(param1:Object)
+      public function DifficultMeasureScreenScript(fightView:Object)
       {
-         super(param1);
+         super(fightView);
       }
       
       override protected function initializeScript() : void
       {
-         var _loc1_:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.DifficultMeasureScreenScript.command2"));
-         var _loc3_:CreateMonsterCommand = new CreateMonsterCommand();
-         var _loc4_:TimeCommand = new TimeCommand(2000);
-         _loc4_.completeFunArr.push(_host.leftJustifyWithPlayer);
-         var _loc2_:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.DifficultMeasureScreenScript.command4"),LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.understood"),null,LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.watchAgain"),restart,true,true);
-         _loc2_.excuteFunArr.push(_host.leftJustifyWithPlayer as Function);
-         _commonds.push(_loc1_);
-         _commonds.push(_loc3_);
-         _commonds.push(_loc4_);
-         _commonds.push(_loc2_);
+         var command2:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.DifficultMeasureScreenScript.command2"));
+         var command3:CreateMonsterCommand = new CreateMonsterCommand();
+         var command4:TimeCommand = new TimeCommand(2000);
+         command4.completeFunArr.push(_host.leftJustifyWithPlayer);
+         var command5:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.DifficultMeasureScreenScript.command4"),LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.understood"),null,LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.watchAgain"),restart,true,true);
+         command5.excuteFunArr.push(_host.leftJustifyWithPlayer as Function);
+         _commonds.push(command2);
+         _commonds.push(command3);
+         _commonds.push(command4);
+         _commonds.push(command5);
          super.initializeScript();
       }
       

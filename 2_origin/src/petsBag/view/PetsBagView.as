@@ -80,13 +80,13 @@ package petsBag.view
          initEvent();
       }
       
-      public function set infoPlayer(param1:PlayerInfo) : void
+      public function set infoPlayer(value:PlayerInfo) : void
       {
-         if(_infoPlayer == param1)
+         if(_infoPlayer == value)
          {
             return;
          }
-         _infoPlayer = param1;
+         _infoPlayer = value;
          if(!_infoPlayer)
          {
             return;
@@ -97,37 +97,37 @@ package petsBag.view
          updatePetBagView();
       }
       
-      public function playShined(param1:int) : void
+      public function playShined(type:int) : void
       {
-         _showPet.getBagCell(param1).shinePlay();
+         _showPet.getBagCell(type).shinePlay();
       }
       
-      public function stopShined(param1:int) : void
+      public function stopShined(type:int) : void
       {
-         _showPet.getBagCell(param1).shineStop();
+         _showPet.getBagCell(type).shineStop();
       }
       
-      protected function getFirstPet(param1:PlayerInfo) : PetInfo
+      protected function getFirstPet(player:PlayerInfo) : PetInfo
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         if(param1.currentPet)
+         var resultPet:* = null;
+         var i:int = 0;
+         if(player.currentPet)
          {
-            _loc2_ = param1.currentPet;
+            resultPet = player.currentPet;
          }
          else
          {
-            _loc3_ = 0;
-            while(_loc3_ < param1.pets.length)
+            i = 0;
+            while(i < player.pets.length)
             {
-               if(param1.pets[_loc3_])
+               if(player.pets[i])
                {
-                  return param1.pets[_loc3_];
+                  return player.pets[i];
                }
-               _loc3_++;
+               i++;
             }
          }
-         return _loc2_;
+         return resultPet;
       }
       
       protected function initView() : void
@@ -181,7 +181,7 @@ package petsBag.view
          PetsAdvancedManager.Instance.addEventListener("advanced_complete",__evolutionSuccessHandler);
       }
       
-      protected function __evolutionSuccessHandler(param1:Event) : void
+      protected function __evolutionSuccessHandler(event:Event) : void
       {
          if(!_currentPet.IsEquip)
          {
@@ -197,7 +197,7 @@ package petsBag.view
          PetsAdvancedManager.Instance.removeEventListener("advanced_complete",__evolutionSuccessHandler);
       }
       
-      protected function __onChange(param1:Event) : void
+      protected function __onChange(event:Event) : void
       {
          if(PetsBagManager.instance().isOtherPetViewOpen)
          {
@@ -224,11 +224,11 @@ package petsBag.view
             disableAllObj();
             _petExpProgress.noPet();
          }
-         var _loc1_:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
-         _petName.text = !!_loc1_?_loc1_.Name:"";
-         _petExpProgress.setProgress(!!_loc1_?_loc1_.GP:0,!!_loc1_?_loc1_.MaxGP:0);
+         var currentPet:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
+         _petName.text = !!currentPet?currentPet.Name:"";
+         _petExpProgress.setProgress(!!currentPet?currentPet.GP:0,!!currentPet?currentPet.MaxGP:0);
          updatePetsPropByEvolution();
-         _happyBarPet.info = _loc1_;
+         _happyBarPet.info = currentPet;
          updateSkill();
          updateProperByPetStatus();
          updatePetSatiation();
@@ -238,19 +238,19 @@ package petsBag.view
       
       public function updatePetsPropByEvolution() : void
       {
-         var _loc1_:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
+         var currentPet:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
          var _loc4_:int = 0;
          var _loc3_:* = PetsAdvancedManager.Instance.evolutionDataList;
-         for each(var _loc2_ in PetsAdvancedManager.Instance.evolutionDataList)
+         for each(var info in PetsAdvancedManager.Instance.evolutionDataList)
          {
             if(_infoPlayer.evolutionGrade == 0)
             {
                _currentGradeInfo = new PetFightPropertyData();
                break;
             }
-            if(_loc2_.ID == _infoPlayer.evolutionGrade)
+            if(info.ID == _infoPlayer.evolutionGrade)
             {
-               _currentGradeInfo = _loc2_;
+               _currentGradeInfo = info;
                break;
             }
          }
@@ -258,13 +258,13 @@ package petsBag.view
          {
             _currentGradeInfo = new PetFightPropertyData();
          }
-         if(_loc1_)
+         if(currentPet)
          {
-            _attackPbtn.propValue = _loc1_.Attack + _currentGradeInfo.Attack + getValueByType("attack") + getPetsEatValueByType("attack");
-            _defencePbtn.propValue = _loc1_.Defence + _currentGradeInfo.Defence + getValueByType("defence") + getPetsEatValueByType("defence");
-            _HPPbtn.propValue = _loc1_.Blood + _currentGradeInfo.Blood + getValueByType("hp") + getPetsEatValueByType("hp");
-            _agilityPbtn.propValue = _loc1_.Agility + _currentGradeInfo.Agility + getValueByType("agility") + getPetsEatValueByType("agility");
-            _luckPbtn.propValue = _loc1_.Luck + _currentGradeInfo.Lucky + getValueByType("luck") + getPetsEatValueByType("luck");
+            _attackPbtn.propValue = currentPet.Attack + _currentGradeInfo.Attack + getValueByType("attack") + getPetsEatValueByType("attack");
+            _defencePbtn.propValue = currentPet.Defence + _currentGradeInfo.Defence + getValueByType("defence") + getPetsEatValueByType("defence");
+            _HPPbtn.propValue = currentPet.Blood + _currentGradeInfo.Blood + getValueByType("hp") + getPetsEatValueByType("hp");
+            _agilityPbtn.propValue = currentPet.Agility + _currentGradeInfo.Agility + getValueByType("agility") + getPetsEatValueByType("agility");
+            _luckPbtn.propValue = currentPet.Luck + _currentGradeInfo.Lucky + getValueByType("luck") + getPetsEatValueByType("luck");
          }
       }
       
@@ -305,33 +305,32 @@ package petsBag.view
          }
       }
       
-      public function getValueByType(param1:String) : int
+      public function getValueByType(type:String) : int
       {
-         var _loc9_:int = 0;
-         var _loc6_:* = null;
-         var _loc2_:* = null;
-         var _loc7_:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
-         var _loc3_:int = 0;
-         var _loc10_:int = 0;
-         var _loc8_:int = 0;
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         _loc9_ = 0;
-         while(_loc9_ < 3)
+         var i:int = 0;
+         var data:* = null;
+         var newInfo:* = null;
+         var currentPet:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
+         var hp:int = 0;
+         var agility:int = 0;
+         var attack:int = 0;
+         var defence:int = 0;
+         var luck:int = 0;
+         for(i = 0; i < 3; )
          {
-            _loc6_ = _loc7_.equipList[_loc9_];
-            if(_loc6_)
+            data = currentPet.equipList[i];
+            if(data)
             {
-               _loc2_ = ItemManager.fill(_loc6_) as InventoryItemInfo;
-               _loc3_ = _loc3_ + _loc2_.Boold;
-               _loc10_ = _loc10_ + _loc2_.Agility;
-               _loc8_ = _loc8_ + _loc2_.Attack;
-               _loc4_ = _loc4_ + _loc2_.Defence;
-               _loc5_ = _loc5_ + _loc2_.Luck;
+               newInfo = ItemManager.fill(data) as InventoryItemInfo;
+               hp = hp + newInfo.Boold;
+               agility = agility + newInfo.Agility;
+               attack = attack + newInfo.Attack;
+               defence = defence + newInfo.Defence;
+               luck = luck + newInfo.Luck;
             }
-            _loc9_++;
+            i++;
          }
-         var _loc11_:* = param1;
+         var _loc11_:* = type;
          if("hp" !== _loc11_)
          {
             if("attack" !== _loc11_)
@@ -344,74 +343,73 @@ package petsBag.view
                      {
                         return 0;
                      }
-                     return _loc5_;
+                     return luck;
                   }
-                  return _loc10_;
+                  return agility;
                }
-               return _loc4_;
+               return defence;
             }
-            return _loc8_;
+            return attack;
          }
-         return _loc3_;
+         return hp;
       }
       
-      public function getPetsEatValueByType(param1:String) : int
+      public function getPetsEatValueByType(type:String) : int
       {
-         var _loc9_:int = 0;
-         var _loc6_:* = null;
-         var _loc2_:* = null;
-         var _loc7_:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
-         var _loc3_:int = 0;
-         var _loc10_:int = 0;
-         var _loc8_:int = 0;
-         var _loc4_:int = 0;
-         var _loc5_:int = 0;
-         _loc9_ = 0;
-         while(_loc9_ < 3)
+         var i:int = 0;
+         var data:* = null;
+         var newInfo:* = null;
+         var currentPet:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
+         var hp:int = 0;
+         var agility:int = 0;
+         var attack:int = 0;
+         var defence:int = 0;
+         var luck:int = 0;
+         for(i = 0; i < 3; )
          {
-            _loc6_ = _loc7_.equipList[_loc9_];
-            if(_loc6_)
+            data = currentPet.equipList[i];
+            if(data)
             {
-               _loc2_ = ItemManager.fill(_loc6_) as InventoryItemInfo;
-               switch(int(_loc9_))
+               newInfo = ItemManager.fill(data) as InventoryItemInfo;
+               switch(int(i))
                {
                   case 0:
                      if(_infoPlayer.petsEatWeaponLevel == 0)
                      {
-                        _loc5_ = 0;
-                        _loc8_ = 0;
+                        luck = 0;
+                        attack = 0;
                      }
                      else
                      {
-                        _loc8_ = PetsAdvancedManager.Instance.petMoePropertyList[_infoPlayer.petsEatWeaponLevel - 1].Attack;
-                        _loc5_ = PetsAdvancedManager.Instance.petMoePropertyList[_infoPlayer.petsEatWeaponLevel - 1].Lucky;
+                        attack = PetsAdvancedManager.Instance.petMoePropertyList[_infoPlayer.petsEatWeaponLevel - 1].Attack;
+                        luck = PetsAdvancedManager.Instance.petMoePropertyList[_infoPlayer.petsEatWeaponLevel - 1].Lucky;
                      }
                      break;
                   case 1:
                      if(_infoPlayer.petsEatHatLevel == 0)
                      {
-                        _loc4_ = 0;
+                        defence = 0;
                      }
                      else
                      {
-                        _loc4_ = PetsAdvancedManager.Instance.petMoePropertyList[_infoPlayer.petsEatHatLevel - 1].Defence;
+                        defence = PetsAdvancedManager.Instance.petMoePropertyList[_infoPlayer.petsEatHatLevel - 1].Defence;
                      }
                      break;
                   case 2:
                      if(_infoPlayer.petsEatClothesLevel == 0)
                      {
-                        _loc3_ = 0;
-                        _loc10_ = 0;
+                        hp = 0;
+                        agility = 0;
                         break;
                      }
-                     _loc10_ = PetsAdvancedManager.Instance.petMoePropertyList[_infoPlayer.petsEatClothesLevel - 1].Agility;
-                     _loc3_ = PetsAdvancedManager.Instance.petMoePropertyList[_infoPlayer.petsEatClothesLevel - 1].Blood;
+                     agility = PetsAdvancedManager.Instance.petMoePropertyList[_infoPlayer.petsEatClothesLevel - 1].Agility;
+                     hp = PetsAdvancedManager.Instance.petMoePropertyList[_infoPlayer.petsEatClothesLevel - 1].Blood;
                      break;
                }
             }
-            _loc9_++;
+            i++;
          }
-         var _loc11_:* = param1;
+         var _loc11_:* = type;
          if("hp" !== _loc11_)
          {
             if("attack" !== _loc11_)
@@ -424,47 +422,47 @@ package petsBag.view
                      {
                         return 0;
                      }
-                     return _loc5_;
+                     return luck;
                   }
-                  return _loc10_;
+                  return agility;
                }
-               return _loc4_;
+               return defence;
             }
-            return _loc8_;
+            return attack;
          }
-         return _loc3_;
+         return hp;
       }
       
-      public function addPetEquip(param1:InventoryItemInfo) : void
+      public function addPetEquip(date:InventoryItemInfo) : void
       {
-         _showPet.addPetEquip(param1);
+         _showPet.addPetEquip(date);
          updatePropertyTip();
          updatePetsPropByEvolution();
       }
       
-      public function delPetEquip(param1:int, param2:int) : void
+      public function delPetEquip(petIndex:int, type:int) : void
       {
-         _showPet.delPetEquip(param2);
+         _showPet.delPetEquip(type);
          updatePropertyTip();
          updatePetsPropByEvolution();
       }
       
       protected function updatePetSatiation() : void
       {
-         var _loc1_:int = 0;
+         var petHappyStar:int = 0;
          if(PetsBagManager.instance().petModel && PetsBagManager.instance().petModel.currentPetInfo)
          {
-            _loc1_ = PetsBagManager.instance().petModel.currentPetInfo.PetHappyStar;
-            if(_currentPetHappyStar != _loc1_)
+            petHappyStar = PetsBagManager.instance().petModel.currentPetInfo.PetHappyStar;
+            if(_currentPetHappyStar != petHappyStar)
             {
                if(_downArowText)
                {
                   ObjectUtils.disposeObject(_downArowText);
                }
                _downArowText = null;
-               if(_loc1_ == 1 || _loc1_ == 2)
+               if(petHappyStar == 1 || petHappyStar == 2)
                {
-                  _downArowText = ComponentFactory.Instance.creatBitmap("assets.petsBag.downArowText" + _downArowTextData[_loc1_]);
+                  _downArowText = ComponentFactory.Instance.creatBitmap("assets.petsBag.downArowText" + _downArowTextData[petHappyStar]);
                   _downArowText.x = _downArowImg.x + (_downArowImg.width - _downArowText.width) / 2;
                   _downArowText.y = _downArowImg.y + _downArowImg.height;
                   addChild(_downArowText);
@@ -474,7 +472,7 @@ package petsBag.view
                {
                   setDownArowVisible(false);
                }
-               _currentPetHappyStar = _loc1_;
+               _currentPetHappyStar = petHappyStar;
             }
          }
          else
@@ -483,23 +481,23 @@ package petsBag.view
          }
       }
       
-      protected function setDownArowVisible(param1:Boolean) : void
+      protected function setDownArowVisible(value:Boolean) : void
       {
          if(_downArowImg)
          {
-            _downArowImg.visible = param1;
+            _downArowImg.visible = value;
          }
       }
       
-      protected function updateProperByPetStatus(param1:Boolean = true) : void
+      protected function updateProperByPetStatus(isNomal:Boolean = true) : void
       {
-         var _loc2_:Number = NaN;
-         var _loc3_:* = null;
+         var currentPercent:Number = NaN;
+         var addTipDesc:* = null;
          updatePropertyTip();
          if(PetsBagManager.instance().petModel.currentPetInfo)
          {
-            _loc2_ = PetsBagManager.instance().petModel.currentPetInfo.Hunger / 10000;
-            _loc3_ = "";
+            currentPercent = PetsBagManager.instance().petModel.currentPetInfo.Hunger / 10000;
+            addTipDesc = "";
             _attackPbtn.detail = LanguageMgr.GetTranslation("ddt.pets.attactDetail");
             _defencePbtn.detail = LanguageMgr.GetTranslation("ddt.pets.defenseDetail");
             _agilityPbtn.detail = LanguageMgr.GetTranslation("ddt.pets.agilityDetail");
@@ -515,52 +513,51 @@ package petsBag.view
             _luckPbtn.valueFilterString = 1;
             _HPPbtn.valueFilterString = 1;
             _defencePbtn.valueFilterString = 1;
-            if(_loc2_ < 0.8)
+            if(currentPercent < 0.8)
             {
-               _loc3_ = PetsBagManager.instance().petModel.currentPetInfo.PetHappyStar > 0?LanguageMgr.GetTranslation("ddt.pets.petHappyDesc",PetHappyBar.petPercentArray[PetsBagManager.instance().petModel.currentPetInfo.PetHappyStar]):LanguageMgr.GetTranslation("ddt.pets.petUnFight");
+               addTipDesc = PetsBagManager.instance().petModel.currentPetInfo.PetHappyStar > 0?LanguageMgr.GetTranslation("ddt.pets.petHappyDesc",PetHappyBar.petPercentArray[PetsBagManager.instance().petModel.currentPetInfo.PetHappyStar]):LanguageMgr.GetTranslation("ddt.pets.petUnFight");
             }
-            _attackPbtn.detail = LanguageMgr.GetTranslation("ddt.pets.attactDetail") + _loc3_;
-            _defencePbtn.detail = LanguageMgr.GetTranslation("ddt.pets.defenseDetail") + _loc3_;
-            _agilityPbtn.detail = LanguageMgr.GetTranslation("ddt.pets.agilityDetail") + _loc3_;
-            _luckPbtn.detail = LanguageMgr.GetTranslation("ddt.pets.luckDetail") + _loc3_;
-            _HPPbtn.detail = LanguageMgr.GetTranslation("ddt.pets.hpDetail") + _loc3_;
+            _attackPbtn.detail = LanguageMgr.GetTranslation("ddt.pets.attactDetail") + addTipDesc;
+            _defencePbtn.detail = LanguageMgr.GetTranslation("ddt.pets.defenseDetail") + addTipDesc;
+            _agilityPbtn.detail = LanguageMgr.GetTranslation("ddt.pets.agilityDetail") + addTipDesc;
+            _luckPbtn.detail = LanguageMgr.GetTranslation("ddt.pets.luckDetail") + addTipDesc;
+            _HPPbtn.detail = LanguageMgr.GetTranslation("ddt.pets.hpDetail") + addTipDesc;
          }
       }
       
       protected function updateSkill() : void
       {
-         var _loc2_:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
-         var _loc1_:Array = !!_loc2_?_loc2_.skills:[];
+         var currentPet:PetInfo = PetsBagManager.instance().petModel.currentPetInfo;
+         var petSkillAll:Array = !!currentPet?currentPet.skills:[];
          if(_petSkillPnl)
          {
-            _petSkillPnl.itemInfo = _loc1_;
+            _petSkillPnl.itemInfo = petSkillAll;
          }
       }
       
       protected function disableAllObj() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:* = null;
-         _loc1_ = 0;
-         while(_loc1_ < this.numChildren)
+         var index:int = 0;
+         var childObj:* = null;
+         for(index = 0; index < this.numChildren; )
          {
-            _loc2_ = getChildAt(_loc1_);
-            if(_loc2_ is InteractiveObject)
+            childObj = getChildAt(index);
+            if(childObj is InteractiveObject)
             {
-               disableObj(_loc2_ as InteractiveObject);
+               disableObj(childObj as InteractiveObject);
             }
-            _loc1_++;
+            index++;
          }
       }
       
-      protected function disableObj(param1:InteractiveObject) : void
+      protected function disableObj(obj:InteractiveObject) : void
       {
-         param1.mouseEnabled = false;
+         obj.mouseEnabled = false;
       }
       
-      protected function enableObj(param1:InteractiveObject) : void
+      protected function enableObj(obj:InteractiveObject) : void
       {
-         param1.mouseEnabled = true;
+         obj.mouseEnabled = true;
       }
       
       public function dispose() : void

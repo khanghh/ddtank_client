@@ -49,14 +49,14 @@ package rescue.components
       {
       }
       
-      public function setData(param1:Boolean, param2:int = 0, param3:RescueSceneInfo = null) : void
+      public function setData(isOpen:Boolean, sceneId:int = 0, info:RescueSceneInfo = null) : void
       {
-         var _loc4_:int = 0;
-         if(param1)
+         var i:int = 0;
+         if(isOpen)
          {
-            if(_sceneId != param2)
+            if(_sceneId != sceneId)
             {
-               _sceneId = param2;
+               _sceneId = sceneId;
                ObjectUtils.disposeObject(_sceneNum);
                _sceneNum = null;
                if(_sceneId != 7 && _sceneId != 8)
@@ -66,7 +66,7 @@ package rescue.components
                   addChild(_sceneNum);
                }
             }
-            _info = param3;
+            _info = info;
             switch(int(_sceneId) - 7)
             {
                case 0:
@@ -81,18 +81,17 @@ package rescue.components
                addChild(_hBox);
             }
             _hBox.removeAllChild();
-            _loc4_ = 1;
-            while(_loc4_ <= _info.starCount)
+            for(i = 1; i <= _info.starCount; )
             {
                _star = ComponentFactory.Instance.creat("rescue.star");
                _hBox.addChild(_star);
-               _loc4_++;
+               i++;
             }
             _hBox.refreshChildPos();
          }
          else
          {
-            _sceneId = param2;
+            _sceneId = sceneId;
             _bg.setFrame(2);
             ObjectUtils.disposeObject(_sceneNum);
             _sceneNum = null;
@@ -101,9 +100,9 @@ package rescue.components
          }
       }
       
-      public function setSelected(param1:Boolean) : void
+      public function setSelected(flag:Boolean) : void
       {
-         _light.visible = param1;
+         _light.visible = flag;
       }
       
       private function removeEvents() : void

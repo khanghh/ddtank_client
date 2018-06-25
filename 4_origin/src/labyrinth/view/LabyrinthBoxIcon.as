@@ -38,10 +38,10 @@ package labyrinth.view
       
       private var _myColorMatrix_filter:ColorMatrixFilter;
       
-      public function LabyrinthBoxIcon(param1:int)
+      public function LabyrinthBoxIcon(index:int)
       {
          _myColorMatrix_filter = new ColorMatrixFilter([0.3,0.59,0.11,0,0,0.3,0.59,0.11,0,0,0.3,0.59,0.11,0,0,0,0,0,1,0]);
-         _index = param1;
+         _index = index;
          super();
          init();
       }
@@ -58,20 +58,20 @@ package labyrinth.view
          LabyrinthManager.Instance.addEventListener("updateInfo",__updateInfo);
       }
       
-      protected function __updateInfo(param1:Event) : void
+      protected function __updateInfo(event:Event) : void
       {
          update();
       }
       
       private function update() : void
       {
-         var _loc2_:String = "";
-         var _loc1_:int = LabyrinthManager.Instance.model.myProgress;
-         if(_loc1_ <= 20)
+         var temp:String = "";
+         var myProgress:int = LabyrinthManager.Instance.model.myProgress;
+         if(myProgress <= 20)
          {
             _level = _index * 2;
          }
-         else if(_loc1_ <= 40)
+         else if(myProgress <= 40)
          {
             _level = 20 + _index * 2;
          }
@@ -79,15 +79,15 @@ package labyrinth.view
          {
             _level = 40 + _index * 2;
          }
-         if(_loc1_ + 2 < _level)
+         if(myProgress + 2 < _level)
          {
-            _loc2_ = "?";
+            temp = "?";
             this.filters = [_myColorMatrix_filter];
             ShowTipManager.Instance.removeTip(this);
          }
-         else if(_loc1_ < _level)
+         else if(myProgress < _level)
          {
-            _loc2_ = _level.toString() + LanguageMgr.GetTranslation("ddt.labyrinth.LabyrinthBoxIcon.floor");
+            temp = _level.toString() + LanguageMgr.GetTranslation("ddt.labyrinth.LabyrinthBoxIcon.floor");
             this.filters = [_myColorMatrix_filter];
             ShowTipManager.Instance.addTip(this);
             if(_level == 32)
@@ -98,11 +98,11 @@ package labyrinth.view
          }
          else
          {
-            _loc2_ = _level.toString() + LanguageMgr.GetTranslation("ddt.labyrinth.LabyrinthBoxIcon.floor");
+            temp = _level.toString() + LanguageMgr.GetTranslation("ddt.labyrinth.LabyrinthBoxIcon.floor");
             this.filters = null;
             ShowTipManager.Instance.addTip(this);
          }
-         _levelText.text = _loc2_;
+         _levelText.text = temp;
       }
       
       public function get tipData() : Object
@@ -110,9 +110,9 @@ package labyrinth.view
          return _tipData;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
-         _tipData = param1;
+         _tipData = value;
       }
       
       public function get tipDirctions() : String
@@ -120,9 +120,9 @@ package labyrinth.view
          return _tipDirctions;
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
-         _tipDirctions = param1;
+         _tipDirctions = value;
       }
       
       public function get tipGapH() : int
@@ -130,9 +130,9 @@ package labyrinth.view
          return _tipGapH;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
-         _tipGapH = param1;
+         _tipGapH = value;
       }
       
       public function get tipGapV() : int
@@ -140,9 +140,9 @@ package labyrinth.view
          return _tipGapV;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
-         _tipGapV = param1;
+         _tipGapV = value;
       }
       
       public function get tipStyle() : String
@@ -150,9 +150,9 @@ package labyrinth.view
          return _tipStyle;
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
-         _tipStyle = param1;
+         _tipStyle = value;
       }
       
       public function asDisplayObject() : DisplayObject

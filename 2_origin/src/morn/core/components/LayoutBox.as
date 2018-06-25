@@ -20,64 +20,66 @@ package morn.core.components
          super();
       }
       
-      override public function addChild(param1:DisplayObject) : DisplayObject
+      override public function addChild(child:DisplayObject) : DisplayObject
       {
-         this.setChild(param1);
-         param1.addEventListener(Event.RESIZE,this.onResize);
-         callLater(this.changeItems);
-         return super.addChild(param1);
+         setChild(child);
+         child.addEventListener("resize",onResize);
+         callLater(changeItems);
+         return super.addChild(child);
       }
       
-      private function setChild(param1:DisplayObject) : void
+      private function setChild(child:DisplayObject) : void
       {
-         if(param1 is Component)
+         if(child is Component)
          {
-            if(param1.x == 0)
+            if(child.x == 0)
             {
-               param1.x = ++this._maxX;
+               _maxX = _maxX + 1;
+               child.x = _maxX + 1;
             }
-            if(param1.y == 0)
+            if(child.y == 0)
             {
-               param1.y = ++this._maxY;
+               _maxY = _maxY + 1;
+               child.y = _maxY + 1;
             }
          }
       }
       
-      private function onResize(param1:Event) : void
+      private function onResize(e:Event) : void
       {
-         callLater(this.changeItems);
+         callLater(changeItems);
       }
       
-      override public function addChildAt(param1:DisplayObject, param2:int) : DisplayObject
+      override public function addChildAt(child:DisplayObject, index:int) : DisplayObject
       {
-         this.setChild(param1);
-         param1.addEventListener(Event.RESIZE,this.onResize);
-         callLater(this.changeItems);
-         return super.addChildAt(param1,param2);
+         setChild(child);
+         child.addEventListener("resize",onResize);
+         callLater(changeItems);
+         return super.addChildAt(child,index);
       }
       
-      override public function removeChild(param1:DisplayObject) : DisplayObject
+      override public function removeChild(child:DisplayObject) : DisplayObject
       {
-         param1.removeEventListener(Event.RESIZE,this.onResize);
-         callLater(this.changeItems);
-         return super.removeChild(param1);
+         child.removeEventListener("resize",onResize);
+         callLater(changeItems);
+         return super.removeChild(child);
       }
       
-      override public function removeChildAt(param1:int) : DisplayObject
+      override public function removeChildAt(index:int) : DisplayObject
       {
-         getChildAt(param1).removeEventListener(Event.RESIZE,this.onResize);
-         callLater(this.changeItems);
-         return super.removeChildAt(param1);
+         getChildAt(index).removeEventListener("resize",onResize);
+         callLater(changeItems);
+         return super.removeChildAt(index);
       }
       
       override public function commitMeasure() : void
       {
-         exeCallLater(this.changeItems);
+         exeCallLater(changeItems);
       }
       
       public function refresh() : void
       {
-         callLater(this.changeItems);
+         callLater(changeItems);
       }
       
       protected function changeItems() : void
@@ -86,24 +88,24 @@ package morn.core.components
       
       public function get space() : Number
       {
-         return this._space;
+         return _space;
       }
       
-      public function set space(param1:Number) : void
+      public function set space(value:Number) : void
       {
-         this._space = param1;
-         callLater(this.changeItems);
+         _space = value;
+         callLater(changeItems);
       }
       
       public function get align() : String
       {
-         return this._align;
+         return _align;
       }
       
-      public function set align(param1:String) : void
+      public function set align(value:String) : void
       {
-         this._align = param1;
-         callLater(this.changeItems);
+         _align = value;
+         callLater(changeItems);
       }
    }
 }

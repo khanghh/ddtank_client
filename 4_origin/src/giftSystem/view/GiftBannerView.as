@@ -74,10 +74,10 @@ package giftSystem.view
          _totalGiftShow = ComponentFactory.Instance.creatComponentByStylename("GiftBannerView.totalGiftShow");
          _totalGiftShowNum = ComponentFactory.Instance.creatComponentByStylename("GiftBannerView.totalGiftShowNum");
          _goEmail = ComponentFactory.Instance.creatComponentByStylename("GiftBannerView.goEmail");
-         var _loc1_:Object = {};
-         _loc1_["blurWidth"] = 6;
-         _loc1_["color"] = "yellow";
-         _emailShine = EffectManager.Instance.creatEffect(3,_goEmail,_loc1_);
+         var data:Object = {};
+         data["blurWidth"] = 6;
+         data["color"] = "yellow";
+         _emailShine = EffectManager.Instance.creatEffect(3,_goEmail,data);
          addChild(BG);
          addChild(_portrait);
          addChild(_name);
@@ -92,7 +92,7 @@ package giftSystem.view
          addChild(_goEmail);
       }
       
-      protected function __updateEmail(param1:EmailEvent) : void
+      protected function __updateEmail(event:EmailEvent) : void
       {
          if(MailManager.Instance.Model.hasUnReadGiftEmail())
          {
@@ -104,7 +104,7 @@ package giftSystem.view
          }
       }
       
-      private function __goToEmail(param1:MouseEvent) : void
+      private function __goToEmail(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          MailManager.Instance.switchVisible();
@@ -112,9 +112,9 @@ package giftSystem.view
          MailManager.Instance.isOpenFromBag = true;
       }
       
-      public function set info(param1:PlayerInfo) : void
+      public function set info(value:PlayerInfo) : void
       {
-         if(_info == param1)
+         if(_info == value)
          {
             return;
          }
@@ -123,7 +123,7 @@ package giftSystem.view
             _info.removeEventListener("propertychange",__upView);
             PlayerManager.Instance.removeEventListener("selfGiftInfoChange",__upView);
          }
-         _info = param1;
+         _info = value;
          _portrait.info = _info;
          _info.addEventListener("propertychange",__upView);
          PlayerManager.Instance.addEventListener("selfGiftInfoChange",__upView);
@@ -135,7 +135,7 @@ package giftSystem.view
          upView();
       }
       
-      private function __upView(param1:Event) : void
+      private function __upView(event:Event) : void
       {
          upView();
       }
@@ -145,10 +145,10 @@ package giftSystem.view
          _name.text = _info.NickName;
          _level.text = LanguageMgr.GetTranslation("ddt.giftSystem.GiftBannerView.giftLvel",_info.charmLevel);
          _charmNum.text = LanguageMgr.GetTranslation("ddt.giftSystem.GiftGoodItem.charmNum");
-         var _loc1_:int = _info.charmGP - PlayerInfo.CHARM_LEVEL_ALL_EXP[_info.charmLevel - 1];
+         var current:int = _info.charmGP - PlayerInfo.CHARM_LEVEL_ALL_EXP[_info.charmLevel - 1];
          _totalGiftShow.text = LanguageMgr.GetTranslation("ddt.giftSystem.GiftBannerView.giftShow");
          _totalGiftShowNum.text = _info.giftSum.toString();
-         _levelProgress.setProgress(_loc1_,PlayerInfo.CHARM_LEVEL_NEED_EXP[_info.charmLevel]);
+         _levelProgress.setProgress(current,PlayerInfo.CHARM_LEVEL_NEED_EXP[_info.charmLevel]);
          if(_info.charmLevel == 100)
          {
             _levelProgress.setProgress(1,1);
@@ -158,13 +158,13 @@ package giftSystem.view
             _levelProgress.tipStyle = "ddt.view.tips.OneLineTip";
             _levelProgress.tipDirctions = "3,7,6";
             _levelProgress.tipGapV = 4;
-            if(_loc1_ >= 0 && _info.charmLevel < 100)
+            if(current >= 0 && _info.charmLevel < 100)
             {
-               _levelProgress.tipData = _loc1_ + "/" + PlayerInfo.CHARM_LEVEL_NEED_EXP[_info.charmLevel];
+               _levelProgress.tipData = current + "/" + PlayerInfo.CHARM_LEVEL_NEED_EXP[_info.charmLevel];
             }
             else if(_info.charmLevel == 100)
             {
-               _levelProgress.tipData = PlayerInfo.CHARM_LEVEL_NEED_EXP[99] + _loc1_ + "/" + PlayerInfo.CHARM_LEVEL_NEED_EXP[99];
+               _levelProgress.tipData = PlayerInfo.CHARM_LEVEL_NEED_EXP[99] + current + "/" + PlayerInfo.CHARM_LEVEL_NEED_EXP[99];
             }
          }
          _levelProgress.labelText = _info.charmGP.toString();

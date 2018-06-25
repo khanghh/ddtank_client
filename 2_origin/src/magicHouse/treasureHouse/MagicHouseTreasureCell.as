@@ -13,15 +13,15 @@ package magicHouse.treasureHouse
       
       public var pos:int;
       
-      public function MagicHouseTreasureCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:DisplayObject = null, param5:Boolean = true)
+      public function MagicHouseTreasureCell(index:int, info:ItemTemplateInfo = null, showLoading:Boolean = true, bg:DisplayObject = null, mouseOverEffBoolean:Boolean = true)
       {
-         super(param1,null,true,ComponentFactory.Instance.creatBitmap("magichouse.treasure.bag.bankCellBg"),true);
-         pos = param1;
+         super(index,null,true,ComponentFactory.Instance.creatBitmap("magichouse.treasure.bag.bankCellBg"),true);
+         pos = index;
       }
       
-      override public function set grayFilters(param1:Boolean) : void
+      override public function set grayFilters(b:Boolean) : void
       {
-         if(param1)
+         if(b)
          {
             removeChild(_bg);
             _bg = null;

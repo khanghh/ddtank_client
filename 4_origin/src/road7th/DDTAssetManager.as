@@ -54,250 +54,250 @@ package road7th
          return _instance;
       }
       
-      public function addSkeletonData(param1:DragonBonesData, param2:String = null, param3:String = "") : void
+      public function addSkeletonData(data:DragonBonesData, name:String = null, module:String = "") : void
       {
-         if(!param1)
+         if(!data)
          {
             throw new ArgumentError();
          }
-         param2 = param2 || param1.name;
-         if(!param2)
+         name = name || data.name;
+         if(!name)
          {
             throw new ArgumentError("Unnamed data!");
          }
-         if(_dragonBonesDataDic[param2])
+         if(_dragonBonesDataDic[name])
          {
             return;
          }
-         if(!_skeletonData[param3])
+         if(!_skeletonData[module])
          {
-            _skeletonData[param3] = new Dictionary();
+            _skeletonData[module] = new Dictionary();
          }
-         _skeletonData[param3][param2] = true;
-         _dragonBonesDataDic[param2] = param1;
+         _skeletonData[module][name] = true;
+         _dragonBonesDataDic[name] = data;
       }
       
-      public function addBitmapData(param1:String, param2:BitmapData, param3:String = "none") : void
+      public function addBitmapData(name:String, btmd:BitmapData, module:String = "none") : void
       {
-         if(!_btmd[param3])
+         if(!_btmd[module])
          {
-            _btmd[param3] = new Dictionary();
+            _btmd[module] = new Dictionary();
          }
-         _btmd[param3][param1] = true;
-         trace("DDTAssetManager :: add BTMD name: " + param1 + " to Module: " + param3);
-         _nativeAsset.addBitmapData(param1,param2);
+         _btmd[module][name] = true;
+         trace("DDTAssetManager :: add BTMD name: " + name + " to Module: " + module);
+         _nativeAsset.addBitmapData(name,btmd);
       }
       
-      public function addBitmapDataAtlas(param1:String, param2:NativeTextureAtlas, param3:String = "none") : void
+      public function addBitmapDataAtlas(name:String, atlas:NativeTextureAtlas, module:String = "none") : void
       {
-         if(!_btmdAtlas[param3])
+         if(!_btmdAtlas[module])
          {
-            _btmdAtlas[param3] = new Dictionary();
+            _btmdAtlas[module] = new Dictionary();
          }
-         _btmdAtlas[param3][param1] = true;
-         trace("DDTAssetManager :: add BTMDAtlas name: " + param1 + " to Module: " + param3);
-         _nativeAsset.addBitmapDataAtlas(param1,param2);
+         _btmdAtlas[module][name] = true;
+         trace("DDTAssetManager :: add BTMDAtlas name: " + name + " to Module: " + module);
+         _nativeAsset.addBitmapDataAtlas(name,atlas);
       }
       
-      public function addTexture(param1:String, param2:Texture, param3:String = "none") : void
+      public function addTexture(name:String, texture:Texture, module:String = "none") : void
       {
-         if(!_texture[param3])
+         if(!_texture[module])
          {
-            _texture[param3] = new Dictionary();
+            _texture[module] = new Dictionary();
          }
-         _texture[param3][param1] = true;
-         trace("DDTAssetManager :: add Texture name: " + param1 + " to Module: " + param3);
-         _starlingAsset.addTexture(param1,param2);
+         _texture[module][name] = true;
+         trace("DDTAssetManager :: add Texture name: " + name + " to Module: " + module);
+         _starlingAsset.addTexture(name,texture);
       }
       
-      public function addTextureAtlas(param1:String, param2:TextureAtlas, param3:String = "none") : void
+      public function addTextureAtlas(name:String, atlas:TextureAtlas, module:String = "none") : void
       {
-         if(!_textureAtlas[param3])
+         if(!_textureAtlas[module])
          {
-            _textureAtlas[param3] = new Dictionary();
+            _textureAtlas[module] = new Dictionary();
          }
-         _textureAtlas[param3][param1] = true;
-         trace("DDTAssetManager :: add TextureAtlas name: " + param1 + " to Module: " + param3);
-         _starlingAsset.addTextureAtlas(param1,param2);
+         _textureAtlas[module][name] = true;
+         trace("DDTAssetManager :: add TextureAtlas name: " + name + " to Module: " + module);
+         _starlingAsset.addTextureAtlas(name,atlas);
       }
       
-      public function removeSkeletonData(param1:String) : void
+      public function removeSkeletonData(name:String) : void
       {
-         var _loc2_:String = getModuleByName(param1,_skeletonData);
-         if(_loc2_)
+         var module:String = getModuleByName(name,_skeletonData);
+         if(module)
          {
-            delete _skeletonData[_loc2_][param1];
+            delete _skeletonData[module][name];
          }
-         trace("DDTAssetManager :: remove SkeletonData name: " + param1 + " to Module: " + _loc2_);
-         (_dragonBonesDataDic[param1] as DragonBonesData).dispose();
+         trace("DDTAssetManager :: remove SkeletonData name: " + name + " to Module: " + module);
+         (_dragonBonesDataDic[name] as DragonBonesData).dispose();
       }
       
-      public function removeBitmapData(param1:String, param2:Boolean = true) : void
+      public function removeBitmapData(name:String, dispose:Boolean = true) : void
       {
-         var _loc3_:String = getModuleByName(param1,_btmd);
-         if(_loc3_)
+         var module:String = getModuleByName(name,_btmd);
+         if(module)
          {
-            delete _btmd[_loc3_][param1];
+            delete _btmd[module][name];
          }
-         trace("DDTAssetManager :: remove BTMD name: " + param1 + " to Module: " + _loc3_);
-         _nativeAsset.removeBitmapData(param1,param2);
+         trace("DDTAssetManager :: remove BTMD name: " + name + " to Module: " + module);
+         _nativeAsset.removeBitmapData(name,dispose);
       }
       
-      public function removeBitmapDataAtlas(param1:String, param2:Boolean = true) : void
+      public function removeBitmapDataAtlas(name:String, dispose:Boolean = true) : void
       {
-         var _loc3_:String = getModuleByName(param1,_btmdAtlas);
-         if(_loc3_)
+         var module:String = getModuleByName(name,_btmdAtlas);
+         if(module)
          {
-            delete _btmdAtlas[_loc3_][param1];
+            delete _btmdAtlas[module][name];
          }
-         trace("DDTAssetManager :: remove BTMDAtlas name: " + param1 + " to Module: " + _loc3_);
-         BonesLoaderManager.instance.clearBoneLoaderAtlas(param1);
-         _nativeAsset.removeBitmapDataAtlas(param1,param2);
+         trace("DDTAssetManager :: remove BTMDAtlas name: " + name + " to Module: " + module);
+         BonesLoaderManager.instance.clearBoneLoaderAtlas(name);
+         _nativeAsset.removeBitmapDataAtlas(name,dispose);
       }
       
-      public function removeTexture(param1:String, param2:Boolean = true) : void
+      public function removeTexture(name:String, dispose:Boolean = true) : void
       {
-         var _loc3_:String = getModuleByName(param1,_texture);
-         if(_loc3_)
+         var module:String = getModuleByName(name,_texture);
+         if(module)
          {
-            delete _texture[_loc3_][param1];
+            delete _texture[module][name];
          }
-         trace("DDTAssetManager :: remove texture name: " + param1 + " to Module: " + _loc3_);
-         _starlingAsset.removeTexture(param1,param2);
+         trace("DDTAssetManager :: remove texture name: " + name + " to Module: " + module);
+         _starlingAsset.removeTexture(name,dispose);
       }
       
-      public function removeTextureAtlas(param1:String, param2:Boolean = true) : void
+      public function removeTextureAtlas(name:String, dispose:Boolean = true) : void
       {
-         var _loc3_:String = getModuleByName(param1,_textureAtlas);
-         if(_loc3_)
+         var module:String = getModuleByName(name,_textureAtlas);
+         if(module)
          {
-            delete _textureAtlas[_loc3_][param1];
+            delete _textureAtlas[module][name];
          }
-         trace("DDTAssetManager :: remove textureAtlas name: " + param1 + " to Module: " + _loc3_);
-         BonesLoaderManager.instance.clearBoneLoaderAtlas(param1);
-         _starlingAsset.removeTextureAtlas(param1,param2);
+         trace("DDTAssetManager :: remove textureAtlas name: " + name + " to Module: " + module);
+         BonesLoaderManager.instance.clearBoneLoaderAtlas(name);
+         _starlingAsset.removeTextureAtlas(name,dispose);
       }
       
-      public function removeSkeletonDataByMoule(param1:String) : void
+      public function removeSkeletonDataByMoule(module:String) : void
       {
-         if(checkModule(param1))
+         if(checkModule(module))
          {
             var _loc4_:int = 0;
-            var _loc3_:* = _skeletonData[param1];
-            for(var _loc2_ in _skeletonData[param1])
+            var _loc3_:* = _skeletonData[module];
+            for(var name in _skeletonData[module])
             {
-               (_dragonBonesDataDic[_loc2_] as DragonBonesData).dispose();
-               delete _dragonBonesDataDic[_loc2_];
+               (_dragonBonesDataDic[name] as DragonBonesData).dispose();
+               delete _dragonBonesDataDic[name];
             }
-            _skeletonData[param1] = null;
-            delete _skeletonData[param1];
+            _skeletonData[module] = null;
+            delete _skeletonData[module];
          }
       }
       
-      public function removeBitmapDataByMoule(param1:String) : void
+      public function removeBitmapDataByMoule(module:String) : void
       {
-         if(checkModule(param1))
+         if(checkModule(module))
          {
             var _loc4_:int = 0;
-            var _loc3_:* = _btmd[param1];
-            for(var _loc2_ in _btmd[param1])
+            var _loc3_:* = _btmd[module];
+            for(var name in _btmd[module])
             {
-               _nativeAsset.removeBitmapData(_loc2_);
+               _nativeAsset.removeBitmapData(name);
             }
-            _btmd[param1] = null;
-            delete _btmd[param1];
+            _btmd[module] = null;
+            delete _btmd[module];
          }
       }
       
-      public function removeBitmapDataAtlasByMoule(param1:String) : void
+      public function removeBitmapDataAtlasByMoule(module:String) : void
       {
-         if(checkModule(param1))
+         if(checkModule(module))
          {
             var _loc4_:int = 0;
-            var _loc3_:* = _btmdAtlas[param1];
-            for(var _loc2_ in _btmdAtlas[param1])
+            var _loc3_:* = _btmdAtlas[module];
+            for(var name in _btmdAtlas[module])
             {
-               BonesLoaderManager.instance.clearBoneLoaderAtlas(_loc2_);
-               _nativeAsset.removeBitmapDataAtlas(_loc2_);
+               BonesLoaderManager.instance.clearBoneLoaderAtlas(name);
+               _nativeAsset.removeBitmapDataAtlas(name);
             }
-            _btmdAtlas[param1] = null;
-            delete _btmdAtlas[param1];
+            _btmdAtlas[module] = null;
+            delete _btmdAtlas[module];
          }
       }
       
-      public function removeTextureByMoule(param1:String) : void
+      public function removeTextureByMoule(module:String) : void
       {
-         if(checkModule(param1))
+         if(checkModule(module))
          {
             var _loc4_:int = 0;
-            var _loc3_:* = _texture[param1];
-            for(var _loc2_ in _texture[param1])
+            var _loc3_:* = _texture[module];
+            for(var name in _texture[module])
             {
-               _starlingAsset.removeTexture(_loc2_);
+               _starlingAsset.removeTexture(name);
             }
-            _texture[param1] = null;
-            delete _texture[param1];
+            _texture[module] = null;
+            delete _texture[module];
          }
       }
       
-      public function removeTextureAtlasByMoule(param1:String) : void
+      public function removeTextureAtlasByMoule(module:String) : void
       {
-         if(checkModule(param1))
+         if(checkModule(module))
          {
             var _loc4_:int = 0;
-            var _loc3_:* = _textureAtlas[param1];
-            for(var _loc2_ in _textureAtlas[param1])
+            var _loc3_:* = _textureAtlas[module];
+            for(var name in _textureAtlas[module])
             {
-               BonesLoaderManager.instance.clearBoneLoaderAtlas(_loc2_);
-               _starlingAsset.removeTextureAtlas(_loc2_);
+               BonesLoaderManager.instance.clearBoneLoaderAtlas(name);
+               _starlingAsset.removeTextureAtlas(name);
             }
-            _textureAtlas[param1] = null;
-            delete _textureAtlas[param1];
+            _textureAtlas[module] = null;
+            delete _textureAtlas[module];
          }
       }
       
-      private function getModuleByName(param1:String, param2:Dictionary) : String
+      private function getModuleByName(name:String, data:Dictionary) : String
       {
          var _loc8_:int = 0;
-         var _loc7_:* = param2;
-         for(var _loc4_ in param2)
+         var _loc7_:* = data;
+         for(var moduleKey in data)
          {
             var _loc6_:int = 0;
-            var _loc5_:* = param2[_loc4_];
-            for(var _loc3_ in param2[_loc4_])
+            var _loc5_:* = data[moduleKey];
+            for(var nameKey in data[moduleKey])
             {
-               if(param1 == _loc3_)
+               if(name == nameKey)
                {
-                  return _loc4_;
+                  return moduleKey;
                }
             }
          }
          return null;
       }
       
-      public function getSkeletonData(param1:String) : DragonBonesData
+      public function getSkeletonData(name:String) : DragonBonesData
       {
-         return _dragonBonesDataDic[param1];
+         return _dragonBonesDataDic[name];
       }
       
-      public function getBitmapData(param1:String) : BitmapData
+      public function getBitmapData(name:String) : BitmapData
       {
-         return _nativeAsset.getBitmapData(param1);
+         return _nativeAsset.getBitmapData(name);
       }
       
-      public function getBitmapDataAtlas(param1:String) : NativeTextureAtlas
+      public function getBitmapDataAtlas(name:String) : NativeTextureAtlas
       {
-         return _nativeAsset.getBitmapDataAtlas(param1);
+         return _nativeAsset.getBitmapDataAtlas(name);
       }
       
-      public function getTexture(param1:String) : Texture
+      public function getTexture(name:String) : Texture
       {
-         return _starlingAsset.getTexture(param1);
+         return _starlingAsset.getTexture(name);
       }
       
-      public function getTextureAtlas(param1:String) : TextureAtlas
+      public function getTextureAtlas(name:String) : TextureAtlas
       {
-         return _starlingAsset.getTextureAtlas(param1);
+         return _starlingAsset.getTextureAtlas(name);
       }
       
       public function get nativeAsset() : NativeTextureAssetManager
@@ -315,72 +315,72 @@ package road7th
          return _dragonBonesDataDic;
       }
       
-      public function removeAllResByModule(param1:String = "default") : void
+      public function removeAllResByModule(module:String = "default") : void
       {
-         trace("DDTAssetManager :: remove AllResModule: " + param1);
-         removeBitmapDataByMoule(param1);
-         removeBitmapDataAtlasByMoule(param1);
-         removeTextureByMoule(param1);
-         removeTextureAtlasByMoule(param1);
-         removeSkeletonDataByMoule(param1);
+         trace("DDTAssetManager :: remove AllResModule: " + module);
+         removeBitmapDataByMoule(module);
+         removeBitmapDataAtlasByMoule(module);
+         removeTextureByMoule(module);
+         removeTextureAtlasByMoule(module);
+         removeSkeletonDataByMoule(module);
       }
       
-      public function changeModule(param1:String, param2:String, param3:int) : Boolean
+      public function changeModule(name:String, module:String, useType:int) : Boolean
       {
-         var _loc4_:Boolean = false;
-         var _loc5_:* = null;
-         var _loc8_:int = 0;
-         var _loc7_:* = null;
-         var _loc6_:Array = [_btmd,_btmdAtlas,_texture,_textureAtlas,_skeletonData];
-         if(param3 == 2)
+         var ischange:Boolean = false;
+         var data:* = null;
+         var i:int = 0;
+         var oldModule:* = null;
+         var list:Array = [_btmd,_btmdAtlas,_texture,_textureAtlas,_skeletonData];
+         if(useType == 2)
          {
-            if(!getBitmapDataAtlas(param1) || !getTextureAtlas(param1))
+            if(!getBitmapDataAtlas(name) || !getTextureAtlas(name))
             {
-               return _loc4_;
+               return ischange;
             }
          }
-         else if(param3 == 1)
+         else if(useType == 1)
          {
-            if(!getBitmapData(param1))
+            if(!getBitmapData(name))
             {
-               return _loc4_;
+               return ischange;
             }
          }
-         else if(param3 == 0)
+         else if(useType == 0)
          {
-            if(!getTextureAtlas(param1))
+            if(!getTextureAtlas(name))
             {
-               return _loc4_;
+               return ischange;
             }
          }
-         _loc8_ = 0;
-         while(_loc8_ < _loc6_.length)
+         i = 0;
+         while(i < list.length)
          {
-            _loc5_ = _loc6_[_loc8_];
-            _loc7_ = getModuleByName(param1,_loc5_);
-            if(_loc7_ && _loc5_[_loc7_][param1])
+            data = list[i];
+            oldModule = getModuleByName(name,data);
+            if(oldModule && data[oldModule][name])
             {
-               trace("DDTAssetManager :: changeModule name: " + param1 + " oldModule:" + _loc7_ + " to Module: " + param2);
-               _loc4_ = true;
-               if(_loc7_ != param2)
+               trace("DDTAssetManager :: changeModule name: " + name + " oldModule:" + oldModule + " to Module: " + module);
+               ischange = true;
+               if(oldModule != module)
                {
-                  _loc5_[_loc7_][param1] = null;
-                  delete _loc5_[_loc7_][param1];
-                  if(!_loc5_[param2])
+                  data[oldModule][name] = null;
+                  delete data[oldModule][name];
+                  if(!data[module])
                   {
-                     _loc5_[param2] = new Dictionary();
+                     data[module] = new Dictionary();
                   }
-                  _loc5_[param2][param1] = true;
+                  data[module][name] = true;
                }
             }
-            _loc8_++;
+            i++;
          }
-         return _loc4_;
+         return ischange;
       }
       
-      private function checkModule(param1:String) : Boolean
+      private function checkModule(module:String) : Boolean
       {
-         if(param1 == "none")
+         if(module == "none")
          {
             trace("remove asset module fail!!!!!!! DDTAssetManager checkModule()");
             return false;
@@ -406,10 +406,10 @@ package road7th
          _nativeAsset.dispose();
          var _loc3_:int = 0;
          var _loc2_:* = _dragonBonesDataDic;
-         for(var _loc1_ in _dragonBonesDataDic)
+         for(var skeletonName in _dragonBonesDataDic)
          {
-            (_dragonBonesDataDic[_loc1_] as DragonBonesData).dispose();
-            delete _dragonBonesDataDic[_loc1_];
+            (_dragonBonesDataDic[skeletonName] as DragonBonesData).dispose();
+            delete _dragonBonesDataDic[skeletonName];
          }
          _dragonBonesDataDic = null;
          _btmd = null;

@@ -46,10 +46,10 @@ package explorerManual.view
       
       private var _confirmFrame:BaseAlerFrame;
       
-      public function ExplorerManualFrame(param1:ExplorerManualInfo, param2:ExplorerManualController)
+      public function ExplorerManualFrame(model:ExplorerManualInfo, ctrl:ExplorerManualController)
       {
-         _manualModel = param1;
-         _control = param2;
+         _manualModel = model;
+         _control = ctrl;
          super();
       }
       
@@ -104,10 +104,10 @@ package explorerManual.view
          _mainMovie.stop();
       }
       
-      private function __pageChangleHandler(param1:CEvent) : void
+      private function __pageChangleHandler(evt:CEvent) : void
       {
-         var _loc2_:int = param1.data;
-         if(_loc2_ == 1)
+         var type:int = evt.data;
+         if(type == 1)
          {
             _mainMovie.scaleX = -1;
             PositionUtils.setPos(_mainMovie,"explorerManual.pageChange.mainMoviePos1");
@@ -120,69 +120,69 @@ package explorerManual.view
          _mainMovie.play();
       }
       
-      private function __leftMenuClickHandler(param1:MouseEvent) : void
+      private function __leftMenuClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          openChapterView();
       }
       
-      private function __rightMenuClickHandler(param1:CEvent) : void
+      private function __rightMenuClickHandler(evt:CEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:int = param1.data;
-         if(_loc2_ == 0)
+         var chapter:int = evt.data;
+         if(chapter == 0)
          {
             openChapterView();
          }
          else
          {
-            openPageView(_loc2_);
+            openPageView(chapter);
          }
       }
       
-      public function openPageView(param1:int) : void
+      public function openPageView(chapter:int) : void
       {
-         var _loc2_:* = null;
-         if(_curSelectChapter == param1)
+         var obj:* = null;
+         if(_curSelectChapter == chapter)
          {
             return;
          }
          if(_control && _control.puzzleState)
          {
-            _loc2_ = {};
-            _loc2_.fun = openPageView;
-            _loc2_.params = param1;
-            showPuzzleAffim(_loc2_);
+            obj = {};
+            obj.fun = openPageView;
+            obj.params = chapter;
+            showPuzzleAffim(obj);
             return;
          }
-         _curSelectChapter = param1;
-         _rightMenu.selectItem = param1;
+         _curSelectChapter = chapter;
+         _rightMenu.selectItem = chapter;
          _chapterView.visible = false;
          if(_pageView == null)
          {
             _pageView = new ExplorerPageView(_manualModel,_control);
          }
-         _pageView.chapter = param1;
+         _pageView.chapter = chapter;
          _pageView.visible = true;
          if(_control)
          {
-            _control.requestManualPageData(param1);
+            _control.requestManualPageData(chapter);
          }
       }
       
       private function openChapterView() : void
       {
-         var _loc1_:* = null;
+         var obj:* = null;
          if(_curSelectChapter == 0)
          {
             return;
          }
          if(_control && _control.puzzleState)
          {
-            _loc1_ = {};
-            _loc1_.fun = openChapterView;
-            _loc1_.params = "not";
-            showPuzzleAffim(_loc1_);
+            obj = {};
+            obj.fun = openChapterView;
+            obj.params = "not";
+            showPuzzleAffim(obj);
             return;
          }
          _curSelectChapter = 0;
@@ -198,19 +198,19 @@ package explorerManual.view
          _chapterView.visible = true;
       }
       
-      private function showPuzzleAffim(param1:Object) : void
+      private function showPuzzleAffim(callfun:Object) : void
       {
-         callfun = param1;
+         callfun = callfun;
          _confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("explorerManual.checkPuzzleState.prompt"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
          _confirmFrame.moveEnable = false;
          _confirmFrame.addEventListener("response",function():*
          {
-            var /*UnknownSlot*/:* = function(param1:FrameEvent):void
+            var /*UnknownSlot*/:* = function(evt:FrameEvent):void
             {
                SoundManager.instance.play("008");
                _confirmFrame.removeEventListener("response",__confirmBuy);
                _confirmFrame = null;
-               if(param1.responseCode == 3 || param1.responseCode == 2)
+               if(evt.responseCode == 3 || evt.responseCode == 2)
                {
                   _control.puzzleState = false;
                   if(callfun)
@@ -226,12 +226,12 @@ package explorerManual.view
                   }
                }
             };
-            return function(param1:FrameEvent):void
+            return function(evt:FrameEvent):void
             {
                SoundManager.instance.play("008");
                _confirmFrame.removeEventListener("response",__confirmBuy);
                _confirmFrame = null;
-               if(param1.responseCode == 3 || param1.responseCode == 2)
+               if(evt.responseCode == 3 || evt.responseCode == 2)
                {
                   _control.puzzleState = false;
                   if(callfun)
@@ -250,16 +250,16 @@ package explorerManual.view
          }());
       }
       
-      private function __closeBtnClickHandler(param1:MouseEvent) : void
+      private function __closeBtnClickHandler(evt:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var obj:* = null;
          SoundManager.instance.play("008");
          if(_control && _control.puzzleState)
          {
-            _loc2_ = {};
-            _loc2_.fun = __closeBtnClickHandler;
-            _loc2_.params = null;
-            showPuzzleAffim(_loc2_);
+            obj = {};
+            obj.fun = __closeBtnClickHandler;
+            obj.params = null;
+            showPuzzleAffim(obj);
             return;
          }
          dispose();
@@ -271,9 +271,9 @@ package explorerManual.view
          LayerManager.Instance.addToLayer(this,3,false,1);
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(e:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(e.responseCode == 0 || e.responseCode == 1)
          {
             __closeBtnClickHandler(null);
          }

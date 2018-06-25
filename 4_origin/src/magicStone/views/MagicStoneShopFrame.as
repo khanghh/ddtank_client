@@ -72,12 +72,12 @@ package magicStone.views
       
       private function initView() : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:Number = NaN;
-         var _loc3_:Number = NaN;
-         var _loc1_:String = LanguageMgr.GetTranslation("magicStone.shopFrameTitle");
-         var _loc4_:AlertInfo = new AlertInfo(_loc1_,"",LanguageMgr.GetTranslation("tank.calendar.Activity.BackButtonText"));
-         info = _loc4_;
+         var i:int = 0;
+         var dx:Number = NaN;
+         var dy:Number = NaN;
+         var title:String = LanguageMgr.GetTranslation("magicStone.shopFrameTitle");
+         var alerInfo:AlertInfo = new AlertInfo(title,"",LanguageMgr.GetTranslation("tank.calendar.Activity.BackButtonText"));
+         info = alerInfo;
          _goodItems = new Vector.<MagicStoneShopItem>();
          _rightItemLightMc = ComponentFactory.Instance.creatCustomObject("magicStone.shopFrame.RightItemLightMc");
          _goodItemContainerAll = ComponentFactory.Instance.creatCustomObject("magicStone.shopFrame.GoodItemContainerAll");
@@ -105,19 +105,18 @@ package magicStone.views
          addToContent(_scoreText);
          addToContent(_scoreNumText);
          addToContent(_label);
-         _loc5_ = 0;
-         while(_loc5_ < 8)
+         for(i = 0; i < 8; )
          {
-            _goodItems[_loc5_] = new MagicStoneShopItem();
-            _loc2_ = _goodItems[_loc5_].width;
-            _loc3_ = _goodItems[_loc5_].height;
-            _loc2_ = _loc2_ * (int(_loc5_ % 2));
-            _loc3_ = _loc3_ * (int(_loc5_ / 2));
-            _goodItems[_loc5_].x = _loc2_;
-            _goodItems[_loc5_].y = _loc3_ + _loc5_ / 2 * 2;
-            _goodItemContainerAll.addChild(_goodItems[_loc5_]);
-            _goodItems[_loc5_].setItemLight(_rightItemLightMc);
-            _loc5_++;
+            _goodItems[i] = new MagicStoneShopItem();
+            dx = _goodItems[i].width;
+            dy = _goodItems[i].height;
+            dx = dx * (int(i % 2));
+            dy = dy * (int(i / 2));
+            _goodItems[i].x = dx;
+            _goodItems[i].y = dy + i / 2 * 2;
+            _goodItemContainerAll.addChild(_goodItems[i]);
+            _goodItems[i].setItemLight(_rightItemLightMc);
+            i++;
          }
       }
       
@@ -127,21 +126,20 @@ package magicStone.views
          SocketManager.Instance.out.updateRemainCount();
       }
       
-      public function setList(param1:Vector.<ShopItemInfo>) : void
+      public function setList(list:Vector.<ShopItemInfo>) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          clearitems();
-         _loc2_ = 0;
-         while(_loc2_ < 8)
+         for(i = 0; i < 8; )
          {
-            _goodItems[_loc2_].selected = false;
-            if(param1)
+            _goodItems[i].selected = false;
+            if(list)
             {
-               if(_loc2_ < param1.length && param1[_loc2_])
+               if(i < list.length && list[i])
                {
-                  _goodItems[_loc2_].shopItemInfo = param1[_loc2_];
+                  _goodItems[i].shopItemInfo = list[i];
                }
-               _loc2_++;
+               i++;
                continue;
             }
             break;
@@ -151,12 +149,11 @@ package magicStone.views
       
       private function clearitems() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ <= _goodItems.length - 1)
+         var i:int = 0;
+         for(i = 0; i <= _goodItems.length - 1; )
          {
-            _goodItems[_loc1_].shopItemInfo = null;
-            _loc1_++;
+            _goodItems[i].shopItemInfo = null;
+            i++;
          }
       }
       
@@ -167,32 +164,31 @@ package magicStone.views
          SocketManager.Instance.addEventListener(PkgEvent.format(258,16),__updateRemainCount);
       }
       
-      protected function __updateRemainCount(param1:PkgEvent) : void
+      protected function __updateRemainCount(event:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc4_.readInt();
-         _loc5_ = 0;
-         while(_loc5_ <= _goodItems.length - 1)
+         var i:int = 0;
+         var item:* = null;
+         var pkg:PackageIn = event.pkg;
+         var count:int = pkg.readInt();
+         for(i = 0; i <= _goodItems.length - 1; )
          {
-            _loc3_ = _goodItems[_loc5_];
-            if(_loc3_.shopItemInfo && _loc3_.shopItemInfo.TemplateInfo.Property3 == "0")
+            item = _goodItems[i];
+            if(item.shopItemInfo && item.shopItemInfo.TemplateInfo.Property3 == "0")
             {
-               _loc3_.setRemainCount(_loc2_);
+               item.setRemainCount(count);
             }
-            _loc5_++;
+            i++;
          }
       }
       
-      private function __pageBtnClick(param1:MouseEvent) : void
+      private function __pageBtnClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(ShopManager.Instance.getResultPages(getType()) == 0)
          {
             return;
          }
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = evt.currentTarget;
          if(_prePageBtn !== _loc2_)
          {
             if(_nextPageBtn === _loc2_)
@@ -215,11 +211,11 @@ package magicStone.views
          loadList();
       }
       
-      public function updateScore(param1:int) : void
+      public function updateScore(num:int) : void
       {
          if(_scoreNumText)
          {
-            _scoreNumText.text = param1.toString();
+            _scoreNumText.text = num.toString();
          }
       }
       
@@ -237,15 +233,14 @@ package magicStone.views
       
       override public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          MagicStoneControl.instance.shopFrame = null;
          removeEvents();
-         _loc1_ = 0;
-         while(_loc1_ <= _goodItems.length - 1)
+         for(i = 0; i <= _goodItems.length - 1; )
          {
-            ObjectUtils.disposeObject(_goodItems[_loc1_]);
-            _goodItems[_loc1_] = null;
-            _loc1_++;
+            ObjectUtils.disposeObject(_goodItems[i]);
+            _goodItems[i] = null;
+            i++;
          }
          ObjectUtils.disposeObject(_rightItemLightMc);
          _rightItemLightMc = null;

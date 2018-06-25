@@ -35,14 +35,14 @@ package particleSystem
          return _instance;
       }
       
-      public function setup(param1:String) : void
+      public function setup(flashSiteUrl:String) : void
       {
-         _siteUrl = param1;
+         _siteUrl = flashSiteUrl;
       }
       
-      public function loadConfig(param1:EmitterInfoAnalyzer) : void
+      public function loadConfig(emitterInfoAnalyzer:EmitterInfoAnalyzer) : void
       {
-         _emitters = param1.emitters;
+         _emitters = emitterInfoAnalyzer.emitters;
       }
       
       public function get emitters() : Dictionary
@@ -50,47 +50,46 @@ package particleSystem
          return _emitters;
       }
       
-      public function getParticle(param1:String) : PDParticleSystemWithID
+      public function getParticle(id:String) : PDParticleSystemWithID
       {
-         return new PDParticleSystemWithID(param1,_particleXMLDic[param1],_particleTextureDic[param1]);
+         return new PDParticleSystemWithID(id,_particleXMLDic[id],_particleTextureDic[id]);
       }
       
-      public function hasParticle(param1:String) : Boolean
+      public function hasParticle(id:String) : Boolean
       {
-         if(_particleXMLDic[param1] && _particleTextureDic[param1])
+         if(_particleXMLDic[id] && _particleTextureDic[id])
          {
             return true;
          }
          return false;
       }
       
-      public function createParticleLoader(param1:String) : ParticleZipLoader
+      public function createParticleLoader(id:String) : ParticleZipLoader
       {
-         var _loc2_:ParticleZipLoader = new ParticleZipLoader(LoaderManager.Instance.getNextLoaderID(),_siteUrl + "particales/Particle_" + param1 + ".png");
-         _loc2_.ID = param1;
-         return _loc2_;
+         var zipLoader:ParticleZipLoader = new ParticleZipLoader(LoaderManager.Instance.getNextLoaderID(),_siteUrl + "particales/Particle_" + id + ".png");
+         zipLoader.ID = id;
+         return zipLoader;
       }
       
-      public function requestEmitter(param1:int) : void
+      public function requestEmitter(id:int) : void
       {
-         var _loc2_:* = null;
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:Object = ParticleManager.Instance.emitters[param1];
-         if(_loc4_)
+         var emitterInfo:* = null;
+         var i:int = 0;
+         var zipLoader:* = null;
+         var emitter:Object = ParticleManager.Instance.emitters[id];
+         if(emitter)
          {
-            _loc2_ = _loc4_ as EmitterInfo;
-            _loc5_ = 0;
-            while(_loc5_ < _loc2_.particleIds.length)
+            emitterInfo = emitter as EmitterInfo;
+            for(i = 0; i < emitterInfo.particleIds.length; )
             {
-               _loc3_ = createParticleLoader(_loc2_.particleIds[_loc5_]);
-               _loc3_.loadZip();
-               _loc5_++;
+               zipLoader = createParticleLoader(emitterInfo.particleIds[i]);
+               zipLoader.loadZip();
+               i++;
             }
          }
          else
          {
-            trace("[ParticleManager]粒子emitter数据不存在：" + param1);
+            trace("[ParticleManager]粒子emitter数据不存在：" + id);
          }
       }
       

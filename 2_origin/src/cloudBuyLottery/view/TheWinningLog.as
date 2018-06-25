@@ -37,8 +37,8 @@ package cloudBuyLottery.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _bg = ComponentFactory.Instance.creatBitmap("asset.IndividualLottery.dituBG");
          addToContent(_bg);
          _titleText = LanguageMgr.GetTranslation("TheWinningLog.titleText");
@@ -58,15 +58,15 @@ package cloudBuyLottery.view
             {
                return;
             }
-            _loc2_ = 0;
-            while(_loc2_ < SHOP_ITEM_NUM)
+            i = 0;
+            while(i < SHOP_ITEM_NUM)
             {
-               _loc1_ = ComponentFactory.Instance.creatCustomObject("TheWinningLog.WinningLogListItem");
-               itemList.push(_loc1_);
-               itemList[_loc2_].initView(_logArr[_loc2_].nickName,_loc2_);
-               itemList[_loc2_].y = (itemList[_loc2_].height + 1) * _loc2_;
-               _list.addChild(itemList[_loc2_]);
-               _loc2_++;
+               item = ComponentFactory.Instance.creatCustomObject("TheWinningLog.WinningLogListItem");
+               itemList.push(item);
+               itemList[i].initView(_logArr[i].nickName,i);
+               itemList[i].y = (itemList[i].height + 1) * i;
+               _list.addChild(itemList[i]);
+               i++;
             }
          }
          _panel.setView(_list);
@@ -89,25 +89,24 @@ package cloudBuyLottery.view
          setList(CloudBuyLotteryManager.Instance.model.myGiftData);
       }
       
-      private function setList(param1:Vector.<WinningLogItemInfo>) : void
+      private function setList(list:Vector.<WinningLogItemInfo>) : void
       {
-         var _loc2_:int = 0;
-         if(param1 == null)
+         var i:int = 0;
+         if(list == null)
          {
             return;
          }
          clearitems();
-         _loc2_ = 0;
-         while(_loc2_ < SHOP_ITEM_NUM)
+         for(i = 0; i < SHOP_ITEM_NUM; )
          {
-            if(param1)
+            if(list)
             {
-               if(_loc2_ < param1.length && param1[_loc2_])
+               if(i < list.length && list[i])
                {
-                  itemList[_loc2_].shopItemInfo = param1[_loc2_];
-                  itemList[_loc2_].itemID = param1[_loc2_].TemplateID;
+                  itemList[i].shopItemInfo = list[i];
+                  itemList[i].itemID = list[i].TemplateID;
                }
-               _loc2_++;
+               i++;
                continue;
             }
             break;
@@ -116,38 +115,37 @@ package cloudBuyLottery.view
       
       private function clearitems() : void
       {
-         var _loc1_:int = 0;
-         if(itemList[_loc1_] == null)
+         var i:int = 0;
+         if(itemList[i] == null)
          {
             return;
          }
-         _loc1_ = 0;
-         while(_loc1_ < SHOP_ITEM_NUM)
+         i = 0;
+         while(i < SHOP_ITEM_NUM)
          {
-            itemList[_loc1_].shopItemInfo = null;
-            _loc1_++;
+            itemList[i].shopItemInfo = null;
+            i++;
          }
       }
       
       private function disposeItems() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(itemList)
          {
-            _loc1_ = 0;
-            while(_loc1_ < itemList.length)
+            for(i = 0; i < itemList.length; )
             {
-               ObjectUtils.disposeObject(itemList[_loc1_]);
-               itemList[_loc1_] = null;
-               _loc1_++;
+               ObjectUtils.disposeObject(itemList[i]);
+               itemList[i] = null;
+               i++;
             }
             itemList = null;
          }
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();

@@ -56,7 +56,7 @@ package room.view.bigMapInfoPanel
          SocketManager.Instance.addEventListener("warriorsarenaLastMission",__lastMission);
       }
       
-      private function __lastMission(param1:CrazyTankSocketEvent) : void
+      private function __lastMission(event:CrazyTankSocketEvent) : void
       {
          _ticketView.visible = RoomManager.Instance.IsLastMisstion;
       }
@@ -103,13 +103,13 @@ package room.view.bigMapInfoPanel
          }
       }
       
-      protected function __onMapChanged(param1:RoomEvent) : void
+      protected function __onMapChanged(evt:RoomEvent) : void
       {
          updateMap();
          updateDropList();
       }
       
-      protected function __updateHard(param1:RoomEvent) : void
+      protected function __updateHard(evt:RoomEvent) : void
       {
          updateDropList();
       }
@@ -125,13 +125,13 @@ package room.view.bigMapInfoPanel
          LoadResourceManager.Instance.startLoad(_loader);
       }
       
-      private function __showMap(param1:LoaderEvent) : void
+      private function __showMap(evt:LoaderEvent) : void
       {
-         if(param1.loader.isSuccess)
+         if(evt.loader.isSuccess)
          {
             ObjectUtils.disposeAllChildren(_mapShowContainer);
-            param1.loader.removeEventListener("complete",__showMap);
-            _mapShowContainer.addChild(param1.loader.content as Bitmap);
+            evt.loader.removeEventListener("complete",__showMap);
+            _mapShowContainer.addChild(evt.loader.content as Bitmap);
             _mapShowContainer.width = 315;
             _mapShowContainer.height = 357;
          }
@@ -139,7 +139,7 @@ package room.view.bigMapInfoPanel
       
       protected function updateDropList() : void
       {
-         var _loc1_:DungeonInfo = MapManager.getDungeonInfo(_info.mapId);
+         var dungeon:DungeonInfo = MapManager.getDungeonInfo(_info.mapId);
          if(_info.mapId != 0 && _info.mapId != 10000)
          {
             if(_ticketView)
@@ -149,22 +149,22 @@ package room.view.bigMapInfoPanel
             switch(int(_info.hardLevel))
             {
                case 0:
-                  _dropList.info = _loc1_.SimpleTemplateIds.split(",");
+                  _dropList.info = dungeon.SimpleTemplateIds.split(",");
                   break;
                case 1:
-                  _dropList.info = _loc1_.NormalTemplateIds.split(",");
+                  _dropList.info = dungeon.NormalTemplateIds.split(",");
                   break;
                case 2:
-                  _dropList.info = _loc1_.HardTemplateIds.split(",");
+                  _dropList.info = dungeon.HardTemplateIds.split(",");
                   break;
                case 3:
-                  _dropList.info = _loc1_.TerrorTemplateIds.split(",");
+                  _dropList.info = dungeon.TerrorTemplateIds.split(",");
                   break;
                case 4:
-                  _dropList.info = _loc1_.NightmareTemplateIds.split(",");
+                  _dropList.info = dungeon.NightmareTemplateIds.split(",");
                   break;
                case 5:
-                  _dropList.info = _loc1_.EpicTemplateIds.split(",");
+                  _dropList.info = dungeon.EpicTemplateIds.split(",");
             }
             _dropList.visible = true;
          }
@@ -174,14 +174,14 @@ package room.view.bigMapInfoPanel
          }
       }
       
-      private function __dropListLarge(param1:Event) : void
+      private function __dropListLarge(evt:Event) : void
       {
          _dropList.x = _pos2.x;
          _dropList.y = _pos2.y;
          _ticketView.y = _dropList.y - 22;
       }
       
-      private function __dropListSmall(param1:Event) : void
+      private function __dropListSmall(evt:Event) : void
       {
          _dropList.x = _pos1.x;
          _dropList.y = _pos1.y;
@@ -190,16 +190,16 @@ package room.view.bigMapInfoPanel
       
       protected function solvePath() : String
       {
-         var _loc1_:String = "";
+         var result:String = "";
          if(RoomManager.Instance.current.isOpenBoss)
          {
-            _loc1_ = PathManager.SITE_MAIN + "image/map/" + _info.mapId + "/" + RoomManager.Instance.current.pic;
+            result = PathManager.SITE_MAIN + "image/map/" + _info.mapId + "/" + RoomManager.Instance.current.pic;
          }
          else
          {
-            _loc1_ = PathManager.SITE_MAIN + "image/map/" + _info.mapId + "/" + GameControl.Instance.Current.missionInfo.pic;
+            result = PathManager.SITE_MAIN + "image/map/" + _info.mapId + "/" + GameControl.Instance.Current.missionInfo.pic;
          }
-         return _loc1_;
+         return result;
       }
       
       public function dispose() : void

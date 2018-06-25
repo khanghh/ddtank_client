@@ -22,10 +22,10 @@ package civil
       
       public var data:Object;
       
-      public function CivilEvent(param1:String, param2:Object = null)
+      public function CivilEvent($type:String, $data:Object = null)
       {
-         super(param1,param2);
-         this.data = param2;
+         super($type,$data);
+         this.data = $data;
       }
    }
 }

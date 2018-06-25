@@ -26,9 +26,9 @@ package store.forge.wishBead
       
       public var wishInfoList:Vector.<WishChangeInfo>;
       
-      public function WishBeadManager(param1:IEventDispatcher = null)
+      public function WishBeadManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : WishBeadManager
@@ -42,80 +42,80 @@ package store.forge.wishBead
       
       public function getCanWishBeadData() : BagInfo
       {
-         var _loc4_:DictionaryData = PlayerManager.Instance.Self.Bag.items;
-         var _loc1_:BagInfo = new BagInfo(0,21);
-         var _loc3_:Array = [];
+         var equipBaglist:DictionaryData = PlayerManager.Instance.Self.Bag.items;
+         var wishBeadBagList:BagInfo = new BagInfo(0,21);
+         var arr:Array = [];
          var _loc7_:int = 0;
-         var _loc6_:* = _loc4_;
-         for each(var _loc5_ in _loc4_)
+         var _loc6_:* = equipBaglist;
+         for each(var item in equipBaglist)
          {
-            if(_loc5_.StrengthenLevel >= 12 && (_loc5_.CategoryID == 7 || _loc5_.CategoryID == 5 || _loc5_.CategoryID == 1))
+            if(item.StrengthenLevel >= 12 && (item.CategoryID == 7 || item.CategoryID == 5 || item.CategoryID == 1))
             {
-               if(_loc5_.Place < 17)
+               if(item.Place < 17)
                {
-                  _loc1_.addItem(_loc5_);
+                  wishBeadBagList.addItem(item);
                }
                else
                {
-                  _loc3_.push(_loc5_);
+                  arr.push(item);
                }
             }
          }
          var _loc9_:int = 0;
-         var _loc8_:* = _loc3_;
-         for each(var _loc2_ in _loc3_)
+         var _loc8_:* = arr;
+         for each(var infoItem in arr)
          {
-            _loc1_.addItem(_loc2_);
+            wishBeadBagList.addItem(infoItem);
          }
-         return _loc1_;
+         return wishBeadBagList;
       }
       
       public function getWishBeadItemData() : BagInfo
       {
-         var _loc2_:DictionaryData = PlayerManager.Instance.Self.PropBag.items;
-         var _loc1_:BagInfo = new BagInfo(1,21);
+         var proBaglist:DictionaryData = PlayerManager.Instance.Self.PropBag.items;
+         var wishBeadBagList:BagInfo = new BagInfo(1,21);
          var _loc5_:int = 0;
-         var _loc4_:* = _loc2_;
-         for each(var _loc3_ in _loc2_)
+         var _loc4_:* = proBaglist;
+         for each(var item in proBaglist)
          {
-            if(_loc3_.TemplateID == 11560 || _loc3_.TemplateID == 11561 || _loc3_.TemplateID == 11562)
+            if(item.TemplateID == 11560 || item.TemplateID == 11561 || item.TemplateID == 11562)
             {
-               _loc1_.addItem(_loc3_);
+               wishBeadBagList.addItem(item);
             }
          }
-         return _loc1_;
+         return wishBeadBagList;
       }
       
-      public function getIsEquipMatchWishBead(param1:int, param2:int, param3:Boolean) : Boolean
+      public function getIsEquipMatchWishBead(wishBeadId:int, equipId:int, isShowTip:Boolean) : Boolean
       {
-         switch(int(param1) - 11560)
+         switch(int(wishBeadId) - 11560)
          {
             case 0:
-               if(param2 == 7)
+               if(equipId == 7)
                {
                   return true;
                }
-               if(param3)
+               if(isShowTip)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("wishBeadMainView.noMatchTipTxt"));
                }
                return false;
             case 1:
-               if(param2 == 5)
+               if(equipId == 5)
                {
                   return true;
                }
-               if(param3)
+               if(isShowTip)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("wishBeadMainView.noMatchTipTxt2"));
                }
                return false;
             case 2:
-               if(param2 == 1)
+               if(equipId == 1)
                {
                   return true;
                }
-               if(param3)
+               if(isShowTip)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("wishBeadMainView.noMatchTipTxt3"));
                }
@@ -123,28 +123,28 @@ package store.forge.wishBead
          }
       }
       
-      public function getwishInfo(param1:WishInfoAnalyzer) : void
+      public function getwishInfo(analyzer:WishInfoAnalyzer) : void
       {
-         wishInfoList = param1._wishChangeInfo;
+         wishInfoList = analyzer._wishChangeInfo;
       }
       
-      public function getWishInfoByTemplateID(param1:int, param2:int) : WishChangeInfo
+      public function getWishInfoByTemplateID(id:int, categoryID:int) : WishChangeInfo
       {
-         var _loc3_:* = null;
+         var temp:* = null;
          var _loc6_:int = 0;
          var _loc5_:* = wishInfoList;
-         for each(var _loc4_ in wishInfoList)
+         for each(var info in wishInfoList)
          {
-            if(_loc4_.OldTemplateId == param1)
+            if(info.OldTemplateId == id)
             {
-               return _loc4_;
+               return info;
             }
-            if(_loc4_.OldTemplateId == -1 && _loc4_.CategoryID == param2)
+            if(info.OldTemplateId == -1 && info.CategoryID == categoryID)
             {
-               _loc3_ = _loc4_;
+               temp = info;
             }
          }
-         return _loc3_;
+         return temp;
       }
    }
 }

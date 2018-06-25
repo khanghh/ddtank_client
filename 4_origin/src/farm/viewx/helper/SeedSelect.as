@@ -52,9 +52,9 @@ package farm.viewx.helper
          setList();
       }
       
-      public function set result(param1:ShopItemCell) : void
+      public function set result(value:ShopItemCell) : void
       {
-         _result = param1;
+         _result = value;
       }
       
       public function get result() : ShopItemCell
@@ -64,31 +64,30 @@ package farm.viewx.helper
       
       private function setList() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:Vector.<ShopItemInfo> = ShopManager.Instance.getValidGoodByType(88);
-         _loc3_ = 0;
-         while(_loc3_ < _loc1_.length)
+         var i:int = 0;
+         var item:* = null;
+         var infoList:Vector.<ShopItemInfo> = ShopManager.Instance.getValidGoodByType(88);
+         for(i = 0; i < infoList.length; )
          {
-            _loc2_ = new HelperSetItem();
-            _loc2_.info = _loc1_[_loc3_];
-            _loc2_.addEventListener("selectSeed",__itemClick);
-            _itemList.push(_loc2_);
-            _list.addChild(_loc2_);
-            _loc3_++;
+            item = new HelperSetItem();
+            item.info = infoList[i];
+            item.addEventListener("selectSeed",__itemClick);
+            _itemList.push(item);
+            _list.addChild(item);
+            i++;
          }
          _panel.invalidateViewport();
       }
       
-      private function __itemClick(param1:SelectComposeItemEvent) : void
+      private function __itemClick(event:SelectComposeItemEvent) : void
       {
          SoundManager.instance.play("008");
-         dispatchEvent(new SelectComposeItemEvent("selectSeed",param1.data));
+         dispatchEvent(new SelectComposeItemEvent("selectSeed",event.data));
       }
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_list)
          {
             ObjectUtils.disposeObject(_list);
@@ -108,12 +107,12 @@ package farm.viewx.helper
          {
             this.parent.removeChild(this);
          }
-         while(_loc1_ < _itemList.length)
+         while(i < _itemList.length)
          {
-            _itemList[_loc1_].removeEventListener("selectSeed",__itemClick);
-            ObjectUtils.disposeObject(_itemList[_loc1_]);
-            _itemList[_loc1_] = null;
-            _loc1_++;
+            _itemList[i].removeEventListener("selectSeed",__itemClick);
+            ObjectUtils.disposeObject(_itemList[i]);
+            _itemList[i] = null;
+            i++;
          }
          _itemList = null;
       }

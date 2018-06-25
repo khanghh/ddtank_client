@@ -32,18 +32,18 @@ package starling.textures
       
       private var mTransformationMatrix:Matrix;
       
-      public function SubTexture(param1:Texture, param2:Rectangle = null, param3:Boolean = false, param4:Rectangle = null, param5:Boolean = false)
+      public function SubTexture(parent:Texture, region:Rectangle = null, ownsParent:Boolean = false, frame:Rectangle = null, rotated:Boolean = false)
       {
          super();
-         mParent = param1;
-         mRegion = !!param2?param2.clone():new Rectangle(0,0,param1.width,param1.height);
-         mFrame = !!param4?param4.clone():null;
-         mOwnsParent = param3;
-         mRotated = param5;
-         mWidth = !!param5?mRegion.height:Number(mRegion.width);
-         mHeight = !!param5?mRegion.width:Number(mRegion.height);
+         mParent = parent;
+         mRegion = !!region?region.clone():new Rectangle(0,0,parent.width,parent.height);
+         mFrame = !!frame?frame.clone():null;
+         mOwnsParent = ownsParent;
+         mRotated = rotated;
+         mWidth = !!rotated?mRegion.height:Number(mRegion.width);
+         mHeight = !!rotated?mRegion.width:Number(mRegion.height);
          mTransformationMatrix = new Matrix();
-         if(param5)
+         if(rotated)
          {
             mTransformationMatrix.translate(0,-1);
             mTransformationMatrix.rotate(3.14159265358979 / 2);
@@ -65,54 +65,53 @@ package starling.textures
          super.dispose();
       }
       
-      override public function adjustVertexData(param1:VertexData, param2:int, param3:int) : void
+      override public function adjustVertexData(vertexData:VertexData, vertexID:int, count:int) : void
       {
-         var _loc6_:Number = NaN;
-         var _loc5_:Number = NaN;
-         var _loc4_:int = param2 * 8 + 6;
-         var _loc7_:int = 6;
-         adjustTexCoords(param1.rawData,_loc4_,_loc7_,param3);
+         var deltaRight:Number = NaN;
+         var deltaBottom:Number = NaN;
+         var startIndex:int = vertexID * 8 + 6;
+         var stride:int = 6;
+         adjustTexCoords(vertexData.rawData,startIndex,stride,count);
          if(mFrame)
          {
-            if(param3 != 4)
+            if(count != 4)
             {
                throw new ArgumentError("Textures with a frame can only be used on quads");
             }
-            _loc6_ = mFrame.width + mFrame.x - mWidth;
-            _loc5_ = mFrame.height + mFrame.y - mHeight;
-            param1.translateVertex(param2,-mFrame.x,-mFrame.y);
-            param1.translateVertex(param2 + 1,-_loc6_,-mFrame.y);
-            param1.translateVertex(param2 + 2,-mFrame.x,-_loc5_);
-            param1.translateVertex(param2 + 3,-_loc6_,-_loc5_);
+            deltaRight = mFrame.width + mFrame.x - mWidth;
+            deltaBottom = mFrame.height + mFrame.y - mHeight;
+            vertexData.translateVertex(vertexID,-mFrame.x,-mFrame.y);
+            vertexData.translateVertex(vertexID + 1,-deltaRight,-mFrame.y);
+            vertexData.translateVertex(vertexID + 2,-mFrame.x,-deltaBottom);
+            vertexData.translateVertex(vertexID + 3,-deltaRight,-deltaBottom);
          }
       }
       
-      override public function adjustTexCoords(param1:Vector.<Number>, param2:int = 0, param3:int = 0, param4:int = -1) : void
+      override public function adjustTexCoords(texCoords:Vector.<Number>, startIndex:int = 0, stride:int = 0, count:int = -1) : void
       {
-         var _loc5_:Number = NaN;
-         var _loc6_:Number = NaN;
-         var _loc9_:* = 0;
-         if(param4 < 0)
+         var v:Number = NaN;
+         var u:Number = NaN;
+         var i:* = 0;
+         if(count < 0)
          {
-            param4 = (param1.length - param2 - 2) / (param3 + 2) + 1;
+            count = (texCoords.length - startIndex - 2) / (stride + 2) + 1;
          }
-         var _loc8_:int = param2 + param4 * (2 + param3);
-         var _loc7_:* = this;
+         var endIndex:int = startIndex + count * (2 + stride);
+         var texture:* = this;
          sMatrix.identity();
-         while(_loc7_)
+         while(texture)
          {
-            sMatrix.concat(_loc7_.mTransformationMatrix);
-            _loc7_ = _loc7_.parent as SubTexture;
+            sMatrix.concat(texture.mTransformationMatrix);
+            texture = texture.parent as SubTexture;
          }
-         _loc9_ = param2;
-         while(_loc9_ < _loc8_)
+         for(i = startIndex; i < endIndex; )
          {
-            _loc6_ = param1[_loc9_];
-            _loc5_ = param1[int(_loc9_ + 1)];
-            MatrixUtil.transformCoords(sMatrix,_loc6_,_loc5_,sTexCoords);
-            param1[_loc9_] = sTexCoords.x;
-            param1[int(_loc9_ + 1)] = sTexCoords.y;
-            _loc9_ = int(_loc9_ + (2 + param3));
+            u = texCoords[i];
+            v = texCoords[int(i + 1)];
+            MatrixUtil.transformCoords(sMatrix,u,v,sTexCoords);
+            texCoords[i] = sTexCoords.x;
+            texCoords[int(i + 1)] = sTexCoords.y;
+            i = int(i + (2 + stride));
          }
       }
       
@@ -138,13 +137,13 @@ package starling.textures
       
       public function get clipping() : Rectangle
       {
-         var _loc2_:Point = new Point();
-         var _loc1_:Point = new Point();
-         MatrixUtil.transformCoords(mTransformationMatrix,0,0,_loc2_);
-         MatrixUtil.transformCoords(mTransformationMatrix,1,1,_loc1_);
-         var _loc3_:Rectangle = new Rectangle(_loc2_.x,_loc2_.y,_loc1_.x - _loc2_.x,_loc1_.y - _loc2_.y);
-         RectangleUtil.normalize(_loc3_);
-         return _loc3_;
+         var topLeft:Point = new Point();
+         var bottomRight:Point = new Point();
+         MatrixUtil.transformCoords(mTransformationMatrix,0,0,topLeft);
+         MatrixUtil.transformCoords(mTransformationMatrix,1,1,bottomRight);
+         var clipping:Rectangle = new Rectangle(topLeft.x,topLeft.y,bottomRight.x - topLeft.x,bottomRight.y - topLeft.y);
+         RectangleUtil.normalize(clipping);
+         return clipping;
       }
       
       public function get transformationMatrix() : Matrix

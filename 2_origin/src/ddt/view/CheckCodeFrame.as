@@ -104,9 +104,9 @@ package ddt.view
          return _instance;
       }
       
-      private function __LoadCore2Complete(param1:UIModuleEvent) : void
+      private function __LoadCore2Complete(pEvent:UIModuleEvent) : void
       {
-         if(param1.module == "ddtcoreii")
+         if(pEvent.module == "ddtcoreii")
          {
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",__LoadCore2Complete);
             UIModuleLoader.Instance.removeEventListener("uiModuleError",__LoadCore2Error);
@@ -114,36 +114,35 @@ package ddt.view
          }
       }
       
-      private function __LoadCore2Error(param1:UIModuleEvent) : void
+      private function __LoadCore2Error(pEvent:UIModuleEvent) : void
       {
       }
       
       private function initCheckCodeFrame() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
-         var _loc8_:* = 0;
-         var _loc7_:* = null;
-         var _loc2_:* = null;
-         var _loc6_:* = null;
-         var _loc5_:* = null;
-         var _loc1_:* = null;
+         var n:int = 0;
+         var input:* = null;
+         var i:* = 0;
+         var numView:* = null;
+         var numViewBg:* = null;
+         var numNOView:* = null;
+         var numObj:* = null;
+         var numSp:* = null;
          _bgI = ComponentFactory.Instance.creatBitmap("asset.core.checkCodeBgAsset");
          addToContent(_bgI);
          _bgII = ComponentFactory.Instance.creatComponentByStylename("store.checkCodeScale9BG");
          addToContent(_bgII);
          _inputArr = [];
-         _loc4_ = 0;
-         while(_loc4_ < 4)
+         for(n = 0; n < 4; )
          {
-            _loc3_ = ComponentFactory.Instance.creatComponentByStylename("core.checkCodeInputTxt");
-            _loc3_.type = "dynamic";
-            _loc3_.text = "*";
-            _loc3_.x = _loc3_.x + _loc4_ * 39;
-            _inputArr.push(_loc3_);
-            _loc3_.visible = false;
-            addToContent(_loc3_);
-            _loc4_++;
+            input = ComponentFactory.Instance.creatComponentByStylename("core.checkCodeInputTxt");
+            input.type = "dynamic";
+            input.text = "*";
+            input.x = input.x + n * 39;
+            _inputArr.push(input);
+            input.visible = false;
+            addToContent(input);
+            n++;
          }
          cancelButtonStyle = "core.simplebt";
          submitButtonStyle = "core.simplebt";
@@ -164,33 +163,32 @@ package ddt.view
          _secondTxt.text = LanguageMgr.GetTranslation("FPSView.as.InviteAlertPanel.second");
          _numberArr = [];
          _numViewArr = [];
-         _loc8_ = _loc8_;
-         while(_loc8_ < 10)
+         for(i = i; i < 10; )
          {
-            _loc7_ = ComponentFactory.Instance.creatComponentByStylename("core.checkCodeNOBtn");
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("core.checkCodeNOBtnBg");
-            _loc7_.backgound = _loc2_;
-            _loc6_ = ComponentFactory.Instance.creatBitmap("asset.core.checkCodeNO" + String(_loc8_) + "Asset");
-            _loc6_.x = (_loc7_.width - _loc6_.width) / 2;
-            _loc6_.y = (_loc7_.height - _loc6_.height) / 2;
-            _loc7_.addChild(_loc6_);
-            _loc5_ = {};
-            _loc1_ = new Sprite();
-            _loc7_.x = -_loc7_.width / 2;
-            _loc7_.y = -_loc7_.height / 2;
-            _loc1_.addChild(_loc7_);
-            _loc5_.view = _loc1_;
-            _loc5_.NOView = _loc6_;
-            _loc5_.id = _loc8_;
-            _loc5_.angle = _loc8_ * 0.628;
-            _loc5_.axisZ = 100;
-            _numberArr.push(_loc5_);
-            _numViewArr.push(_loc1_);
-            addToContent(_loc1_);
-            _loc1_.addEventListener("click",clicknumSp);
-            _loc1_.addEventListener("mouseOver",overnumSp);
-            _loc1_.addEventListener("mouseOut",outnumSp);
-            _loc8_++;
+            numView = ComponentFactory.Instance.creatComponentByStylename("core.checkCodeNOBtn");
+            numViewBg = ComponentFactory.Instance.creatComponentByStylename("core.checkCodeNOBtnBg");
+            numView.backgound = numViewBg;
+            numNOView = ComponentFactory.Instance.creatBitmap("asset.core.checkCodeNO" + String(i) + "Asset");
+            numNOView.x = (numView.width - numNOView.width) / 2;
+            numNOView.y = (numView.height - numNOView.height) / 2;
+            numView.addChild(numNOView);
+            numObj = {};
+            numSp = new Sprite();
+            numView.x = -numView.width / 2;
+            numView.y = -numView.height / 2;
+            numSp.addChild(numView);
+            numObj.view = numSp;
+            numObj.NOView = numNOView;
+            numObj.id = i;
+            numObj.angle = i * 0.628;
+            numObj.axisZ = 100;
+            _numberArr.push(numObj);
+            _numViewArr.push(numSp);
+            addToContent(numSp);
+            numSp.addEventListener("click",clicknumSp);
+            numSp.addEventListener("mouseOver",overnumSp);
+            numSp.addEventListener("mouseOut",outnumSp);
+            i++;
          }
          setnumViewCoord();
       }
@@ -200,12 +198,12 @@ package ddt.view
          return _time;
       }
       
-      public function set time(param1:int) : void
+      public function set time(value:int) : void
       {
-         _time = param1;
+         _time = value;
       }
       
-      private function clicknumSp(param1:MouseEvent) : void
+      private function clicknumSp(e:MouseEvent) : void
       {
          if(_cheatTime == 0)
          {
@@ -216,16 +214,16 @@ package ddt.view
          {
             return;
          }
-         _input = _input + String(_numViewArr.indexOf(param1.currentTarget));
+         _input = _input + String(_numViewArr.indexOf(e.currentTarget));
          textChange();
       }
       
-      private function overnumSp(param1:MouseEvent) : void
+      private function overnumSp(e:MouseEvent) : void
       {
          _NOBtnIsOver = true;
       }
       
-      private function outnumSp(param1:MouseEvent) : void
+      private function outnumSp(e:MouseEvent) : void
       {
          _NOBtnIsOver = false;
       }
@@ -234,19 +232,19 @@ package ddt.view
       {
       }
       
-      private function math_z(param1:Object) : void
+      private function math_z(obj:Object) : void
       {
       }
       
-      private function inFrameStart(param1:Event) : void
+      private function inFrameStart(e:Event) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = Math.abs(Math.sqrt((mouseX - 356) * (mouseX - 356) + (mouseY - 166) * (mouseY - 166)) - 100);
-         if(_loc2_ <= 100)
+         var i:int = 0;
+         var axisMouse:int = Math.abs(Math.sqrt((mouseX - 356) * (mouseX - 356) + (mouseY - 166) * (mouseY - 166)) - 100);
+         if(axisMouse <= 100)
          {
-            speed = _loc2_ / 200;
+            speed = axisMouse / 200;
          }
-         if(_loc2_ > 100)
+         if(axisMouse > 100)
          {
             speed = 0.5;
          }
@@ -254,22 +252,21 @@ package ddt.view
          {
             speed = 0.02;
          }
-         _loc3_ = 0;
-         while(_loc3_ < _numberArr.length)
+         for(i = 0; i < _numberArr.length; )
          {
-            _numberArr[_loc3_].NOView.visible = true;
+            _numberArr[i].NOView.visible = true;
             if(_NOBtnIsOver)
             {
-               _numberArr[_loc3_].NOView.visible = false;
+               _numberArr[i].NOView.visible = false;
             }
-            _numberArr[_loc3_].angle = _numberArr[_loc3_].angle + speed * 0.1;
-            _numberArr[_loc3_].view.y = _numberArr[_loc3_].axisZ * Math.cos(_numberArr[_loc3_].angle) + 166;
-            _numberArr[_loc3_].view.x = _numberArr[_loc3_].axisZ * Math.sin(_numberArr[_loc3_].angle) + 356;
-            _loc3_++;
+            _numberArr[i].angle = _numberArr[i].angle + speed * 0.1;
+            _numberArr[i].view.y = _numberArr[i].axisZ * Math.cos(_numberArr[i].angle) + 166;
+            _numberArr[i].view.x = _numberArr[i].axisZ * Math.sin(_numberArr[i].angle) + 356;
+            i++;
          }
       }
       
-      public function set data(param1:CheckCodeData) : void
+      public function set data(d:CheckCodeData) : void
       {
          if(currentPic && currentPic.parent)
          {
@@ -277,7 +274,7 @@ package ddt.view
             currentPic.bitmapData.dispose();
             currentPic = null;
          }
-         currentPic = param1.pic;
+         currentPic = d.pic;
          currentPic.width = 164;
          currentPic.height = 69;
          currentPic.x = 30 + Math.random() * 2 * 3;
@@ -285,7 +282,7 @@ package ddt.view
          addChild(currentPic);
       }
       
-      private function __onTimeComplete(param1:TimerEvent) : void
+      private function __onTimeComplete(e:TimerEvent) : void
       {
          _input = "";
          coutTimer.stop();
@@ -293,25 +290,24 @@ package ddt.view
          sendSelected();
       }
       
-      private function __onTimeComplete_1(param1:TimerEvent) : void
+      private function __onTimeComplete_1(e:TimerEvent) : void
       {
          _countDownTxt.text = (int(_countDownTxt.text) - 1).toString();
       }
       
       private function textChange() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          okBtn.enable = isValidText();
          clearBtn.enable = haveValidText();
-         _loc1_ = 0;
-         while(_loc1_ < _inputArr.length)
+         for(i = 0; i < _inputArr.length; )
          {
-            _inputArr[_loc1_].visible = false;
-            if(_loc1_ < _input.length)
+            _inputArr[i].visible = false;
+            if(i < _input.length)
             {
-               _inputArr[_loc1_].visible = true;
+               _inputArr[i].visible = true;
             }
-            _loc1_++;
+            i++;
          }
       }
       
@@ -337,7 +333,7 @@ package ddt.view
          return true;
       }
       
-      public function set tip(param1:String) : void
+      public function set tip(value:String) : void
       {
       }
       
@@ -368,7 +364,7 @@ package ddt.view
          }
       }
       
-      private function __show(param1:TimerEvent) : void
+      private function __show(event:TimerEvent) : void
       {
          if(StateManager.currentStateType != "fighting")
          {
@@ -413,12 +409,12 @@ package ddt.view
          textChange();
       }
       
-      override protected function __onAddToStage(param1:Event) : void
+      override protected function __onAddToStage(e:Event) : void
       {
          addEventListener("keyDown",__resposeHandler);
       }
       
-      private function __okBtnClick(param1:MouseEvent) : void
+      private function __okBtnClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(getTimer() - _cheatTime <= 500)
@@ -433,7 +429,7 @@ package ddt.view
          }
       }
       
-      private function __clearBtnClick(param1:MouseEvent) : void
+      private function __clearBtnClick(evt:MouseEvent) : void
       {
          if(haveValidText())
          {
@@ -443,9 +439,9 @@ package ddt.view
          }
       }
       
-      private function __resposeHandler(param1:KeyboardEvent) : void
+      private function __resposeHandler(evt:KeyboardEvent) : void
       {
-         if(param1.keyCode == 13)
+         if(evt.keyCode == 13)
          {
             __okBtnClick(null);
          }
@@ -497,9 +493,9 @@ package ddt.view
          return _isShowed;
       }
       
-      public function set isShowed(param1:Boolean) : void
+      public function set isShowed(value:Boolean) : void
       {
-         _isShowed = param1;
+         _isShowed = value;
       }
    }
 }

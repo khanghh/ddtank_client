@@ -58,17 +58,17 @@ package gemstone
          UIModuleLoader.Instance.addUIModuleImp("gemstone");
       }
       
-      private function gemstoneProgress(param1:UIModuleEvent) : void
+      private function gemstoneProgress(pEvent:UIModuleEvent) : void
       {
-         if(param1.module == "gemstone")
+         if(pEvent.module == "gemstone")
          {
-            UIModuleSmallLoading.Instance.progress = param1.loader.progress * 100;
+            UIModuleSmallLoading.Instance.progress = pEvent.loader.progress * 100;
          }
       }
       
-      private function gemstoneCompHander(param1:UIModuleEvent) : void
+      private function gemstoneCompHander(e:UIModuleEvent) : void
       {
-         if(param1.module == "gemstone")
+         if(e.module == "gemstone")
          {
             UIModuleSmallLoading.Instance.hide();
             UIModuleLoader.Instance.removeEventListener("uiModuleComplete",gemstoneCompHander);
@@ -114,9 +114,9 @@ package gemstone
          return _goundMask;
       }
       
-      public function gemstoneAction(param1:GemstoneUpGradeInfo) : void
+      public function gemstoneAction(info:GemstoneUpGradeInfo) : void
       {
-         _gemstoneUpView.gemstoneAction(param1);
+         _gemstoneUpView.gemstoneAction(info);
       }
       
       public function get expBar() : ExpBar

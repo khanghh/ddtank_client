@@ -60,7 +60,7 @@ package luckStar.manager
          SocketManager.Instance.addEventListener("luckystaropen",__onActivityOpen);
       }
       
-      private function __onActivityOpen(param1:CrazyTankSocketEvent) : void
+      private function __onActivityOpen(e:CrazyTankSocketEvent) : void
       {
          if(!_isOpen)
          {
@@ -70,137 +70,134 @@ package luckStar.manager
          addEnterIcon();
       }
       
-      private function __onActivityEnd(param1:CrazyTankSocketEvent) : void
+      private function __onActivityEnd(e:CrazyTankSocketEvent) : void
       {
          SocketManager.Instance.removeEventListener("luckystarend",__onActivityEnd);
          _isOpen = false;
          disposeEnterIcon();
       }
       
-      private function __onAllGoodsInfo(param1:CrazyTankSocketEvent) : void
+      private function __onAllGoodsInfo(e:CrazyTankSocketEvent) : void
       {
-         var _loc9_:int = 0;
-         var _loc3_:int = 0;
-         var _loc8_:* = null;
-         var _loc6_:PackageIn = param1.pkg;
-         _model.coins = _loc6_.readInt();
-         _model.setActivityDate(_loc6_.readDate(),_loc6_.readDate());
-         _model.minUseNum = _loc6_.readInt();
-         var _loc4_:int = _loc6_.readInt();
-         var _loc7_:Vector.<InventoryItemInfo> = new Vector.<InventoryItemInfo>();
-         _loc9_ = 0;
-         while(_loc9_ < _loc4_)
+         var i:int = 0;
+         var templateID:int = 0;
+         var iteminfo:* = null;
+         var pkg:PackageIn = e.pkg;
+         _model.coins = pkg.readInt();
+         _model.setActivityDate(pkg.readDate(),pkg.readDate());
+         _model.minUseNum = pkg.readInt();
+         var count:int = pkg.readInt();
+         var list:Vector.<InventoryItemInfo> = new Vector.<InventoryItemInfo>();
+         for(i = 0; i < count; )
          {
-            _loc3_ = _loc6_.readInt();
-            _loc8_ = getTemplateInfo(_loc3_);
-            _loc8_.StrengthenLevel = _loc6_.readInt();
-            _loc8_.Count = _loc6_.readInt();
-            _loc8_.ValidDate = _loc6_.readInt();
-            _loc8_.AttackCompose = _loc6_.readInt();
-            _loc8_.DefendCompose = _loc6_.readInt();
-            _loc8_.AgilityCompose = _loc6_.readInt();
-            _loc8_.LuckCompose = _loc6_.readInt();
-            _loc8_.IsBinds = _loc6_.readBoolean();
-            _loc8_.Quality = _loc6_.readInt();
-            _loc7_.push(_loc8_);
-            _loc9_++;
+            templateID = pkg.readInt();
+            iteminfo = getTemplateInfo(templateID);
+            iteminfo.StrengthenLevel = pkg.readInt();
+            iteminfo.Count = pkg.readInt();
+            iteminfo.ValidDate = pkg.readInt();
+            iteminfo.AttackCompose = pkg.readInt();
+            iteminfo.DefendCompose = pkg.readInt();
+            iteminfo.AgilityCompose = pkg.readInt();
+            iteminfo.LuckCompose = pkg.readInt();
+            iteminfo.IsBinds = pkg.readBoolean();
+            iteminfo.Quality = pkg.readInt();
+            list.push(iteminfo);
+            i++;
          }
-         var _loc5_:Vector.<InventoryItemInfo> = _loc7_.slice();
-         var _loc2_:int = _loc5_.length;
-         while(_loc2_)
+         var arr:Vector.<InventoryItemInfo> = list.slice();
+         var index:int = arr.length;
+         while(index)
          {
-            _loc2_--;
-            _loc5_.push(_loc5_.splice(int(Math.random() * _loc2_),1)[0]);
+            index--;
+            arr.push(arr.splice(int(Math.random() * index),1)[0]);
          }
-         _model.goods = _loc5_;
+         _model.goods = arr;
          dispatchEvent(new Event("allgoodsinfo"));
       }
       
-      private function __onTurnGoodsInfo(param1:CrazyTankSocketEvent) : void
+      private function __onTurnGoodsInfo(e:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         _model.coins = _loc3_.readInt();
-         var _loc2_:int = _loc3_.readInt();
+         var pkg:PackageIn = e.pkg;
+         _model.coins = pkg.readInt();
+         var templateID:int = pkg.readInt();
          iteminfo = new InventoryItemInfo();
-         iteminfo = getTemplateInfo(_loc2_);
-         iteminfo.StrengthenLevel = _loc3_.readInt();
-         iteminfo.Count = _loc3_.readInt();
-         iteminfo.ValidDate = _loc3_.readInt();
-         iteminfo.AttackCompose = _loc3_.readInt();
-         iteminfo.DefendCompose = _loc3_.readInt();
-         iteminfo.AgilityCompose = _loc3_.readInt();
-         iteminfo.LuckCompose = _loc3_.readInt();
-         iteminfo.IsBinds = _loc3_.readBoolean();
+         iteminfo = getTemplateInfo(templateID);
+         iteminfo.StrengthenLevel = pkg.readInt();
+         iteminfo.Count = pkg.readInt();
+         iteminfo.ValidDate = pkg.readInt();
+         iteminfo.AttackCompose = pkg.readInt();
+         iteminfo.DefendCompose = pkg.readInt();
+         iteminfo.AgilityCompose = pkg.readInt();
+         iteminfo.LuckCompose = pkg.readInt();
+         iteminfo.IsBinds = pkg.readBoolean();
          dispatchEvent(new Event("turngoodsinfo"));
       }
       
-      private function __onUpdateReward(param1:CrazyTankSocketEvent) : void
+      private function __onUpdateReward(e:CrazyTankSocketEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc5_:int = _loc4_.readInt();
-         var _loc2_:int = _loc4_.readInt();
-         var _loc3_:String = _loc4_.readUTF();
+         var pkg:PackageIn = e.pkg;
+         var goodsID:int = pkg.readInt();
+         var count:int = pkg.readInt();
+         var name:String = pkg.readUTF();
          rewardMsg = {};
-         rewardMsg.goodsID = _loc5_;
-         rewardMsg.count = _loc2_;
-         rewardMsg.name = _loc3_;
+         rewardMsg.goodsID = goodsID;
+         rewardMsg.count = count;
+         rewardMsg.name = name;
          dispatchEvent(new Event("updatereward"));
       }
       
-      private function __onReward(param1:CrazyTankSocketEvent) : void
+      private function __onReward(e:CrazyTankSocketEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc4_.readInt();
-         var _loc5_:Vector.<Array> = new Vector.<Array>();
-         _loc6_ = 0;
-         while(_loc6_ < _loc2_)
+         var i:int = 0;
+         var arr:* = null;
+         var pkg:PackageIn = e.pkg;
+         var count:int = pkg.readInt();
+         var list:Vector.<Array> = new Vector.<Array>();
+         for(i = 0; i < count; )
          {
-            _loc3_ = [];
-            _loc3_.push(_loc4_.readInt());
-            _loc3_.push(_loc4_.readInt());
-            _loc3_.push(_loc4_.readUTF());
-            _loc5_.push(_loc3_);
-            _loc6_++;
+            arr = [];
+            arr.push(pkg.readInt());
+            arr.push(pkg.readInt());
+            arr.push(pkg.readUTF());
+            list.push(arr);
+            i++;
          }
-         _model.newRewardList = _loc5_;
+         _model.newRewardList = list;
       }
       
-      private function __onAwardRank(param1:CrazyTankSocketEvent) : void
+      private function __onAwardRank(e:CrazyTankSocketEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc2_:int = 0;
-         var _loc6_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc3_:int = _loc4_.readInt();
-         var _loc5_:Vector.<InventoryItemInfo> = new Vector.<InventoryItemInfo>();
-         _loc7_ = 0;
-         while(_loc7_ < _loc3_)
+         var i:int = 0;
+         var templateID:int = 0;
+         var iteminfo:* = null;
+         var pkg:PackageIn = e.pkg;
+         var count:int = pkg.readInt();
+         var list:Vector.<InventoryItemInfo> = new Vector.<InventoryItemInfo>();
+         for(i = 0; i < count; )
          {
-            _loc2_ = _loc4_.readInt();
-            _loc6_ = getTemplateInfo(_loc2_);
-            _loc6_.StrengthenLevel = _loc4_.readInt();
-            _loc6_.Count = _loc4_.readInt();
-            _loc6_.ValidDate = _loc4_.readInt();
-            _loc6_.AttackCompose = _loc4_.readInt();
-            _loc6_.DefendCompose = _loc4_.readInt();
-            _loc6_.AgilityCompose = _loc4_.readInt();
-            _loc6_.LuckCompose = _loc4_.readInt();
-            _loc6_.IsBinds = _loc4_.readBoolean();
-            _loc6_.Quality = _loc4_.readInt();
-            _loc5_.push(_loc6_);
-            _loc7_++;
+            templateID = pkg.readInt();
+            iteminfo = getTemplateInfo(templateID);
+            iteminfo.StrengthenLevel = pkg.readInt();
+            iteminfo.Count = pkg.readInt();
+            iteminfo.ValidDate = pkg.readInt();
+            iteminfo.AttackCompose = pkg.readInt();
+            iteminfo.DefendCompose = pkg.readInt();
+            iteminfo.AgilityCompose = pkg.readInt();
+            iteminfo.LuckCompose = pkg.readInt();
+            iteminfo.IsBinds = pkg.readBoolean();
+            iteminfo.Quality = pkg.readInt();
+            list.push(iteminfo);
+            i++;
          }
-         _model.reward = _loc5_;
+         _model.reward = list;
       }
       
-      private function getTemplateInfo(param1:int) : InventoryItemInfo
+      private function getTemplateInfo(id:int) : InventoryItemInfo
       {
-         var _loc2_:InventoryItemInfo = new InventoryItemInfo();
-         _loc2_.TemplateID = param1;
-         ItemManager.fill(_loc2_);
-         return _loc2_;
+         var itemInfo:InventoryItemInfo = new InventoryItemInfo();
+         itemInfo.TemplateID = id;
+         ItemManager.fill(itemInfo);
+         return itemInfo;
       }
       
       public function addEnterIcon() : void
@@ -215,7 +212,7 @@ package luckStar.manager
          }
       }
       
-      public function onClickLuckyStarIocn(param1:MouseEvent) : void
+      public function onClickLuckyStarIocn(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(StateManager.currentStateType == "main")

@@ -206,6 +206,14 @@ package hallIcon
       public static const MINES:String = "mines";
       
       public static const TEAM_BATTLE:String = "teamBattle";
+      
+      public static const DEVIL_TURN:String = "devilTurn";
+      
+      public static const DREAMLANG_CHALLENGE:String = "dreamLandChallenge";
+      
+      public static const WORLDCUP_GUESS:String = "worldcupGuess";
+      
+      public static const OLD_PLAYER:String = "oldPlayer";
        
       
       public function HallIconType()

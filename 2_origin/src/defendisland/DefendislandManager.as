@@ -23,9 +23,9 @@ package defendisland
       
       public var model:DefendislandModel;
       
-      public function DefendislandManager(param1:IEventDispatcher = null)
+      public function DefendislandManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : DefendislandManager
@@ -53,36 +53,35 @@ package defendisland
          SocketManager.Instance.addEventListener("islandInfo",_islandInfoHanlder);
       }
       
-      public function templateDataSetup(param1:Array) : void
+      public function templateDataSetup(dataList:Array) : void
       {
-         model.itemInfoList = param1;
+         model.itemInfoList = dataList;
       }
       
-      private function _islandInfoHanlder(param1:CrazyTankSocketEvent) : void
+      private function _islandInfoHanlder(e:CrazyTankSocketEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc4_.readInt();
-         switch(int(_loc2_) - 1)
+         var count:int = 0;
+         var i:int = 0;
+         var pkg:PackageIn = e.pkg;
+         var cmd:int = pkg.readInt();
+         switch(int(cmd) - 1)
          {
             case 0:
                model.remainCountList = [];
                model.countList = [];
-               _loc3_ = _loc4_.readInt();
-               _loc5_ = 0;
-               while(_loc5_ < _loc3_)
+               count = pkg.readInt();
+               for(i = 0; i < count; )
                {
-                  model.remainCountList.push(_loc4_.readInt());
-                  model.countList.push(_loc4_.readInt());
-                  _loc5_++;
+                  model.remainCountList.push(pkg.readInt());
+                  model.countList.push(pkg.readInt());
+                  i++;
                }
                show();
                break;
             case 1:
-               model.isOpen = _loc4_.readBoolean();
-               model.beginTime = DateUtils.dateFormat(_loc4_.readDate());
-               model.endTime = DateUtils.dateFormat(_loc4_.readDate());
+               model.isOpen = pkg.readBoolean();
+               model.beginTime = DateUtils.dateFormat(pkg.readDate());
+               model.endTime = DateUtils.dateFormat(pkg.readDate());
                showIcon();
          }
       }

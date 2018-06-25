@@ -22,9 +22,9 @@ package magicHouse.magicCollection
          return _magicAttack;
       }
       
-      public function set magicAttack(param1:int) : void
+      public function set magicAttack(value:int) : void
       {
-         _magicAttack = param1;
+         _magicAttack = value;
       }
       
       public function get magicDefense() : int
@@ -32,9 +32,9 @@ package magicHouse.magicCollection
          return _magicDefense;
       }
       
-      public function set magicDefense(param1:int) : void
+      public function set magicDefense(value:int) : void
       {
-         _magicDefense = param1;
+         _magicDefense = value;
       }
       
       public function get critDamage() : int
@@ -42,9 +42,9 @@ package magicHouse.magicCollection
          return _critDamage;
       }
       
-      public function set critDamage(param1:int) : void
+      public function set critDamage(value:int) : void
       {
-         _critDamage = param1;
+         _critDamage = value;
       }
       
       public function get title() : String
@@ -52,9 +52,9 @@ package magicHouse.magicCollection
          return _title;
       }
       
-      public function set title(param1:String) : void
+      public function set title(value:String) : void
       {
-         _title = param1;
+         _title = value;
       }
    }
 }

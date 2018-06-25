@@ -14,10 +14,10 @@ package mysteriousRoullete.event
       
       public var viewType:int;
       
-      public function MysteriousEvent(param1:String, param2:int, param3:Boolean = false, param4:Boolean = false)
+      public function MysteriousEvent(type:String, viewType:int, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         this.viewType = param2;
-         super(param1,param3,param4);
+         this.viewType = viewType;
+         super(type,bubbles,cancelable);
       }
    }
 }

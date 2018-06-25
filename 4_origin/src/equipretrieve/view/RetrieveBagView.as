@@ -126,9 +126,9 @@ package equipretrieve.view
          SocketManager.Instance.addEventListener(PkgEvent.format(205),__useColorShell);
       }
       
-      override public function setBagType(param1:int) : void
+      override public function setBagType(type:int) : void
       {
-         super.setBagType(param1);
+         super.setBagType(type);
          _buttonContainer.visible = false;
          var _loc2_:* = false;
          _continueBtn.enable = _loc2_;
@@ -144,64 +144,64 @@ package equipretrieve.view
          _proplist.visible = true;
       }
       
-      override protected function __cellDoubleClick(param1:CellEvent) : void
+      override protected function __cellDoubleClick(evt:CellEvent) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
             BaglockedManager.Instance.show();
             return;
          }
-         param1.stopImmediatePropagation();
-         var _loc3_:RetrieveBagcell = param1.data as RetrieveBagcell;
-         var _loc5_:InventoryItemInfo = _loc3_.info as InventoryItemInfo;
-         var _loc4_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_loc5_.TemplateID);
-         var _loc2_:int = !!PlayerManager.Instance.Self.Sex?1:2;
-         if(!_loc3_.locked)
+         evt.stopImmediatePropagation();
+         var cell:RetrieveBagcell = evt.data as RetrieveBagcell;
+         var info:InventoryItemInfo = cell.info as InventoryItemInfo;
+         var templeteInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(info.TemplateID);
+         var playerSex:int = !!PlayerManager.Instance.Self.Sex?1:2;
+         if(!cell.locked)
          {
-            RetrieveController.Instance.cellDoubleClick(_loc3_);
+            RetrieveController.Instance.cellDoubleClick(cell);
          }
       }
       
-      override protected function __cellClick(param1:CellEvent) : void
+      override protected function __cellClick(evt:CellEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var cell:* = null;
+         var info:* = null;
          if(!_sellBtn.isActive)
          {
-            param1.stopImmediatePropagation();
-            _loc2_ = param1.data as BagCell;
-            if(_loc2_)
+            evt.stopImmediatePropagation();
+            cell = evt.data as BagCell;
+            if(cell)
             {
-               _loc3_ = _loc2_.info as InventoryItemInfo;
+               info = cell.info as InventoryItemInfo;
             }
-            if(_loc3_ == null)
+            if(info == null)
             {
                return;
             }
-            if(!_loc2_.locked)
+            if(!cell.locked)
             {
                SoundManager.instance.play("008");
-               _loc2_.dragStart();
+               cell.dragStart();
                RetrieveController.Instance.shine = true;
             }
          }
       }
       
-      private function _stopDrag(param1:CellEvent) : void
+      private function _stopDrag(e:CellEvent) : void
       {
          RetrieveController.Instance.shine = false;
       }
       
-      public function resultPoint(param1:int, param2:Number, param3:Number) : void
+      public function resultPoint(i:int, _dx:Number, _dy:Number) : void
       {
-         setBagType(param1);
-         if(param1 == 0)
+         setBagType(i);
+         if(i == 0)
          {
-            RetrieveModel.Instance.setresultCell(RetrieveBagEquipListView(_equiplist).returnNullPoint(param2,param3));
+            RetrieveModel.Instance.setresultCell(RetrieveBagEquipListView(_equiplist).returnNullPoint(_dx,_dy));
          }
-         else if(param1 == 1)
+         else if(i == 1)
          {
-            RetrieveModel.Instance.setresultCell(RetrieveBagListView(_proplist).returnNullPoint(param2,param3));
+            RetrieveModel.Instance.setresultCell(RetrieveBagListView(_proplist).returnNullPoint(_dx,_dy));
          }
       }
       

@@ -13,14 +13,14 @@ package com.pickgliss.ui.controls
          super();
       }
       
-      public function setValue(param1:*) : void
+      public function setValue(value:*) : void
       {
-         text = String(param1);
+         text = String(value);
       }
       
-      public function setCursor(param1:int) : void
+      public function setCursor(index:int) : void
       {
-         setSelection(param1,param1);
+         setSelection(index,index);
       }
       
       public function getValueLength() : int

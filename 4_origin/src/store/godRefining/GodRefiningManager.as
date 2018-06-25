@@ -21,9 +21,9 @@ package store.godRefining
       
       private var _armShellFrame:GodRefiningArmShellFrame;
       
-      public function GodRefiningManager(param1:IEventDispatcher = null)
+      public function GodRefiningManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : GodRefiningManager
@@ -39,7 +39,7 @@ package store.godRefining
       {
       }
       
-      public function showArmShellFrame(param1:int) : void
+      public function showArmShellFrame($armShellId:int) : void
       {
          _armShellFrame = ComponentFactory.Instance.creatComponentByStylename("core.godRefiningArmShellFrame");
          LayerManager.Instance.addToLayer(_armShellFrame,3,true,1);

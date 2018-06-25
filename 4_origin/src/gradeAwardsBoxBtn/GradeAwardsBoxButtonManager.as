@@ -24,7 +24,7 @@ package gradeAwardsBoxBtn
       
       private var _gradeAwardsBoxSprite:GradeAwardsBoxSprite;
       
-      public function GradeAwardsBoxButtonManager(param1:inner)
+      public function GradeAwardsBoxButtonManager(single:inner)
       {
          super();
       }
@@ -46,75 +46,75 @@ package gradeAwardsBoxBtn
          PlayerManager.Instance.Self.PropBag.addEventListener("update",onGoodsUpdated);
       }
       
-      private function gradeAwardsFlyIntoBag(param1:Array) : void
+      private function gradeAwardsFlyIntoBag(infos:Array) : void
       {
-         new GradeAwardsFlyIntoBagView().onFrameClose(param1);
-         var _loc2_:GradeAwardsBoxModel = GradeAwardsBoxModel.getInstance();
-         var _loc3_:InventoryItemInfo = _loc2_.getGradeAwardsBoxInfo();
-         updateGradeAwardsBtn(_loc3_);
+         new GradeAwardsFlyIntoBagView().onFrameClose(infos);
+         var GABModel:GradeAwardsBoxModel = GradeAwardsBoxModel.getInstance();
+         var info:InventoryItemInfo = GABModel.getGradeAwardsBoxInfo();
+         updateGradeAwardsBtn(info);
       }
       
-      public function setHall(param1:HallStateView) : void
+      public function setHall(hall:HallStateView) : void
       {
-         _gradeAwardsBoxSprite.setHall(param1);
-         var _loc2_:InventoryItemInfo = GradeAwardsBoxModel.getInstance().getGradeAwardsBoxInfo();
-         updateGradeAwardsBtn(_loc2_);
+         _gradeAwardsBoxSprite.setHall(hall);
+         var __info:InventoryItemInfo = GradeAwardsBoxModel.getInstance().getGradeAwardsBoxInfo();
+         updateGradeAwardsBtn(__info);
       }
       
-      protected function onGradeAwardsClickHandler(param1:MouseEvent) : void
+      protected function onGradeAwardsClickHandler(me:MouseEvent) : void
       {
-         var _loc3_:InventoryItemInfo = GradeAwardsBoxModel.getInstance().getGradeAwardsBoxInfo();
-         var _loc2_:Number = _loc3_.NeedLevel;
-         var _loc4_:int = GradeAwardsBoxModel.getInstance().canGainGradeAwardsOnButtonClicked(_loc3_);
-         switch(int(_loc4_))
+         var itemInfo:InventoryItemInfo = GradeAwardsBoxModel.getInstance().getGradeAwardsBoxInfo();
+         var gradeAwardsBoxNeedLevel:Number = itemInfo.NeedLevel;
+         var canGainAwards:int = GradeAwardsBoxModel.getInstance().canGainGradeAwardsOnButtonClicked(itemInfo);
+         switch(int(canGainAwards))
          {
             case 0:
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.bagII.GoodsTipPanel.over"));
             case 1:
-               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.hall.gradeBox.needLevel",_loc2_));
+               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.hall.gradeBox.needLevel",gradeAwardsBoxNeedLevel));
                return;
             default:
                _gradeAwardsBoxSprite.hide();
-               if(_loc3_ != null)
+               if(itemInfo != null)
                {
-                  SocketManager.Instance.out.sendItemOpenUp(_loc3_.BagType,_loc3_.Place);
-                  checkLast(_loc3_);
+                  SocketManager.Instance.out.sendItemOpenUp(itemInfo.BagType,itemInfo.Place);
+                  checkLast(itemInfo);
                }
                return;
          }
       }
       
-      protected function onGoodsUpdated(param1:BagEvent) : void
+      protected function onGoodsUpdated(e:BagEvent) : void
       {
          updateGradeAwardsBtn(GradeAwardsBoxModel.getInstance().getGradeAwardsBoxInfo());
       }
       
-      private function updateGradeAwardsBtn(param1:InventoryItemInfo = null) : void
+      private function updateGradeAwardsBtn(info:InventoryItemInfo = null) : void
       {
          if(_gradeAwardsBoxSprite == null)
          {
             return;
          }
-         if(GradeAwardsBoxModel.getInstance().isShowGradeAwardsBtn(param1))
+         if(GradeAwardsBoxModel.getInstance().isShowGradeAwardsBtn(info))
          {
-            _gradeAwardsBoxSprite.show(param1,GradeAwardsBoxModel.getInstance().canGain(param1));
-            onButtonShown(param1);
+            _gradeAwardsBoxSprite.show(info,GradeAwardsBoxModel.getInstance().canGain(info));
+            onButtonShown(info);
          }
          else
          {
             _gradeAwardsBoxSprite.hide();
             onButtonHide();
-            checkLast(param1);
+            checkLast(info);
          }
       }
       
-      private function onButtonShown(param1:InventoryItemInfo) : void
+      private function onButtonShown(info:InventoryItemInfo) : void
       {
-         var _loc2_:* = null;
+         var timeString:* = null;
          if(_gradeAwardsBoxSprite.isVisible)
          {
-            _loc2_ = GradeAwardsBoxModel.getInstance().getRemainTime(param1);
-            _gradeAwardsBoxSprite.updateText(_loc2_);
+            timeString = GradeAwardsBoxModel.getInstance().getRemainTime(info);
+            _gradeAwardsBoxSprite.updateText(timeString);
             if(!RemainingTimeManager.getInstance().isRuning())
             {
                RemainingTimeManager.getInstance().funOnTimer = onTimer;
@@ -133,34 +133,34 @@ package gradeAwardsBoxBtn
       
       private function onTimer() : void
       {
-         var _loc2_:Boolean = false;
-         var _loc1_:* = null;
-         var _loc3_:InventoryItemInfo = GradeAwardsBoxModel.getInstance().getGradeAwardsBoxInfo();
-         if(GradeAwardsBoxModel.getInstance().isShowGradeAwardsBtn(_loc3_))
+         var shining:Boolean = false;
+         var timeString:* = null;
+         var info:InventoryItemInfo = GradeAwardsBoxModel.getInstance().getGradeAwardsBoxInfo();
+         if(GradeAwardsBoxModel.getInstance().isShowGradeAwardsBtn(info))
          {
             if(!_gradeAwardsBoxSprite.isVisible)
             {
-               _loc2_ = GradeAwardsBoxModel.getInstance().canGain(_loc3_);
-               _gradeAwardsBoxSprite.show(_loc3_,_loc2_);
+               shining = GradeAwardsBoxModel.getInstance().canGain(info);
+               _gradeAwardsBoxSprite.show(info,shining);
             }
-            _loc1_ = GradeAwardsBoxModel.getInstance().getRemainTime(_loc3_);
-            _gradeAwardsBoxSprite.updateText(_loc1_);
+            timeString = GradeAwardsBoxModel.getInstance().getRemainTime(info);
+            _gradeAwardsBoxSprite.updateText(timeString);
          }
          else
          {
             RemainingTimeManager.getInstance().stop();
             _gradeAwardsBoxSprite.hide();
-            checkLast(_loc3_);
+            checkLast(info);
          }
       }
       
-      private function checkLast(param1:InventoryItemInfo) : void
+      private function checkLast(itemInfo:InventoryItemInfo) : void
       {
-         if(param1 == null)
+         if(itemInfo == null)
          {
             return;
          }
-         if(GradeAwardsBoxModel.getInstance().isTheLastBoxBtn(param1))
+         if(GradeAwardsBoxModel.getInstance().isTheLastBoxBtn(itemInfo))
          {
             RemainingTimeManager.getInstance().stop();
             _gradeAwardsBoxSprite.removeEventListener("click",onGradeAwardsClickHandler);

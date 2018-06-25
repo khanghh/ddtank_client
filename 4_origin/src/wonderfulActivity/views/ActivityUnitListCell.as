@@ -50,10 +50,10 @@ package wonderfulActivity.views
          addChild(_nameTxt);
       }
       
-      public function setListCellStatus(param1:List, param2:Boolean, param3:int) : void
+      public function setListCellStatus(list:List, isSelected:Boolean, index:int) : void
       {
-         _selectedLight.visible = param2;
-         if(param2)
+         _selectedLight.visible = isSelected;
+         if(isSelected)
          {
             _bg.setFrame(2);
             _nameTxt.setFrame(2);
@@ -70,9 +70,9 @@ package wonderfulActivity.views
          return _data;
       }
       
-      public function setCanAwardStatus(param1:Boolean) : void
+      public function setCanAwardStatus(shine:Boolean) : void
       {
-         if(param1)
+         if(shine)
          {
             if(!_canAwardMc)
             {
@@ -98,9 +98,9 @@ package wonderfulActivity.views
          return _type;
       }
       
-      public function setCellValue(param1:*) : void
+      public function setCellValue(value:*) : void
       {
-         _data = param1 as ActivityCellVo;
+         _data = value as ActivityCellVo;
          _nameTxt.text = _data.activityName;
          _type = _data.viewType;
          setCanAwardStatus(WonderfulActivityManager.Instance.stateDic[_type]);

@@ -72,9 +72,9 @@ package ddt.data.club
          super();
       }
       
-      public function set StoreLevel(param1:int) : void
+      public function set StoreLevel($level:int) : void
       {
-         _storeLevel = param1;
+         _storeLevel = $level;
          dispatchEvent(new Event("richeschange",true));
       }
       
@@ -83,9 +83,9 @@ package ddt.data.club
          return _storeLevel;
       }
       
-      public function set Riches(param1:int) : void
+      public function set Riches(i:int) : void
       {
-         this._riches = param1;
+         this._riches = i;
          dispatchEvent(new Event("richeschange",true));
       }
       
@@ -99,13 +99,13 @@ package ddt.data.club
          return _description;
       }
       
-      public function set Description(param1:String) : void
+      public function set Description(value:String) : void
       {
-         if(_description == param1)
+         if(_description == value)
          {
             return;
          }
-         _description = param1;
+         _description = value;
          dispatchEvent(new Event("descriptionchange"));
       }
       
@@ -114,13 +114,13 @@ package ddt.data.club
          return _placard;
       }
       
-      public function set Placard(param1:String) : void
+      public function set Placard(value:String) : void
       {
-         if(_placard == param1)
+         if(_placard == value)
          {
             return;
          }
-         _placard = param1;
+         _placard = value;
          dispatchEvent(new Event("placardchange"));
       }
    }

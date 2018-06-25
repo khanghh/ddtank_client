@@ -53,22 +53,21 @@ package sevenDouble.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var tmp:* = null;
          titleText = LanguageMgr.GetTranslation("sevenDouble.frame.titleTxt");
          _bg = ComponentFactory.Instance.creatComponentByStylename("sevenDouble.frame.bg");
          addToContent(_bg);
          _bottomBg = ComponentFactory.Instance.creatComponentByStylename("sevenDouble.frame.bottomBg");
          addToContent(_bottomBg);
-         _loc2_ = 0;
-         while(_loc2_ < 3)
+         for(i = 0; i < 3; )
          {
-            _loc1_ = new SevenDoubleFrameItemCell(_loc2_,SevenDoubleControl.instance.dataInfo.carInfo[_loc2_]);
-            _loc1_.x = 8 + (_loc1_.width + 4) * _loc2_;
-            _loc1_.y = 10;
-            addToContent(_loc1_);
-            _cellList.push(_loc1_);
-            _loc2_++;
+            tmp = new SevenDoubleFrameItemCell(i,SevenDoubleControl.instance.dataInfo.carInfo[i]);
+            tmp.x = 8 + (tmp.width + 4) * i;
+            tmp.y = 10;
+            addToContent(tmp);
+            _cellList.push(tmp);
+            i++;
          }
          _countTxt = ComponentFactory.Instance.creatComponentByStylename("sevenDouble.frame.countTxt");
          refreshEnterCountHandler(null);
@@ -102,51 +101,51 @@ package sevenDouble.view
          SevenDoubleManager.instance.addEventListener("sevenDoubleRefreshEnterCount",refreshEnterCountHandler);
       }
       
-      private function refreshEnterCountHandler(param1:Event) : void
+      private function refreshEnterCountHandler(event:Event) : void
       {
-         var _loc3_:* = 0;
+         var tmpCount:* = 0;
          if(_btn)
          {
             _btn.removeEventListener("click",clickHandler);
             ObjectUtils.disposeObject(_btn);
          }
-         var _loc2_:int = SevenDoubleControl.instance.freeCount;
-         if(_loc2_ > 0)
+         var tmpFreeCount:int = SevenDoubleControl.instance.freeCount;
+         if(tmpFreeCount > 0)
          {
             _btn = ComponentFactory.Instance.creatComponentByStylename("sevenDouble.frame.freeBtn");
-            _loc3_ = _loc2_;
+            tmpCount = tmpFreeCount;
          }
          else
          {
             _btn = ComponentFactory.Instance.creatComponentByStylename("sevenDouble.frame.startBtn");
-            _loc3_ = int(SevenDoubleControl.instance.usableCount);
+            tmpCount = int(SevenDoubleControl.instance.usableCount);
          }
          addToContent(_btn);
-         _countTxt.text = "(" + _loc3_ + ")";
+         _countTxt.text = "(" + tmpCount + ")";
       }
       
-      private function endHandler(param1:Event) : void
+      private function endHandler(event:Event) : void
       {
          SocketManager.Instance.out.sendSevenDoubleCancelGame();
          dispose();
       }
       
-      private function enterGameHandler(param1:Event) : void
+      private function enterGameHandler(event:Event) : void
       {
          dispose();
          StateManager.setState("sevenDoubleScene");
       }
       
-      private function startGameHandler(param1:Event) : void
+      private function startGameHandler(event:Event) : void
       {
          _matchView = ComponentFactory.Instance.creatComponentByStylename("sevenDouble.frame.matchView");
          _matchView.show();
          _matchView.addEventListener("response",cancelMatchHandler,false,0,true);
       }
       
-      private function cancelMatchHandler(param1:FrameEvent) : void
+      private function cancelMatchHandler(event:FrameEvent) : void
       {
-         if(param1.responseCode == 1 || param1.responseCode == 4 || param1.responseCode == 0)
+         if(event.responseCode == 1 || event.responseCode == 4 || event.responseCode == 0)
          {
             SoundManager.instance.play("008");
             SocketManager.Instance.out.sendSevenDoubleCancelGame();
@@ -164,11 +163,11 @@ package sevenDouble.view
          }
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(event:MouseEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
+         var tmpNeedMoney:int = 0;
+         var tmpObj:* = null;
+         var confirmFrame:* = null;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -186,75 +185,75 @@ package sevenDouble.view
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("sevenDouble.noEnoughUsableCount"));
                return;
             }
-            _loc3_ = SevenDoubleControl.instance.startGameNeedMoney;
-            _loc2_ = SevenDoubleControl.instance.getBuyRecordStatus(1);
-            if(_loc2_.isNoPrompt)
+            tmpNeedMoney = SevenDoubleControl.instance.startGameNeedMoney;
+            tmpObj = SevenDoubleControl.instance.getBuyRecordStatus(1);
+            if(tmpObj.isNoPrompt)
             {
-               if(_loc2_.isBand && PlayerManager.Instance.Self.BandMoney < _loc3_)
+               if(tmpObj.isBand && PlayerManager.Instance.Self.BandMoney < tmpNeedMoney)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("bindMoneyPoorNote"));
-                  _loc2_.isNoPrompt = false;
+                  tmpObj.isNoPrompt = false;
                }
-               else if(!_loc2_.isBand && PlayerManager.Instance.Self.Money < _loc3_)
+               else if(!tmpObj.isBand && PlayerManager.Instance.Self.Money < tmpNeedMoney)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("moneyPoorNote"));
-                  _loc2_.isNoPrompt = false;
+                  tmpObj.isNoPrompt = false;
                }
                else
                {
-                  SocketManager.Instance.out.sendSevenDoubleStartGame(_loc2_.isBand);
+                  SocketManager.Instance.out.sendSevenDoubleStartGame(tmpObj.isBand);
                   return;
                }
             }
-            _loc4_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("sevenDouble.frame.startGameConfirmTxt",_loc3_),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"SevenDoubleBuyConfirmView",30,true,1);
-            _loc4_.moveEnable = false;
-            _loc4_.addEventListener("response",startConfirm,false,0,true);
+            confirmFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("sevenDouble.frame.startGameConfirmTxt",tmpNeedMoney),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1,null,"SevenDoubleBuyConfirmView",30,true,1);
+            confirmFrame.moveEnable = false;
+            confirmFrame.addEventListener("response",startConfirm,false,0,true);
          }
       }
       
-      private function startConfirm(param1:FrameEvent) : void
+      private function startConfirm(evt:FrameEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
+         var tmpNeedMoney:int = 0;
+         var confirmFrame2:* = null;
+         var tmpObj:* = null;
          SoundManager.instance.play("008");
-         var _loc5_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc5_.removeEventListener("response",startConfirm);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",startConfirm);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            _loc4_ = SevenDoubleControl.instance.startGameNeedMoney;
-            if(_loc5_.isBand && PlayerManager.Instance.Self.BandMoney < _loc4_)
+            tmpNeedMoney = SevenDoubleControl.instance.startGameNeedMoney;
+            if(confirmFrame.isBand && PlayerManager.Instance.Self.BandMoney < tmpNeedMoney)
             {
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("sevenDouble.game.useSkillNoEnoughReConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
-               _loc2_.moveEnable = false;
-               _loc2_.addEventListener("response",startGameReConfirm,false,0,true);
+               confirmFrame2 = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("sevenDouble.game.useSkillNoEnoughReConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,1);
+               confirmFrame2.moveEnable = false;
+               confirmFrame2.addEventListener("response",startGameReConfirm,false,0,true);
                return;
             }
-            if(!_loc5_.isBand && PlayerManager.Instance.Self.Money < _loc4_)
+            if(!confirmFrame.isBand && PlayerManager.Instance.Self.Money < tmpNeedMoney)
             {
                LeavePageManager.showFillFrame();
                return;
             }
-            if((_loc5_ as SevenDoubleBuyConfirmView).isNoPrompt)
+            if((confirmFrame as SevenDoubleBuyConfirmView).isNoPrompt)
             {
-               _loc3_ = SevenDoubleControl.instance.getBuyRecordStatus(1);
-               _loc3_.isNoPrompt = true;
-               _loc3_.isBand = _loc5_.isBand;
+               tmpObj = SevenDoubleControl.instance.getBuyRecordStatus(1);
+               tmpObj.isNoPrompt = true;
+               tmpObj.isBand = confirmFrame.isBand;
             }
-            SocketManager.Instance.out.sendSevenDoubleStartGame(_loc5_.isBand);
+            SocketManager.Instance.out.sendSevenDoubleStartGame(confirmFrame.isBand);
          }
       }
       
-      private function startGameReConfirm(param1:FrameEvent) : void
+      private function startGameReConfirm(evt:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var needMoney:int = 0;
          SoundManager.instance.play("008");
-         var _loc3_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc3_.removeEventListener("response",startGameReConfirm);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",startGameReConfirm);
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            _loc2_ = SevenDoubleControl.instance.startGameNeedMoney;
-            if(PlayerManager.Instance.Self.Money < _loc2_)
+            needMoney = SevenDoubleControl.instance.startGameNeedMoney;
+            if(PlayerManager.Instance.Self.Money < needMoney)
             {
                LeavePageManager.showFillFrame();
                return;
@@ -263,9 +262,9 @@ package sevenDouble.view
          }
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();

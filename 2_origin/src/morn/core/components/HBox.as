@@ -19,38 +19,41 @@ package morn.core.components
       
       override protected function changeItems() : void
       {
-         var _loc6_:Component = null;
-         var _loc1_:Array = [];
-         var _loc2_:* = 0;
-         var _loc3_:int = 0;
-         var _loc4_:int = numChildren;
-         while(_loc3_ < _loc4_)
+         var i:int = 0;
+         var n:int = 0;
+         var item:* = null;
+         var items:Array = [];
+         var maxHeight:* = 0;
+         for(i = 0,n = numChildren; i < n; )
          {
-            _loc6_ = getChildAt(_loc3_) as Component;
-            if(_loc6_)
+            item = getChildAt(i) as Component;
+            if(item)
             {
-               _loc1_.push(_loc6_);
-               _loc2_ = Number(Math.max(_loc2_,_loc6_.displayHeight));
+               items.push(item);
+               maxHeight = Number(Math.max(maxHeight,item.displayHeight));
             }
-            _loc3_++;
+            i++;
          }
-         _loc1_.sortOn(["x"],Array.NUMERIC);
-         var _loc5_:* = 0;
-         for each(_loc6_ in _loc1_)
+         items.sortOn(["x"],16);
+         var left:* = 0;
+         var _loc8_:int = 0;
+         var _loc7_:* = items;
+         for each(item in items)
          {
-            _loc6_.x = _maxX = _loc5_;
-            _loc5_ = Number(_loc5_ + (_loc6_.displayWidth + _space));
-            if(_align == TOP)
+            _maxX = left;
+            item.x = left;
+            left = Number(left + (item.displayWidth + _space));
+            if(_align == "top")
             {
-               _loc6_.y = 0;
+               item.y = 0;
             }
-            else if(_align == MIDDLE)
+            else if(_align == "middle")
             {
-               _loc6_.y = (_loc2_ - _loc6_.displayHeight) * 0.5;
+               item.y = (maxHeight - item.displayHeight) * 0.5;
             }
-            else if(_align == BOTTOM)
+            else if(_align == "bottom")
             {
-               _loc6_.y = _loc2_ - _loc6_.displayHeight;
+               item.y = maxHeight - item.displayHeight;
             }
          }
          changeSize();

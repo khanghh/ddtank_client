@@ -6,7 +6,7 @@ package game.gametrainer.view
    {
        
       
-      public function AnswerItemView(param1:int)
+      public function AnswerItemView($id:int)
       {
          super();
       }

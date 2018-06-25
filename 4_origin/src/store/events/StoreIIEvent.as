@@ -24,11 +24,11 @@ package store.events
       
       public var bool:Boolean;
       
-      public function StoreIIEvent(param1:String, param2:Object = null, param3:Boolean = false, param4:Boolean = false, param5:Boolean = false)
+      public function StoreIIEvent(type:String, obj:Object = null, value:Boolean = false, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         data = param2;
-         bool = param3;
-         super(param1,param4,param5);
+         data = obj;
+         bool = value;
+         super(type,bubbles,cancelable);
       }
    }
 }

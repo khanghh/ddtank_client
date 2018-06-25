@@ -36,18 +36,18 @@ package mark.items
       
       private var _effectContainer:Sprite = null;
       
-      public function MarkChipItem(param1:MarkChipData)
+      public function MarkChipItem(chip:MarkChipData)
       {
-         _chip = param1;
+         _chip = chip;
          super();
       }
       
       override protected function initialize() : void
       {
-         var _loc8_:int = 0;
-         var _loc6_:int = 0;
-         var _loc7_:int = 0;
-         var _loc5_:* = null;
+         var i:int = 0;
+         var j:int = 0;
+         var k:int = 0;
+         var cellBG:* = null;
          tipDirctions = "7,6,2,1,5,4,0,3,6";
          tipGapV = 10;
          tipGapH = 10;
@@ -56,58 +56,55 @@ package mark.items
             dispose();
             return;
          }
-         var _loc4_:MarkChipTemplateData = MarkMgr.inst.model.cfgChip[_chip.templateId];
-         if(!_loc4_)
+         var chipTemplate:MarkChipTemplateData = MarkMgr.inst.model.cfgChip[_chip.templateId];
+         if(!chipTemplate)
          {
             return;
          }
-         var _loc2_:Array = [[startBox11,startBox12,startBox13,startBox14,startBox15],[startBox21,startBox22,startBox23,startBox24,startBox25],[startBox31,startBox32,startBox33,startBox34,startBox35],[startBox41,startBox42,startBox43,startBox44,startBox45],[startBox51,startBox52,startBox53,startBox54,startBox55],[startBox61,startBox62,startBox63,startBox64,startBox65]];
-         var _loc3_:Boolean = false;
-         var _loc1_:Clip = null;
-         _loc8_ = 0;
-         while(_loc8_ < _loc2_.length)
+         var stars:Array = [[startBox11,startBox12,startBox13,startBox14,startBox15],[startBox21,startBox22,startBox23,startBox24,startBox25],[startBox31,startBox32,startBox33,startBox34,startBox35],[startBox41,startBox42,startBox43,startBox44,startBox45],[startBox51,startBox52,startBox53,startBox54,startBox55],[startBox61,startBox62,startBox63,startBox64,startBox65]];
+         var active:Boolean = false;
+         var clip:Clip = null;
+         for(i = 0; i < stars.length; )
          {
-            _loc6_ = 0;
-            while(_loc6_ < _loc2_[_loc8_].length)
+            for(j = 0; j < stars[i].length; )
             {
-               _loc3_ = _loc8_ + 1 == _loc4_.Place && _loc6_ + 1 == _chip.bornLv + _chip.hammerLv;
-               _loc2_[_loc8_][_loc6_].visible = _loc3_;
-               if(_loc3_)
+               active = i + 1 == chipTemplate.Place && j + 1 == _chip.bornLv + _chip.hammerLv;
+               stars[i][j].visible = active;
+               if(active)
                {
-                  _loc7_ = 0;
-                  while(_loc7_ <= _loc6_)
+                  for(k = 0; k <= j; )
                   {
-                     _loc1_ = (_loc2_[_loc8_][_loc6_] as Box).getChildAt(_loc7_) as Clip;
-                     if(_loc1_)
+                     clip = (stars[i][j] as Box).getChildAt(k) as Clip;
+                     if(clip)
                      {
-                        _loc1_.index = _loc7_ < _chip.bornLv?0:1;
+                        clip.index = k < _chip.bornLv?0:1;
                      }
-                     _loc7_++;
+                     k++;
                   }
                }
-               _loc6_++;
+               j++;
             }
-            _loc8_++;
+            i++;
          }
          if(!_cell)
          {
-            _loc5_ = new Shape();
-            _loc5_.graphics.beginFill(16777215,0);
-            _loc5_.graphics.drawRect(0,0,80,80);
-            _loc5_.graphics.endFill();
-            _cell = new BaseCell(_loc5_);
+            cellBG = new Shape();
+            cellBG.graphics.beginFill(16777215,0);
+            cellBG.graphics.drawRect(0,0,80,80);
+            cellBG.graphics.endFill();
+            _cell = new BaseCell(cellBG);
             _cell.setContentSize(80,80);
             itemBox.addChild(_cell);
             _cell.addEventListener("interactive_click",clickHander);
             _cell.addEventListener("interactive_double_click",doubleClickHandler);
             DoubleClickManager.Instance.enableDoubleClick(_cell);
          }
-         _cell.info = ItemManager.Instance.getTemplateById(_loc4_.Id);
+         _cell.info = ItemManager.Instance.getTemplateById(chipTemplate.Id);
          _cell.tipData = null;
          _cell.mouseEnabled = false;
       }
       
-      protected function doubleClickHandler(param1:InteractiveEvent) : void
+      protected function doubleClickHandler(e:InteractiveEvent) : void
       {
          if(!_active)
          {
@@ -118,40 +115,40 @@ package mark.items
             BaglockedManager.Instance.show();
             return;
          }
-         param1.stopImmediatePropagation();
+         e.stopImmediatePropagation();
       }
       
-      private function clickHander(param1:InteractiveEvent) : void
+      private function clickHander(evt:InteractiveEvent) : void
       {
          if(_chip.itemID == 0 || !_active)
          {
             return;
          }
-         var _loc2_:MarkChipMenu = new MarkChipMenu(_chip.itemID);
-         var _loc3_:Point = _cell.parent.localToGlobal(new Point(_cell.x,_cell.y));
-         _loc2_.x = _loc3_.x + 30;
-         _loc2_.y = _loc3_.y + 30;
-         LayerManager.Instance.addToLayer(_loc2_,2);
-         param1.stopImmediatePropagation();
+         var menu:MarkChipMenu = new MarkChipMenu(_chip.itemID);
+         var pos:Point = _cell.parent.localToGlobal(new Point(_cell.x,_cell.y));
+         menu.x = pos.x + 30;
+         menu.y = pos.y + 30;
+         LayerManager.Instance.addToLayer(menu,2);
+         evt.stopImmediatePropagation();
       }
       
-      public function set interactive(param1:Boolean) : void
+      public function set interactive(value:Boolean) : void
       {
-         _active = param1;
+         _active = value;
       }
       
       public function playSuitEffect() : void
       {
-         var _loc1_:Array = [0,0,180,0,180,0,180];
-         var _loc3_:Array = ["","","","asset.mark.blueEffect","asset.mark.purpleEffect","asset.mark.goldEffect"];
-         var _loc2_:MarkChipTemplateData = MarkMgr.inst.model.cfgChip[_chip.templateId];
-         if(!_loc2_ || _loc3_[_loc2_.Character].length == 0)
+         var angles:Array = [0,0,180,0,180,0,180];
+         var effectStr:Array = ["","","","asset.mark.blueEffect","asset.mark.purpleEffect","asset.mark.goldEffect"];
+         var chipTemplate:MarkChipTemplateData = MarkMgr.inst.model.cfgChip[_chip.templateId];
+         if(!chipTemplate || effectStr[chipTemplate.Character].length == 0)
          {
             return;
          }
          if(!_effect)
          {
-            _effect = ComponentFactory.Instance.creat(_loc3_[_loc2_.Character]);
+            _effect = ComponentFactory.Instance.creat(effectStr[chipTemplate.Character]);
             var _loc4_:Boolean = false;
             _effect.mouseEnabled = _loc4_;
             _effect.mouseChildren = _loc4_;
@@ -168,7 +165,7 @@ package mark.items
                   "y":-_effect.height / 2
                });
             }
-            _effectContainer.rotation = _loc1_[_loc2_.Place];
+            _effectContainer.rotation = angles[chipTemplate.Place];
             PositionUtils.setPos(_effectContainer,_effectContainer.rotation != 180?"mark.suitEffectPos1":"mark.suitEffectPos2");
          }
          if(_effect)

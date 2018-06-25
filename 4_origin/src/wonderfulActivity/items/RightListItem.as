@@ -36,11 +36,11 @@ package wonderfulActivity.items
       
       private var _data:ActivityTypeData;
       
-      public function RightListItem(param1:int, param2:ActivityTypeData)
+      public function RightListItem(type:int, data:ActivityTypeData)
       {
          super();
-         _data = param2;
-         init(param1,param2);
+         _data = data;
+         init(type,data);
       }
       
       public function getItemID() : int
@@ -48,11 +48,11 @@ package wonderfulActivity.items
          return _data.ID;
       }
       
-      private function init(param1:int, param2:ActivityTypeData) : void
+      private function init(type:int, data:ActivityTypeData) : void
       {
          _back = ComponentFactory.Instance.creat("wonderfulactivity.listItem");
          addChild(_back);
-         if(param1 == 1)
+         if(type == 1)
          {
             _back.gotoAndStop(1);
          }
@@ -62,9 +62,9 @@ package wonderfulActivity.items
          }
          _nameTxt = ComponentFactory.Instance.creatComponentByStylename("wonderfulactivity.left.nameTxt");
          addChild(_nameTxt);
-         _nameTxt.text = param2.Description.replace(/\{\d+\}/,param2.Condition);
+         _nameTxt.text = data.Description.replace(/\{\d+\}/,data.Condition);
          _nameTxt.y = _back.height / 2 - _nameTxt.height / 2;
-         initGoods(param2);
+         initGoods(data);
       }
       
       public function getBtn() : SimpleBitmapButton
@@ -72,10 +72,10 @@ package wonderfulActivity.items
          return _btn;
       }
       
-      public function initBtnState(param1:int = 1, param2:int = 0) : void
+      public function initBtnState(type:int = 1, num:int = 0) : void
       {
          clearBtn();
-         if(param1 == 0)
+         if(type == 0)
          {
             if(_data.RegetType == 0)
             {
@@ -95,7 +95,7 @@ package wonderfulActivity.items
          }
          if(_data.RegetType == 0)
          {
-            if(param2 == 0)
+            if(num == 0)
             {
                _btn = ComponentFactory.Instance.creatComponentByStylename("wonderfulactivity.bigGetBtn");
             }
@@ -116,60 +116,59 @@ package wonderfulActivity.items
          _btn.addEventListener("click",btnHandler);
       }
       
-      public function setBtnTxt(param1:int) : void
+      public function setBtnTxt(num:int) : void
       {
          if(_btnTxt)
          {
-            _btnTxt.text = "(" + param1 + ")";
+            _btnTxt.text = "(" + num + ")";
          }
       }
       
-      private function btnHandler(param1:MouseEvent) : void
+      private function btnHandler(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.sendWonderfulActivity(1,_data.ID);
       }
       
-      private function initGoods(param1:ActivityTypeData) : void
+      private function initGoods(data:ActivityTypeData) : void
       {
-         var _loc8_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc7_:* = null;
+         var i:int = 0;
+         var cell:* = null;
+         var back:* = null;
+         var info:* = null;
          _goodContent = new Sprite();
          addChild(_goodContent);
-         var _loc5_:Vector.<RechargeData> = FirstRechargeManger.Instance.getGoodsList();
-         var _loc6_:int = _loc5_.length;
-         var _loc2_:int = 0;
-         _loc8_ = 0;
-         while(_loc8_ < _loc6_)
+         var list:Vector.<RechargeData> = FirstRechargeManger.Instance.getGoodsList();
+         var len:int = list.length;
+         var index:int = 0;
+         for(i = 0; i < len; )
          {
-            if(param1.ID == _loc5_[_loc8_].RewardID)
+            if(data.ID == list[i].RewardID)
             {
-               _loc3_ = new BagCell(0);
-               _loc4_ = ComponentFactory.Instance.creat("wonderfulactivity.goods.back");
-               addChild(_loc4_);
-               _loc7_ = new InventoryItemInfo();
-               _loc7_.TemplateID = _loc5_[_loc8_].RewardItemID;
-               _loc7_ = ItemManager.fill(_loc7_);
-               _loc7_.IsBinds = _loc5_[_loc8_].IsBind;
-               _loc7_.ValidDate = _loc5_[_loc8_].RewardItemValid;
-               _loc7_.StrengthenLevel = _loc5_[_loc8_].StrengthenLevel;
-               _loc7_.AttackCompose = _loc5_[_loc8_].AttackCompose;
-               _loc7_.DefendCompose = _loc5_[_loc8_].DefendCompose;
-               _loc7_.AgilityCompose = _loc5_[_loc8_].AgilityCompose;
-               _loc7_.LuckCompose = _loc5_[_loc8_].LuckCompose;
-               _loc3_.info = _loc7_;
-               _loc3_.setBgVisible(false);
-               _loc3_.setCount(_loc5_[_loc8_].RewardItemCount);
-               _loc4_.x = (_loc4_.width + 5) * _loc2_;
-               _loc3_.x = _loc4_.width / 2 - _loc3_.width / 2 + _loc4_.x + 2;
-               _loc3_.y = _loc4_.height / 2 - _loc3_.height / 2 + 1;
-               _goodContent.addChild(_loc4_);
-               _goodContent.addChild(_loc3_);
-               _loc2_++;
+               cell = new BagCell(0);
+               back = ComponentFactory.Instance.creat("wonderfulactivity.goods.back");
+               addChild(back);
+               info = new InventoryItemInfo();
+               info.TemplateID = list[i].RewardItemID;
+               info = ItemManager.fill(info);
+               info.IsBinds = list[i].IsBind;
+               info.ValidDate = list[i].RewardItemValid;
+               info.StrengthenLevel = list[i].StrengthenLevel;
+               info.AttackCompose = list[i].AttackCompose;
+               info.DefendCompose = list[i].DefendCompose;
+               info.AgilityCompose = list[i].AgilityCompose;
+               info.LuckCompose = list[i].LuckCompose;
+               cell.info = info;
+               cell.setBgVisible(false);
+               cell.setCount(list[i].RewardItemCount);
+               back.x = (back.width + 5) * index;
+               cell.x = back.width / 2 - cell.width / 2 + back.x + 2;
+               cell.y = back.height / 2 - cell.height / 2 + 1;
+               _goodContent.addChild(back);
+               _goodContent.addChild(cell);
+               index++;
             }
-            _loc8_++;
+            i++;
          }
          _goodContent.x = 142;
          _goodContent.y = 11;

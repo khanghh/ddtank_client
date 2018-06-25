@@ -40,18 +40,17 @@ package magpieBridge.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < 10)
+         var i:int = 0;
+         var magpie:* = null;
+         for(i = 0; i < 10; )
          {
-            _loc1_ = ComponentFactory.Instance.creat("asset.magpieBridge.magpie");
-            _loc1_.scaleX = _loc2_ % 2 == 0?-1:1;
-            _loc1_.visible = false;
-            PositionUtils.setPos(_loc1_,"magpieBridgeView.magpiePos" + _loc2_);
-            addChild(_loc1_);
-            _magpieVec.push(_loc1_);
-            _loc2_++;
+            magpie = ComponentFactory.Instance.creat("asset.magpieBridge.magpie");
+            magpie.scaleX = i % 2 == 0?-1:1;
+            magpie.visible = false;
+            PositionUtils.setPos(magpie,"magpieBridgeView.magpiePos" + i);
+            addChild(magpie);
+            _magpieVec.push(magpie);
+            i++;
          }
          _magpieVec.reverse();
          _showMagpie = ComponentFactory.Instance.creat("asset.magpieBridge.magpie2");
@@ -75,7 +74,7 @@ package magpieBridge.view
          SocketManager.Instance.addEventListener(PkgEvent.format(276,12),__onPlayMeet);
       }
       
-      protected function __onPlayMeet(param1:PkgEvent) : void
+      protected function __onPlayMeet(event:PkgEvent) : void
       {
          _playMeetFlag = true;
       }
@@ -90,18 +89,17 @@ package magpieBridge.view
       
       private function setMagpieNum() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = MagpieBridgeManager.instance.magpieModel.MagpieNum;
-         _loc1_ = Math.min(_loc1_,_magpieVec.length);
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var i:int = 0;
+         var num:int = MagpieBridgeManager.instance.magpieModel.MagpieNum;
+         num = Math.min(num,_magpieVec.length);
+         for(i = 0; i < num; )
          {
-            _magpieVec[_loc2_].visible = true;
-            _loc2_++;
+            _magpieVec[i].visible = true;
+            i++;
          }
          _showMagpie.stop();
          _showMagpie.visible = false;
-         if(_playMeetFlag && _loc1_ == 10)
+         if(_playMeetFlag && num == 10)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("magpieBridgeView.magpieOverTxt"));
             PositionUtils.setPos(_togetherMovie,"magpieBridgeView.togetherPos");
@@ -126,49 +124,46 @@ package magpieBridge.view
       
       private function resetMagpieState() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _magpieVec.length)
+         var i:int = 0;
+         for(i = 0; i < _magpieVec.length; )
          {
-            _magpieVec[_loc1_].visible = false;
-            _loc1_++;
+            _magpieVec[i].visible = false;
+            i++;
          }
       }
       
-      public function getCurrentMagpiePos(param1:Boolean = false) : Point
+      public function getCurrentMagpiePos(transFlag:Boolean = false) : Point
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < _magpieVec.length)
+         var point:* = null;
+         var i:int = 0;
+         for(i = 0; i < _magpieVec.length; )
          {
-            if(!_magpieVec[_loc3_].visible)
+            if(!_magpieVec[i].visible)
             {
-               if(param1 && _loc3_ % 2 != 0)
+               if(transFlag && i % 2 != 0)
                {
-                  _loc2_ = new Point(_magpieVec[_loc3_].x - _magpieVec[_loc3_].width,_magpieVec[_loc3_].y);
+                  point = new Point(_magpieVec[i].x - _magpieVec[i].width,_magpieVec[i].y);
                }
                else
                {
-                  _loc2_ = new Point(_magpieVec[_loc3_].x,_magpieVec[_loc3_].y);
+                  point = new Point(_magpieVec[i].x,_magpieVec[i].y);
                }
                break;
             }
-            _loc3_++;
+            i++;
          }
-         return _loc2_;
+         return point;
       }
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvent();
-         _loc1_ = 0;
-         while(_loc1_ < _magpieVec.length)
+         for(i = 0; i < _magpieVec.length; )
          {
-            _magpieVec[_loc1_].bitmapData.dispose();
-            _magpieVec[_loc1_] = null;
-            _loc1_++;
+            _magpieVec[i].bitmapData.dispose();
+            _magpieVec[i] = null;
+            i++;
          }
          _magpieVec = null;
          ObjectUtils.disposeObject(_showMagpie);

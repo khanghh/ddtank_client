@@ -51,20 +51,20 @@ package ddtBuried.items
          removeEventListener("click",mouseClickHander);
       }
       
-      public function setGoodsInfo(param1:int, param2:int) : void
+      public function setGoodsInfo(id:int, count:int) : void
       {
-         _tempID = param1;
-         _count = param2;
+         _tempID = id;
+         _count = count;
       }
       
-      public function set isPress(param1:Boolean) : void
+      public function set isPress(bool:Boolean) : void
       {
-         _isPress = param1;
+         _isPress = bool;
       }
       
-      private function mouseClickHander(param1:MouseEvent) : void
+      private function mouseClickHander(event:MouseEvent) : void
       {
-         var _loc2_:int = BuriedControl.Instance.getTakeCardPay();
+         var money:int = BuriedControl.Instance.getTakeCardPay();
          SoundManager.instance.playButtonSound();
          BuriedManager.Instance.currCardIndex = id;
          if(_isPress)
@@ -74,7 +74,7 @@ package ddtBuried.items
          _isPress = true;
          this.mouseChildren = false;
          this.mouseEnabled = false;
-         if(_loc2_ == 0)
+         if(money == 0)
          {
             SocketManager.Instance.out.takeCard();
          }
@@ -92,21 +92,21 @@ package ddtBuried.items
                   _isPress = false;
                   BuriedManager.Instance.setRemindOverCard(false);
                   BuriedManager.Instance.setRemindOverBind(false);
-                  BuriedControl.Instance.showTransactionFrame(LanguageMgr.GetTranslation("buried.alertInfo.rollDice",_loc2_),payForCardHander,clickCallBack);
+                  BuriedControl.Instance.showTransactionFrame(LanguageMgr.GetTranslation("buried.alertInfo.rollDice",money),payForCardHander,clickCallBack);
                   return;
                }
                SocketManager.Instance.out.takeCard(BuriedManager.Instance.getRemindOverBind());
                return;
             }
-            BuriedControl.Instance.showTransactionFrame(LanguageMgr.GetTranslation("buried.alertInfo.rollDice",_loc2_),payForCardHander,clickCallBack,this);
+            BuriedControl.Instance.showTransactionFrame(LanguageMgr.GetTranslation("buried.alertInfo.rollDice",money),payForCardHander,clickCallBack,this);
             this.mouseChildren = true;
             this.mouseEnabled = true;
          }
       }
       
-      private function clickCallBack(param1:Boolean) : void
+      private function clickCallBack(bool:Boolean) : void
       {
-         BuriedManager.Instance.setRemindOverCard(param1);
+         BuriedManager.Instance.setRemindOverCard(bool);
       }
       
       public function play() : void
@@ -116,21 +116,21 @@ package ddtBuried.items
          this.mouseEnabled = false;
       }
       
-      private function payForCardHander(param1:Boolean) : void
+      private function payForCardHander(bool:Boolean) : void
       {
-         var _loc2_:int = BuriedControl.Instance.getTakeCardPay();
-         if(BuriedManager.Instance.checkMoney(param1,_loc2_,SocketManager.Instance.out.takeCard))
+         var money:int = BuriedControl.Instance.getTakeCardPay();
+         if(BuriedManager.Instance.checkMoney(bool,money,SocketManager.Instance.out.takeCard))
          {
             _isPress = false;
             BuriedManager.Instance.setRemindOverCard(false);
-            BuriedControl.Instance.showTransactionFrame(LanguageMgr.GetTranslation("buried.alertInfo.rollDice",_loc2_),payForCardHander,clickCallBack,this);
+            BuriedControl.Instance.showTransactionFrame(LanguageMgr.GetTranslation("buried.alertInfo.rollDice",money),payForCardHander,clickCallBack,this);
             return;
          }
          if(BuriedManager.Instance.getRemindOverCard())
          {
-            BuriedManager.Instance.setRemindOverBind(param1);
+            BuriedManager.Instance.setRemindOverBind(bool);
          }
-         SocketManager.Instance.out.takeCard(param1);
+         SocketManager.Instance.out.takeCard(bool);
       }
       
       private function initView() : void
@@ -146,14 +146,14 @@ package ddtBuried.items
       
       private function initCard() : void
       {
-         var _loc2_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_tempID);
-         var _loc1_:BagCell = new BagCell(0,_loc2_);
-         _loc1_.x = 39;
-         _loc1_.y = 107;
-         _loc1_.setBgVisible(false);
-         _loc1_.setCount(_count);
-         _mc["mc"].addChild(_loc1_);
-         _mc["mc"].goodsName.text = _loc2_.Name;
+         var info:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_tempID);
+         var cell:BagCell = new BagCell(0,info);
+         cell.x = 39;
+         cell.y = 107;
+         cell.setBgVisible(false);
+         cell.setCount(_count);
+         _mc["mc"].addChild(cell);
+         _mc["mc"].goodsName.text = info.Name;
       }
       
       private function takeOver() : void

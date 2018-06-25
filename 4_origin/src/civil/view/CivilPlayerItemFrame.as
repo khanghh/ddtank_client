@@ -52,10 +52,10 @@ package civil.view
       
       private var _attestBtn:ScaleFrameImage;
       
-      public function CivilPlayerItemFrame(param1:int)
+      public function CivilPlayerItemFrame(index:int)
       {
          buttonMode = true;
-         _index = param1;
+         _index = index;
          super();
          init();
       }
@@ -80,9 +80,9 @@ package civil.view
          addChild(_stateIcon);
       }
       
-      public function set info(param1:CivilPlayerInfo) : void
+      public function set info(info:CivilPlayerInfo) : void
       {
-         _info = param1;
+         _info = info;
          upView();
          addEvent();
       }
@@ -106,21 +106,21 @@ package civil.view
          PlayerManager.Instance.Self.removeEventListener("propertychange",__offerChange);
       }
       
-      private function __offerChange(param1:PlayerPropertyEvent) : void
+      private function __offerChange(evt:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["isVip"])
+         if(evt.changedProperties["isVip"])
          {
             upView();
          }
       }
       
-      private function __clickHandle(param1:MouseEvent) : void
+      private function __clickHandle(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispatchEvent(new CivilEvent("selectclickitem",this));
       }
       
-      private function __overHandle(param1:MouseEvent) : void
+      private function __overHandle(e:MouseEvent) : void
       {
          if(!_selected)
          {
@@ -128,7 +128,7 @@ package civil.view
          }
       }
       
-      private function __outHandle(param1:MouseEvent) : void
+      private function __outHandle(e:MouseEvent) : void
       {
          if(!_selected)
          {
@@ -141,11 +141,11 @@ package civil.view
          return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(val:Boolean) : void
       {
-         if(_selected != param1)
+         if(_selected != val)
          {
-            _selected = param1;
+            _selected = val;
             _selectEffect.visible = _selected;
          }
       }

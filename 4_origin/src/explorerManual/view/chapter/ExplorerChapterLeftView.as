@@ -60,11 +60,11 @@ package explorerManual.view.chapter
       
       private var iconSprite:Sprite;
       
-      public function ExplorerChapterLeftView(param1:ExplorerManualInfo, param2:ExplorerManualController)
+      public function ExplorerChapterLeftView(model:ExplorerManualInfo, ctrl:ExplorerManualController)
       {
          super();
-         _model = param1;
-         _ctrl = param2;
+         _model = model;
+         _ctrl = ctrl;
          initView();
          initEvent();
       }
@@ -157,19 +157,19 @@ package explorerManual.view.chapter
          PlayerManager.Instance.Self.PropBag.removeEventListener("update",__updateBag);
       }
       
-      private function __materialSelectClickHandler(param1:MouseEvent) : void
+      private function __materialSelectClickHandler(evt:MouseEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var shopItemInfo:* = null;
+         var price:* = null;
          if(_materialSelectBtn.selected)
          {
-            _loc3_ = ShopManager.Instance.getShopItemByGoodsID(_model.upgradeCondition.materialCondition.Parameter3);
-            _loc2_ = LanguageMgr.GetTranslation("explorerManual.materialBuy.prompt",_loc3_.getItemPrice(0).bothMoneyValue);
-            AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),_loc2_,LanguageMgr.GetTranslation("ok"),"",true,true,false,2);
+            shopItemInfo = ShopManager.Instance.getShopItemByGoodsID(_model.upgradeCondition.materialCondition.Parameter3);
+            price = LanguageMgr.GetTranslation("explorerManual.materialBuy.prompt",shopItemInfo.getItemPrice(0).bothMoneyValue);
+            AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),price,LanguageMgr.GetTranslation("ok"),"",true,true,false,2);
          }
       }
       
-      private function __startUpgradeHandler(param1:MouseEvent) : void
+      private function __startUpgradeHandler(evt:MouseEvent) : void
       {
          if(checkCanClick())
          {
@@ -188,11 +188,11 @@ package explorerManual.view.chapter
          }
       }
       
-      private function __manualUpgradeComplete(param1:Event) : void
+      private function __manualUpgradeComplete(evt:Event) : void
       {
       }
       
-      private function __autoUpgradeHandler(param1:MouseEvent) : void
+      private function __autoUpgradeHandler(evt:MouseEvent) : void
       {
          if(checkCanClick())
          {
@@ -213,39 +213,39 @@ package explorerManual.view.chapter
       
       private function isCanUpgrade() : Boolean
       {
-         var _loc3_:int = _model.upgradeCondition.materialCondition.Parameter2;
-         var _loc2_:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(_model.upgradeCondition.materialCondition.Parameter1);
-         var _loc1_:* = _loc2_ >= _loc3_;
-         if(!_loc1_)
+         var needN:int = _model.upgradeCondition.materialCondition.Parameter2;
+         var haveN:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(_model.upgradeCondition.materialCondition.Parameter1);
+         var result:* = haveN >= needN;
+         if(!result)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("explorerManual.chapterView.upgradeMaterialNotEnough"));
          }
-         return _loc1_;
+         return result;
       }
       
       private function checkCanClick() : Boolean
       {
-         var _loc1_:Number = new Date().time;
-         if(_loc1_ - _clickNum < 1000)
+         var nowTime:Number = new Date().time;
+         if(nowTime - _clickNum < 1000)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.storeIIStrength.startStrengthClickTimerMsg"),0,true);
             return false;
          }
-         _clickNum = _loc1_;
+         _clickNum = nowTime;
          return true;
       }
       
-      private function __manualProgressUpdateHandler(param1:Event) : void
+      private function __manualProgressUpdateHandler(evt:Event) : void
       {
          updateProgress();
       }
       
-      private function __manualProUpdateHandler(param1:Event) : void
+      private function __manualProUpdateHandler(evt:Event) : void
       {
          updatePro();
       }
       
-      private function __modelUpdateHandler(param1:Event) : void
+      private function __modelUpdateHandler(evt:Event) : void
       {
          updatePro();
          updateProgress();
@@ -254,7 +254,7 @@ package explorerManual.view.chapter
          updateManualConditionDes();
       }
       
-      private function __manualLevelChangle(param1:Event) : void
+      private function __manualLevelChangle(evt:Event) : void
       {
          updateUpgradeMaterial();
          updateManualIcon();
@@ -263,40 +263,40 @@ package explorerManual.view.chapter
       
       private function updateManualConditionDes() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
+         var tartCount:int = 0;
+         var compleCount:int = 0;
          _conditionTxt.text = LanguageMgr.GetTranslation("explorerManual.manualUpgradeCondition.txt");
-         var _loc1_:* = true;
+         var isMaxLev:* = true;
          if(_model.upgradeCondition.upgradeCondition != null)
          {
-            _loc3_ = _model.upgradeCondition.targetCount;
-            _loc2_ = _model.conditionCount;
-            _conditionTxt.text = _conditionTxt.text + (_model.upgradeCondition.upgradeCondition.Describe + " " + (_loc2_ + "/" + _loc3_));
+            tartCount = _model.upgradeCondition.targetCount;
+            compleCount = _model.conditionCount;
+            _conditionTxt.text = _conditionTxt.text + (_model.upgradeCondition.upgradeCondition.Describe + " " + (compleCount + "/" + tartCount));
          }
          else
          {
             _conditionTxt.text = _conditionTxt.text + LanguageMgr.GetTranslation("tank.room.RoomIIPlayerItem.new");
-            _loc2_ = 0;
-            _loc3_ = 1;
-            _loc1_ = ExplorerManualManager.instance.getManualProInfoByLev(_model.manualLev + 1) == null;
-            if(iconSprite && _loc1_)
+            compleCount = 0;
+            tartCount = 1;
+            isMaxLev = ExplorerManualManager.instance.getManualProInfoByLev(_model.manualLev + 1) == null;
+            if(iconSprite && isMaxLev)
             {
                iconSprite.removeEventListener("click",__materialClickHandler);
                iconSprite.buttonMode = false;
                iconSprite.mouseEnabled = false;
             }
          }
-         updateBtn(_loc2_ >= _loc3_ || !_loc1_);
+         updateBtn(compleCount >= tartCount || !isMaxLev);
       }
       
-      private function updateBtn(param1:Boolean) : void
+      private function updateBtn(canClick:Boolean) : void
       {
          if(_startUpgradeBtn && _autoUpgradeBtn)
          {
-            var _loc2_:* = param1;
+            var _loc2_:* = canClick;
             _autoUpgradeBtn.enable = _loc2_;
             _startUpgradeBtn.enable = _loc2_;
-            _materialSelectBtn.enable = param1;
+            _materialSelectBtn.enable = canClick;
          }
       }
       
@@ -307,8 +307,8 @@ package explorerManual.view.chapter
             ObjectUtils.disposeObject(_manualIcon);
             _manualIcon = null;
          }
-         var _loc1_:int = Math.min(int((_model.manualLev - 1) / 5) + 1,4);
-         _manualIcon = ComponentFactory.Instance.creat("asset.explorerManual.manualIcon" + _loc1_);
+         var type:int = Math.min(int((_model.manualLev - 1) / 5) + 1,4);
+         _manualIcon = ComponentFactory.Instance.creat("asset.explorerManual.manualIcon" + type);
          addChild(_manualIcon);
          PositionUtils.setPos(_manualIcon,"explorerManual.leftChapter.manualIconPos");
       }
@@ -331,8 +331,8 @@ package explorerManual.view.chapter
          addChild(iconSprite);
          iconSprite.x = 112;
          iconSprite.y = 398;
-         var _loc1_:int = _model.upgradeCondition.materialCondition == null?11183:_model.upgradeCondition.materialCondition.Parameter1;
-         _materialIcon = ComponentFactory.Instance.creat("asset.explorerManual.upgradeMaterial" + _loc1_);
+         var materialID:int = _model.upgradeCondition.materialCondition == null?11183:_model.upgradeCondition.materialCondition.Parameter1;
+         _materialIcon = ComponentFactory.Instance.creat("asset.explorerManual.upgradeMaterial" + materialID);
          iconSprite.addChild(_materialIcon);
          iconSprite.addEventListener("click",__materialClickHandler);
          updateMaterialCount();
@@ -352,21 +352,21 @@ package explorerManual.view.chapter
       
       private function get getMaterCountTxt() : String
       {
-         var _loc1_:* = null;
-         var _loc3_:int = _model.upgradeCondition.materialCondition.Parameter2;
-         var _loc2_:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(_model.upgradeCondition.materialCondition.Parameter1);
-         if(_loc3_ > _loc2_)
+         var result:* = null;
+         var needN:int = _model.upgradeCondition.materialCondition.Parameter2;
+         var haveN:int = PlayerManager.Instance.Self.getBag(1).getItemCountByTemplateId(_model.upgradeCondition.materialCondition.Parameter1);
+         if(needN > haveN)
          {
-            _loc1_ = "<FONT FACE=\'Arial\' SIZE=\'14\' COLOR=\'#FF0000\' ><B>" + _loc2_ + "</B></FONT>" + "/" + _loc3_;
+            result = "<FONT FACE=\'Arial\' SIZE=\'14\' COLOR=\'#FF0000\' ><B>" + haveN + "</B></FONT>" + "/" + needN;
          }
          else
          {
-            _loc1_ = _loc2_ + "/" + _loc3_;
+            result = haveN + "/" + needN;
          }
-         return _loc1_;
+         return result;
       }
       
-      private function __materialClickHandler(param1:MouseEvent) : void
+      private function __materialClickHandler(evt:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
@@ -374,14 +374,14 @@ package explorerManual.view.chapter
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:BuySingleGoodsView = new BuySingleGoodsView(-1);
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
-         _loc2_.isDisCount = false;
-         _loc2_.goodsID = int(_model.upgradeCondition.materialCondition.Parameter3);
-         _loc2_.numberSelecter.valueLimit = "";
+         var _buyFrame:BuySingleGoodsView = new BuySingleGoodsView(-1);
+         LayerManager.Instance.addToLayer(_buyFrame,3,true,1);
+         _buyFrame.isDisCount = false;
+         _buyFrame.goodsID = int(_model.upgradeCondition.materialCondition.Parameter3);
+         _buyFrame.numberSelecter.valueLimit = "";
       }
       
-      private function __updateBag(param1:BagEvent) : void
+      private function __updateBag(evt:BagEvent) : void
       {
          updateMaterialCount();
       }

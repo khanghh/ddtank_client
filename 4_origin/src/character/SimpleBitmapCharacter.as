@@ -24,16 +24,16 @@ package character
       
       protected var _soundEnabled:Boolean = false;
       
-      public function SimpleBitmapCharacter(param1:BitmapData, param2:XML = null, param3:String = "", param4:Number = 0, param5:Number = 0, param6:String = "original", param7:Boolean = false)
+      public function SimpleBitmapCharacter(source:BitmapData, $description:XML = null, label:String = "", $width:Number = 0, $height:Number = 0, $rendmode:String = "original", autoStop:Boolean = false)
       {
          this._registerPoint = new Point(0,0);
          this._actionSet = new ActionSet();
-         if(param2)
+         if($description)
          {
-            this.description = param2;
+            this.description = $description;
          }
-         this._label = param3;
-         super(param4,param5,param1,null,param6,param7);
+         this._label = label;
+         super($width,$height,source,null,$rendmode,autoStop);
          _type = CharacterType.SIMPLE_BITMAP_TYPE;
       }
       
@@ -42,64 +42,64 @@ package character
          return this._soundEnabled;
       }
       
-      private function set _164832462soundEnabled(param1:Boolean) : void
+      private function set _164832462soundEnabled(value:Boolean) : void
       {
-         if(this._soundEnabled == param1)
+         if(this._soundEnabled == value)
          {
             return;
          }
-         this._soundEnabled = param1;
+         this._soundEnabled = value;
       }
       
-      public function getActionFrames(param1:String) : int
+      public function getActionFrames(action:String) : int
       {
-         var _loc2_:BaseAction = this._actionSet.getAction(param1);
-         if(_loc2_)
+         var act:BaseAction = this._actionSet.getAction(action);
+         if(act)
          {
-            return _loc2_.len;
+            return act.len;
          }
          return 0;
       }
       
-      public function set description(param1:XML) : void
+      public function set description(des:XML) : void
       {
-         var _loc3_:XML = null;
-         var _loc4_:String = null;
-         var _loc5_:Array = null;
-         var _loc6_:SimpleFrameAction = null;
-         this._label = param1.@label;
-         if(param1.hasOwnProperty("@registerX"))
+         var action:XML = null;
+         var r:String = null;
+         var ar:Array = null;
+         var a:SimpleFrameAction = null;
+         this._label = des.@label;
+         if(des.hasOwnProperty("@registerX"))
          {
-            this._registerPoint.x = param1.@registerX;
+            this._registerPoint.x = des.@registerX;
          }
-         if(param1.hasOwnProperty("@registerY"))
+         if(des.hasOwnProperty("@registerY"))
          {
-            this._registerPoint.y = param1.@registerY;
+            this._registerPoint.y = des.@registerY;
          }
-         if(param1.hasOwnProperty("@rect"))
+         if(des.hasOwnProperty("@rect"))
          {
-            _loc4_ = String(param1.@rect);
+            r = String(des.@rect);
             this._rect = new Rectangle();
-            _loc5_ = _loc4_.split("|");
-            this._rect.x = _loc5_[0];
-            this._rect.y = _loc5_[1];
-            this._rect.width = _loc5_[2];
-            this._rect.height = _loc5_[3];
+            ar = r.split("|");
+            this._rect.x = ar[0];
+            this._rect.y = ar[1];
+            this._rect.width = ar[2];
+            this._rect.height = ar[3];
          }
-         var _loc2_:XMLList = param1..action;
-         for each(_loc3_ in _loc2_)
+         var actions:XMLList = des..action;
+         for each(action in actions)
          {
-            _loc6_ = new SimpleFrameAction(CharacterUtils.creatFrames(_loc3_.@frames),_loc3_.@name,_loc3_.@next,_loc3_.@priority);
-            this._actionSet.addAction(_loc6_);
-            _loc6_.endStop = String(_loc3_.@endStop) == "true";
-            _loc6_.sound = _loc3_.@sound;
+            a = new SimpleFrameAction(CharacterUtils.creatFrames(action.@frames),action.@name,action.@next,action.@priority);
+            this._actionSet.addAction(a);
+            a.endStop = String(action.@endStop) == "true";
+            a.sound = action.@sound;
          }
          this._currentAction = this._actionSet.currentAction as SimpleFrameAction;
       }
       
-      private function set _102727412label(param1:String) : void
+      private function set _102727412label(value:String) : void
       {
-         this._label = param1;
+         this._label = value;
       }
       
       public function get label() : String
@@ -107,19 +107,19 @@ package character
          return this._label;
       }
       
-      public function hasAction(param1:String) : Boolean
+      public function hasAction(action:String) : Boolean
       {
-         return this._actionSet.getAction(param1) != null;
+         return this._actionSet.getAction(action) != null;
       }
       
-      public function addAction(param1:BaseAction) : void
+      public function addAction(action:BaseAction) : void
       {
-         if(param1 is SimpleFrameAction)
+         if(action is SimpleFrameAction)
          {
-            this._actionSet.addAction(param1);
+            this._actionSet.addAction(action);
             if(this._currentAction == null)
             {
-               this._currentAction = param1 as SimpleFrameAction;
+               this._currentAction = action as SimpleFrameAction;
                this.doAction(this._currentAction.name);
             }
             return;
@@ -132,26 +132,26 @@ package character
          return this._actionSet.actions;
       }
       
-      public function removeAction(param1:String) : void
+      public function removeAction(action:String) : void
       {
-         this._actionSet.removeAction(param1);
+         this._actionSet.removeAction(action);
          dispatchEvent(new CharacterEvent(CharacterEvent.REMOVE_ACTION));
       }
       
-      public function doAction(param1:String) : void
+      public function doAction(action:String) : void
       {
          play();
-         var _loc2_:SimpleFrameAction = this._actionSet.getAction(param1) as SimpleFrameAction;
-         if(_loc2_ == null)
+         var a:SimpleFrameAction = this._actionSet.getAction(action) as SimpleFrameAction;
+         if(a == null)
          {
             return;
          }
          if(this._currentAction)
          {
-            if(_loc2_.priority >= this._currentAction.priority)
+            if(a.priority >= this._currentAction.priority)
             {
-               this._currentAction = _loc2_;
-               _frames = _loc2_.frames;
+               this._currentAction = a;
+               _frames = a.frames;
                _len = _frames.length;
                _index = 0;
                _autoStop = this._currentAction.endStop;
@@ -163,8 +163,8 @@ package character
          }
          else
          {
-            this._currentAction = _loc2_;
-            _frames = _loc2_.frames;
+            this._currentAction = a;
+            _frames = a.frames;
             _len = _frames.length;
             _index = 0;
             _autoStop = this._currentAction.endStop;
@@ -203,17 +203,17 @@ package character
       
       override public function toXml() : XML
       {
-         var _loc1_:XML = <character></character>;
-         _loc1_.@type = _type;
-         _loc1_.@resource = _sourceName;
-         _loc1_.@width = _itemWidth;
-         _loc1_.@height = _itemHeight;
-         _loc1_.@label = this._label;
-         _loc1_.@registerX = this._registerPoint.x;
-         _loc1_.@registerY = this._registerPoint.y;
-         _loc1_.@rect = [this.rect.x,this.rect.y,this.rect.width,this.rect.height].join("|");
-         _loc1_.appendChild(this._actionSet.toXml());
-         return _loc1_;
+         var result:XML = <character></character>;
+         result.@type = _type;
+         result.@resource = _sourceName;
+         result.@width = _itemWidth;
+         result.@height = _itemHeight;
+         result.@label = this._label;
+         result.@registerX = this._registerPoint.x;
+         result.@registerY = this._registerPoint.y;
+         result.@rect = [this.rect.x,this.rect.y,this.rect.width,this.rect.height].join("|");
+         result.appendChild(this._actionSet.toXml());
+         return result;
       }
       
       override public function dispose() : void

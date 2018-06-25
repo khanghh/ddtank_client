@@ -10,9 +10,9 @@ package petsBag.data
       
       private var _data:DictionaryData;
       
-      public function PetAtlasAnalyzer(param1:Function)
+      public function PetAtlasAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
       public function get data() : DictionaryData
@@ -20,29 +20,28 @@ package petsBag.data
          return _data;
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc4_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
+         var xmllist:* = null;
+         var i:int = 0;
+         var item:* = null;
          _data = new DictionaryData();
-         var _loc3_:XML = new XML(param1);
-         if(_loc3_.@value == "true")
+         var xml:XML = new XML(data);
+         if(xml.@value == "true")
          {
-            _loc4_ = _loc3_.item;
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_.length())
+            xmllist = xml.item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc2_ = new PetAtlasInfo();
-               ObjectUtils.copyPorpertiesByXML(_loc2_,_loc4_[_loc5_]);
-               _data.add(_loc2_.ID,_loc2_);
-               _loc5_++;
+               item = new PetAtlasInfo();
+               ObjectUtils.copyPorpertiesByXML(item,xmllist[i]);
+               _data.add(item.ID,item);
+               i++;
             }
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc3_.@message;
+            message = xml.@message;
             onAnalyzeError();
          }
       }

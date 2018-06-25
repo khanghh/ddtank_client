@@ -43,120 +43,119 @@ package shop.manager
          return _instance;
       }
       
-      public static function calcPrices(param1:Vector.<ShopCarItemInfo>, param2:Array = null) : Array
+      public static function calcPrices(list:Vector.<ShopCarItemInfo>, isBindList:Array = null) : Array
       {
-         var _loc7_:int = 0;
-         var _loc8_:ItemPrice = new ItemPrice(null,null,null);
-         var _loc3_:int = 0;
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         _loc7_ = 0;
-         while(_loc7_ < param1.length)
+         var i:int = 0;
+         var totalPrice:ItemPrice = new ItemPrice(null,null,null);
+         var g:int = 0;
+         var m:int = 0;
+         var l:int = 0;
+         var b:int = 0;
+         for(i = 0; i < list.length; )
          {
-            if(param2 && param2[_loc7_])
+            if(isBindList && isBindList[i])
             {
-               _loc8_.addItemPrice(param1[_loc7_].getCurrentPrice(),param2[_loc7_]);
+               totalPrice.addItemPrice(list[i].getCurrentPrice(),isBindList[i]);
             }
             else
             {
-               _loc8_.addItemPrice(param1[_loc7_].getCurrentPrice());
+               totalPrice.addItemPrice(list[i].getCurrentPrice());
             }
-            _loc7_++;
+            i++;
          }
-         _loc3_ = _loc8_.goldValue;
-         _loc6_ = _loc8_.bothMoneyValue;
-         _loc5_ = _loc8_.ddtPetScoreValue;
-         _loc4_ = _loc8_.bandDdtMoneyValue;
-         return [_loc3_,_loc6_,_loc5_,_loc4_];
+         g = totalPrice.goldValue;
+         m = totalPrice.bothMoneyValue;
+         l = totalPrice.ddtPetScoreValue;
+         b = totalPrice.bandDdtMoneyValue;
+         return [g,m,l,b];
       }
       
-      public function buy(param1:int, param2:int = 1, param3:int = 1, param4:Boolean = false) : void
+      public function buy($goodsID:int, isDiscount:int = 1, type:int = 1, isSale:Boolean = false) : void
       {
-         view = new BuySingleGoodsView(param3);
+         view = new BuySingleGoodsView(type);
          LayerManager.Instance.addToLayer(view,3,true,1);
-         BuySingleGoodsView(view).isDisCount = param2 == 1?false:true;
-         BuySingleGoodsView(view).isSale = param4;
-         BuySingleGoodsView(view).goodsID = param1;
+         BuySingleGoodsView(view).isDisCount = isDiscount == 1?false:true;
+         BuySingleGoodsView(view).isSale = isSale;
+         BuySingleGoodsView(view).goodsID = $goodsID;
       }
       
-      public function buyFarmShop(param1:int) : void
+      public function buyFarmShop($goodsID:int) : void
       {
          farmview = ComponentFactory.Instance.creatComponentByStylename("farm.farmShopPayPnl.shopPay");
-         FarmShopPayPnl(farmview).goodsID = param1;
+         FarmShopPayPnl(farmview).goodsID = $goodsID;
          LayerManager.Instance.addToLayer(farmview,3,true,1);
       }
       
-      public function buyAvatar(param1:PlayerInfo) : void
+      public function buyAvatar(info:PlayerInfo) : void
       {
-         var _loc4_:* = null;
-         var _loc6_:* = null;
-         var _loc2_:Array = [];
-         var _loc5_:Vector.<ShopCarItemInfo> = new Vector.<ShopCarItemInfo>();
-         if(param1.Bag.items[0])
+         var shopitem:* = null;
+         var shopCarItem:* = null;
+         var items:Array = [];
+         var buyArr:Vector.<ShopCarItemInfo> = new Vector.<ShopCarItemInfo>();
+         if(info.Bag.items[0])
          {
-            _loc2_.push(param1.Bag.items[0]);
+            items.push(info.Bag.items[0]);
          }
-         if(param1.Bag.items[1])
+         if(info.Bag.items[1])
          {
-            _loc2_.push(param1.Bag.items[1]);
+            items.push(info.Bag.items[1]);
          }
-         if(param1.Bag.items[2])
+         if(info.Bag.items[2])
          {
-            _loc2_.push(param1.Bag.items[2]);
+            items.push(info.Bag.items[2]);
          }
-         if(param1.Bag.items[3])
+         if(info.Bag.items[3])
          {
-            _loc2_.push(param1.Bag.items[3]);
+            items.push(info.Bag.items[3]);
          }
-         if(param1.Bag.items[4])
+         if(info.Bag.items[4])
          {
-            _loc2_.push(param1.Bag.items[4]);
+            items.push(info.Bag.items[4]);
          }
-         if(param1.Bag.items[5])
+         if(info.Bag.items[5])
          {
-            _loc2_.push(param1.Bag.items[5]);
+            items.push(info.Bag.items[5]);
          }
-         if(param1.Bag.items[11])
+         if(info.Bag.items[11])
          {
-            _loc2_.push(param1.Bag.items[11]);
+            items.push(info.Bag.items[11]);
          }
-         if(param1.Bag.items[13])
+         if(info.Bag.items[13])
          {
-            _loc2_.push(param1.Bag.items[13]);
+            items.push(info.Bag.items[13]);
          }
          var _loc8_:int = 0;
-         var _loc7_:* = _loc2_;
-         for each(var _loc3_ in _loc2_)
+         var _loc7_:* = items;
+         for each(var item in items)
          {
-            _loc4_ = ShopManager.Instance.getMoneyShopItemByTemplateID(_loc3_.TemplateID,true);
-            if(_loc4_ == null)
+            shopitem = ShopManager.Instance.getMoneyShopItemByTemplateID(item.TemplateID,true);
+            if(shopitem == null)
             {
-               _loc4_ = ShopManager.Instance.getGiftShopItemByTemplateID(_loc3_.TemplateID,true);
+               shopitem = ShopManager.Instance.getGiftShopItemByTemplateID(item.TemplateID,true);
             }
-            if(_loc4_ != null)
+            if(shopitem != null)
             {
-               _loc6_ = new ShopCarItemInfo(_loc4_.GoodsID,_loc4_.TemplateID);
-               ObjectUtils.copyProperties(_loc6_,_loc4_);
-               _loc6_.Color = _loc3_.Color;
-               _loc6_.skin = _loc3_.Skin;
-               _loc5_.push(_loc6_);
+               shopCarItem = new ShopCarItemInfo(shopitem.GoodsID,shopitem.TemplateID);
+               ObjectUtils.copyProperties(shopCarItem,shopitem);
+               shopCarItem.Color = item.Color;
+               shopCarItem.skin = item.Skin;
+               buyArr.push(shopCarItem);
             }
          }
-         if(_loc5_.length == 0 || _loc5_.length < _loc2_.length)
+         if(buyArr.length == 0 || buyArr.length < items.length)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.buyAvatarFail"));
          }
-         if(_loc5_.length > 0)
+         if(buyArr.length > 0)
          {
-            buyMutiGoods(_loc5_);
+            buyMutiGoods(buyArr);
          }
       }
       
-      public function buyMutiGoods(param1:Vector.<ShopCarItemInfo>) : void
+      public function buyMutiGoods(goods:Vector.<ShopCarItemInfo>) : void
       {
          view = new BuyMultiGoodsView();
-         BuyMultiGoodsView(view).setGoods(param1);
+         BuyMultiGoodsView(view).setGoods(goods);
          BuyMultiGoodsView(view).show();
       }
       

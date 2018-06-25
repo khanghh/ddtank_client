@@ -34,7 +34,7 @@ package ddt.manager
       
       private var _shopRealTimesDisCountGoods:Dictionary;
       
-      public function ShopManager(param1:SingletonEnfocer)
+      public function ShopManager(singleton:SingletonEnfocer)
       {
          super();
       }
@@ -48,9 +48,9 @@ package ddt.manager
          return _instance;
       }
       
-      public function setup(param1:ShopItemAnalyzer) : void
+      public function setup(analyzer:ShopItemAnalyzer) : void
       {
-         _shopGoods = param1.shopinfolist;
+         _shopGoods = analyzer.shopinfolist;
          initialized = true;
          SocketManager.Instance.addEventListener(PkgEvent.format(168),__updateGoodsCount);
          SocketManager.Instance.addEventListener(PkgEvent.format(109),__updateGoodsDisCount);
@@ -58,472 +58,480 @@ package ddt.manager
          SocketManager.Instance.addEventListener(PkgEvent.format(528),__syncLimitShopList);
       }
       
-      private function __syncLimitShopList(param1:PkgEvent) : void
+      private function __syncLimitShopList(evt:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc6_:int = param1.pkg.readInt();
-         var _loc4_:int = 0;
-         var _loc3_:ShopItemInfo = null;
-         _loc5_ = 0;
-         while(_loc5_ < _loc6_)
+         var i:int = 0;
+         var shopType:int = evt.pkg.readInt();
+         var size:int = evt.pkg.readInt();
+         var goodId:int = 0;
+         var goodInfo:ShopItemInfo = null;
+         for(i = 0; i < size; )
          {
-            _loc4_ = param1.pkg.readInt();
-            _loc3_ = getShopItemByGoodsID(_loc4_);
-            if(_loc3_)
+            goodId = evt.pkg.readInt();
+            goodInfo = getShopItemByGoodsID(goodId);
+            if(goodInfo)
             {
-               _loc3_.personalBuyCnt = Math.max(0,_loc3_.LimitPersonalCount - param1.pkg.readInt());
+               goodInfo.personalBuyCnt = Math.max(0,goodInfo.LimitPersonalCount - evt.pkg.readInt());
             }
             else
             {
-               param1.pkg.readInt();
+               evt.pkg.readInt();
             }
-            _loc5_++;
+            i++;
          }
-         dispatchEvent(new CEvent("updatePersonalLimitShop",_loc2_));
+         dispatchEvent(new CEvent("updatePersonalLimitShop",shopType));
       }
       
-      public function updateShopGoods(param1:ShopItemAnalyzer) : void
+      public function updateShopGoods(analyzer:ShopItemAnalyzer) : void
       {
-         _shopGoods = param1.shopinfolist;
+         _shopGoods = analyzer.shopinfolist;
       }
       
-      public function sortShopItems(param1:ShopItemSortAnalyzer) : void
+      public function sortShopItems(analyzer:ShopItemSortAnalyzer) : void
       {
-         _shopSortList = param1.shopSortedGoods;
+         _shopSortList = analyzer.shopSortedGoods;
       }
       
-      private function __shopBuyLimitedCountHandler(param1:PkgEvent) : void
+      private function __shopBuyLimitedCountHandler(evt:PkgEvent) : void
       {
-         var _loc6_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc4_:int = _loc5_.readInt();
-         if(_loc4_ > 0)
+         var i:int = 0;
+         var id:int = 0;
+         var count:int = 0;
+         var pkg:PackageIn = evt.pkg;
+         var length:int = pkg.readInt();
+         if(length > 0)
          {
-            _loc6_ = 0;
-            while(_loc6_ < _loc4_)
+            for(i = 0; i < length; )
             {
-               _loc2_ = _loc5_.readInt();
-               _loc3_ = _loc5_.readInt();
-               if(_shopGoods[_loc2_])
+               id = pkg.readInt();
+               count = pkg.readInt();
+               if(_shopGoods[id])
                {
-                  ShopItemInfo(_shopGoods[_loc2_]).LimitAreaCount = _loc3_;
+                  ShopItemInfo(_shopGoods[id]).LimitAreaCount = count;
                }
-               _loc6_++;
+               i++;
             }
             dispatchEvent(new ShopEvent("updataLimitAreaCount"));
          }
       }
       
-      public function getResultPages(param1:int, param2:int = 8) : int
+      public function getResultPages(type:int, count:int = 8) : int
       {
-         var _loc3_:Vector.<ShopItemInfo> = getValidGoodByType(param1);
-         var _loc4_:int = Math.ceil(_loc3_.length / param2);
-         return _loc4_;
+         var list:Vector.<ShopItemInfo> = getValidGoodByType(type);
+         var totlaPage:int = Math.ceil(list.length / count);
+         return totlaPage;
       }
       
-      public function buyIt(param1:Array) : Array
+      public function buyIt(list:Array) : Array
       {
-         var _loc6_:SelfInfo = PlayerManager.Instance.Self;
-         var _loc7_:Array = [];
-         var _loc3_:int = _loc6_.Gold;
-         var _loc2_:int = _loc6_.Money;
-         var _loc4_:int = _loc6_.BandMoney;
+         var self:SelfInfo = PlayerManager.Instance.Self;
+         var buyedArr:Array = [];
+         var selfGold:int = self.Gold;
+         var selfMoney:int = self.Money;
+         var selfDDTMoney:int = self.BandMoney;
          var _loc9_:int = 0;
-         var _loc8_:* = param1;
-         for each(var _loc5_ in param1)
+         var _loc8_:* = list;
+         for each(var item in list)
          {
-            _loc7_.push(_loc5_);
+            buyedArr.push(item);
          }
-         return _loc7_;
+         return buyedArr;
       }
       
-      public function giveGift(param1:Array, param2:SelfInfo) : Array
+      public function giveGift(list:Array, self:SelfInfo) : Array
       {
-         var _loc6_:* = null;
-         var _loc3_:Array = [];
-         var _loc5_:int = param2.Money;
+         var itemPrice:* = null;
+         var giftArray:Array = [];
+         var money:int = self.Money;
          var _loc8_:int = 0;
-         var _loc7_:* = param1;
-         for each(var _loc4_ in param1)
+         var _loc7_:* = list;
+         for each(var item in list)
          {
-            _loc6_ = _loc4_.getItemPrice(_loc4_.currentBuyType);
-            if(_loc5_ >= _loc6_.bothMoneyValue && _loc6_.bandDdtMoneyValue == 0 && _loc6_.goldValue == 0)
+            itemPrice = item.getItemPrice(item.currentBuyType);
+            if(money >= itemPrice.bothMoneyValue && itemPrice.bandDdtMoneyValue == 0 && itemPrice.goldValue == 0)
             {
-               _loc5_ = _loc5_ - _loc6_.bothMoneyValue;
-               _loc3_.push(_loc4_);
+               money = money - itemPrice.bothMoneyValue;
+               giftArray.push(item);
             }
          }
-         return _loc3_;
+         return giftArray;
       }
       
-      private function __updateGoodsCount(param1:PkgEvent) : void
+      private function __updateGoodsCount(evt:PkgEvent) : void
       {
-         var _loc10_:int = 0;
-         var _loc15_:int = 0;
-         var _loc3_:int = 0;
-         var _loc12_:* = null;
-         var _loc9_:int = 0;
-         var _loc13_:int = 0;
-         var _loc14_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc7_:int = StateManager.currentStateType == "consortia"?2:1;
-         var _loc6_:int = _loc4_.readInt();
-         _loc10_ = 0;
-         while(_loc10_ < _loc6_)
+         var i:int = 0;
+         var goodsID:int = 0;
+         var count:int = 0;
+         var item:* = null;
+         var j:int = 0;
+         var goodsID2:int = 0;
+         var count2:int = 0;
+         var item2:* = null;
+         var pkg:PackageIn = evt.pkg;
+         var type:int = StateManager.currentStateType == "consortia"?2:1;
+         var len:int = pkg.readInt();
+         for(i = 0; i < len; )
          {
-            _loc15_ = _loc4_.readInt();
-            _loc3_ = _loc4_.readInt();
-            _loc12_ = getShopItemByGoodsID(_loc15_);
-            if(_loc12_ && _loc7_ == 1)
+            goodsID = pkg.readInt();
+            count = pkg.readInt();
+            item = getShopItemByGoodsID(goodsID);
+            if(item && type == 1)
             {
-               _loc12_.LimitCount = _loc3_;
+               item.LimitCount = count;
             }
-            _loc10_++;
+            i++;
          }
-         var _loc8_:int = _loc4_.readInt();
-         var _loc5_:int = _loc4_.readInt();
-         _loc9_ = 0;
-         while(_loc9_ < _loc5_)
+         var consortiaID:int = pkg.readInt();
+         var len2:int = pkg.readInt();
+         for(j = 0; j < len2; )
          {
-            _loc13_ = _loc4_.readInt();
-            _loc14_ = _loc4_.readInt();
-            _loc2_ = getShopItemByGoodsID(_loc13_);
-            if(_loc2_ && _loc7_ == 2 && _loc8_ == PlayerManager.Instance.Self.ConsortiaID)
+            goodsID2 = pkg.readInt();
+            count2 = pkg.readInt();
+            item2 = getShopItemByGoodsID(goodsID2);
+            if(item2 && type == 2 && consortiaID == PlayerManager.Instance.Self.ConsortiaID)
             {
-               _loc2_.LimitCount = _loc14_;
+               item2.LimitCount = count2;
             }
-            _loc9_++;
+            j++;
          }
-         var _loc11_:int = _loc4_.readInt();
+         var playerId:int = pkg.readInt();
          GemstoneManager.Instance.upDataFitCount();
       }
       
-      public function getShopItemByGoodsID(param1:int) : ShopItemInfo
+      public function getShopItemByGoodsID(id:int) : ShopItemInfo
       {
-         var _loc4_:* = null;
-         var _loc3_:ShopItemInfo = _shopGoods[param1];
-         if(_loc3_ != null)
+         var info:* = null;
+         var item:ShopItemInfo = _shopGoods[id];
+         if(item != null)
          {
-            return _loc3_;
+            return item;
          }
          var _loc6_:int = 0;
          var _loc5_:* = _shopRealTimesDisCountGoods;
-         for each(var _loc2_ in _shopRealTimesDisCountGoods)
+         for each(var result in _shopRealTimesDisCountGoods)
          {
-            _loc4_ = _loc2_[param1];
-            if(_loc4_ != null && _loc4_.isValid)
+            info = result[id];
+            if(info != null && info.isValid)
             {
-               return _loc4_;
+               return info;
             }
          }
          return null;
       }
       
-      public function getValidSortedGoodsByType(param1:int, param2:int, param3:int = 8) : Vector.<ShopItemInfo>
+      public function getValidSortedGoodsByType(type:int, page:int, count:int = 8) : Vector.<ShopItemInfo>
       {
-         var _loc5_:int = 0;
-         var _loc7_:int = 0;
-         var _loc9_:int = 0;
-         var _loc4_:Vector.<ShopItemInfo> = new Vector.<ShopItemInfo>();
-         var _loc6_:Vector.<ShopItemInfo> = getValidGoodByType(param1);
-         var _loc8_:int = Math.ceil(_loc6_.length / param3);
-         if(param2 > 0 && param2 <= _loc8_)
+         var startIndex:int = 0;
+         var len:int = 0;
+         var i:int = 0;
+         var result:Vector.<ShopItemInfo> = new Vector.<ShopItemInfo>();
+         var list:Vector.<ShopItemInfo> = getValidGoodByType(type);
+         var totlaPage:int = Math.ceil(list.length / count);
+         if(page > 0 && page <= totlaPage)
          {
-            _loc5_ = 0 + param3 * (param2 - 1);
-            _loc7_ = Math.min(_loc6_.length - _loc5_,param3);
-            _loc9_ = 0;
-            while(_loc9_ < _loc7_)
+            startIndex = 0 + count * (page - 1);
+            len = Math.min(list.length - startIndex,count);
+            for(i = 0; i < len; )
             {
-               _loc4_.push(_loc6_[_loc5_ + _loc9_]);
-               _loc9_++;
+               result.push(list[startIndex + i]);
+               i++;
             }
          }
-         return _loc4_;
+         return result;
       }
       
-      public function getValidSortedGoodsByList(param1:Vector.<ShopItemInfo>, param2:int, param3:int = 8) : Vector.<ShopItemInfo>
+      public function getValidSortedGoodsByList(list:Vector.<ShopItemInfo>, page:int, count:int = 8) : Vector.<ShopItemInfo>
       {
-         var _loc5_:int = 0;
+         var startIndex:int = 0;
+         var len:int = 0;
+         var i:int = 0;
+         var result:Vector.<ShopItemInfo> = new Vector.<ShopItemInfo>();
+         var totlaPage:int = Math.ceil(list.length / count);
+         if(page > 0 && page <= totlaPage)
+         {
+            startIndex = 0 + count * (page - 1);
+            len = Math.min(list.length - startIndex,count);
+            for(i = 0; i < len; )
+            {
+               result.push(list[startIndex + i]);
+               i++;
+            }
+         }
+         return result;
+      }
+      
+      public function getGoodsByType(type:int) : Vector.<ShopItemInfo>
+      {
+         return _shopSortList[type] as Vector.<ShopItemInfo>;
+      }
+      
+      public function getValidGoodByType(type:int) : Vector.<ShopItemInfo>
+      {
+         var result:Vector.<ShopItemInfo> = new Vector.<ShopItemInfo>();
+         var list:Vector.<ShopItemInfo> = _shopSortList[type];
          var _loc6_:int = 0;
-         var _loc8_:int = 0;
-         var _loc4_:Vector.<ShopItemInfo> = new Vector.<ShopItemInfo>();
-         var _loc7_:int = Math.ceil(param1.length / param3);
-         if(param2 > 0 && param2 <= _loc7_)
+         var _loc5_:* = list;
+         for each(var item in list)
          {
-            _loc5_ = 0 + param3 * (param2 - 1);
-            _loc6_ = Math.min(param1.length - _loc5_,param3);
-            _loc8_ = 0;
-            while(_loc8_ < _loc6_)
+            if(item.isValid)
             {
-               _loc4_.push(param1[_loc5_ + _loc8_]);
-               _loc8_++;
+               result.push(item);
             }
          }
-         return _loc4_;
+         return result;
       }
       
-      public function getGoodsByType(param1:int) : Vector.<ShopItemInfo>
+      public function getValidGoodsArrayByType(type:int) : Array
       {
-         return _shopSortList[param1] as Vector.<ShopItemInfo>;
-      }
-      
-      public function getValidGoodByType(param1:int) : Vector.<ShopItemInfo>
-      {
-         var _loc2_:Vector.<ShopItemInfo> = new Vector.<ShopItemInfo>();
-         var _loc4_:Vector.<ShopItemInfo> = _shopSortList[param1];
+         var result:Array = [];
+         var list:Vector.<ShopItemInfo> = _shopSortList[type];
          var _loc6_:int = 0;
-         var _loc5_:* = _loc4_;
-         for each(var _loc3_ in _loc4_)
+         var _loc5_:* = list;
+         for each(var item in list)
          {
-            if(_loc3_.isValid)
+            if(item.isValid)
             {
-               _loc2_.push(_loc3_);
+               result.push(item);
             }
          }
-         return _loc2_;
+         return result;
       }
       
-      public function consortiaShopLevelTemplates(param1:int) : Vector.<ShopItemInfo>
+      public function consortiaShopLevelTemplates(level:int) : Vector.<ShopItemInfo>
       {
-         return _shopSortList[80 + param1 - 1] as Vector.<ShopItemInfo>;
+         return _shopSortList[80 + level - 1] as Vector.<ShopItemInfo>;
       }
       
-      public function canAddPrice(param1:int) : Boolean
+      public function canAddPrice(templateID:int) : Boolean
       {
-         if(!getGoodsByTemplateIDOnlyUseXuFei(param1) || !getGoodsByTemplateIDOnlyUseXuFei(param1).IsContinue)
+         if(!getGoodsByTemplateIDOnlyUseXuFei(templateID) || !getGoodsByTemplateIDOnlyUseXuFei(templateID).IsContinue)
          {
             return false;
          }
-         if(getShopRechargeItemByTemplateId(param1).length <= 0)
+         if(getShopRechargeItemByTemplateId(templateID).length <= 0)
          {
             return false;
          }
          return true;
       }
       
-      public function getShopRechargeItemByTemplateId(param1:int) : Array
+      public function getShopRechargeItemByTemplateId(id:int) : Array
       {
-         var _loc6_:Array = [];
+         var result:Array = [];
          var _loc11_:int = 0;
          var _loc10_:* = _shopGoods;
-         for each(var _loc9_ in _shopGoods)
+         for each(var item5 in _shopGoods)
          {
-            if(_loc9_.TemplateID == param1 && _loc9_.getItemPrice(1).armShellClipValue > 0 && _loc9_.IsContinue)
+            if(item5.TemplateID == id && item5.getItemPrice(1).armShellClipValue > 0 && item5.IsContinue)
             {
-               _loc6_.push(_loc9_);
+               result.push(item5);
             }
          }
          var _loc13_:int = 0;
          var _loc12_:* = _shopGoods;
-         for each(var _loc8_ in _shopGoods)
+         for each(var item0 in _shopGoods)
          {
-            if(_loc8_.TemplateID == param1 && _loc8_.getItemPrice(1).bothMoneyValue > 0 && _loc8_.IsContinue)
+            if(item0.TemplateID == id && item0.getItemPrice(1).bothMoneyValue > 0 && item0.IsContinue)
             {
-               _loc6_.push(_loc8_);
+               result.push(item0);
             }
          }
          var _loc15_:int = 0;
          var _loc14_:* = _shopGoods;
-         for each(var _loc5_ in _shopGoods)
+         for each(var item1 in _shopGoods)
          {
-            if(_loc5_.TemplateID == param1 && _loc5_.getItemPrice(1).moneyValue > 0 && _loc5_.IsContinue)
+            if(item1.TemplateID == id && item1.getItemPrice(1).moneyValue > 0 && item1.IsContinue)
             {
-               _loc6_.push(_loc5_);
+               result.push(item1);
             }
          }
          var _loc17_:int = 0;
          var _loc16_:* = _shopGoods;
-         for each(var _loc3_ in _shopGoods)
+         for each(var item2 in _shopGoods)
          {
-            if(_loc3_.TemplateID == param1 && _loc3_.getItemPrice(1).bandDdtMoneyValue > 0 && _loc3_.IsContinue)
+            if(item2.TemplateID == id && item2.getItemPrice(1).bandDdtMoneyValue > 0 && item2.IsContinue)
             {
-               _loc6_.push(_loc3_);
+               result.push(item2);
             }
          }
          var _loc19_:int = 0;
          var _loc18_:* = _shopGoods;
-         for each(var _loc4_ in _shopGoods)
+         for each(var item3 in _shopGoods)
          {
-            if(_loc4_.TemplateID == param1 && _loc4_.getItemPrice(1).lightStoneValue > 0 && _loc4_.IsContinue)
+            if(item3.TemplateID == id && item3.getItemPrice(1).lightStoneValue > 0 && item3.IsContinue)
             {
-               _loc6_.push(_loc4_);
+               result.push(item3);
             }
          }
          var _loc21_:int = 0;
          var _loc20_:* = _shopGoods;
-         for each(var _loc2_ in _shopGoods)
+         for each(var item4 in _shopGoods)
          {
-            if(_loc2_.TemplateID == param1 && _loc2_.getItemPrice(1).leagueValue > 0 && _loc2_.IsContinue)
+            if(item4.TemplateID == id && item4.getItemPrice(1).leagueValue > 0 && item4.IsContinue)
             {
-               _loc6_.push(_loc2_);
+               result.push(item4);
             }
          }
          var _loc23_:int = 0;
          var _loc22_:* = _shopGoods;
-         for each(var _loc7_ in _shopGoods)
+         for each(var item6 in _shopGoods)
          {
-            if(_loc7_.TemplateID == param1 && _loc7_.getItemPrice(1).ddtMoneyValue > 0 && _loc7_.IsContinue)
+            if(item6.TemplateID == id && item6.getItemPrice(1).ddtMoneyValue > 0 && item6.IsContinue)
             {
-               _loc6_.push(_loc7_);
+               result.push(item6);
             }
          }
-         return _loc6_;
+         return result;
       }
       
-      public function getShopItemByTemplateID(param1:int, param2:int) : ShopItemInfo
+      public function getShopItemByTemplateID(id:int, type:int) : ShopItemInfo
       {
-         var _loc3_:* = null;
-         switch(int(param2) - 1)
+         var item:* = null;
+         switch(int(type) - 1)
          {
             case 0:
                var _loc5_:int = 0;
                var _loc4_:* = _shopGoods;
-               for each(_loc3_ in _shopGoods)
+               for each(item in _shopGoods)
                {
-                  if(_loc3_.TemplateID == param1 && _loc3_.getItemPrice(1).hardCurrencyValue > 0)
+                  if(item.TemplateID == id && item.getItemPrice(1).hardCurrencyValue > 0)
                   {
-                     if(_loc3_.isValid)
+                     if(item.isValid)
                      {
-                        return _loc3_;
+                        return item;
                      }
                   }
                }
             case 1:
                var _loc7_:int = 0;
                var _loc6_:* = _shopGoods;
-               for each(_loc3_ in _shopGoods)
+               for each(item in _shopGoods)
                {
-                  if(_loc3_.TemplateID == param1 && _loc3_.getItemPrice(1).gesteValue > 0)
+                  if(item.TemplateID == id && item.getItemPrice(1).gesteValue > 0)
                   {
-                     if(_loc3_.isValid)
+                     if(item.isValid)
                      {
-                        return _loc3_;
+                        return item;
                      }
                   }
                }
             case 2:
-               return getMoneyShopItemByTemplateID(param1);
+               return getMoneyShopItemByTemplateID(id);
             case 3:
                var _loc9_:int = 0;
                var _loc8_:* = _shopGoods;
-               for each(_loc3_ in _shopGoods)
+               for each(item in _shopGoods)
                {
-                  if(_loc3_.TemplateID == param1 && _loc3_.getItemPrice(1).leagueValue > 0)
+                  if(item.TemplateID == id && item.getItemPrice(1).leagueValue > 0)
                   {
-                     if(_loc3_.isValid)
+                     if(item.isValid)
                      {
-                        return _loc3_;
+                        return item;
                      }
                   }
                }
             case 4:
                var _loc11_:int = 0;
                var _loc10_:* = _shopGoods;
-               for each(_loc3_ in _shopGoods)
+               for each(item in _shopGoods)
                {
-                  if(_loc3_.TemplateID == param1 && _loc3_.getItemPrice(1).scoreValue > 0)
+                  if(item.TemplateID == id && item.getItemPrice(1).scoreValue > 0)
                   {
-                     if(_loc3_.isValid)
+                     if(item.isValid)
                      {
-                        return _loc3_;
+                        return item;
                      }
                   }
                }
             case 5:
                var _loc13_:int = 0;
                var _loc12_:* = _shopGoods;
-               for each(_loc3_ in _shopGoods)
+               for each(item in _shopGoods)
                {
-                  if(_loc3_.TemplateID == param1)
+                  if(item.TemplateID == id)
                   {
-                     if(_loc3_.getItemPrice(1).badgeValue > 0 && _loc3_.isValid)
+                     if(item.getItemPrice(1).badgeValue > 0 && item.isValid)
                      {
-                        return _loc3_;
+                        return item;
                      }
                   }
                }
          }
       }
       
-      public function getMoneyShopItemByTemplateID(param1:int, param2:Boolean = false) : ShopItemInfo
+      public function getMoneyShopItemByTemplateID(id:int, shouldInShop:Boolean = false) : ShopItemInfo
       {
-         var _loc8_:* = null;
-         var _loc4_:* = undefined;
-         var _loc6_:* = undefined;
-         if(param2)
+         var types:* = null;
+         var shopitems:* = undefined;
+         var list:* = undefined;
+         if(shouldInShop)
          {
-            _loc8_ = getType(ShopType.MALE_MONEY_TYPE).concat(getType(ShopType.FEMALE_MONEY_TYPE)).concat(getType(ShopType.FEMALE_DDTMONEY_TYPE)).concat(getType(ShopType.MALE_DDTMONEY_TYPE));
+            types = getType(ShopType.MALE_MONEY_TYPE).concat(getType(ShopType.FEMALE_MONEY_TYPE)).concat(getType(ShopType.FEMALE_DDTMONEY_TYPE)).concat(getType(ShopType.MALE_DDTMONEY_TYPE));
             var _loc12_:int = 0;
-            var _loc11_:* = _loc8_;
-            for each(var _loc7_ in _loc8_)
+            var _loc11_:* = types;
+            for each(var type in types)
             {
-               _loc4_ = getValidGoodByType(_loc7_);
+               shopitems = getValidGoodByType(type);
                var _loc10_:int = 0;
-               var _loc9_:* = _loc4_;
-               for each(var _loc5_ in _loc4_)
+               var _loc9_:* = shopitems;
+               for each(var item in shopitems)
                {
-                  if(_loc5_.TemplateID == param1 && _loc5_.getItemPrice(1).bothMoneyValue > 0)
+                  if(item.TemplateID == id && item.getItemPrice(1).bothMoneyValue > 0)
                   {
-                     return _loc5_;
+                     return item;
                   }
                }
             }
          }
          else
          {
-            _loc6_ = new Vector.<ShopItemInfo>();
+            list = new Vector.<ShopItemInfo>();
             var _loc14_:int = 0;
             var _loc13_:* = _shopGoods;
-            for each(var _loc3_ in _shopGoods)
+            for each(var item1 in _shopGoods)
             {
-               if(_loc3_.TemplateID == param1 && _loc3_.getItemPrice(1).bothMoneyValue > 0 && _loc3_.isValid)
+               if(item1.TemplateID == id && item1.getItemPrice(1).bothMoneyValue > 0 && item1.isValid)
                {
-                  _loc6_.push(_loc3_);
+                  list.push(item1);
                }
             }
-            if(_loc6_.length > 0)
+            if(list.length > 0)
             {
-               return getInfoByBuyType(_loc6_);
+               return getInfoByBuyType(list);
             }
          }
          return null;
       }
       
-      private function getInfoByBuyType(param1:Vector.<ShopItemInfo>) : ShopItemInfo
+      private function getInfoByBuyType(list:Vector.<ShopItemInfo>) : ShopItemInfo
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:ShopItemInfo = null;
-         _loc3_ = 0;
-         _loc2_ = 0;
-         while(_loc3_ < param1.length)
+         var i:int = 0;
+         var j:int = 0;
+         var info:ShopItemInfo = null;
+         for(i = 0,j = 0; i < list.length; )
          {
-            _loc2_ = _loc3_ - 1;
-            _loc4_ = param1[_loc3_];
-            while(_loc2_ >= 0 && _loc4_.ShopID < param1[_loc2_].ShopID)
+            j = i - 1;
+            info = list[i];
+            while(j >= 0 && info.ShopID < list[j].ShopID)
             {
-               param1[_loc2_ + 1] = param1[_loc2_];
-               _loc2_--;
+               list[j + 1] = list[j];
+               j--;
             }
-            param1[_loc2_ + 1] = _loc4_;
-            _loc3_++;
+            list[j + 1] = info;
+            i++;
          }
-         return param1[0];
+         return list[0];
       }
       
-      public function getMoneyShopItemByTemplateIDForGiftSystem(param1:int) : ShopItemInfo
+      public function getMoneyShopItemByTemplateIDForGiftSystem(id:int) : ShopItemInfo
       {
          var _loc4_:int = 0;
          var _loc3_:* = _shopGoods;
-         for each(var _loc2_ in _shopGoods)
+         for each(var item in _shopGoods)
          {
-            if(_loc2_.TemplateID == param1)
+            if(item.TemplateID == id)
             {
-               return _loc2_;
+               return item;
             }
          }
          return null;
@@ -531,96 +539,95 @@ package ddt.manager
       
       public function getBuriedGoodsList() : Vector.<ShopItemInfo>
       {
-         var _loc2_:Vector.<ShopItemInfo> = new Vector.<ShopItemInfo>();
+         var list:Vector.<ShopItemInfo> = new Vector.<ShopItemInfo>();
          var _loc4_:int = 0;
          var _loc3_:* = _shopGoods;
-         for each(var _loc1_ in _shopGoods)
+         for each(var item in _shopGoods)
          {
-            if(_loc1_.ShopID == 94)
+            if(item.ShopID == 94)
             {
-               _loc2_.push(_loc1_);
+               list.push(item);
             }
          }
-         return _loc2_;
+         return list;
       }
       
-      private function getGoodsByTemplateIDOnlyUseXuFei(param1:int) : ShopItemInfo
+      private function getGoodsByTemplateIDOnlyUseXuFei(id:int) : ShopItemInfo
       {
-         var _loc3_:int = 0;
-         var _loc4_:Vector.<ShopItemInfo> = new Vector.<ShopItemInfo>();
+         var i:int = 0;
+         var itemArr:Vector.<ShopItemInfo> = new Vector.<ShopItemInfo>();
          var _loc6_:int = 0;
          var _loc5_:* = _shopGoods;
-         for each(var _loc2_ in _shopGoods)
+         for each(var item in _shopGoods)
          {
-            if(_loc2_.TemplateID == param1)
+            if(item.TemplateID == id)
             {
-               _loc4_.push(_loc2_);
+               itemArr.push(item);
             }
          }
-         _loc3_ = 0;
-         while(_loc3_ < _loc4_.length)
+         for(i = 0; i < itemArr.length; )
          {
-            if(_loc4_[_loc3_].IsContinue)
+            if(itemArr[i].IsContinue)
             {
-               return _loc4_[_loc3_];
+               return itemArr[i];
             }
-            _loc3_++;
+            i++;
          }
          return null;
       }
       
-      public function getGoodsByTemplateID(param1:int, param2:int = -1) : ShopItemInfo
+      public function getGoodsByTemplateID(id:int, shopID:int = -1) : ShopItemInfo
       {
          var _loc5_:int = 0;
          var _loc4_:* = _shopGoods;
-         for each(var _loc3_ in _shopGoods)
+         for each(var item in _shopGoods)
          {
-            if(_loc3_.TemplateID == param1)
+            if(item.TemplateID == id)
             {
-               if(param2 == -1 || _loc3_.ShopID == param2)
+               if(shopID == -1 || item.ShopID == shopID)
                {
-                  return _loc3_;
+                  return item;
                }
             }
          }
          return null;
       }
       
-      public function getShopItemByTemplateIdAndType(param1:int, param2:int) : ShopItemInfo
+      public function getShopItemByTemplateIdAndType(id:int, type:int) : ShopItemInfo
       {
          var _loc5_:int = 0;
-         var _loc4_:* = _shopSortList[param2];
-         for each(var _loc3_ in _shopSortList[param2])
+         var _loc4_:* = _shopSortList[type];
+         for each(var item in _shopSortList[type])
          {
-            if(_loc3_.TemplateID == param1)
+            if(item.TemplateID == id)
             {
-               return _loc3_;
+               return item;
             }
          }
          return null;
       }
       
-      public function getGiftShopItemByTemplateID(param1:int, param2:Boolean = false) : ShopItemInfo
+      public function getGiftShopItemByTemplateID(id:int, shouldInShop:Boolean = false) : ShopItemInfo
       {
-         var _loc7_:* = null;
-         var _loc4_:* = undefined;
-         if(param2)
+         var types:* = null;
+         var shopitems:* = undefined;
+         if(shouldInShop)
          {
-            _loc7_ = getType(ShopType.MALE_MONEY_TYPE).concat(getType(ShopType.FEMALE_MONEY_TYPE)).concat(getType(ShopType.FEMALE_DDTMONEY_TYPE)).concat(getType(ShopType.MALE_DDTMONEY_TYPE));
+            types = getType(ShopType.MALE_MONEY_TYPE).concat(getType(ShopType.FEMALE_MONEY_TYPE)).concat(getType(ShopType.FEMALE_DDTMONEY_TYPE)).concat(getType(ShopType.MALE_DDTMONEY_TYPE));
             var _loc11_:int = 0;
-            var _loc10_:* = _loc7_;
-            for each(var _loc6_ in _loc7_)
+            var _loc10_:* = types;
+            for each(var type in types)
             {
-               _loc4_ = getValidGoodByType(_loc6_);
+               shopitems = getValidGoodByType(type);
                var _loc9_:int = 0;
-               var _loc8_:* = _loc4_;
-               for each(var _loc5_ in _loc4_)
+               var _loc8_:* = shopitems;
+               for each(var item in shopitems)
                {
-                  if(_loc5_.TemplateID == param1)
+                  if(item.TemplateID == id)
                   {
-                     if(_loc5_.getItemPrice(1).ddtMoneyValue > 0)
+                     if(item.getItemPrice(1).ddtMoneyValue > 0)
                      {
-                        return _loc5_;
+                        return item;
                      }
                   }
                }
@@ -630,13 +637,13 @@ package ddt.manager
          {
             var _loc13_:int = 0;
             var _loc12_:* = _shopGoods;
-            for each(var _loc3_ in _shopGoods)
+            for each(var item1 in _shopGoods)
             {
-               if(_loc3_.TemplateID == param1 && _loc3_.getItemPrice(1).ddtMoneyValue > 0)
+               if(item1.TemplateID == id && item1.getItemPrice(1).ddtMoneyValue > 0)
                {
-                  if(_loc3_.isValid)
+                  if(item1.isValid)
                   {
-                     return _loc3_;
+                     return item1;
                   }
                }
             }
@@ -644,66 +651,66 @@ package ddt.manager
          return null;
       }
       
-      private function getType(param1:*) : Array
+      private function getType(type:*) : Array
       {
-         var _loc2_:Array = [];
-         if(param1 is Array)
+         var result:Array = [];
+         if(type is Array)
          {
             var _loc5_:int = 0;
-            var _loc4_:* = param1;
-            for each(var _loc3_ in param1)
+            var _loc4_:* = type;
+            for each(var t in type)
             {
-               _loc2_ = _loc2_.concat(getType(_loc3_));
+               result = result.concat(getType(t));
             }
          }
          else
          {
-            _loc2_.push(param1);
+            result.push(type);
          }
-         return _loc2_;
+         return result;
       }
       
-      public function getGoldShopItemByTemplateID(param1:int) : ShopItemInfo
+      public function getGoldShopItemByTemplateID(id:int) : ShopItemInfo
       {
          var _loc4_:int = 0;
          var _loc3_:* = _shopSortList[90];
-         for each(var _loc2_ in _shopSortList[90])
+         for each(var item in _shopSortList[90])
          {
-            if(_loc2_.TemplateID == param1)
+            if(item.TemplateID == id)
             {
-               if(_loc2_.isValid)
+               if(item.isValid)
                {
-                  return _loc2_;
+                  return item;
                }
             }
          }
          return null;
       }
       
-      public function moneyGoods(param1:Array, param2:SelfInfo) : Array
+      public function moneyGoods(list:Array, self:SelfInfo) : Array
       {
-         var _loc5_:* = null;
-         var _loc4_:Array = [];
+         var itemPrice:* = null;
+         var moneyGoods:Array = [];
          var _loc7_:int = 0;
-         var _loc6_:* = param1;
-         for each(var _loc3_ in param1)
+         var _loc6_:* = list;
+         for each(var item in list)
          {
-            _loc5_ = _loc3_.getItemPrice(_loc3_.currentBuyType);
-            if(_loc5_.bothMoneyValue > 0)
+            itemPrice = item.getItemPrice(item.currentBuyType);
+            if(itemPrice.bothMoneyValue > 0)
             {
-               _loc4_.push(_loc3_);
+               moneyGoods.push(item);
             }
          }
-         return _loc4_;
+         return moneyGoods;
       }
       
-      public function buyLeastGood(param1:Array, param2:SelfInfo) : Boolean
+      public function buyLeastGood(list:Array, self:SelfInfo) : Boolean
       {
          var _loc5_:int = 0;
-         var _loc4_:* = param1;
-         for each(var _loc3_ in param1)
+         var _loc4_:* = list;
+         for each(var item in list)
          {
-            if(param2.Gold >= _loc3_.getItemPrice(_loc3_.currentBuyType).goldValue && param2.Money >= _loc3_.getItemPrice(_loc3_.currentBuyType).bothMoneyValue && param2.BandMoney >= _loc3_.getItemPrice(_loc3_.currentBuyType).bothMoneyValue && param2.Money >= _loc3_.getItemPrice(_loc3_.currentBuyType).moneyValue && param2.BandMoney >= _loc3_.getItemPrice(_loc3_.currentBuyType).bandDdtMoneyValue && param2.DDTMoney >= _loc3_.getItemPrice(_loc3_.currentBuyType).ddtMoneyValue)
+            if(self.Gold >= item.getItemPrice(item.currentBuyType).goldValue && self.Money >= item.getItemPrice(item.currentBuyType).bothMoneyValue && self.BandMoney >= item.getItemPrice(item.currentBuyType).bothMoneyValue && self.Money >= item.getItemPrice(item.currentBuyType).moneyValue && self.BandMoney >= item.getItemPrice(item.currentBuyType).bandDdtMoneyValue && self.DDTMoney >= item.getItemPrice(item.currentBuyType).ddtMoneyValue)
             {
                return true;
             }
@@ -713,250 +720,247 @@ package ddt.manager
       
       public function getDesignatedAllShopItem() : Vector.<ShopItemInfo>
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc1_:Vector.<ShopItemInfo> = new Vector.<ShopItemInfo>();
-         _loc3_ = 0;
-         while(_loc3_ < ShopType.CAN_SHOW_IN_SHOP.length)
+         var i:int = 0;
+         var type:int = 0;
+         var result:Vector.<ShopItemInfo> = new Vector.<ShopItemInfo>();
+         for(i = 0; i < ShopType.CAN_SHOW_IN_SHOP.length; )
          {
-            _loc2_ = ShopType.CAN_SHOW_IN_SHOP[_loc3_];
-            if(_shopSortList[_loc2_])
+            type = ShopType.CAN_SHOW_IN_SHOP[i];
+            if(_shopSortList[type])
             {
-               _loc1_ = _loc1_.concat(_shopSortList[_loc2_]);
+               result = result.concat(_shopSortList[type]);
             }
-            _loc3_++;
+            i++;
          }
-         return _loc1_;
+         return result;
       }
       
-      public function fuzzySearch(param1:Vector.<ShopItemInfo>, param2:String) : Vector.<ShopItemInfo>
+      public function fuzzySearch($ShopItemList:Vector.<ShopItemInfo>, $shopName:String) : Vector.<ShopItemInfo>
       {
-         var _loc5_:int = 0;
-         var _loc3_:Boolean = false;
-         var _loc4_:Vector.<ShopItemInfo> = new Vector.<ShopItemInfo>();
+         var indexId:int = 0;
+         var boole:Boolean = false;
+         var result:Vector.<ShopItemInfo> = new Vector.<ShopItemInfo>();
          var _loc11_:int = 0;
-         var _loc10_:* = param1;
-         for each(var _loc6_ in param1)
+         var _loc10_:* = $ShopItemList;
+         for each(var item in $ShopItemList)
          {
-            if(_loc6_.isValid && _loc6_.TemplateInfo)
+            if(item.isValid && item.TemplateInfo)
             {
-               _loc5_ = _loc6_.TemplateInfo.Name.indexOf(param2);
-               if(_loc5_ > -1)
+               indexId = item.TemplateInfo.Name.indexOf($shopName);
+               if(indexId > -1)
                {
-                  _loc3_ = true;
+                  boole = true;
                   var _loc9_:int = 0;
-                  var _loc8_:* = _loc4_;
-                  for each(var _loc7_ in _loc4_)
+                  var _loc8_:* = result;
+                  for each(var info in result)
                   {
-                     if(_loc7_.GoodsID == _loc6_.GoodsID)
+                     if(info.GoodsID == item.GoodsID)
                      {
-                        _loc3_ = false;
+                        boole = false;
                      }
                   }
-                  if(_loc3_)
+                  if(boole)
                   {
-                     _loc4_.push(_loc6_);
+                     result.push(item);
                   }
                }
             }
          }
-         return _loc4_;
+         return result;
       }
       
-      public function getDisCountValidGoodByType(param1:int) : Vector.<ShopItemInfo>
+      public function getDisCountValidGoodByType(type:int) : Vector.<ShopItemInfo>
       {
-         var _loc7_:* = null;
-         var _loc5_:Vector.<ShopItemInfo> = new Vector.<ShopItemInfo>();
-         if(param1 != 1)
+         var list:* = null;
+         var result:Vector.<ShopItemInfo> = new Vector.<ShopItemInfo>();
+         if(type != 1)
          {
-            _loc7_ = _shopRealTimesDisCountGoods[param1];
-            if(_loc7_)
+            list = _shopRealTimesDisCountGoods[type];
+            if(list)
             {
                var _loc9_:int = 0;
-               var _loc8_:* = _loc7_.list;
-               for each(var _loc6_ in _loc7_.list)
+               var _loc8_:* = list.list;
+               for each(var item in list.list)
                {
-                  if(_loc6_.isValid && _loc6_.TemplateInfo.CategoryID != 25)
+                  if(item.isValid && item.TemplateInfo.CategoryID != 25)
                   {
-                     _loc5_.push(_loc6_);
+                     result.push(item);
                   }
                }
             }
-            return _loc5_;
+            return result;
          }
-         if(param1 == 1)
+         if(type == 1)
          {
-            _loc7_ = _shopRealTimesDisCountGoods[param1];
-            if(_loc7_)
+            list = _shopRealTimesDisCountGoods[type];
+            if(list)
             {
                var _loc11_:int = 0;
-               var _loc10_:* = _loc7_.list;
-               for each(var _loc4_ in _loc7_.list)
+               var _loc10_:* = list.list;
+               for each(var item1 in list.list)
                {
-                  if(_loc4_.isValid && _loc4_.TemplateInfo.CategoryID != 25)
+                  if(item1.isValid && item1.TemplateInfo.CategoryID != 25)
                   {
-                     _loc5_.push(_loc4_);
+                     result.push(item1);
                   }
                }
             }
-            _loc7_ = _shopRealTimesDisCountGoods[8];
-            if(_loc7_)
+            list = _shopRealTimesDisCountGoods[8];
+            if(list)
             {
                var _loc13_:int = 0;
-               var _loc12_:* = _loc7_.list;
-               for each(var _loc2_ in _loc7_.list)
+               var _loc12_:* = list.list;
+               for each(var item2 in list.list)
                {
-                  if(_loc2_.isValid && _loc2_.TemplateInfo.CategoryID != 25)
+                  if(item2.isValid && item2.TemplateInfo.CategoryID != 25)
                   {
-                     _loc5_.push(_loc2_);
+                     result.push(item2);
                   }
                }
             }
-            _loc7_ = _shopRealTimesDisCountGoods[9];
-            if(_loc7_)
+            list = _shopRealTimesDisCountGoods[9];
+            if(list)
             {
                var _loc15_:int = 0;
-               var _loc14_:* = _loc7_.list;
-               for each(var _loc3_ in _loc7_.list)
+               var _loc14_:* = list.list;
+               for each(var item3 in list.list)
                {
-                  if(_loc3_.isValid && _loc3_.TemplateInfo.CategoryID != 25)
+                  if(item3.isValid && item3.TemplateInfo.CategoryID != 25)
                   {
-                     _loc5_.push(_loc3_);
+                     result.push(item3);
                   }
                }
             }
-            return _loc5_;
+            return result;
          }
-         return _loc5_;
+         return result;
       }
       
-      public function getDisCountResultPages(param1:int, param2:int = 8) : int
+      public function getDisCountResultPages(type:int, count:int = 8) : int
       {
-         var _loc4_:int = 0;
-         var _loc3_:Vector.<ShopItemInfo> = getDisCountValidGoodByType(param1);
-         if(_loc3_)
+         var totlaPage:int = 0;
+         var list:Vector.<ShopItemInfo> = getDisCountValidGoodByType(type);
+         if(list)
          {
-            _loc4_ = Math.ceil(_loc3_.length / param2);
+            totlaPage = Math.ceil(list.length / count);
          }
-         return _loc4_;
+         return totlaPage;
       }
       
-      public function getDisCountShopItemByGoodsID(param1:int) : ShopItemInfo
+      public function getDisCountShopItemByGoodsID(id:int) : ShopItemInfo
       {
-         var _loc3_:* = null;
+         var item:* = null;
          var _loc5_:int = 0;
          var _loc4_:* = _shopRealTimesDisCountGoods;
-         for each(var _loc2_ in _shopRealTimesDisCountGoods)
+         for each(var result in _shopRealTimesDisCountGoods)
          {
-            _loc3_ = _loc2_[param1];
-            if(_loc3_ != null && _loc3_.isValid)
+            item = result[id];
+            if(item != null && item.isValid)
             {
-               return _loc3_;
+               return item;
             }
          }
          return null;
       }
       
-      public function getMoneySaleShopItemByTemplateID(param1:int) : ShopItemInfo
+      public function getMoneySaleShopItemByTemplateID(id:int) : ShopItemInfo
       {
-         var _loc3_:Vector.<ShopItemInfo> = _shopSortList[110];
-         if(_loc3_)
+         var list:Vector.<ShopItemInfo> = _shopSortList[110];
+         if(list)
          {
             var _loc5_:int = 0;
-            var _loc4_:* = _loc3_;
-            for each(var _loc2_ in _loc3_)
+            var _loc4_:* = list;
+            for each(var item in list)
             {
-               if(_loc2_.GoodsID == param1 && _loc2_.getItemPrice(1).bothMoneyValue > 0)
+               if(item.GoodsID == id && item.getItemPrice(1).bothMoneyValue > 0)
                {
-                  return _loc2_;
+                  return item;
                }
-               if(_loc2_.GoodsID == param1 && _loc2_.getItemPrice(1).moneyValue > 0)
+               if(item.GoodsID == id && item.getItemPrice(1).moneyValue > 0)
                {
-                  return _loc2_;
+                  return item;
                }
-               if(_loc2_.GoodsID == param1 && _loc2_.getItemPrice(1).bandDdtMoneyValue > 0)
+               if(item.GoodsID == id && item.getItemPrice(1).bandDdtMoneyValue > 0)
                {
-                  return _loc2_;
+                  return item;
                }
             }
          }
          return null;
       }
       
-      public function getDisCountGoods(param1:int = 1, param2:int = 1, param3:int = 8) : Vector.<ShopItemInfo>
+      public function getDisCountGoods(type:int = 1, page:int = 1, count:int = 8) : Vector.<ShopItemInfo>
       {
-         var _loc8_:int = 0;
-         var _loc5_:int = 0;
-         var _loc7_:int = 0;
-         var _loc9_:int = 0;
-         var _loc4_:Vector.<ShopItemInfo> = new Vector.<ShopItemInfo>();
-         var _loc6_:Vector.<ShopItemInfo> = getDisCountValidGoodByType(param1);
-         if(_loc6_)
+         var totlaPage:int = 0;
+         var startIndex:int = 0;
+         var len:int = 0;
+         var i:int = 0;
+         var result:Vector.<ShopItemInfo> = new Vector.<ShopItemInfo>();
+         var list:Vector.<ShopItemInfo> = getDisCountValidGoodByType(type);
+         if(list)
          {
-            _loc8_ = Math.ceil(_loc6_.length / param3);
-            if(param2 > 0 && param2 <= _loc8_)
+            totlaPage = Math.ceil(list.length / count);
+            if(page > 0 && page <= totlaPage)
             {
-               _loc5_ = 0 + param3 * (param2 - 1);
-               _loc7_ = Math.min(_loc6_.length - _loc5_,param3);
-               _loc9_ = 0;
-               while(_loc9_ < _loc7_)
+               startIndex = 0 + count * (page - 1);
+               len = Math.min(list.length - startIndex,count);
+               for(i = 0; i < len; )
                {
-                  _loc4_.push(_loc6_[_loc5_ + _loc9_]);
-                  _loc9_++;
+                  result.push(list[startIndex + i]);
+                  i++;
                }
             }
          }
-         return _loc4_;
+         return result;
       }
       
-      public function getGoodsByTempId(param1:int) : ShopItemInfo
+      public function getGoodsByTempId(tempId:int) : ShopItemInfo
       {
-         var _loc3_:int = 0;
-         var _loc4_:ShopItemInfo = null;
-         var _loc2_:Vector.<ShopItemInfo> = getDisCountGoods();
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_.length)
+         var i:int = 0;
+         var info:ShopItemInfo = null;
+         var itemList:Vector.<ShopItemInfo> = getDisCountGoods();
+         for(i = 0; i < itemList.length; )
          {
-            if(param1 == _loc2_[_loc3_].TemplateID)
+            if(tempId == itemList[i].TemplateID)
             {
-               _loc4_ = _loc2_[_loc3_];
+               info = itemList[i];
                break;
             }
-            _loc3_++;
+            i++;
          }
-         return _loc4_;
+         return info;
       }
       
-      public function isHasDisCountGoods(param1:int) : Boolean
+      public function isHasDisCountGoods(type:int) : Boolean
       {
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:DictionaryData = _shopRealTimesDisCountGoods[param1];
-         if(param1 == 1)
+         var result_8:* = null;
+         var result_9:* = null;
+         var result:DictionaryData = _shopRealTimesDisCountGoods[type];
+         if(type == 1)
          {
-            _loc2_ = _shopRealTimesDisCountGoods[8];
-            _loc3_ = _shopRealTimesDisCountGoods[9];
-            if(checkIsHasDisCount(_loc4_) || checkIsHasDisCount(_loc2_) || checkIsHasDisCount(_loc3_))
+            result_8 = _shopRealTimesDisCountGoods[8];
+            result_9 = _shopRealTimesDisCountGoods[9];
+            if(checkIsHasDisCount(result) || checkIsHasDisCount(result_8) || checkIsHasDisCount(result_9))
             {
                return true;
             }
          }
-         else if(checkIsHasDisCount(_loc4_))
+         else if(checkIsHasDisCount(result))
          {
             return true;
          }
          return false;
       }
       
-      private function checkIsHasDisCount(param1:DictionaryData) : Boolean
+      private function checkIsHasDisCount(result:DictionaryData) : Boolean
       {
-         if(param1 && param1.length > 0)
+         if(result && result.length > 0)
          {
             var _loc4_:int = 0;
-            var _loc3_:* = param1.list;
-            for each(var _loc2_ in param1.list)
+            var _loc3_:* = result.list;
+            for each(var item in result.list)
             {
-               if(_loc2_ && _loc2_.isValid)
+               if(item && item.isValid)
                {
                   return true;
                }
@@ -965,24 +969,24 @@ package ddt.manager
          return false;
       }
       
-      private function __updateGoodsDisCount(param1:PkgEvent) : void
+      private function __updateGoodsDisCount(evt:PkgEvent) : void
       {
          loadDisCounts();
       }
       
       private function loadDisCounts() : void
       {
-         var _loc2_:URLVariables = new URLVariables();
-         _loc2_["rnd"] = Math.random();
-         var _loc1_:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ShopCheapItemList.ashx"),6,_loc2_);
-         _loc1_.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.ShopDisCountRealTimesFailure");
-         _loc1_.analyzer = new ShopItemDisCountAnalyzer(ShopManager.Instance.updateRealTimesItemsByDisCount);
-         LoadResourceManager.Instance.startLoad(_loc1_);
+         var args:URLVariables = new URLVariables();
+         args["rnd"] = Math.random();
+         var loader:BaseLoader = LoadResourceManager.Instance.createLoader(PathManager.solveRequestPath("ShopCheapItemList.ashx"),6,args);
+         loader.loadErrorMessage = LanguageMgr.GetTranslation("ddt.loader.ShopDisCountRealTimesFailure");
+         loader.analyzer = new ShopItemDisCountAnalyzer(ShopManager.Instance.updateRealTimesItemsByDisCount);
+         LoadResourceManager.Instance.startLoad(loader);
       }
       
-      public function updateRealTimesItemsByDisCount(param1:ShopItemDisCountAnalyzer) : void
+      public function updateRealTimesItemsByDisCount(analyzer:ShopItemDisCountAnalyzer) : void
       {
-         _shopRealTimesDisCountGoods = param1.shopDisCountGoods;
+         _shopRealTimesDisCountGoods = analyzer.shopDisCountGoods;
          dispatchEvent(new ShopEvent("discountIsChange"));
       }
       
@@ -991,9 +995,9 @@ package ddt.manager
          return _shopGoods;
       }
       
-      public function set shopGoods(param1:DictionaryData) : void
+      public function set shopGoods(value:DictionaryData) : void
       {
-         _shopGoods = param1;
+         _shopGoods = value;
       }
    }
 }

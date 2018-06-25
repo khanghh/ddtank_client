@@ -108,26 +108,26 @@ package halloween.view
          SocketManager.Instance.addEventListener(PkgEvent.format(283,6),__onGetCandyNum);
       }
       
-      protected function __onPumpkinBuyClick(param1:MouseEvent) : void
+      protected function __onPumpkinBuyClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         var _loc2_:ShopItemInfo = ShopManager.Instance.getGoodsByTemplateID(1120243,1);
-         ShopBuyManager.Instance.buy(_loc2_.GoodsID,1,_loc2_.getItemPrice(1).PriceType);
+         var shopInfo:ShopItemInfo = ShopManager.Instance.getGoodsByTemplateID(1120243,1);
+         ShopBuyManager.Instance.buy(shopInfo.GoodsID,1,shopInfo.getItemPrice(1).PriceType);
       }
       
-      protected function __onGetCandyNum(param1:PkgEvent) : void
+      protected function __onGetCandyNum(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         _candyNum.text = _loc2_.toString();
+         var pkg:PackageIn = event.pkg;
+         var num:int = pkg.readInt();
+         _candyNum.text = num.toString();
       }
       
-      protected function __onKeyDown(param1:KeyboardEvent) : void
+      protected function __onKeyDown(event:KeyboardEvent) : void
       {
-         var _loc2_:DisplayObject = StageReferance.stage.focus as DisplayObject;
-         if(DisplayUtils.isTargetOrContain(_loc2_,this))
+         var focusTarget:DisplayObject = StageReferance.stage.focus as DisplayObject;
+         if(DisplayUtils.isTargetOrContain(focusTarget,this))
          {
-            if(param1.keyCode == 27)
+            if(event.keyCode == 27)
             {
                SoundManager.instance.playButtonSound();
                HalloweenControl.instance.hide();
@@ -135,43 +135,42 @@ package halloween.view
          }
       }
       
-      protected function __onSetExchangeInfo(param1:PkgEvent) : void
+      protected function __onSetExchangeInfo(event:PkgEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:Array = [];
-         _loc4_ = 0;
-         while(_loc4_ < 5)
+         var i:int = 0;
+         var pkg:PackageIn = event.pkg;
+         var idArr:Array = [];
+         for(i = 0; i < 5; )
          {
-            _loc2_.push(_loc3_.readInt());
-            _loc4_++;
+            idArr.push(pkg.readInt());
+            i++;
          }
-         _exchangeView.info = _loc2_;
+         _exchangeView.info = idArr;
       }
       
       private function setTimeText() : void
       {
-         var _loc1_:Date = DateUtils.getDateByStr(ServerConfigManager.instance.halloweenBeginDate);
-         var _loc2_:Date = DateUtils.getDateByStr(ServerConfigManager.instance.halloweenEndDate);
-         _halloweenTime.text = addZero(_loc1_.fullYear) + "." + addZero(_loc1_.month + 1) + "." + addZero(_loc1_.date);
-         _halloweenTime.text = _halloweenTime.text + ("-" + addZero(_loc2_.fullYear) + "." + addZero(_loc2_.month + 1) + "." + addZero(_loc2_.date));
+         var startDate:Date = DateUtils.getDateByStr(ServerConfigManager.instance.halloweenBeginDate);
+         var endDate:Date = DateUtils.getDateByStr(ServerConfigManager.instance.halloweenEndDate);
+         _halloweenTime.text = addZero(startDate.fullYear) + "." + addZero(startDate.month + 1) + "." + addZero(startDate.date);
+         _halloweenTime.text = _halloweenTime.text + ("-" + addZero(endDate.fullYear) + "." + addZero(endDate.month + 1) + "." + addZero(endDate.date));
       }
       
-      private function addZero(param1:Number) : String
+      private function addZero(value:Number) : String
       {
-         var _loc2_:* = null;
-         if(param1 < 10)
+         var result:* = null;
+         if(value < 10)
          {
-            _loc2_ = "0" + param1.toString();
+            result = "0" + value.toString();
          }
          else
          {
-            _loc2_ = param1.toString();
+            result = value.toString();
          }
-         return _loc2_;
+         return result;
       }
       
-      protected function __onCloseClick(param1:MouseEvent) : void
+      protected function __onCloseClick(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          HalloweenControl.instance.hide();
@@ -183,9 +182,9 @@ package halloween.view
          LayerManager.Instance.addToLayer(this,4,false,1);
       }
       
-      private function __onMouseClickSetFocus(param1:MouseEvent) : void
+      private function __onMouseClickSetFocus(event:MouseEvent) : void
       {
-         StageReferance.stage.focus = param1.target as InteractiveObject;
+         StageReferance.stage.focus = event.target as InteractiveObject;
       }
       
       private function removeEvent() : void
@@ -201,8 +200,8 @@ package halloween.view
       public function dispose() : void
       {
          removeEvent();
-         var _loc1_:DisplayObject = StageReferance.stage.focus as DisplayObject;
-         if(_loc1_ && contains(_loc1_))
+         var focusDisplay:DisplayObject = StageReferance.stage.focus as DisplayObject;
+         if(focusDisplay && contains(focusDisplay))
          {
             StageReferance.stage.focus = null;
          }

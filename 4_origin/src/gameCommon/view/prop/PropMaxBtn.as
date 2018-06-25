@@ -25,10 +25,10 @@ package gameCommon.view.prop
          _tipInfo.showTurn = false;
          _tipInfo.showThew = true;
          _tipInfo.showCount = true;
-         var _loc1_:ItemTemplateInfo = new ItemTemplateInfo();
-         _loc1_.Name = LanguageMgr.GetTranslation("tank.view.common.RoomIIPropTip.max");
-         _loc1_.Description = LanguageMgr.GetTranslation("tank.view.common.RoomIIPropTip.maxDetail");
-         _tipInfo.info = _loc1_;
+         var info:ItemTemplateInfo = new ItemTemplateInfo();
+         info.Name = LanguageMgr.GetTranslation("tank.view.common.RoomIIPropTip.max");
+         info.Description = LanguageMgr.GetTranslation("tank.view.common.RoomIIPropTip.maxDetail");
+         _tipInfo.info = info;
          ShowTipManager.Instance.addTip(this);
       }
       
@@ -42,7 +42,7 @@ package gameCommon.view.prop
          return _tipInfo;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
       }
       
@@ -51,7 +51,7 @@ package gameCommon.view.prop
          return "5,2,7,1,6,4";
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
       }
       
@@ -60,7 +60,7 @@ package gameCommon.view.prop
          return 20;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
       }
       
@@ -69,7 +69,7 @@ package gameCommon.view.prop
          return 20;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
       }
       
@@ -78,7 +78,7 @@ package gameCommon.view.prop
          return "core.ToolPropTips";
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
       }
       

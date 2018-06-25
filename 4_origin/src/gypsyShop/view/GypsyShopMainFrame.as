@@ -61,14 +61,14 @@ package gypsyShop.view
          super();
       }
       
-      public function setModel(param1:GypsyShopModel) : void
+      public function setModel(modelProxy:GypsyShopModel) : void
       {
-         _model = param1;
+         _model = modelProxy;
       }
       
       override protected function init() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          super.init();
          _bg = ComponentFactory.Instance.creatBitmap("gypsy.frame.bg");
          addToContent(_bg);
@@ -97,14 +97,13 @@ package gypsyShop.view
          _refreshBtn = ComponentFactory.Instance.creat("gypsy.refreshBtn");
          addToContent(_refreshBtn);
          _itemList = new Vector.<GypsyItemCell>();
-         _loc1_ = 0;
-         while(_loc1_ < 8)
+         for(i = 0; i < 8; )
          {
-            _itemList[_loc1_] = new GypsyItemCell();
-            _itemList[_loc1_].x = 27 + 218 * (_loc1_ % 2);
-            _itemList[_loc1_].y = 148 + 86 * (int(_loc1_ / 2));
-            addToContent(_itemList[_loc1_]);
-            _loc1_++;
+            _itemList[i] = new GypsyItemCell();
+            _itemList[i].x = 27 + 218 * (i % 2);
+            _itemList[i].y = 148 + 86 * (int(i / 2));
+            addToContent(_itemList[i]);
+            i++;
          }
          _helpBtn = ComponentFactory.Instance.creat("gypsy.btn.helpBtn");
          _helpBtn.addEventListener("click",onHelp);
@@ -116,41 +115,39 @@ package gypsyShop.view
          updateWealth();
       }
       
-      private function frameEvent(param1:FrameEvent) : void
+      private function frameEvent(e:FrameEvent) : void
       {
          SoundManager.instance.playButtonSound();
-         ObjectUtils.disposeObject(param1.currentTarget);
+         ObjectUtils.disposeObject(e.currentTarget);
       }
       
       public function updateNewItemList() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = Math.min(8,_model.itemDataList.length);
-         _loc2_ = 0;
-         while(_loc2_ < _itemList.length)
+         var i:int = 0;
+         var len:int = Math.min(8,_model.itemDataList.length);
+         for(i = 0; i < _itemList.length; )
          {
-            _itemList[_loc2_].clear();
-            _loc2_++;
+            _itemList[i].clear();
+            i++;
          }
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         for(i = 0; i < len; )
          {
-            _itemList[_loc2_].updateCell(_model.itemDataList[_loc2_]);
-            _loc2_++;
+            _itemList[i].updateCell(_model.itemDataList[i]);
+            i++;
          }
          updateWealth();
       }
       
       public function updateBuyResult() : void
       {
-         var _loc1_:int = _model.buyResult.id;
+         var id:int = _model.buyResult.id;
          var _loc4_:int = 0;
          var _loc3_:* = _itemList;
-         for each(var _loc2_ in _itemList)
+         for each(var item in _itemList)
          {
-            if(_loc2_.id == _loc1_)
+            if(item.id == id)
             {
-               _loc2_.updateBuyButtonState(_model.buyResult.canBuy);
+               item.updateBuyButtonState(_model.buyResult.canBuy);
             }
          }
          updateWealth();
@@ -158,34 +155,32 @@ package gypsyShop.view
       
       public function updateRareItemsList() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
-         _loc4_ = 0;
-         while(_loc4_ < _rareList.length)
+         var i:int = 0;
+         var bagCell:* = null;
+         var mc:* = null;
+         for(i = 0; i < _rareList.length; )
          {
-            _loc1_ = _rareList[_loc4_];
-            ObjectUtils.disposeObject(_loc1_);
-            _loc4_++;
+            bagCell = _rareList[i];
+            ObjectUtils.disposeObject(bagCell);
+            i++;
          }
          _rareList = new Vector.<BagCell>();
-         var _loc3_:int = _model.listRareItemTempleteIDs.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var len:int = _model.listRareItemTempleteIDs.length;
+         for(i = 0; i < len; )
          {
-            _rareList[_loc4_] = new BagCell(0,ItemManager.Instance.getTemplateById(_model.listRareItemTempleteIDs[_loc4_]));
-            _rareList[_loc4_].x = 76 + 56 * _loc4_;
-            _rareList[_loc4_].y = 85;
-            addToContent(_rareList[_loc4_]);
-            _loc2_ = ComponentFactory.Instance.creat("asset.core.icon.coolShining");
-            _loc2_.mouseChildren = false;
-            _loc2_.mouseEnabled = false;
-            _loc2_.x = _rareList[_loc4_].x - 1;
-            _loc2_.y = _rareList[_loc4_].y - 1;
-            _loc2_.alpha = 0.5;
-            addToContent(_loc2_);
-            _coolShiningMCList.push(_loc2_);
-            _loc4_++;
+            _rareList[i] = new BagCell(0,ItemManager.Instance.getTemplateById(_model.listRareItemTempleteIDs[i]));
+            _rareList[i].x = 76 + 56 * i;
+            _rareList[i].y = 85;
+            addToContent(_rareList[i]);
+            mc = ComponentFactory.Instance.creat("asset.core.icon.coolShining");
+            mc.mouseChildren = false;
+            mc.mouseEnabled = false;
+            mc.x = _rareList[i].x - 1;
+            mc.y = _rareList[i].y - 1;
+            mc.alpha = 0.5;
+            addToContent(mc);
+            _coolShiningMCList.push(mc);
+            i++;
          }
          updateWealth();
       }
@@ -196,9 +191,9 @@ package gypsyShop.view
          _honourText.text = PlayerManager.Instance.Self.myHonor.toString();
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             close();
          }
@@ -210,24 +205,24 @@ package gypsyShop.view
          GypsyShopManager.getInstance().hideMainFrame();
       }
       
-      protected function onClick(param1:MouseEvent) : void
+      protected function onClick(me:MouseEvent) : void
       {
-         if(param1.target == _refreshBtn)
+         if(me.target == _refreshBtn)
          {
             GypsyShopManager.getInstance().refreshBtnClicked();
          }
       }
       
-      protected function onHelp(param1:MouseEvent) : void
+      protected function onHelp(me:MouseEvent) : void
       {
-         var _loc2_:GypsyHelpFrame = ComponentFactory.Instance.creatComponentByStylename("gypsy.helpFrame");
-         _loc2_.addEventListener("response",frameEvent);
-         LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+         var helpFrame:GypsyHelpFrame = ComponentFactory.Instance.creatComponentByStylename("gypsy.helpFrame");
+         helpFrame.addEventListener("response",frameEvent);
+         LayerManager.Instance.addToLayer(helpFrame,3,true,1);
       }
       
       override public function dispose() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          removeEventListener("response",_response);
          _helpBtn.removeEventListener("click",onHelp);
          _refreshBtn.removeEventListener("click",onClick);
@@ -255,12 +250,11 @@ package gypsyShop.view
          _itemList = null;
          _rareList.length = 0;
          _rareList = null;
-         var _loc1_:int = _coolShiningMCList.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var len:int = _coolShiningMCList.length;
+         for(i = 0; i < len; )
          {
-            _coolShiningMCList[_loc2_].stop();
-            _loc2_++;
+            _coolShiningMCList[i].stop();
+            i++;
          }
          _coolShiningMCList.length = 0;
          _coolShiningMCList = null;

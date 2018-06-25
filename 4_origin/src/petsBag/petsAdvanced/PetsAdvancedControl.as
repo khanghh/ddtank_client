@@ -19,9 +19,9 @@ package petsBag.petsAdvanced
       
       public var frame:PetsAdvancedFrame;
       
-      public function PetsAdvancedControl(param1:IEventDispatcher = null)
+      public function PetsAdvancedControl(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get Instance() : PetsAdvancedControl
@@ -38,7 +38,7 @@ package petsBag.petsAdvanced
          PetsAdvancedManager.Instance.addEventListener("petsAdvanceOpenView",__onOpenView);
       }
       
-      protected function __onOpenView(param1:PetsAdvancedEvent) : void
+      protected function __onOpenView(event:PetsAdvancedEvent) : void
       {
          frame = ComponentFactory.Instance.creatCustomObject("petsBag.PetsAdvancedFrame");
          frame.titleText = LanguageMgr.GetTranslation("ddt.pets.advancedTxt");

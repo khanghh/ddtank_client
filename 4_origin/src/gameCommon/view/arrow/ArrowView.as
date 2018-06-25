@@ -96,10 +96,10 @@ package gameCommon.view.arrow
       
       private var _hammerBlocked:Boolean;
       
-      public function ArrowView(param1:LocalPlayer)
+      public function ArrowView(info:LocalPlayer)
       {
          super();
-         _info = param1;
+         _info = info;
          _bg = ComponentFactory.Instance.creatCustomObject("game.view.arrowBg") as ArrowBg;
          addChild(_bg);
          _bg.arrowSub.arrowClone_mc.visible = false;
@@ -110,11 +110,11 @@ package gameCommon.view.arrow
          _bg.arrowSub.circle_mc.visible = true;
          _bg.arrowSub.green_mc.visible = false;
          _bg.arrowSub.addChild(_sector);
-         var _loc2_:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("asset.game.rotationCountFieldText");
-         rotationCountField = new GradientText(_loc2_,RANDOW_COLORSII);
-         var _loc3_:Point = ComponentFactory.Instance.creatCustomObject("asset.game.rotationCountPos");
-         rotationCountField.x = _loc3_.x;
-         rotationCountField.y = _loc3_.y;
+         var text:FilterFrameText = ComponentFactory.Instance.creatComponentByStylename("asset.game.rotationCountFieldText");
+         rotationCountField = new GradientText(text,RANDOW_COLORSII);
+         var pos:Point = ComponentFactory.Instance.creatCustomObject("asset.game.rotationCountPos");
+         rotationCountField.x = pos.x;
+         rotationCountField.y = pos.y;
          addChild(rotationCountField);
          rotationCountField.filters = ComponentFactory.Instance.creatFilters("game.rotationCountField_Filter");
          rotationCountField.setText(rotationCountField.text);
@@ -131,17 +131,17 @@ package gameCommon.view.arrow
          updataAngleLine();
       }
       
-      public function set flyEnable(param1:Boolean) : void
+      public function set flyEnable(value:Boolean) : void
       {
-         if(param1 == _flyEnable)
+         if(value == _flyEnable)
          {
             return;
          }
          if(!PlayerManager.Instance.Self.IsWeakGuildFinish(11))
          {
-            param1 = false;
+            value = false;
          }
-         _flyEnable = param1;
+         _flyEnable = value;
          if(_isLockFly)
          {
             _info.flyEnabled = false;
@@ -152,19 +152,19 @@ package gameCommon.view.arrow
          }
       }
       
-      private function __sendShootAction(param1:LivingEvent) : void
+      private function __sendShootAction(evt:LivingEvent) : void
       {
-         var _loc2_:LocalPlayer = param1.currentTarget as LocalPlayer;
-         if(_loc2_.currentBomb == 3)
+         var localPlayer:LocalPlayer = evt.currentTarget as LocalPlayer;
+         if(localPlayer.currentBomb == 3)
          {
             _info.removeEventListener("sendShootAction",__sendShootAction);
             SocketManager.Instance.out.syncWeakStep(94);
          }
       }
       
-      public function set hammerEnable(param1:Boolean) : void
+      public function set hammerEnable(value:Boolean) : void
       {
-         if(param1 == _hammerEnable)
+         if(value == _hammerEnable)
          {
             return;
          }
@@ -174,7 +174,7 @@ package gameCommon.view.arrow
          }
          else
          {
-            _hammerEnable = param1;
+            _hammerEnable = value;
          }
          _info.deputyWeaponEnabled = _hammerEnable;
       }
@@ -201,7 +201,7 @@ package gameCommon.view.arrow
          }
       }
       
-      private function showAngleLine(param1:int) : void
+      private function showAngleLine(Agnle:int) : void
       {
          if(!_AngelLine)
          {
@@ -209,7 +209,7 @@ package gameCommon.view.arrow
             addChild(_AngelLine);
             _AngelLine.gotoAndStop("stand");
          }
-         switch(int(param1) - 1001)
+         switch(int(Agnle) - 1001)
          {
             case 0:
                _AngelLine.gotoAndStop("20Degree");
@@ -223,23 +223,23 @@ package gameCommon.view.arrow
          _AnglelShineEffect = EffectManager.Instance.creatEffect(3,_AngelLine,{"color":"gold"});
       }
       
-      private function setTip(param1:BaseButton, param2:String, param3:String, param4:String, param5:String = "0", param6:Boolean = true, param7:int = 10) : void
+      private function setTip(btn:BaseButton, name:String, property4:String, description:String, dirction:String = "0", showThew:Boolean = true, tipGapH:int = 10) : void
       {
-         param1.tipStyle = "core.ToolPropTips";
-         param1.tipDirctions = param5;
-         param1.tipGapV = 0;
-         param1.tipGapH = param7;
-         var _loc9_:ItemTemplateInfo = new ItemTemplateInfo();
-         _loc9_.Name = param2;
-         _loc9_.Property4 = param3;
-         _loc9_.Description = param4;
-         var _loc8_:ToolPropInfo = new ToolPropInfo();
-         _loc8_.info = _loc9_;
-         _loc8_.count = 1;
-         _loc8_.showTurn = false;
-         _loc8_.showThew = param6;
-         _loc8_.showCount = false;
-         param1.tipData = _loc8_;
+         btn.tipStyle = "core.ToolPropTips";
+         btn.tipDirctions = dirction;
+         btn.tipGapV = 0;
+         btn.tipGapH = tipGapH;
+         var itemTemplateInfo:ItemTemplateInfo = new ItemTemplateInfo();
+         itemTemplateInfo.Name = name;
+         itemTemplateInfo.Property4 = property4;
+         itemTemplateInfo.Description = description;
+         var tipInfo:ToolPropInfo = new ToolPropInfo();
+         tipInfo.info = itemTemplateInfo;
+         tipInfo.count = 1;
+         tipInfo.showTurn = false;
+         tipInfo.showThew = showThew;
+         tipInfo.showCount = false;
+         btn.tipData = tipInfo;
       }
       
       private function reset() : void
@@ -261,9 +261,9 @@ package gameCommon.view.arrow
          }
       }
       
-      public function set hideState(param1:Boolean) : void
+      public function set hideState(param:Boolean) : void
       {
-         _hideState = param1;
+         _hideState = param;
       }
       
       public function get hideState() : Boolean
@@ -346,15 +346,15 @@ package gameCommon.view.arrow
          BombKingManager.instance.removeEventListener("recordingModifyAngle",__onModifyAngle);
       }
       
-      private function __lockAngleChangeHandler(param1:LivingEvent) : void
+      private function __lockAngleChangeHandler(e:LivingEvent) : void
       {
          enableArrow = _info.isLockAngle;
       }
       
-      public function set enableArrow(param1:Boolean) : void
+      public function set enableArrow(b:Boolean) : void
       {
-         _enableArrow = param1;
-         if(!param1)
+         _enableArrow = b;
+         if(!b)
          {
             addEventListener("enterFrame",__enterFrame);
             KeyboardManager.getInstance().addEventListener("keyDown",__inputKeyDown);
@@ -366,27 +366,27 @@ package gameCommon.view.arrow
          }
       }
       
-      protected function __onModifyAngle(param1:BombKingEvent) : void
+      protected function __onModifyAngle(event:BombKingEvent) : void
       {
-         var _loc2_:Object = param1.data;
-         _angleNum = int(_loc2_.angle);
-         _info.direction = int(_loc2_.direction);
+         var obj:Object = event.data;
+         _angleNum = int(obj.angle);
+         _info.direction = int(obj.direction);
          __changeDirection(null);
       }
       
-      public function modifyAngleData(param1:Player) : void
+      public function modifyAngleData(info:Player) : void
       {
-         _info.currentWeapInfo = param1.currentWeapInfo;
-         _info.playerAngle = param1.playerAngle;
+         _info.currentWeapInfo = info.currentWeapInfo;
+         _info.playerAngle = info.playerAngle;
          reset();
       }
       
-      private function __onTurnChange(param1:LivingEvent) : void
+      private function __onTurnChange(e:LivingEvent) : void
       {
          rotationCountField.setText(rotationCountField.text);
       }
       
-      private function __die(param1:Event) : void
+      private function __die(event:Event) : void
       {
          if(!_info.isLiving)
          {
@@ -395,21 +395,21 @@ package gameCommon.view.arrow
          }
       }
       
-      private function __revive(param1:Event) : void
+      private function __revive(event:Event) : void
       {
          flyEnable = true;
          hammerEnable = true;
       }
       
-      private function __enterFrame(param1:Event) : void
+      private function __enterFrame(event:Event) : void
       {
-         var _loc3_:Boolean = false;
-         var _loc2_:int = getTimer();
-         if(_loc2_ - _currentAngleChangeTime < 100)
+         var angleChanged:Boolean = false;
+         var currentTime:int = getTimer();
+         if(currentTime - _currentAngleChangeTime < 100)
          {
             return;
          }
-         var _loc4_:Boolean = false;
+         var playSound:Boolean = false;
          if(BombKingManager.instance.Recording)
          {
             _sFlag = _info.gunAngle > _angleNum;
@@ -419,55 +419,55 @@ package gameCommon.view.arrow
          {
             if(_currentAngleChangeTime != 0)
             {
-               _loc4_ = _info.manuallySetGunAngle(_info.gunAngle - WeaponInfo.ROTATITON_SPEED * _info.reverse);
+               playSound = _info.manuallySetGunAngle(_info.gunAngle - WeaponInfo.ROTATITON_SPEED * _info.reverse);
             }
             else
             {
                _currentAngleChangeTime = getTimer();
             }
-            _loc3_ = true;
+            angleChanged = true;
          }
          else if((_wFlag || KeyboardManager.isDown(KeyStroke.VK_W.getCode()) || KeyboardManager.isDown(38)) && !_info.autoOnHook)
          {
             if(_currentAngleChangeTime != 0)
             {
-               _loc4_ = _info.manuallySetGunAngle(_info.gunAngle + WeaponInfo.ROTATITON_SPEED * _info.reverse);
+               playSound = _info.manuallySetGunAngle(_info.gunAngle + WeaponInfo.ROTATITON_SPEED * _info.reverse);
             }
             if(_currentAngleChangeTime == 0)
             {
                _currentAngleChangeTime = getTimer();
             }
-            _loc3_ = true;
+            angleChanged = true;
          }
-         if(!_loc3_)
+         if(!angleChanged)
          {
             _currentAngleChangeTime = 0;
          }
-         if(_loc4_)
+         if(playSound)
          {
             SoundManager.instance.play("006");
          }
       }
       
-      private function __inputKeyDown(param1:KeyboardEvent) : void
+      private function __inputKeyDown(event:KeyboardEvent) : void
       {
-         var _loc2_:Boolean = false;
+         var playSound:Boolean = false;
          if(!ChatManager.Instance.input.inputField.isFocus() && !_info.autoOnHook)
          {
             if(!BombKingManager.instance.Recording)
             {
-               _loc2_ = false;
-               if((param1.keyCode == KeyStroke.VK_S.getCode() || param1.keyCode == 40) && !_info.autoOnHook)
+               playSound = false;
+               if((event.keyCode == KeyStroke.VK_S.getCode() || event.keyCode == 40) && !_info.autoOnHook)
                {
-                  _loc2_ = _info.manuallySetGunAngle(_info.gunAngle - WeaponInfo.ROTATITON_SPEED * _info.reverse);
+                  playSound = _info.manuallySetGunAngle(_info.gunAngle - WeaponInfo.ROTATITON_SPEED * _info.reverse);
                   _currentAngleChangeTime = 0;
                }
-               else if((param1.keyCode == KeyStroke.VK_W.getCode() || param1.keyCode == 38) && !_info.autoOnHook)
+               else if((event.keyCode == KeyStroke.VK_W.getCode() || event.keyCode == 38) && !_info.autoOnHook)
                {
-                  _loc2_ = _info.manuallySetGunAngle(_info.gunAngle + WeaponInfo.ROTATITON_SPEED * _info.reverse);
+                  playSound = _info.manuallySetGunAngle(_info.gunAngle + WeaponInfo.ROTATITON_SPEED * _info.reverse);
                   _currentAngleChangeTime = 0;
                }
-               if(_loc2_)
+               if(playSound)
                {
                   SoundManager.instance.play("006");
                }
@@ -475,18 +475,18 @@ package gameCommon.view.arrow
          }
       }
       
-      private function __keydown(param1:KeyboardEvent) : void
+      private function __keydown(event:KeyboardEvent) : void
       {
-         if(param1.keyCode != KeyStroke.VK_F.getCode())
+         if(event.keyCode != KeyStroke.VK_F.getCode())
          {
-            if(param1.keyCode == KeyStroke.VK_T.getCode())
+            if(event.keyCode == KeyStroke.VK_T.getCode())
             {
                dispatchEvent(new Event("hide bar"));
             }
          }
       }
       
-      private function __changeBall(param1:LivingEvent) : void
+      private function __changeBall(event:LivingEvent) : void
       {
          if(_info.currentBomb == 3 || _info.currentBomb == 110 || _info.currentBomb == 117 || _info.currentBomb == 11196)
          {
@@ -503,38 +503,38 @@ package gameCommon.view.arrow
          reset();
       }
       
-      private function __change(param1:LivingEvent) : void
+      private function __change(event:LivingEvent) : void
       {
          if(_info == null)
          {
             return;
          }
-         var _loc2_:Number = _info.currentDeputyWeaponInfo.energy;
+         var deputyEnergy:Number = _info.currentDeputyWeaponInfo.energy;
          resetAngle();
       }
       
-      private function __weapAngle(param1:LivingEvent) : void
+      private function __weapAngle(event:LivingEvent) : void
       {
          if(RoomManager.Instance.current.gameMode == 8)
          {
             checkAngle();
          }
-         var _loc2_:* = 0;
+         var temp:* = 0;
          if(_info.direction == -1)
          {
-            _loc2_ = 0;
+            temp = 0;
          }
          else
          {
-            _loc2_ = Number(180);
+            temp = Number(180);
          }
          if(_info.gunAngle < 0)
          {
-            _bg.arrowSub.arrow.rotation = 360 - (_info.gunAngle - 180 + _loc2_) * _info.direction;
+            _bg.arrowSub.arrow.rotation = 360 - (_info.gunAngle - 180 + temp) * _info.direction;
          }
          else
          {
-            _bg.arrowSub.arrow.rotation = 360 - (_info.gunAngle + 180 + _loc2_) * _info.direction;
+            _bg.arrowSub.arrow.rotation = 360 - (_info.gunAngle + 180 + temp) * _info.direction;
          }
          _recordChangeBefore = _info.gunAngle;
          rotationCountField.setText(String(int(_info.gunAngle + _info.playerAngle * -1 * _info.direction)),false);
@@ -559,13 +559,13 @@ package gameCommon.view.arrow
          {
             return;
          }
-         var _loc1_:int = _info.gunAngle + _info.playerAngle * -1 * _info.direction;
+         var _Angle:int = _info.gunAngle + _info.playerAngle * -1 * _info.direction;
          if(FightLibManager.Instance.currentInfo)
          {
             switch(int(FightLibManager.Instance.currentInfo.id) - 1001)
             {
                case 0:
-                  if(_loc1_ > 30 || _loc1_ < 10)
+                  if(_Angle > 30 || _Angle < 10)
                   {
                      ShineKey = true;
                   }
@@ -575,7 +575,7 @@ package gameCommon.view.arrow
                   }
                   break;
                case 1:
-                  if(_loc1_ > 75 || _loc1_ < 55)
+                  if(_Angle > 75 || _Angle < 55)
                   {
                      ShineKey = true;
                   }
@@ -585,7 +585,7 @@ package gameCommon.view.arrow
                   }
                   break;
                case 2:
-                  if(_loc1_ > 100 || _loc1_ < 60)
+                  if(_Angle > 100 || _Angle < 60)
                   {
                      ShineKey = true;
                      break;
@@ -596,13 +596,13 @@ package gameCommon.view.arrow
          }
       }
       
-      public function set ShineKey(param1:Boolean) : void
+      public function set ShineKey(Value:Boolean) : void
       {
-         if(_ShineKey == param1)
+         if(_ShineKey == Value)
          {
             return;
          }
-         _ShineKey = param1;
+         _ShineKey = Value;
          shineAngleLine();
       }
       
@@ -625,7 +625,7 @@ package gameCommon.view.arrow
          }
       }
       
-      private function __changeDirection(param1:LivingEvent) : void
+      private function __changeDirection(event:LivingEvent) : void
       {
          __weapAngle(null);
          if(_info.direction == -1)
@@ -642,15 +642,15 @@ package gameCommon.view.arrow
          }
       }
       
-      private function __changeAngle(param1:LivingEvent) : void
+      private function __changeAngle(event:LivingEvent) : void
       {
          if(RoomManager.Instance.current.gameMode == 8)
          {
             checkAngle();
          }
-         var _loc2_:Number = _bg.arrowSub.rotation - _info.playerAngle;
+         var dis:Number = _bg.arrowSub.rotation - _info.playerAngle;
          _bg.arrowSub.rotation = _info.playerAngle;
-         _recordRotation = _recordRotation + _loc2_;
+         _recordRotation = _recordRotation + dis;
          _bg.arrowSub.arrowClone_mc.rotation = _recordRotation;
          rotationCountField.setText(String(int(_info.gunAngle + _info.playerAngle * -1 * _info.direction)),false);
          if(_bg.arrowSub.arrow.rotation == _bg.arrowSub.arrowClone_mc.rotation)
@@ -668,7 +668,7 @@ package gameCommon.view.arrow
          }
       }
       
-      private function __setArrowClone(param1:Event) : void
+      private function __setArrowClone(event:Event) : void
       {
          if(!_info.isAttacking)
          {
@@ -699,9 +699,9 @@ package gameCommon.view.arrow
          _hammerCoolDown = 0;
       }
       
-      private function __setDeputyWeaponNumber(param1:CrazyTankSocketEvent) : void
+      private function __setDeputyWeaponNumber(event:CrazyTankSocketEvent) : void
       {
-         _deputyWeaponResCount = param1.pkg.readInt();
+         _deputyWeaponResCount = event.pkg.readInt();
          _info.deputyWeaponCount = _deputyWeaponResCount;
       }
       
@@ -710,14 +710,14 @@ package gameCommon.view.arrow
          return null;
       }
       
-      public function setPlaneBtnVisible(param1:Boolean) : void
+      public function setPlaneBtnVisible(value:Boolean) : void
       {
-         flyEnable = param1;
+         flyEnable = value;
       }
       
-      public function setOffHandedBtnVisible(param1:Boolean) : void
+      public function setOffHandedBtnVisible(value:Boolean) : void
       {
-         hammerEnable = param1;
+         hammerEnable = value;
       }
       
       public function enter() : void

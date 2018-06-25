@@ -81,21 +81,21 @@ package ddt.command
          removeEventListener("number_enter",_numberEnter);
       }
       
-      private function _numberClose(param1:Event) : void
+      private function _numberClose(e:Event) : void
       {
          cancelMoney();
          ObjectUtils.disposeObject(this);
       }
       
-      private function _numberEnter(param1:Event) : void
+      private function _numberEnter(e:Event) : void
       {
-         param1.stopImmediatePropagation();
+         e.stopImmediatePropagation();
          doPay(null);
       }
       
-      public function setTitleText(param1:String) : void
+      public function setTitleText(value:String) : void
       {
-         titleText = param1;
+         titleText = value;
       }
       
       public function hideSelectedBand() : void
@@ -103,56 +103,56 @@ package ddt.command
          _view.hideSelectedBand();
       }
       
-      public function set itemID(param1:int) : void
+      public function set itemID(value:int) : void
       {
-         _view.ItemID = param1;
+         _view.ItemID = value;
          _shopItemInfo = ShopManager.Instance.getMoneyShopItemByTemplateID(_view._itemID);
          perPrice();
       }
       
-      public function setIsStoneExploreView(param1:Boolean) : void
+      public function setIsStoneExploreView(value:Boolean) : void
       {
-         _flag = param1;
+         _flag = value;
       }
       
-      public function setItemID(param1:int, param2:int, param3:int = 1) : void
+      public function setItemID(ID:int, type:int, param:int = 1) : void
       {
-         _view.setItemID(param1,param2,param3);
-         _shopItemInfo = ShopManager.Instance.getShopItemByTemplateID(_view._itemID,param2);
-         if(param2 == 1)
+         _view.setItemID(ID,type,param);
+         _shopItemInfo = ShopManager.Instance.getShopItemByTemplateID(_view._itemID,type);
+         if(type == 1)
          {
             _unitPrice = _shopItemInfo.getItemPrice(1).hardCurrencyValue;
          }
-         else if(param2 == 2)
+         else if(type == 2)
          {
             _unitPrice = _shopItemInfo.getItemPrice(1).gesteValue;
          }
-         else if(param2 == 3)
+         else if(type == 3)
          {
-            _unitPrice = _shopItemInfo.getItemPrice(param3).bothMoneyValue;
+            _unitPrice = _shopItemInfo.getItemPrice(param).bothMoneyValue;
          }
-         else if(param2 == 6)
+         else if(type == 6)
          {
-            _unitPrice = _shopItemInfo.getItemPrice(param3).badgeValue;
+            _unitPrice = _shopItemInfo.getItemPrice(param).badgeValue;
          }
       }
       
-      public function set stoneNumber(param1:int) : void
+      public function set stoneNumber(value:int) : void
       {
-         _view.stoneNumber = param1;
+         _view.stoneNumber = value;
       }
       
-      public function set maxLimit(param1:int) : void
+      public function set maxLimit(value:int) : void
       {
-         _view.maxLimit = param1;
+         _view.maxLimit = value;
       }
       
       protected function perPrice() : void
       {
-         var _loc1_:ShopItemInfo = ShopManager.Instance.getMoneyShopItemByTemplateID(_view.ItemID);
-         if(_loc1_)
+         var itemInfo:ShopItemInfo = ShopManager.Instance.getMoneyShopItemByTemplateID(_view.ItemID);
+         if(itemInfo)
          {
-            _unitPrice = _loc1_.getItemPrice(1).bothMoneyValue;
+            _unitPrice = itemInfo.getItemPrice(1).bothMoneyValue;
          }
          else
          {
@@ -160,25 +160,25 @@ package ddt.command
          }
       }
       
-      public function set recordLastBuyCount(param1:Boolean) : void
+      public function set recordLastBuyCount(value:Boolean) : void
       {
-         _recordLastBuyCount = param1;
+         _recordLastBuyCount = value;
          if(_recordLastBuyCount)
          {
             _view.stoneNumber = SharedManager.Instance.lastBuyCount;
          }
       }
       
-      protected function doPay(param1:Event) : void
+      protected function doPay(e:Event) : void
       {
-         var _loc3_:* = null;
-         var _loc8_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:* = null;
-         var _loc9_:* = null;
-         var _loc7_:* = null;
-         var _loc2_:* = null;
-         var _loc10_:int = 0;
+         var items:* = null;
+         var types:* = null;
+         var colors:* = null;
+         var dresses:* = null;
+         var skins:* = null;
+         var places:* = null;
+         var bands:* = null;
+         var i:int = 0;
          SoundManager.instance.play("008");
          if(_shopItemInfo == null || !_shopItemInfo.isValid)
          {
@@ -232,36 +232,35 @@ package ddt.command
          }
          else
          {
-            _loc3_ = [];
-            _loc8_ = [];
-            _loc4_ = [];
-            _loc5_ = [];
-            _loc9_ = [];
-            _loc7_ = [];
-            _loc2_ = [];
-            _loc10_ = 0;
-            while(_loc10_ < _view.stoneNumber)
+            items = [];
+            types = [];
+            colors = [];
+            dresses = [];
+            skins = [];
+            places = [];
+            bands = [];
+            for(i = 0; i < _view.stoneNumber; )
             {
-               _loc3_.push(_shopItemInfo.GoodsID);
-               _loc8_.push(_view.time);
-               _loc4_.push("");
-               _loc5_.push(false);
-               _loc9_.push("");
-               _loc7_.push(-1);
-               _loc2_.push(_view.isBand);
-               _loc10_++;
+               items.push(_shopItemInfo.GoodsID);
+               types.push(_view.time);
+               colors.push("");
+               dresses.push(false);
+               skins.push("");
+               places.push(-1);
+               bands.push(_view.isBand);
+               i++;
             }
-            SocketManager.Instance.out.sendBuyGoods(_loc3_,_loc8_,_loc4_,_loc7_,_loc5_,_loc9_,_buyFrom,null,_loc2_);
+            SocketManager.Instance.out.sendBuyGoods(items,types,colors,places,dresses,skins,_buyFrom,null,bands);
          }
          dispatchEvent(new ShortcutBuyEvent(_view._itemID,_view.stoneNumber));
-         var _loc6_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_view._itemID);
-         if(_loc6_.CategoryID == 11)
+         var itemInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_view._itemID);
+         if(itemInfo.CategoryID == 11)
          {
-            if(_loc6_.TemplateID == 100100)
+            if(itemInfo.TemplateID == 100100)
             {
                PlayerManager.Instance.dispatchEvent(new BagEvent("gemstone_buy_count",null));
             }
-            else if(!(_loc6_.TemplateID == 112150 || _loc6_.TemplateID == 11233))
+            else if(!(itemInfo.TemplateID == 112150 || itemInfo.TemplateID == 11233))
             {
                PlayerManager.Instance.dispatchEvent(new BagEvent("quickBugCards",null));
             }
@@ -269,24 +268,24 @@ package ddt.command
          dispose();
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(e.responseCode == 0 || e.responseCode == 1)
          {
             cancelMoney();
             ObjectUtils.disposeObject(this);
          }
-         else if(param1.responseCode == 2)
+         else if(e.responseCode == 2)
          {
             doPay(null);
          }
       }
       
-      private function _responseI(param1:FrameEvent) : void
+      private function _responseI(e:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         if(param1.responseCode == 3)
+         if(e.responseCode == 3)
          {
             doMoney();
          }
@@ -294,7 +293,7 @@ package ddt.command
          {
             cancelMoney();
          }
-         ObjectUtils.disposeObject(param1.target);
+         ObjectUtils.disposeObject(e.target);
       }
       
       private function doMoney() : void
@@ -308,9 +307,9 @@ package ddt.command
          dispatchEvent(new ShortcutBuyEvent(0,0,false,false,"shortcutBuyMoneyCancel"));
       }
       
-      public function set buyFrom(param1:int) : void
+      public function set buyFrom(value:int) : void
       {
-         _buyFrom = param1;
+         _buyFrom = value;
       }
       
       public function get buyFrom() : int

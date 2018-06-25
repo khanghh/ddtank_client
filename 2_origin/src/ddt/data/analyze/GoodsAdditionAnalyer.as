@@ -10,32 +10,31 @@ package ddt.data.analyze
       
       private var _additionArr:Array;
       
-      public function GoodsAdditionAnalyer(param1:Function)
+      public function GoodsAdditionAnalyer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var obj:* = null;
          _additionArr = [];
-         _xml = new XML(param1);
-         var _loc3_:XMLList = _xml.Item;
+         _xml = new XML(data);
+         var xmllist:XMLList = _xml.Item;
          if(_xml.@value == "true")
          {
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_.length())
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc2_ = {};
-               _loc2_.ItemCatalog = int(_loc3_[_loc4_].@ItemCatalog);
-               _loc2_.SubCatalog = int(_loc3_[_loc4_].@SubCatalog);
-               _loc2_.StrengthenLevel = int(_loc3_[_loc4_].@StrengthenLevel);
-               _loc2_.FailtureTimes = int(_loc3_[_loc4_].@FailtureTimes);
-               _loc2_.PropertyPlus = int(_loc3_[_loc4_].@PropertyPlus);
-               _loc2_.SuccessRatePlus = int(_loc3_[_loc4_].@SuccessRatePlus);
-               _additionArr.push(_loc2_);
-               _loc4_++;
+               obj = {};
+               obj.ItemCatalog = int(xmllist[i].@ItemCatalog);
+               obj.SubCatalog = int(xmllist[i].@SubCatalog);
+               obj.StrengthenLevel = int(xmllist[i].@StrengthenLevel);
+               obj.FailtureTimes = int(xmllist[i].@FailtureTimes);
+               obj.PropertyPlus = int(xmllist[i].@PropertyPlus);
+               obj.SuccessRatePlus = int(xmllist[i].@SuccessRatePlus);
+               _additionArr.push(obj);
+               i++;
             }
             onAnalyzeComplete();
          }

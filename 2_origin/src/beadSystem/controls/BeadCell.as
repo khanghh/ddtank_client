@@ -52,9 +52,9 @@ package beadSystem.controls
       
       private var beadFeedBtn:BeadFeedButton;
       
-      public function BeadCell(param1:int, param2:ItemTemplateInfo = null, param3:Boolean = true, param4:Boolean = true, param5:DisplayObject = null)
+      public function BeadCell(index:int, $info:ItemTemplateInfo = null, showLoading:Boolean = true, showTip:Boolean = true, bg:DisplayObject = null)
       {
-         super(param1,param2,param3,!!param5?param5:ComponentFactory.Instance.creatBitmap("bagAndInfo.cell.bagCellBgAsset"));
+         super(index,$info,showLoading,!!bg?bg:ComponentFactory.Instance.creatBitmap("bagAndInfo.cell.bagCellBgAsset"));
       }
       
       public function get beadPlace() : int
@@ -62,14 +62,14 @@ package beadSystem.controls
          return _place;
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:String = getQualifiedClassName(param1.source);
-         if(param1.source is EmbedUpLevelCell)
+         var info:* = null;
+         var bindAlert:* = null;
+         var str:String = getQualifiedClassName(effect.source);
+         if(effect.source is EmbedUpLevelCell)
          {
-            param1.action = "none";
+            effect.action = "none";
             DragManager.acceptDrag(this);
             if(this.itemInfo && int(this.itemInfo.Hole1) == 21)
             {
@@ -82,12 +82,12 @@ package beadSystem.controls
             }
             SocketManager.Instance.out.sendBeadEquip(31,this.beadPlace);
          }
-         else if(param1.data is InventoryItemInfo && !(param1.source is BeadAdvanceCell) && _loc2_ != "beadSystem.views::BeadAdvanceInfoCell")
+         else if(effect.data is InventoryItemInfo && !(effect.source is BeadAdvanceCell) && str != "beadSystem.views::BeadAdvanceInfoCell")
          {
-            _loc4_ = param1.data as InventoryItemInfo;
-            if(param1.source is BeadCell)
+            info = effect.data as InventoryItemInfo;
+            if(effect.source is BeadCell)
             {
-               SocketManager.Instance.out.sendBeadEquip(_loc4_.Place,this.beadPlace);
+               SocketManager.Instance.out.sendBeadEquip(info.Place,this.beadPlace);
                DragManager.acceptDrag(this);
                return;
             }
@@ -96,32 +96,32 @@ package beadSystem.controls
                BaglockedManager.Instance.show();
                return;
             }
-            _beadInfo = _loc4_;
-            param1.action = "none";
+            _beadInfo = info;
+            effect.action = "none";
             DragManager.acceptDrag(this);
-            if(this.itemInfo && !this.itemInfo.IsBinds && param1.source != BeadCell)
+            if(this.itemInfo && !this.itemInfo.IsBinds && effect.source != BeadCell)
             {
-               _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.beadSystem.useBindBead"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
-               _loc3_.addEventListener("response",__onBindRespones1);
+               bindAlert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.beadSystem.useBindBead"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+               bindAlert.addEventListener("response",__onBindRespones1);
             }
             else
             {
-               SocketManager.Instance.out.sendBeadEquip(_loc4_.Place,this.beadPlace);
+               SocketManager.Instance.out.sendBeadEquip(info.Place,this.beadPlace);
             }
          }
-         else if(param1.source is BeadLockButton)
+         else if(effect.source is BeadLockButton)
          {
             DragManager.acceptDrag(this);
          }
-         else if(param1.source is BeadFeedButton)
+         else if(effect.source is BeadFeedButton)
          {
             DragManager.acceptDrag(this);
          }
       }
       
-      protected function __onBindRespones1(param1:FrameEvent) : void
+      protected function __onBindRespones1(pEvent:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(pEvent.responseCode))
          {
             case 0:
             case 1:
@@ -137,13 +137,13 @@ package beadSystem.controls
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.view.store.matte.notType"));
                break;
          }
-         param1.currentTarget.removeEventListener("response",__onBindRespones);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         pEvent.currentTarget.removeEventListener("response",__onBindRespones);
+         ObjectUtils.disposeObject(pEvent.currentTarget);
       }
       
-      public function set itemInfo(param1:InventoryItemInfo) : void
+      public function set itemInfo(value:InventoryItemInfo) : void
       {
-         _itemInfo = param1;
+         _itemInfo = value;
       }
       
       override public function get itemInfo() : InventoryItemInfo
@@ -151,7 +151,7 @@ package beadSystem.controls
          return _itemInfo;
       }
       
-      override public function dragStop(param1:DragEffect) : void
+      override public function dragStop(effect:DragEffect) : void
       {
          SoundManager.instance.play("008");
          dispatchEvent(new CellEvent("dragStop",null,true));
@@ -162,17 +162,17 @@ package beadSystem.controls
             dragShowPicTxt();
             return;
          }
-         if(param1.action == "move")
+         if(effect.action == "move")
          {
             locked = false;
             dragShowPicTxt();
          }
-         if(param1.action == "move" && !param1.target)
+         if(effect.action == "move" && !effect.target)
          {
-            param1.action = "none";
-            if(!(param1.target is EmbedStoneCell) || !(param1.target is EmbedUpLevelCell))
+            effect.action = "none";
+            if(!(effect.target is EmbedStoneCell) || !(effect.target is EmbedUpLevelCell))
             {
-               if(!param1.target)
+               if(!effect.target)
                {
                   MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.beadSystem.beadCanntDestory"));
                }
@@ -180,13 +180,13 @@ package beadSystem.controls
             locked = false;
          }
          dragShowPicTxt();
-         super.dragStop(param1);
+         super.dragStop(effect);
       }
       
-      override public function set locked(param1:Boolean) : void
+      override public function set locked(value:Boolean) : void
       {
-         .super.locked = param1;
-         if(param1)
+         .super.locked = value;
+         if(value)
          {
             if(_cellMouseOverFormer)
             {
@@ -229,58 +229,58 @@ package beadSystem.controls
          }
       }
       
-      private function __onCreateComplete(param1:CEvent) : void
+      private function __onCreateComplete(e:CEvent) : void
       {
-         var _loc2_:* = null;
+         var promptAlert:* = null;
          beadSystemManager.Instance.removeEventListener("createComplete",__onCreateComplete);
-         if(param1.data.type == "infoframe")
+         if(e.data.type == "infoframe")
          {
-            _loc2_ = param1.data.spr;
-            _loc2_["setBeadName"](this.tipData["beadName"]);
-            LayerManager.Instance.addToLayer(_loc2_,1,true,1);
-            _loc2_["textInput"].setFocus();
-            _loc2_.addEventListener("response",__onConfigResponse);
+            promptAlert = e.data.spr;
+            promptAlert["setBeadName"](this.tipData["beadName"]);
+            LayerManager.Instance.addToLayer(promptAlert,1,true,1);
+            promptAlert["textInput"].setFocus();
+            promptAlert.addEventListener("response",__onConfigResponse);
          }
       }
       
-      private function insteadString(param1:String, param2:String) : String
+      private function insteadString(res:String, des:String) : String
       {
-         return param1.slice(param1.lastIndexOf(param2) + 1,param1.length);
+         return res.slice(res.lastIndexOf(des) + 1,res.length);
       }
       
       private function boxPrompts() : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var bindAlert:* = null;
+         var alert:* = null;
+         var showExp:* = null;
          if(this.itemInfo.IsBinds && !BeadModel.isBeadCellIsBind)
          {
-            _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.beadSystem.useBindBead"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
-            _loc3_.addEventListener("response",__onBindRespones);
+            bindAlert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.beadSystem.useBindBead"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+            bindAlert.addEventListener("response",__onBindRespones);
          }
          else
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.beadSystem.FeedBeadConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("beadSystem.feedBeadShowExpTextOneFeed");
-            _loc1_.htmlText = LanguageMgr.GetTranslation("ddt.beadSystem.feedBeadGetExp",_itemInfo.Hole2);
-            _loc2_.addChild(_loc1_);
-            _loc2_.addEventListener("response",__onFeedResponse);
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.beadSystem.FeedBeadConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+            showExp = ComponentFactory.Instance.creatComponentByStylename("beadSystem.feedBeadShowExpTextOneFeed");
+            showExp.htmlText = LanguageMgr.GetTranslation("ddt.beadSystem.feedBeadGetExp",_itemInfo.Hole2);
+            alert.addChild(showExp);
+            alert.addEventListener("response",__onFeedResponse);
          }
       }
       
-      protected function __onConfigResponse(param1:FrameEvent) : void
+      protected function __onConfigResponse(event:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
+         var alertInfo:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
          SoundManager.instance.playButtonSound();
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
-               if(_loc2_["textInput"].text == "YES" || _loc2_["textInput"].text == "yes")
+               if(alertInfo["textInput"].text == "YES" || alertInfo["textInput"].text == "yes")
                {
                   boxPrompts();
-                  _loc2_.removeEventListener("response",__onFeedResponse);
-                  ObjectUtils.disposeObject(_loc2_);
+                  alertInfo.removeEventListener("response",__onFeedResponse);
+                  ObjectUtils.disposeObject(alertInfo);
                }
                else
                {
@@ -289,12 +289,12 @@ package beadSystem.controls
          }
       }
       
-      protected function __onBindRespones(param1:FrameEvent) : void
+      protected function __onBindRespones(pEvent:FrameEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var alert:* = null;
+         var showExp:* = null;
          SoundManager.instance.playButtonSound();
-         switch(int(param1.responseCode))
+         switch(int(pEvent.responseCode))
          {
             case 0:
                break;
@@ -304,21 +304,21 @@ package beadSystem.controls
                break;
             case 3:
             case 4:
-               _loc3_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.beadSystem.FeedBeadConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
-               _loc2_ = ComponentFactory.Instance.creatComponentByStylename("beadSystem.feedBeadShowExpTextOneFeed");
-               _loc2_.htmlText = LanguageMgr.GetTranslation("ddt.beadSystem.feedBeadGetExp",itemInfo.Hole2);
-               _loc3_.addChild(_loc2_);
-               _loc3_.addEventListener("response",__onFeedResponse);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.beadSystem.FeedBeadConfirm"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,true,false,2);
+               showExp = ComponentFactory.Instance.creatComponentByStylename("beadSystem.feedBeadShowExpTextOneFeed");
+               showExp.htmlText = LanguageMgr.GetTranslation("ddt.beadSystem.feedBeadGetExp",itemInfo.Hole2);
+               alert.addChild(showExp);
+               alert.addEventListener("response",__onFeedResponse);
          }
-         param1.currentTarget.removeEventListener("response",__onBindRespones);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         pEvent.currentTarget.removeEventListener("response",__onBindRespones);
+         ObjectUtils.disposeObject(pEvent.currentTarget);
       }
       
-      protected function __onFeedResponse(param1:FrameEvent) : void
+      protected function __onFeedResponse(event:FrameEvent) : void
       {
          (parent.parent as BagView).beadFeedBtn.dragAgain();
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
@@ -334,11 +334,11 @@ package beadSystem.controls
                   break;
                }
          }
-         param1.currentTarget.removeEventListener("response",__onFeedResponse);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         event.currentTarget.removeEventListener("response",__onFeedResponse);
+         ObjectUtils.disposeObject(event.currentTarget);
       }
       
-      private function __onFeedComplete(param1:Event) : void
+      private function __onFeedComplete(pEvent:Event) : void
       {
          _beadFeedMC.removeEventListener("startFeedBead",__onFeedStart);
          _beadFeedMC.removeEventListener("feedComplete",__onFeedComplete);
@@ -347,11 +347,11 @@ package beadSystem.controls
          _beadFeedMC = null;
       }
       
-      private function __onFeedStart(param1:Event) : void
+      private function __onFeedStart(pEvent:Event) : void
       {
-         var _loc2_:Array = [];
-         _loc2_.push(this._place);
-         SocketManager.Instance.out.sendBeadUpgrade(_loc2_);
+         var arr:Array = [];
+         arr.push(this._place);
+         SocketManager.Instance.out.sendBeadUpgrade(arr);
          if(this.itemInfo.Hole2 + BeadModel.upgradeCellInfo.Hole2 >= ServerConfigManager.instance.getBeadUpgradeExp()[BeadModel.upgradeCellInfo.Hole1 + 1])
          {
             beadSystemManager.Instance.dispatchEvent(new BeadEvent("playUpgradeMC"));
@@ -394,17 +394,17 @@ package beadSystem.controls
          return true;
       }
       
-      private function onStack2(param1:FrameEvent) : void
+      private function onStack2(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.target as BaseAlerFrame;
-         _loc2_.removeEventListener("response",onStack2);
-         _loc2_.dispose();
+         var alert:BaseAlerFrame = event.target as BaseAlerFrame;
+         alert.removeEventListener("response",onStack2);
+         alert.dispose();
       }
       
-      override public function set info(param1:ItemTemplateInfo) : void
+      override public function set info(value:ItemTemplateInfo) : void
       {
-         var _loc2_:int = 0;
+         var pageIndex:int = 0;
          if(_info)
          {
             _tipData = null;
@@ -415,8 +415,8 @@ package beadSystem.controls
                _nameTxt.visible = false;
             }
          }
-         .super.info = param1;
-         if(param1)
+         .super.info = value;
+         if(value)
          {
             if(!_nameTxt)
             {
@@ -424,7 +424,7 @@ package beadSystem.controls
                _nameTxt.mouseEnabled = false;
                addChild(_nameTxt);
             }
-            _nameTxt.text = BeadTemplateManager.Instance.GetBeadInfobyID(param1.TemplateID).Name;
+            _nameTxt.text = BeadTemplateManager.Instance.GetBeadInfobyID(value.TemplateID).Name;
             _nameTxt.visible = true;
             this.setChildIndex(_nameTxt,this.numChildren - 1);
             tipStyle = "core.GoodsTip";
@@ -434,13 +434,13 @@ package beadSystem.controls
             {
                GoodTipInfo(_tipData).exp = itemInfo.Hole2;
                GoodTipInfo(_tipData).upExp = ServerConfigManager.instance.getBeadUpgradeExp()[itemInfo.Hole1 + 1];
-               GoodTipInfo(_tipData).beadName = itemInfo.Name + "-" + BeadTemplateManager.Instance.GetBeadInfobyID(param1.TemplateID).Name + "Lv" + itemInfo.Hole1;
+               GoodTipInfo(_tipData).beadName = itemInfo.Name + "-" + BeadTemplateManager.Instance.GetBeadInfobyID(value.TemplateID).Name + "Lv" + itemInfo.Hole1;
             }
             else
             {
                GoodTipInfo(_tipData).exp = ServerConfigManager.instance.getBeadUpgradeExp()[BeadTemplateManager.Instance.GetBeadInfobyID(itemInfo.TemplateID).BaseLevel];
                GoodTipInfo(_tipData).upExp = ServerConfigManager.instance.getBeadUpgradeExp()[BeadTemplateManager.Instance.GetBeadInfobyID(itemInfo.TemplateID).BaseLevel + 1];
-               GoodTipInfo(_tipData).beadName = itemInfo.Name + "-" + BeadTemplateManager.Instance.GetBeadInfobyID(param1.TemplateID).Name + "Lv" + BeadTemplateManager.Instance.GetBeadInfobyID(itemInfo.TemplateID).BaseLevel;
+               GoodTipInfo(_tipData).beadName = itemInfo.Name + "-" + BeadTemplateManager.Instance.GetBeadInfobyID(value.TemplateID).Name + "Lv" + BeadTemplateManager.Instance.GetBeadInfobyID(itemInfo.TemplateID).BaseLevel;
             }
             if(this.itemInfo.IsUsed)
             {
@@ -464,17 +464,17 @@ package beadSystem.controls
             }
             if(this.beadPlace >= 32 && this.beadPlace <= 81)
             {
-               _loc2_ = 1;
+               pageIndex = 1;
             }
             else if(this.beadPlace >= 82 && this.beadPlace <= 131)
             {
-               _loc2_ = 2;
+               pageIndex = 2;
             }
             else if(this.beadPlace >= 132 && this.beadPlace <= 181)
             {
-               _loc2_ = 3;
+               pageIndex = 3;
             }
-            dispatchEvent(new BeadEvent("beadCellChanged",_loc2_));
+            dispatchEvent(new BeadEvent("beadCellChanged",pageIndex));
          }
          else
          {

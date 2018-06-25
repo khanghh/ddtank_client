@@ -12,11 +12,11 @@ package com.pickgliss.action
       
       private var _sound:String;
       
-      public function ShowTipAction(param1:DisplayObject, param2:String = null)
+      public function ShowTipAction(tip:DisplayObject, sound:String = null)
       {
          super();
-         _tip = param1;
-         _sound = param2;
+         _tip = tip;
+         _sound = sound;
       }
       
       override public function act() : void

@@ -63,9 +63,9 @@ package com.greensock
       
       public var yoyo:Boolean;
       
-      public function TweenMax(param1:Object, param2:Number, param3:Object)
+      public function TweenMax(target:Object, duration:Number, vars:Object)
       {
-         super(param1,param2,param3);
+         super(target,duration,vars);
          this.yoyo = Boolean(this.vars.yoyo);
          _repeat = uint(this.vars.repeat);
          _repeatDelay = !!this.vars.repeatDelay?Number(this.vars.repeatDelay):0;
@@ -73,7 +73,7 @@ package com.greensock
          if(this.vars.onCompleteListener || this.vars.onInitListener || this.vars.onUpdateListener || this.vars.onStartListener || this.vars.onRepeatListener || this.vars.onReverseCompleteListener)
          {
             initDispatcher();
-            if(param2 == 0 && _delay == 0)
+            if(duration == 0 && _delay == 0)
             {
                _dispatcher.dispatchEvent(new TweenEvent("change"));
                _dispatcher.dispatchEvent(new TweenEvent("complete"));
@@ -85,47 +85,46 @@ package com.greensock
          }
       }
       
-      public static function to(param1:Object, param2:Number, param3:Object) : TweenMax
+      public static function to(target:Object, duration:Number, vars:Object) : TweenMax
       {
-         return new TweenMax(param1,param2,param3);
+         return new TweenMax(target,duration,vars);
       }
       
-      public static function from(param1:Object, param2:Number, param3:Object) : TweenMax
+      public static function from(target:Object, duration:Number, vars:Object) : TweenMax
       {
-         param3.runBackwards = true;
-         if(!("immediateRender" in param3))
+         vars.runBackwards = true;
+         if(!("immediateRender" in vars))
          {
-            param3.immediateRender = true;
+            vars.immediateRender = true;
          }
-         return new TweenMax(param1,param2,param3);
+         return new TweenMax(target,duration,vars);
       }
       
-      public static function fromTo(param1:Object, param2:Number, param3:Object, param4:Object) : TweenMax
+      public static function fromTo(target:Object, duration:Number, fromVars:Object, toVars:Object) : TweenMax
       {
-         param4.startAt = param3;
-         if(param3.immediateRender)
+         toVars.startAt = fromVars;
+         if(fromVars.immediateRender)
          {
-            param4.immediateRender = true;
+            toVars.immediateRender = true;
          }
-         return new TweenMax(param1,param2,param4);
+         return new TweenMax(target,duration,toVars);
       }
       
-      public static function allTo(param1:Array, param2:Number, param3:Object, param4:Number = 0, param5:Function = null, param6:Array = null) : Array
+      public static function allTo(targets:Array, duration:Number, vars:Object, stagger:Number = 0, onCompleteAll:Function = null, onCompleteAllParams:Array = null) : Array
       {
-         targets = param1;
-         duration = param2;
-         vars = param3;
-         stagger = param4;
-         onCompleteAll = param5;
-         onCompleteAllParams = param6;
+         targets = targets;
+         duration = duration;
+         vars = vars;
+         stagger = stagger;
+         onCompleteAll = onCompleteAll;
+         onCompleteAllParams = onCompleteAllParams;
          var l:int = targets.length;
          var a:Array = [];
          var curDelay:Number = "delay" in vars?Number(vars.delay):0;
          var onCompleteProxy:Function = vars.onComplete;
          var onCompleteParamsProxy:Array = vars.onCompleteParams;
          var lastIndex:int = l - 1;
-         var i:int = 0;
-         while(i < l)
+         for(var i:int = 0; i < l; )
          {
             var varsDup:Object = {};
             var _loc9_:int = 0;
@@ -153,79 +152,79 @@ package com.greensock
          return a;
       }
       
-      public static function allFrom(param1:Array, param2:Number, param3:Object, param4:Number = 0, param5:Function = null, param6:Array = null) : Array
+      public static function allFrom(targets:Array, duration:Number, vars:Object, stagger:Number = 0, onCompleteAll:Function = null, onCompleteAllParams:Array = null) : Array
       {
-         param3.runBackwards = true;
-         if(!("immediateRender" in param3))
+         vars.runBackwards = true;
+         if(!("immediateRender" in vars))
          {
-            param3.immediateRender = true;
+            vars.immediateRender = true;
          }
-         return allTo(param1,param2,param3,param4,param5,param6);
+         return allTo(targets,duration,vars,stagger,onCompleteAll,onCompleteAllParams);
       }
       
-      public static function allFromTo(param1:Array, param2:Number, param3:Object, param4:Object, param5:Number = 0, param6:Function = null, param7:Array = null) : Array
+      public static function allFromTo(targets:Array, duration:Number, fromVars:Object, toVars:Object, stagger:Number = 0, onCompleteAll:Function = null, onCompleteAllParams:Array = null) : Array
       {
-         param4.startAt = param3;
-         if(param3.immediateRender)
+         toVars.startAt = fromVars;
+         if(fromVars.immediateRender)
          {
-            param4.immediateRender = true;
+            toVars.immediateRender = true;
          }
-         return allTo(param1,param2,param4,param5,param6,param7);
+         return allTo(targets,duration,toVars,stagger,onCompleteAll,onCompleteAllParams);
       }
       
-      public static function delayedCall(param1:Number, param2:Function, param3:Array = null, param4:Boolean = false) : TweenMax
+      public static function delayedCall(delay:Number, onComplete:Function, onCompleteParams:Array = null, useFrames:Boolean = false) : TweenMax
       {
-         return new TweenMax(param2,0,{
-            "delay":param1,
-            "onComplete":param2,
-            "onCompleteParams":param3,
+         return new TweenMax(onComplete,0,{
+            "delay":delay,
+            "onComplete":onComplete,
+            "onCompleteParams":onCompleteParams,
             "immediateRender":false,
-            "useFrames":param4,
+            "useFrames":useFrames,
             "overwrite":0
          });
       }
       
-      public static function getTweensOf(param1:Object) : Array
+      public static function getTweensOf(target:Object) : Array
       {
-         var _loc5_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:Array = masterList[param1];
-         var _loc4_:Array = [];
-         if(_loc3_)
+         var i:int = 0;
+         var cnt:int = 0;
+         var a:Array = masterList[target];
+         var toReturn:Array = [];
+         if(a)
          {
-            _loc5_ = _loc3_.length;
-            _loc2_ = 0;
+            i = a.length;
+            cnt = 0;
             while(true)
             {
-               _loc5_--;
-               if(_loc5_ <= -1)
+               i--;
+               if(i <= -1)
                {
                   break;
                }
-               if(!TweenLite(_loc3_[_loc5_]).gc)
+               if(!TweenLite(a[i]).gc)
                {
-                  _loc2_++;
-                  _loc4_[_loc2_] = _loc3_[_loc5_];
+                  cnt++;
+                  toReturn[cnt] = a[i];
                }
             }
          }
-         return _loc4_;
+         return toReturn;
       }
       
-      public static function isTweening(param1:Object) : Boolean
+      public static function isTweening(target:Object) : Boolean
       {
-         var _loc2_:* = null;
-         var _loc3_:Array = getTweensOf(param1);
-         var _loc4_:int = _loc3_.length;
+         var tween:* = null;
+         var a:Array = getTweensOf(target);
+         var i:int = a.length;
          while(true)
          {
-            _loc4_--;
-            if(_loc4_ <= -1)
+            i--;
+            if(i <= -1)
             {
                break;
             }
-            _loc2_ = _loc3_[_loc4_];
-            if(_loc2_.active || _loc2_.cachedStartTime == _loc2_.timeline.cachedTime && _loc2_.timeline.active)
+            tween = a[i];
+            if(tween.active || tween.cachedStartTime == tween.timeline.cachedTime && tween.timeline.active)
             {
                return true;
             }
@@ -235,123 +234,122 @@ package com.greensock
       
       public static function getAllTweens() : Array
       {
-         var _loc2_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:Dictionary = masterList;
-         var _loc1_:int = 0;
-         var _loc3_:Array = [];
+         var a:* = null;
+         var i:int = 0;
+         var ml:Dictionary = masterList;
+         var cnt:int = 0;
+         var toReturn:Array = [];
          var _loc7_:int = 0;
-         var _loc6_:* = _loc4_;
-         for each(_loc2_ in _loc4_)
+         var _loc6_:* = ml;
+         for each(a in ml)
          {
-            _loc5_ = _loc2_.length;
+            i = a.length;
             while(true)
             {
-               _loc5_--;
-               if(_loc5_ <= -1)
+               i--;
+               if(i <= -1)
                {
                   break;
                }
-               if(!TweenLite(_loc2_[_loc5_]).gc)
+               if(!TweenLite(a[i]).gc)
                {
-                  _loc1_++;
-                  _loc3_[_loc1_] = _loc2_[_loc5_];
+                  cnt++;
+                  toReturn[cnt] = a[i];
                }
             }
          }
-         return _loc3_;
+         return toReturn;
       }
       
-      public static function killAll(param1:Boolean = false, param2:Boolean = true, param3:Boolean = true) : void
+      public static function killAll(complete:Boolean = false, tweens:Boolean = true, delayedCalls:Boolean = true) : void
       {
-         var _loc5_:* = false;
-         var _loc4_:Array = getAllTweens();
-         var _loc6_:int = _loc4_.length;
+         var isDC:* = false;
+         var a:Array = getAllTweens();
+         var i:int = a.length;
          while(true)
          {
-            _loc6_--;
-            if(_loc6_ <= -1)
+            i--;
+            if(i <= -1)
             {
                break;
             }
-            _loc5_ = _loc4_[_loc6_].target == _loc4_[_loc6_].vars.onComplete;
-            if(_loc5_ == param3 || _loc5_ != param2)
+            isDC = a[i].target == a[i].vars.onComplete;
+            if(isDC == delayedCalls || isDC != tweens)
             {
-               if(param1)
+               if(complete)
                {
-                  _loc4_[_loc6_].complete(false);
+                  a[i].complete(false);
                }
                else
                {
-                  _loc4_[_loc6_].setEnabled(false,false);
+                  a[i].setEnabled(false,false);
                }
             }
          }
       }
       
-      public static function killChildTweensOf(param1:DisplayObjectContainer, param2:Boolean = false) : void
+      public static function killChildTweensOf(parent:DisplayObjectContainer, complete:Boolean = false) : void
       {
-         var _loc5_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:Array = getAllTweens();
-         var _loc6_:int = _loc4_.length;
+         var curParent:* = null;
+         var curTarget:* = null;
+         var a:Array = getAllTweens();
+         var i:int = a.length;
          while(true)
          {
-            _loc6_--;
-            if(_loc6_ <= -1)
+            i--;
+            if(i <= -1)
             {
                break;
             }
-            _loc3_ = _loc4_[_loc6_].target;
-            if(_loc3_ is DisplayObject)
+            curTarget = a[i].target;
+            if(curTarget is DisplayObject)
             {
-               _loc5_ = _loc3_.parent;
-               while(_loc5_)
+               curParent = curTarget.parent;
+               while(curParent)
                {
-                  if(_loc5_ == param1)
+                  if(curParent == parent)
                   {
-                     if(param2)
+                     if(complete)
                      {
-                        _loc4_[_loc6_].complete(false);
+                        a[i].complete(false);
                      }
                      else
                      {
-                        _loc4_[_loc6_].setEnabled(false,false);
+                        a[i].setEnabled(false,false);
                      }
                   }
-                  _loc5_ = _loc5_.parent;
+                  curParent = curParent.parent;
                }
-               continue;
             }
          }
       }
       
-      public static function pauseAll(param1:Boolean = true, param2:Boolean = true) : void
+      public static function pauseAll(tweens:Boolean = true, delayedCalls:Boolean = true) : void
       {
-         changePause(true,param1,param2);
+         changePause(true,tweens,delayedCalls);
       }
       
-      public static function resumeAll(param1:Boolean = true, param2:Boolean = true) : void
+      public static function resumeAll(tweens:Boolean = true, delayedCalls:Boolean = true) : void
       {
-         changePause(false,param1,param2);
+         changePause(false,tweens,delayedCalls);
       }
       
-      private static function changePause(param1:Boolean, param2:Boolean = true, param3:Boolean = false) : void
+      private static function changePause(pause:Boolean, tweens:Boolean = true, delayedCalls:Boolean = false) : void
       {
-         var _loc5_:* = false;
-         var _loc4_:Array = getAllTweens();
-         var _loc6_:int = _loc4_.length;
+         var isDC:* = false;
+         var a:Array = getAllTweens();
+         var i:int = a.length;
          while(true)
          {
-            _loc6_--;
-            if(_loc6_ <= -1)
+            i--;
+            if(i <= -1)
             {
                break;
             }
-            _loc5_ = TweenLite(_loc4_[_loc6_]).target == TweenLite(_loc4_[_loc6_]).vars.onComplete;
-            if(_loc5_ == param3 || _loc5_ != param2)
+            isDC = TweenLite(a[i]).target == TweenLite(a[i]).vars.onComplete;
+            if(isDC == delayedCalls || isDC != tweens)
             {
-               TweenCore(_loc4_[_loc6_]).paused = param1;
+               TweenCore(a[i]).paused = pause;
             }
          }
       }
@@ -361,35 +359,35 @@ package com.greensock
          return TweenLite.rootTimeline == null?1:Number(TweenLite.rootTimeline.cachedTimeScale);
       }
       
-      public static function set globalTimeScale(param1:Number) : void
+      public static function set globalTimeScale(n:Number) : void
       {
-         if(param1 == 0)
+         if(n == 0)
          {
-            param1 = 0.0001;
+            n = 0.0001;
          }
          if(TweenLite.rootTimeline == null)
          {
             TweenLite.to({},0,{});
          }
-         var _loc2_:SimpleTimeline = TweenLite.rootTimeline;
-         var _loc3_:Number = getTimer() * 0.001;
-         _loc2_.cachedStartTime = _loc3_ - (_loc3_ - _loc2_.cachedStartTime) * _loc2_.cachedTimeScale / param1;
-         _loc2_ = TweenLite.rootFramesTimeline;
-         _loc3_ = TweenLite.rootFrame;
-         _loc2_.cachedStartTime = _loc3_ - (_loc3_ - _loc2_.cachedStartTime) * _loc2_.cachedTimeScale / param1;
-         var _loc4_:* = param1;
+         var tl:SimpleTimeline = TweenLite.rootTimeline;
+         var curTime:Number = getTimer() * 0.001;
+         tl.cachedStartTime = curTime - (curTime - tl.cachedStartTime) * tl.cachedTimeScale / n;
+         tl = TweenLite.rootFramesTimeline;
+         curTime = TweenLite.rootFrame;
+         tl.cachedStartTime = curTime - (curTime - tl.cachedStartTime) * tl.cachedTimeScale / n;
+         var _loc4_:* = n;
          TweenLite.rootTimeline.cachedTimeScale = _loc4_;
          TweenLite.rootFramesTimeline.cachedTimeScale = _loc4_;
       }
       
       override protected function init() : void
       {
-         var _loc1_:* = null;
+         var startTween:* = null;
          if(this.vars.startAt)
          {
             this.vars.startAt.overwrite = 0;
             this.vars.startAt.immediateRender = true;
-            _loc1_ = new TweenMax(this.target,0,this.vars.startAt);
+            startTween = new TweenMax(this.target,0,this.vars.startAt);
          }
          if(_dispatcher)
          {
@@ -417,13 +415,13 @@ package com.greensock
          super.invalidate();
       }
       
-      public function updateTo(param1:Object, param2:Boolean = false) : void
+      public function updateTo(vars:Object, resetDuration:Boolean = false) : void
       {
-         var _loc7_:Number = NaN;
-         var _loc3_:Number = NaN;
-         var _loc6_:* = null;
-         var _loc4_:Number = this.ratio;
-         if(param2 && this.timeline != null && this.cachedStartTime < this.timeline.cachedTime)
+         var inv:Number = NaN;
+         var endValue:Number = NaN;
+         var pt:* = null;
+         var curRatio:Number = this.ratio;
+         if(resetDuration && this.timeline != null && this.cachedStartTime < this.timeline.cachedTime)
          {
             this.cachedStartTime = this.timeline.cachedTime;
             this.setDirtyCache(false);
@@ -437,126 +435,126 @@ package com.greensock
             }
          }
          var _loc9_:int = 0;
-         var _loc8_:* = param1;
-         for(var _loc5_ in param1)
+         var _loc8_:* = vars;
+         for(var p in vars)
          {
-            this.vars[_loc5_] = param1[_loc5_];
+            this.vars[p] = vars[p];
          }
          if(this.initted)
          {
             this.initted = false;
-            if(!param2)
+            if(!resetDuration)
             {
                if(_notifyPluginsOfEnabled && this.cachedPT1)
                {
                   onPluginEvent("onDisable",this);
                }
                init();
-               if(!param2 && this.cachedTime > 0 && this.cachedTime < this.cachedDuration)
+               if(!resetDuration && this.cachedTime > 0 && this.cachedTime < this.cachedDuration)
                {
-                  _loc7_ = 1 / (1 - _loc4_);
-                  _loc6_ = this.cachedPT1;
-                  while(_loc6_)
+                  inv = 1 / (1 - curRatio);
+                  pt = this.cachedPT1;
+                  while(pt)
                   {
-                     _loc3_ = _loc6_.start + _loc6_.change;
-                     _loc6_.change = _loc6_.change * _loc7_;
-                     _loc6_.start = _loc3_ - _loc6_.change;
-                     _loc6_ = _loc6_.nextNode;
+                     endValue = pt.start + pt.change;
+                     pt.change = pt.change * inv;
+                     pt.start = endValue - pt.change;
+                     pt = pt.nextNode;
                   }
                }
             }
          }
       }
       
-      public function setDestination(param1:String, param2:*, param3:Boolean = true) : void
+      public function setDestination(property:String, value:*, adjustStartValues:Boolean = true) : void
       {
-         var _loc4_:Object = {};
-         _loc4_[param1] = param2;
-         updateTo(_loc4_,!param3);
+         var vars:Object = {};
+         vars[property] = value;
+         updateTo(vars,!adjustStartValues);
       }
       
-      public function killProperties(param1:Array) : void
+      public function killProperties(names:Array) : void
       {
-         var _loc2_:Object = {};
-         var _loc3_:int = param1.length;
+         var v:Object = {};
+         var i:int = names.length;
          while(true)
          {
-            _loc3_--;
-            if(_loc3_ <= -1)
+            i--;
+            if(i <= -1)
             {
                break;
             }
-            _loc2_[param1[_loc3_]] = true;
+            v[names[i]] = true;
          }
-         killVars(_loc2_);
+         killVars(v);
       }
       
-      override public function renderTime(param1:Number, param2:Boolean = false, param3:Boolean = false) : void
+      override public function renderTime(time:Number, suppressEvents:Boolean = false, force:Boolean = false) : void
       {
-         var _loc5_:Boolean = false;
-         var _loc8_:Boolean = false;
-         var _loc9_:Boolean = false;
-         var _loc13_:Number = NaN;
-         var _loc7_:int = 0;
-         var _loc11_:int = 0;
-         var _loc4_:Number = NaN;
-         var _loc6_:Number = !!this.cacheIsDirty?this.totalDuration:Number(this.cachedTotalDuration);
-         var _loc12_:Number = this.cachedTime;
-         if(param1 >= _loc6_)
+         var isComplete:Boolean = false;
+         var repeated:Boolean = false;
+         var setRatio:Boolean = false;
+         var cycleDuration:Number = NaN;
+         var prevCycles:int = 0;
+         var power:int = 0;
+         var val:Number = NaN;
+         var totalDur:Number = !!this.cacheIsDirty?this.totalDuration:Number(this.cachedTotalDuration);
+         var prevTime:Number = this.cachedTime;
+         if(time >= totalDur)
          {
-            this.cachedTotalTime = _loc6_;
+            this.cachedTotalTime = totalDur;
             this.cachedTime = this.cachedDuration;
             this.ratio = 1;
-            _loc5_ = true;
+            isComplete = true;
             if(this.cachedDuration == 0)
             {
-               if((param1 == 0 || _rawPrevTime < 0) && _rawPrevTime != param1)
+               if((time == 0 || _rawPrevTime < 0) && _rawPrevTime != time)
                {
-                  param3 = true;
+                  force = true;
                }
-               _rawPrevTime = param1;
+               _rawPrevTime = time;
             }
          }
-         else if(param1 <= 0)
+         else if(time <= 0)
          {
-            if(param1 < 0)
+            if(time < 0)
             {
                this.active = false;
                if(this.cachedDuration == 0)
                {
                   if(_rawPrevTime >= 0)
                   {
-                     param3 = true;
-                     _loc5_ = true;
+                     force = true;
+                     isComplete = true;
                   }
-                  _rawPrevTime = param1;
+                  _rawPrevTime = time;
                }
             }
-            else if(param1 == 0 && !this.initted)
+            else if(time == 0 && !this.initted)
             {
-               param3 = true;
+               force = true;
             }
             var _loc14_:* = 0;
             this.ratio = _loc14_;
             _loc14_ = _loc14_;
             this.cachedTime = _loc14_;
             this.cachedTotalTime = _loc14_;
-            if(this.cachedReversed && _loc12_ != 0)
+            if(this.cachedReversed && prevTime != 0)
             {
-               _loc5_ = true;
+               isComplete = true;
             }
          }
          else
          {
-            _loc14_ = param1;
+            _loc14_ = time;
             this.cachedTime = _loc14_;
             this.cachedTotalTime = _loc14_;
-            _loc9_ = true;
+            setRatio = true;
          }
          if(_repeat != 0)
          {
-            _loc13_ = this.cachedDuration + _repeatDelay;
-            if(_loc5_)
+            cycleDuration = this.cachedDuration + _repeatDelay;
+            if(isComplete)
             {
                if(this.yoyo && _repeat % 2)
                {
@@ -565,19 +563,19 @@ package com.greensock
                   this.cachedTime = _loc14_;
                }
             }
-            else if(param1 > 0)
+            else if(time > 0)
             {
-               _loc7_ = _cyclesComplete;
-               _cyclesComplete = this.cachedTotalTime / _loc13_ >> 0;
-               if(_cyclesComplete == this.cachedTotalTime / _loc13_)
+               prevCycles = _cyclesComplete;
+               _cyclesComplete = this.cachedTotalTime / cycleDuration >> 0;
+               if(_cyclesComplete == this.cachedTotalTime / cycleDuration)
                {
                   _cyclesComplete = Number(_cyclesComplete) - 1;
                }
-               if(_loc7_ != _cyclesComplete)
+               if(prevCycles != _cyclesComplete)
                {
-                  _loc8_ = true;
+                  repeated = true;
                }
-               this.cachedTime = (this.cachedTotalTime / _loc13_ - _cyclesComplete) * _loc13_;
+               this.cachedTime = (this.cachedTotalTime / cycleDuration - _cyclesComplete) * cycleDuration;
                if(this.yoyo && _cyclesComplete % 2)
                {
                   this.cachedTime = this.cachedDuration - this.cachedTime;
@@ -586,14 +584,14 @@ package com.greensock
                {
                   this.cachedTime = this.cachedDuration;
                   this.ratio = 1;
-                  _loc9_ = false;
+                  setRatio = false;
                }
                if(this.cachedTime <= 0)
                {
                   _loc14_ = 0;
                   this.ratio = _loc14_;
                   this.cachedTime = _loc14_;
-                  _loc9_ = false;
+                  setRatio = false;
                }
             }
             else
@@ -601,7 +599,7 @@ package com.greensock
                _cyclesComplete = 0;
             }
          }
-         if(_loc12_ == this.cachedTime && !param3)
+         if(prevTime == this.cachedTime && !force)
          {
             return;
          }
@@ -613,67 +611,67 @@ package com.greensock
          {
             this.active = true;
          }
-         if(_loc9_)
+         if(setRatio)
          {
             if(_easeType)
             {
-               _loc11_ = _easePower;
-               _loc4_ = this.cachedTime / this.cachedDuration;
+               power = _easePower;
+               val = this.cachedTime / this.cachedDuration;
                if(_easeType == 2)
                {
-                  _loc4_ = 1 - _loc4_;
-                  this.ratio = 1 - _loc4_;
+                  val = 1 - val;
+                  this.ratio = 1 - val;
                   while(true)
                   {
-                     _loc11_--;
-                     if(_loc11_ <= -1)
+                     power--;
+                     if(power <= -1)
                      {
                         break;
                      }
-                     this.ratio = _loc4_ * this.ratio;
+                     this.ratio = val * this.ratio;
                   }
                   this.ratio = 1 - this.ratio;
                }
                else if(_easeType == 1)
                {
-                  this.ratio = _loc4_;
+                  this.ratio = val;
                   while(true)
                   {
-                     _loc11_--;
-                     if(_loc11_ <= -1)
+                     power--;
+                     if(power <= -1)
                      {
                         break;
                      }
-                     this.ratio = _loc4_ * this.ratio;
+                     this.ratio = val * this.ratio;
                   }
                }
-               else if(_loc4_ < 0.5)
+               else if(val < 0.5)
                {
-                  _loc4_ = _loc4_ * 2;
-                  this.ratio = _loc4_ * 2;
+                  val = val * 2;
+                  this.ratio = val * 2;
                   while(true)
                   {
-                     _loc11_--;
-                     if(_loc11_ <= -1)
+                     power--;
+                     if(power <= -1)
                      {
                         break;
                      }
-                     this.ratio = _loc4_ * this.ratio;
+                     this.ratio = val * this.ratio;
                   }
                   this.ratio = this.ratio * 0.5;
                }
                else
                {
-                  _loc4_ = (1 - _loc4_) * 2;
-                  this.ratio = (1 - _loc4_) * 2;
+                  val = (1 - val) * 2;
+                  this.ratio = (1 - val) * 2;
                   while(true)
                   {
-                     _loc11_--;
-                     if(_loc11_ <= -1)
+                     power--;
+                     if(power <= -1)
                      {
                         break;
                      }
-                     this.ratio = _loc4_ * this.ratio;
+                     this.ratio = val * this.ratio;
                   }
                   this.ratio = 1 - 0.5 * this.ratio;
                }
@@ -683,7 +681,7 @@ package com.greensock
                this.ratio = _ease(this.cachedTime,0,1,this.cachedDuration);
             }
          }
-         if(_loc12_ == 0 && (this.cachedTotalTime != 0 || this.cachedDuration == 0) && !param2)
+         if(prevTime == 0 && (this.cachedTotalTime != 0 || this.cachedDuration == 0) && !suppressEvents)
          {
             if(this.vars.onStart)
             {
@@ -694,29 +692,29 @@ package com.greensock
                _dispatcher.dispatchEvent(new TweenEvent("start"));
             }
          }
-         var _loc10_:PropTween = this.cachedPT1;
-         while(_loc10_)
+         var pt:PropTween = this.cachedPT1;
+         while(pt)
          {
-            _loc10_.target[_loc10_.property] = _loc10_.start + this.ratio * _loc10_.change;
-            _loc10_ = _loc10_.nextNode;
+            pt.target[pt.property] = pt.start + this.ratio * pt.change;
+            pt = pt.nextNode;
          }
-         if(_hasUpdate && !param2)
+         if(_hasUpdate && !suppressEvents)
          {
             this.vars.onUpdate.apply(null,this.vars.onUpdateParams);
          }
-         if(_hasUpdateListener && !param2)
+         if(_hasUpdateListener && !suppressEvents)
          {
             _dispatcher.dispatchEvent(new TweenEvent("change"));
          }
-         if(_loc5_ && !this.gc)
+         if(isComplete && !this.gc)
          {
             if(_hasPlugins && this.cachedPT1)
             {
                onPluginEvent("onComplete",this);
             }
-            complete(true,param2);
+            complete(true,suppressEvents);
          }
-         else if(_loc8_ && !param2 && !this.gc)
+         else if(repeated && !suppressEvents && !this.gc)
          {
             if(this.vars.onRepeat)
             {
@@ -729,10 +727,10 @@ package com.greensock
          }
       }
       
-      override public function complete(param1:Boolean = false, param2:Boolean = false) : void
+      override public function complete(skipRender:Boolean = false, suppressEvents:Boolean = false) : void
       {
-         super.complete(param1,param2);
-         if(!param2 && _dispatcher)
+         super.complete(skipRender,suppressEvents);
+         if(!suppressEvents && _dispatcher)
          {
             if(this.cachedTotalTime == this.cachedTotalDuration && !this.cachedReversed)
             {
@@ -778,40 +776,40 @@ package com.greensock
          }
       }
       
-      public function addEventListener(param1:String, param2:Function, param3:Boolean = false, param4:int = 0, param5:Boolean = false) : void
+      public function addEventListener(type:String, listener:Function, useCapture:Boolean = false, priority:int = 0, useWeakReference:Boolean = false) : void
       {
          if(_dispatcher == null)
          {
             initDispatcher();
          }
-         if(param1 == "change")
+         if(type == "change")
          {
             _hasUpdateListener = true;
          }
-         _dispatcher.addEventListener(param1,param2,param3,param4,param5);
+         _dispatcher.addEventListener(type,listener,useCapture,priority,useWeakReference);
       }
       
-      public function removeEventListener(param1:String, param2:Function, param3:Boolean = false) : void
+      public function removeEventListener(type:String, listener:Function, useCapture:Boolean = false) : void
       {
          if(_dispatcher)
          {
-            _dispatcher.removeEventListener(param1,param2,param3);
+            _dispatcher.removeEventListener(type,listener,useCapture);
          }
       }
       
-      public function hasEventListener(param1:String) : Boolean
+      public function hasEventListener(type:String) : Boolean
       {
-         return _dispatcher == null?false:Boolean(_dispatcher.hasEventListener(param1));
+         return _dispatcher == null?false:Boolean(_dispatcher.hasEventListener(type));
       }
       
-      public function willTrigger(param1:String) : Boolean
+      public function willTrigger(type:String) : Boolean
       {
-         return _dispatcher == null?false:Boolean(_dispatcher.willTrigger(param1));
+         return _dispatcher == null?false:Boolean(_dispatcher.willTrigger(type));
       }
       
-      public function dispatchEvent(param1:Event) : Boolean
+      public function dispatchEvent(e:Event) : Boolean
       {
-         return _dispatcher == null?false:Boolean(_dispatcher.dispatchEvent(param1));
+         return _dispatcher == null?false:Boolean(_dispatcher.dispatchEvent(e));
       }
       
       public function get currentProgress() : Number
@@ -819,15 +817,15 @@ package com.greensock
          return this.cachedTime / this.duration;
       }
       
-      public function set currentProgress(param1:Number) : void
+      public function set currentProgress(n:Number) : void
       {
          if(_cyclesComplete == 0)
          {
-            setTotalTime(this.duration * param1,false);
+            setTotalTime(this.duration * n,false);
          }
          else
          {
-            setTotalTime(this.duration * param1 + _cyclesComplete * this.cachedDuration,false);
+            setTotalTime(this.duration * n + _cyclesComplete * this.cachedDuration,false);
          }
       }
       
@@ -836,25 +834,25 @@ package com.greensock
          return this.cachedTotalTime / this.totalDuration;
       }
       
-      public function set totalProgress(param1:Number) : void
+      public function set totalProgress(n:Number) : void
       {
-         setTotalTime(this.totalDuration * param1,false);
+         setTotalTime(this.totalDuration * n,false);
       }
       
-      override public function set currentTime(param1:Number) : void
+      override public function set currentTime(n:Number) : void
       {
          if(_cyclesComplete != 0)
          {
             if(this.yoyo && _cyclesComplete % 2 == 1)
             {
-               param1 = this.duration - param1 + _cyclesComplete * (this.cachedDuration + _repeatDelay);
+               n = this.duration - n + _cyclesComplete * (this.cachedDuration + _repeatDelay);
             }
             else
             {
-               param1 = param1 + _cyclesComplete * (this.duration + _repeatDelay);
+               n = n + _cyclesComplete * (this.duration + _repeatDelay);
             }
          }
-         setTotalTime(param1,false);
+         setTotalTime(n,false);
       }
       
       override public function get totalDuration() : Number
@@ -867,13 +865,13 @@ package com.greensock
          return this.cachedTotalDuration;
       }
       
-      override public function set totalDuration(param1:Number) : void
+      override public function set totalDuration(n:Number) : void
       {
          if(_repeat == -1)
          {
             return;
          }
-         this.duration = (param1 - _repeat * _repeatDelay) / (_repeat + 1);
+         this.duration = (n - _repeat * _repeatDelay) / (_repeat + 1);
       }
       
       public function get timeScale() : Number
@@ -881,15 +879,15 @@ package com.greensock
          return this.cachedTimeScale;
       }
       
-      public function set timeScale(param1:Number) : void
+      public function set timeScale(n:Number) : void
       {
-         if(param1 == 0)
+         if(n == 0)
          {
-            param1 = 0.0001;
+            n = 0.0001;
          }
-         var _loc2_:Number = this.cachedPauseTime || this.cachedPauseTime == 0?this.cachedPauseTime:Number(this.timeline.cachedTotalTime);
-         this.cachedStartTime = _loc2_ - (_loc2_ - this.cachedStartTime) * this.cachedTimeScale / param1;
-         this.cachedTimeScale = param1;
+         var tlTime:Number = this.cachedPauseTime || this.cachedPauseTime == 0?this.cachedPauseTime:Number(this.timeline.cachedTotalTime);
+         this.cachedStartTime = tlTime - (tlTime - this.cachedStartTime) * this.cachedTimeScale / n;
+         this.cachedTimeScale = n;
          setDirtyCache(false);
       }
       
@@ -898,9 +896,9 @@ package com.greensock
          return _repeat;
       }
       
-      public function set repeat(param1:int) : void
+      public function set repeat(n:int) : void
       {
-         _repeat = param1;
+         _repeat = n;
          setDirtyCache(true);
       }
       
@@ -909,9 +907,9 @@ package com.greensock
          return _repeatDelay;
       }
       
-      public function set repeatDelay(param1:Number) : void
+      public function set repeatDelay(n:Number) : void
       {
-         _repeatDelay = param1;
+         _repeatDelay = n;
          setDirtyCache(true);
       }
    }

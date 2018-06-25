@@ -16,42 +16,41 @@ package game.actions
          _queue = [];
       }
       
-      public function act(param1:BaseAction) : void
+      public function act(action:BaseAction) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < _queue.length)
+         var i:int = 0;
+         var c:* = null;
+         for(i = 0; i < _queue.length; )
          {
-            _loc2_ = _queue[_loc3_];
-            if(_loc2_.connect(param1))
+            c = _queue[i];
+            if(c.connect(action))
             {
                return;
             }
-            if(_loc2_.canReplace(param1))
+            if(c.canReplace(action))
             {
-               param1.prepare();
-               _queue[_loc3_] = param1;
+               action.prepare();
+               _queue[i] = action;
                return;
             }
-            _loc3_++;
+            i++;
          }
-         _queue.push(param1);
+         _queue.push(action);
          if(_queue.length == 1)
          {
-            param1.prepare();
+            action.prepare();
          }
       }
       
       public function execute() : void
       {
-         var _loc1_:* = null;
+         var c:* = null;
          if(_queue.length > 0)
          {
-            _loc1_ = _queue[0];
-            if(!_loc1_.isFinished)
+            c = _queue[0];
+            if(!c.isFinished)
             {
-               _loc1_.execute();
+               c.execute();
             }
             else
             {
@@ -64,21 +63,20 @@ package game.actions
          }
       }
       
-      public function traceAllRemainAction(param1:String = "") : void
+      public function traceAllRemainAction(name:String = "") : void
       {
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:String = "";
-         _loc5_ = 0;
-         while(_loc5_ < _queue.length)
+         var i:int = 0;
+         var actionClassName:* = null;
+         var tmpArr:* = null;
+         var tmp:String = "";
+         for(i = 0; i < _queue.length; )
          {
-            _loc2_ = getQualifiedClassName(_queue[_loc5_]);
-            _loc3_ = _loc2_.split("::");
-            _loc4_ = _loc4_ + (_loc3_[_loc3_.length - 1] + " | ");
-            _loc5_++;
+            actionClassName = getQualifiedClassName(_queue[i]);
+            tmpArr = actionClassName.split("::");
+            tmp = tmp + (tmpArr[tmpArr.length - 1] + " | ");
+            i++;
          }
-         SocketManager.Instance.out.sendErrorMsg("客户端卡死了" + param1 + " : " + _loc4_);
+         SocketManager.Instance.out.sendErrorMsg("客户端卡死了" + name + " : " + tmp);
       }
       
       public function get actionCount() : int
@@ -90,9 +88,9 @@ package game.actions
       {
          var _loc3_:int = 0;
          var _loc2_:* = _queue;
-         for each(var _loc1_ in _queue)
+         for each(var action in _queue)
          {
-            _loc1_.executeAtOnce();
+            action.executeAtOnce();
          }
       }
       
@@ -100,9 +98,9 @@ package game.actions
       {
          var _loc3_:int = 0;
          var _loc2_:* = _queue;
-         for each(var _loc1_ in _queue)
+         for each(var action in _queue)
          {
-            _loc1_.cancel();
+            action.cancel();
          }
          _queue = [];
       }

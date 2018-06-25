@@ -7,6 +7,7 @@ package totem.view
    import ddt.manager.PlayerManager;
    import ddt.manager.SocketManager;
    import ddt.manager.SoundManager;
+   import ddt.utils.PositionUtils;
    import flash.display.Sprite;
    import flash.events.Event;
    import flash.geom.Point;
@@ -18,7 +19,7 @@ package totem.view
    {
        
       
-      private var _leftView:TotemLeftView;
+      private var _leftView:TotemLeftActiveView;
       
       private var _rightView:TotemRightView;
       
@@ -31,7 +32,8 @@ package totem.view
       
       private function initView() : void
       {
-         _leftView = ComponentFactory.Instance.creatCustomObject("totemLeftView");
+         _leftView = new TotemLeftActiveView();
+         PositionUtils.setPos(_leftView,"totem.leftActiveViewPos");
          _rightView = ComponentFactory.Instance.creatCustomObject("totemRightView");
          addChild(_rightView);
          addChild(_leftView);
@@ -49,27 +51,27 @@ package totem.view
          SocketManager.Instance.addEventListener(PkgEvent.format(136),refresh);
       }
       
-      private function refresh(param1:PkgEvent) : void
+      private function refresh(event:PkgEvent) : void
       {
-         var _loc4_:Boolean = false;
-         var _loc3_:PackageIn = param1.pkg;
-         _loc3_.readInt();
-         PlayerManager.Instance.Self.damageScores = _loc3_.readInt();
-         var _loc2_:int = _loc3_.readInt();
-         if(_loc2_ == PlayerManager.Instance.Self.totemId)
+         var isSuccess:Boolean = false;
+         var pkg:PackageIn = event.pkg;
+         pkg.readInt();
+         PlayerManager.Instance.Self.damageScores = pkg.readInt();
+         var id:int = pkg.readInt();
+         if(id == PlayerManager.Instance.Self.totemId)
          {
-            _loc4_ = false;
+            isSuccess = false;
             SoundManager.instance.play("202");
          }
          else
          {
             SoundManager.instance.play("201");
-            _loc4_ = true;
-            PlayerManager.Instance.Self.totemId = _loc2_;
-            TotemManager.instance.updatePropertyAddtion(PlayerManager.Instance.Self.totemId,PlayerManager.Instance.Self.propertyAddition);
+            isSuccess = true;
+            PlayerManager.Instance.Self.totemId = id;
+            TotemManager.instance.updatePropertyAddtion(PlayerManager.Instance.Self.totemId,PlayerManager.Instance.Self.propertyAddition,null);
             PlayerManager.Instance.dispatchEvent(new Event("updatePlayerState"));
          }
-         _leftView.refreshView(_loc4_);
+         _leftView.refreshView(isSuccess);
          _rightView.refreshView();
       }
       
@@ -82,7 +84,7 @@ package totem.view
       {
          removeEvent();
          ObjectUtils.disposeAllChildren(this);
-         _leftView = null;
+         _leftView.dispose();
          _rightView = null;
          if(parent)
          {

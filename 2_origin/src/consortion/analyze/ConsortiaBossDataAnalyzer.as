@@ -9,37 +9,36 @@ package consortion.analyze
       
       private var _dataList:Array;
       
-      public function ConsortiaBossDataAnalyzer(param1:Function)
+      public function ConsortiaBossDataAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:XML = new XML(param1);
+         var xmllist:* = null;
+         var i:int = 0;
+         var info:* = null;
+         var xml:XML = new XML(data);
          _dataList = [];
-         if(_loc2_.@value == "true")
+         if(xml.@value == "true")
          {
-            _loc3_ = _loc2_..item;
-            _loc5_ = 0;
-            while(_loc5_ < _loc3_.length())
+            xmllist = xml..item;
+            for(i = 0; i < xmllist.length(); )
             {
-               _loc4_ = new ConsortiaBossConfigVo();
-               _loc4_.level = _loc3_[_loc5_].@Level;
-               _loc4_.callBossRich = _loc3_[_loc5_].@CostRich;
-               _loc4_.extendTimeRich = _loc3_[_loc5_].@ProlongRich;
-               _dataList.push(_loc4_);
-               _loc5_++;
+               info = new ConsortiaBossConfigVo();
+               info.level = xmllist[i].@Level;
+               info.callBossRich = xmllist[i].@CostRich;
+               info.extendTimeRich = xmllist[i].@ProlongRich;
+               _dataList.push(info);
+               i++;
             }
             _dataList.sortOn("level",16);
             onAnalyzeComplete();
          }
          else
          {
-            message = _loc2_.@message;
+            message = xml.@message;
             onAnalyzeError();
             onAnalyzeError();
          }

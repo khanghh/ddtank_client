@@ -21,25 +21,24 @@ package changeColor.view
       
       override protected function createCells() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          _cells = new Dictionary();
-         _loc2_ = 0;
-         while(_loc2_ < 49)
+         for(i = 0; i < 49; )
          {
-            _loc1_ = new ChangeColorBagCell(_loc2_);
-            addChild(_loc1_);
-            _loc1_.bagType = _bagType;
-            _loc1_.addEventListener("click",__cellClick);
-            _loc1_.addEventListener("lockChanged",__cellChanged);
-            _cells[_loc1_.place] = _loc1_;
-            _loc2_++;
+            cell = new ChangeColorBagCell(i);
+            addChild(cell);
+            cell.bagType = _bagType;
+            cell.addEventListener("click",__cellClick);
+            cell.addEventListener("lockChanged",__cellChanged);
+            _cells[cell.place] = cell;
+            i++;
          }
       }
       
-      override public function setData(param1:BagInfo) : void
+      override public function setData(bag:BagInfo) : void
       {
-         if(_bagdata == param1)
+         if(_bagdata == bag)
          {
             return;
          }
@@ -47,16 +46,16 @@ package changeColor.view
          {
             _bagdata.removeEventListener("update",__updateGoodsII);
          }
-         _bagdata = param1;
-         var _loc2_:int = 0;
+         _bagdata = bag;
+         var j:int = 0;
          var _loc5_:int = 0;
          var _loc4_:* = _bagdata.items;
-         for(var _loc3_ in _bagdata.items)
+         for(var i in _bagdata.items)
          {
-            if(_cells[_loc2_])
+            if(_cells[j])
             {
-               _cells[_loc2_].info = _bagdata.items[_loc3_];
-               _loc2_++;
+               _cells[j].info = _bagdata.items[i];
+               j++;
                continue;
             }
             break;
@@ -64,72 +63,69 @@ package changeColor.view
          _bagdata.addEventListener("update",__updateGoodsII);
       }
       
-      private function __updateGoodsII(param1:BagEvent) : void
+      private function __updateGoodsII(evt:BagEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc4_:Dictionary = param1.changedSlots;
+         var c:* = null;
+         var changes:Dictionary = evt.changedSlots;
          var _loc6_:int = 0;
-         var _loc5_:* = _loc4_;
-         for each(var _loc3_ in _loc4_)
+         var _loc5_:* = changes;
+         for each(var i in changes)
          {
-            _loc2_ = PlayerManager.Instance.Self.Bag.getItemAt(_loc3_.Place);
-            if(_loc2_)
+            c = PlayerManager.Instance.Self.Bag.getItemAt(i.Place);
+            if(c)
             {
-               updateItem(_loc2_);
+               updateItem(c);
             }
             else
             {
-               removeBagItem(_loc3_);
+               removeBagItem(i);
             }
          }
       }
       
-      public function updateItem(param1:InventoryItemInfo) : void
+      public function updateItem(item:InventoryItemInfo) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < 49)
+         var i:int = 0;
+         var j:int = 0;
+         for(i = 0; i < 49; )
          {
-            if(_cells[_loc3_].itemInfo && _cells[_loc3_].itemInfo.Place == param1.Place)
+            if(_cells[i].itemInfo && _cells[i].itemInfo.Place == item.Place)
             {
-               _cells[_loc3_].info = param1;
+               _cells[i].info = item;
                return;
             }
-            _loc3_++;
+            i++;
          }
-         _loc2_ = 0;
-         while(_loc2_ < 49)
+         for(j = 0; j < 49; )
          {
-            if(_cells[_loc2_].itemInfo == null)
+            if(_cells[j].itemInfo == null)
             {
-               _cells[_loc2_].info = param1;
+               _cells[j].info = item;
                return;
             }
-            _loc2_++;
+            j++;
          }
       }
       
-      public function removeBagItem(param1:InventoryItemInfo) : void
+      public function removeBagItem(item:InventoryItemInfo) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < 49)
+         var i:int = 0;
+         for(i = 0; i < 49; )
          {
-            if(_cells[_loc2_].itemInfo && _cells[_loc2_].itemInfo.Place == param1.Place)
+            if(_cells[i].itemInfo && _cells[i].itemInfo.Place == item.Place)
             {
-               _cells[_loc2_].info = null;
+               _cells[i].info = null;
                return;
             }
-            _loc2_++;
+            i++;
          }
       }
       
-      private function __cellClick(param1:MouseEvent) : void
+      private function __cellClick(evt:MouseEvent) : void
       {
-         if((param1.currentTarget as BagCell).locked == false && (param1.currentTarget as BagCell).info != null)
+         if((evt.currentTarget as BagCell).locked == false && (evt.currentTarget as BagCell).info != null)
          {
-            dispatchEvent(new ChangeColorCellEvent("changeColorCellClickEvent",param1.currentTarget as BagCell,true));
+            dispatchEvent(new ChangeColorCellEvent("changeColorCellClickEvent",evt.currentTarget as BagCell,true));
          }
       }
       
@@ -142,12 +138,12 @@ package changeColor.view
          }
          var _loc3_:int = 0;
          var _loc2_:* = _cells;
-         for(var _loc1_ in _cells)
+         for(var i in _cells)
          {
-            _cells[_loc1_].removeEventListener("click",__cellClick);
-            _cells[_loc1_].removeEventListener("lockChanged",__cellChanged);
-            _cells[_loc1_].dispose();
-            _cells[_loc1_] = null;
+            _cells[i].removeEventListener("click",__cellClick);
+            _cells[i].removeEventListener("lockChanged",__cellChanged);
+            _cells[i].dispose();
+            _cells[i] = null;
          }
          if(parent)
          {

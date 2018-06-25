@@ -23,13 +23,13 @@ package worldboss.view
          super();
       }
       
-      public function showFrame(param1:String, param2:String, param3:Function = null, param4:Function = null) : void
+      public function showFrame(title:String, content:String, responseCellBack:Function = null, selectedCheckButtonCellBack:Function = null) : void
       {
-         var _loc5_:AlertInfo = this.info;
-         _loc5_.title = param1;
-         _alertTips.text = param2;
-         _responseCellBack = param3;
-         _selectedCheckButtonCellBack = param4;
+         var alertInfo:AlertInfo = this.info;
+         alertInfo.title = title;
+         _alertTips.text = content;
+         _responseCellBack = responseCellBack;
+         _selectedCheckButtonCellBack = selectedCheckButtonCellBack;
          _selectedItem = new DoubleSelectedItem();
          _selectedItem.x = 150;
          _selectedItem.y = 115;
@@ -42,10 +42,10 @@ package worldboss.view
          return _selectedItem;
       }
       
-      override protected function __framePesponse(param1:FrameEvent) : void
+      override protected function __framePesponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -66,7 +66,7 @@ package worldboss.view
          super.dispose();
       }
       
-      override protected function __noAlertTip(param1:Event) : void
+      override protected function __noAlertTip(e:Event) : void
       {
          SoundManager.instance.play("008");
          if(_selectedCheckButtonCellBack != null)

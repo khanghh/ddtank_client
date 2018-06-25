@@ -8,11 +8,11 @@ package com.pickgliss.geom
       
       public var height:int = 0;
       
-      public function IntDimension(param1:int = 0, param2:int = 0)
+      public function IntDimension(width:int = 0, height:int = 0)
       {
          super();
-         this.width = param1;
-         this.height = param2;
+         this.width = width;
+         this.height = height;
       }
       
       public static function createBigDimension() : IntDimension
@@ -20,74 +20,74 @@ package com.pickgliss.geom
          return new IntDimension(100000,100000);
       }
       
-      public function setSize(param1:IntDimension) : void
+      public function setSize(dim:IntDimension) : void
       {
-         this.width = param1.width;
-         this.height = param1.height;
+         this.width = dim.width;
+         this.height = dim.height;
       }
       
-      public function setSizeWH(param1:int, param2:int) : void
+      public function setSizeWH(width:int, height:int) : void
       {
-         this.width = param1;
-         this.height = param2;
+         this.width = width;
+         this.height = height;
       }
       
-      public function increaseSize(param1:IntDimension) : IntDimension
+      public function increaseSize(s:IntDimension) : IntDimension
       {
-         width = width + param1.width;
-         height = height + param1.height;
+         width = width + s.width;
+         height = height + s.height;
          return this;
       }
       
-      public function decreaseSize(param1:IntDimension) : IntDimension
+      public function decreaseSize(s:IntDimension) : IntDimension
       {
-         width = width - param1.width;
-         height = height - param1.height;
+         width = width - s.width;
+         height = height - s.height;
          return this;
       }
       
-      public function change(param1:int, param2:int) : IntDimension
+      public function change(deltaW:int, deltaH:int) : IntDimension
       {
-         width = width + param1;
-         height = height + param2;
+         width = width + deltaW;
+         height = height + deltaH;
          return this;
       }
       
-      public function changedSize(param1:int, param2:int) : IntDimension
+      public function changedSize(deltaW:int, deltaH:int) : IntDimension
       {
-         var _loc3_:IntDimension = new IntDimension(param1,param2);
-         return _loc3_;
+         var s:IntDimension = new IntDimension(deltaW,deltaH);
+         return s;
       }
       
-      public function combine(param1:IntDimension) : IntDimension
+      public function combine(d:IntDimension) : IntDimension
       {
-         this.width = Math.max(this.width,param1.width);
-         this.height = Math.max(this.height,param1.height);
+         this.width = Math.max(this.width,d.width);
+         this.height = Math.max(this.height,d.height);
          return this;
       }
       
-      public function combineSize(param1:IntDimension) : IntDimension
+      public function combineSize(d:IntDimension) : IntDimension
       {
-         return clone().combine(param1);
+         return clone().combine(d);
       }
       
-      public function getBounds(param1:int = 0, param2:int = 0) : IntRectangle
+      public function getBounds(x:int = 0, y:int = 0) : IntRectangle
       {
-         var _loc4_:IntPoint = new IntPoint(param1,param2);
-         var _loc3_:IntRectangle = new IntRectangle();
-         _loc3_.setLocation(_loc4_);
-         _loc3_.setSize(this);
-         return _loc3_;
+         var p:IntPoint = new IntPoint(x,y);
+         var r:IntRectangle = new IntRectangle();
+         r.setLocation(p);
+         r.setSize(this);
+         return r;
       }
       
-      public function equals(param1:Object) : Boolean
+      public function equals(o:Object) : Boolean
       {
-         var _loc2_:IntDimension = param1 as IntDimension;
-         if(_loc2_ == null)
+         var d:IntDimension = o as IntDimension;
+         if(d == null)
          {
             return false;
          }
-         return width === _loc2_.width && height === _loc2_.height;
+         return width === d.width && height === d.height;
       }
       
       public function clone() : IntDimension

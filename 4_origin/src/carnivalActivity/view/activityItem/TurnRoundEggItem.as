@@ -15,38 +15,37 @@ package carnivalActivity.view.activityItem
       
       protected var _remain:int;
       
-      public function TurnRoundEggItem(param1:int, param2:GiftBagInfo, param3:int)
+      public function TurnRoundEggItem(type:int, info:GiftBagInfo, index:int)
       {
-         super(param1,param2,param3);
+         super(type,info,index);
       }
       
       override protected function initItem() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = undefined;
-         var _loc3_:int = 0;
+         var reValue:int = 0;
+         var gift:* = undefined;
+         var i:int = 0;
          _awardCountTxt = ComponentFactory.Instance.creatComponentByStylename("carnivalAct.countTxt");
          addChild(_awardCountTxt);
          if(_descTxt)
          {
-            _loc1_ = _info.giftConditionArr;
-            _loc3_ = 0;
-            while(_loc3_ < _loc1_.length)
+            gift = _info.giftConditionArr;
+            for(i = 0; i < gift.length; )
             {
-               if(_loc1_[_loc3_].conditionIndex == 0)
+               if(gift[i].conditionIndex == 0)
                {
-                  _loc2_ = _loc1_[_loc3_].remain1;
-                  _condtion = _loc1_[_loc3_].conditionValue;
+                  reValue = gift[i].remain1;
+                  _condtion = gift[i].conditionValue;
                }
-               _loc3_++;
+               i++;
             }
             if(_condtion == 1)
             {
-               _descTxt.text = LanguageMgr.GetTranslation("carnival.descTxt27_1",_loc2_);
+               _descTxt.text = LanguageMgr.GetTranslation("carnival.descTxt27_1",reValue);
             }
             else
             {
-               _descTxt.text = LanguageMgr.GetTranslation("carnival.descTxt27_2",_loc2_);
+               _descTxt.text = LanguageMgr.GetTranslation("carnival.descTxt27_2",reValue);
             }
          }
          if(_sumCount == 0)
@@ -57,34 +56,33 @@ package carnivalActivity.view.activityItem
       
       override protected function initData() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _info.giftConditionArr.length)
+         var i:int = 0;
+         for(i = 0; i < _info.giftConditionArr.length; )
          {
-            if(_info.giftConditionArr[_loc1_].conditionIndex == 0)
+            if(_info.giftConditionArr[i].conditionIndex == 0)
             {
-               _condtion = _info.giftConditionArr[_loc1_].conditionValue;
-               _remain = _info.giftConditionArr[_loc1_].remain1;
+               _condtion = _info.giftConditionArr[i].conditionValue;
+               _remain = _info.giftConditionArr[i].remain1;
             }
-            _loc1_++;
+            i++;
          }
       }
       
       override public function updateView() : void
       {
-         var _loc1_:Object = WonderfulActivityManager.Instance.activityInitData[_info.activityId];
-         if(_loc1_)
+         var infoDic:Object = WonderfulActivityManager.Instance.activityInitData[_info.activityId];
+         if(infoDic)
          {
-            _giftCurInfo = _loc1_.giftInfoDic[_info.giftbagId];
-            _statusArr = _loc1_.statusArr;
+            _giftCurInfo = infoDic.giftInfoDic[_info.giftbagId];
+            _statusArr = infoDic.statusArr;
             _playerAlreadyGetCount = _giftCurInfo.times;
             var _loc4_:int = 0;
             var _loc3_:* = _statusArr;
-            for each(var _loc2_ in _statusArr)
+            for each(var info in _statusArr)
             {
-               if(_loc2_.statusID == _condtion)
+               if(info.statusID == _condtion)
                {
-                  _currentCondtion = _loc2_.statusValue;
+                  _currentCondtion = info.statusValue;
                }
             }
             _getBtn.enable = CarnivalActivityControl.instance.canGetAward() && _playerAlreadyGetCount == 0 && _currentCondtion >= _remain;

@@ -54,11 +54,11 @@ package store.forge
       
       private var _openGradeList:Vector.<int>;
       
-      public function ForgeMainView(param1:int)
+      public function ForgeMainView(index:int)
       {
          _openGradeList = new <int>[30,25,10,30,40];
          super();
-         _initIndex = param1;
+         _initIndex = index;
          new HelperUIModuleLoad().loadUIModule(["forgemain"],onloadComplete);
       }
       
@@ -71,29 +71,28 @@ package store.forge
       
       private function setIndex() : void
       {
-         var _loc1_:* = null;
-         var _loc3_:int = 0;
-         var _loc2_:int = _tabSBG.length();
-         _loc3_ = _initIndex;
-         while(_loc3_ < _loc2_)
+         var item:* = null;
+         var i:int = 0;
+         var len:int = _tabSBG.length();
+         for(i = _initIndex; i < len; )
          {
-            _loc1_ = _tabSBG.getItemByIndex(_loc3_) as ITipedDisplay;
-            if(HelpBtnEnable.getInstance().isForbidden(_loc1_) == false)
+            item = _tabSBG.getItemByIndex(i) as ITipedDisplay;
+            if(HelpBtnEnable.getInstance().isForbidden(item) == false)
             {
-               _tabSBG.selectIndex = _loc3_;
+               _tabSBG.selectIndex = i;
                break;
             }
-            _loc3_++;
+            i++;
          }
       }
       
       private function initView() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:DisplayObject = ComponentFactory.Instance.creatCustomObject("ddtstore.BagStoreFrame.ContentBg");
-         addChild(_loc2_);
-         _loc2_.height = 425;
+         var i:int = 0;
+         var tmp:* = null;
+         var contentBg:DisplayObject = ComponentFactory.Instance.creatCustomObject("ddtstore.BagStoreFrame.ContentBg");
+         addChild(contentBg);
+         contentBg.height = 425;
          _bg = ComponentFactory.Instance.creat("asset.forgeMainView.leftBg");
          PositionUtils.setPos(_bg,"forgeMainView.leftBgPos");
          _bg.gotoAndStop(1);
@@ -104,16 +103,15 @@ package store.forge
          _tabVbox = ComponentFactory.Instance.creatComponentByStylename("forgeMainView.tabVBox");
          _tabSBList = new Vector.<SelectedButton>();
          _tabSBG = new SelectedButtonGroup();
-         _loc3_ = 0;
-         while(_loc3_ < 5)
+         for(i = 0; i < 5; )
          {
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("forgeMainView.tabSelectedButton" + _loc3_);
-            HelpBtnEnable.getInstance().addMouseOverTips(_loc1_,_openGradeList[_loc3_]);
-            _loc1_.addEventListener("click",clickHandler,false,0,true);
-            _tabVbox.addChild(_loc1_);
-            _tabSBG.addSelectItem(_loc1_);
-            _tabSBList.push(_loc1_);
-            _loc3_++;
+            tmp = ComponentFactory.Instance.creatComponentByStylename("forgeMainView.tabSelectedButton" + i);
+            HelpBtnEnable.getInstance().addMouseOverTips(tmp,_openGradeList[i]);
+            tmp.addEventListener("click",clickHandler,false,0,true);
+            _tabVbox.addChild(tmp);
+            _tabSBG.addSelectItem(tmp);
+            _tabSBList.push(tmp);
+            i++;
          }
          addChild(_tabVbox);
       }
@@ -123,12 +121,12 @@ package store.forge
          _tabSBG.addEventListener("change",changeHandler,false,0,true);
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function changeHandler(param1:Event) : void
+      private function changeHandler(event:Event) : void
       {
          SocketManager.Instance.out.sendClearStoreBag();
          _tabVbox.arrange();
@@ -221,9 +219,9 @@ package store.forge
          }
       }
       
-      override public function set visible(param1:Boolean) : void
+      override public function set visible(value:Boolean) : void
       {
-         .super.visible = param1;
+         .super.visible = value;
          if(visible)
          {
             if(_latentEnergyView)
@@ -270,10 +268,10 @@ package store.forge
          removeEvent();
          var _loc3_:int = 0;
          var _loc2_:* = _tabSBList;
-         for each(var _loc1_ in _tabSBList)
+         for each(var tmp in _tabSBList)
          {
-            HelpBtnEnable.getInstance().removeMouseOverTips(_loc1_);
-            _loc1_.removeEventListener("click",clickHandler);
+            HelpBtnEnable.getInstance().removeMouseOverTips(tmp);
+            tmp.removeEventListener("click",clickHandler);
          }
          ObjectUtils.disposeAllChildren(this);
          _tabVbox = null;

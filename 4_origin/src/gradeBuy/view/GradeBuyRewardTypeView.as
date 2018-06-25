@@ -41,27 +41,25 @@ package gradeBuy.view
       
       public function update() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:Array = GradeBuyManager.getInstance().data;
+         var i:int = 0;
+         var data:Array = GradeBuyManager.getInstance().data;
          _typeItemContainer.removeAllChild();
-         var _loc1_:Array = [];
-         var _loc3_:int = _loc2_.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var tempArr:Array = [];
+         var len:int = data.length;
+         for(i = 0; i < len; )
          {
-            if(_loc2_[_loc4_]["date"] - TimeManager.Instance.Now().time > 0)
+            if(data[i]["date"] - TimeManager.Instance.Now().time > 0)
             {
-               _loc1_.push(_loc2_[_loc4_]);
+               tempArr.push(data[i]);
             }
-            _loc4_++;
+            i++;
          }
-         GradeBuyManager.getInstance().data = _loc1_;
-         _loc3_ = _loc1_.length;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         GradeBuyManager.getInstance().data = tempArr;
+         len = tempArr.length;
+         for(i = 0; i < len; )
          {
-            _typeItemContainer.addChild(new GradeBuyTypeItem(_loc1_[_loc4_]));
-            _loc4_++;
+            _typeItemContainer.addChild(new GradeBuyTypeItem(tempArr[i]));
+            i++;
          }
          if(_typeItemContainer.numChildren == 0)
          {
@@ -69,7 +67,7 @@ package gradeBuy.view
             return;
          }
          _typeItemContainer.arrange();
-         _bg.height = Math.ceil(_loc3_ / _typeItemContainer.columnNumber) * 115;
+         _bg.height = Math.ceil(len / _typeItemContainer.columnNumber) * 115;
       }
       
       public function arrage() : void

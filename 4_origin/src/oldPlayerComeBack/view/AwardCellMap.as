@@ -33,11 +33,11 @@ package oldPlayerComeBack.view
       
       private var _cellArr:DictionaryData;
       
-      public function AwardCellMap(param1:Array)
+      public function AwardCellMap(cellsPos:Array)
       {
          _roadMcOffset = new Point(11,11);
          super();
-         _cellsPos = param1;
+         _cellsPos = cellsPos;
          initView();
          _cellArr = new DictionaryData();
       }
@@ -49,26 +49,26 @@ package oldPlayerComeBack.view
          _roadTimer = new Timer(400,0);
       }
       
-      public function addItem(param1:int, param2:AwardCellItem) : void
+      public function addItem(place:int, item:AwardCellItem) : void
       {
-         var _loc3_:* = null;
-         var _loc4_:* = param2;
+         var temPos:* = null;
+         var cell:* = item;
          if(_cellsPos)
          {
-            _loc3_ = _cellsPos[param1];
-            _loc4_.x = _loc3_.x;
-            _loc4_.y = _loc3_.y;
-            _cellArr.add(param1,_loc4_);
-            _cellSpri.addChild(_loc4_);
+            temPos = _cellsPos[place];
+            cell.x = temPos.x;
+            cell.y = temPos.y;
+            _cellArr.add(place,cell);
+            _cellSpri.addChild(cell);
          }
       }
       
       public function clearItem() : void
       {
-         var _loc1_:Array = _cellArr.list;
-         while(_loc1_.length > 0)
+         var temArr:Array = _cellArr.list;
+         while(temArr.length > 0)
          {
-            ObjectUtils.disposeObject(_loc1_.shift() as AwardCellItem);
+            ObjectUtils.disposeObject(temArr.shift() as AwardCellItem);
          }
          if(_cellSpri.numChildren > 2)
          {
@@ -76,9 +76,9 @@ package oldPlayerComeBack.view
          }
       }
       
-      public function setStartPos(param1:int) : void
+      public function setStartPos(place:int) : void
       {
-         var _loc2_:* = null;
+         var pos:* = null;
          if(_roadMc == null)
          {
             _roadMc = ComponentFactory.Instance.creat("asset.oldPlayerComeBack.moveMc");
@@ -87,18 +87,18 @@ package oldPlayerComeBack.view
          }
          if(_cellsPos)
          {
-            _loc2_ = _cellsPos[param1];
-            _roadMc.x = _loc2_.x - _roadMcOffset.x;
-            _roadMc.y = _loc2_.y - _roadMcOffset.y;
+            pos = _cellsPos[place];
+            _roadMc.x = pos.x - _roadMcOffset.x;
+            _roadMc.y = pos.y - _roadMcOffset.y;
             _roadMc.visible = true;
-            _nowPlace = param1;
+            _nowPlace = place;
          }
       }
       
-      public function moveTargetPos(param1:int, param2:Function) : void
+      public function moveTargetPos(place:int, callFun:Function) : void
       {
-         _callFun = param2;
-         _targetPlace = _nowPlace + param1;
+         _callFun = callFun;
+         _targetPlace = _nowPlace + place;
          ready();
       }
       
@@ -113,9 +113,9 @@ package oldPlayerComeBack.view
          _roadTimer.start();
       }
       
-      private function __toTargetHandler(param1:TimerEvent) : void
+      private function __toTargetHandler(evt:TimerEvent) : void
       {
-         var _loc2_:* = null;
+         var nexPos:* = null;
          if(_cellsPos)
          {
             _nowPlace = _nowPlace + 1;
@@ -129,15 +129,15 @@ package oldPlayerComeBack.view
                _callFun = null;
                return;
             }
-            _loc2_ = _cellsPos[_nowPlace];
-            moveToTarget(_loc2_);
+            nexPos = _cellsPos[_nowPlace];
+            moveToTarget(nexPos);
          }
       }
       
-      private function moveToTarget(param1:Point) : void
+      private function moveToTarget(pos:Point) : void
       {
-         _roadMc.x = param1.x - _roadMcOffset.x;
-         _roadMc.y = param1.y - _roadMcOffset.y;
+         _roadMc.x = pos.x - _roadMcOffset.x;
+         _roadMc.y = pos.y - _roadMcOffset.y;
       }
       
       private function stop() : void
@@ -166,10 +166,10 @@ package oldPlayerComeBack.view
          _roadMc = null;
          _roadTimer = null;
          _callFun = null;
-         var _loc1_:Array = _cellArr.list;
-         while(_loc1_.length > 0)
+         var temArr:Array = _cellArr.list;
+         while(temArr.length > 0)
          {
-            ObjectUtils.disposeObject(_loc1_.shift() as AwardCellItem);
+            ObjectUtils.disposeObject(temArr.shift() as AwardCellItem);
          }
          _cellArr = null;
          if(_cellSpri && _cellSpri.numChildren > 0)

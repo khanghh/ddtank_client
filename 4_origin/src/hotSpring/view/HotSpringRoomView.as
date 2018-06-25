@@ -159,7 +159,7 @@ package hotSpring.view
       
       private var _emailShine:IEffect;
       
-      public function HotSpringRoomView(param1:HotSpringRoomManager, param2:HotSpringRoomModel)
+      public function HotSpringRoomView(controller:HotSpringRoomManager, model:HotSpringRoomModel)
       {
          _defaultPoint = new Point(480,560);
          _playerList = new DictionaryData();
@@ -167,15 +167,15 @@ package hotSpring.view
          _playerListCellLoadCount = new DictionaryData();
          _hotSpringPlayerList = new DictionaryData();
          super();
-         _controller = param1;
-         _model = param2;
+         _controller = controller;
+         _model = model;
          initialize();
       }
       
-      public static function getCurrentAreaType(param1:int, param2:int) : int
+      public static function getCurrentAreaType(xPos:int, yPos:int) : int
       {
-         var _loc3_:Point = _waterArea.localToGlobal(new Point(param1,param2));
-         if(_waterArea.hitTestPoint(_loc3_.x,_loc3_.y,true))
+         var g:Point = _waterArea.localToGlobal(new Point(xPos,yPos));
+         if(_waterArea.hitTestPoint(g.x,g.y,true))
          {
             return 2;
          }
@@ -288,12 +288,12 @@ package hotSpring.view
          _chatFrame = ChatManager.Instance.view;
          _chatFrame.output.isLock = true;
          addChild(_chatFrame);
-         var _loc1_:Object = {};
-         _loc1_["blurWidth"] = 6;
-         _loc1_["color"] = "yellow";
+         var data:Object = {};
+         data["blurWidth"] = 6;
+         data["color"] = "yellow";
       }
       
-      private function __onStageAddInitMapPath(param1:Event) : void
+      private function __onStageAddInitMapPath(event:Event) : void
       {
          removeEventListener("addedToStage",__onStageAddInitMapPath);
          _hotSpringViewAsset.maskPath.mouseEnabled = false;
@@ -320,7 +320,7 @@ package hotSpring.view
          _HpLittleGameNpc.addEventListener("mouseOut",__npcOutHandler);
       }
       
-      private function __npcOutHandler(param1:MouseEvent) : void
+      private function __npcOutHandler(evt:MouseEvent) : void
       {
          if(_HpLittleGameNpc)
          {
@@ -329,22 +329,22 @@ package hotSpring.view
          }
       }
       
-      private function __npcOverHander(param1:MouseEvent) : void
+      private function __npcOverHander(evt:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var blur:* = null;
          if(_HpLittleGameNpc)
          {
             _HpLittleGameNpc.buttonMode = true;
-            _loc2_ = new GlowFilter();
-            _loc2_.blurX = 10;
-            _loc2_.blurY = 10;
-            _loc2_.color = 16776960;
-            _loc2_.quality = 2;
-            _HpLittleGameNpc.filters = [_loc2_];
+            blur = new GlowFilter();
+            blur.blurX = 10;
+            blur.blurY = 10;
+            blur.color = 16776960;
+            blur.quality = 2;
+            _HpLittleGameNpc.filters = [blur];
          }
       }
       
-      private function __npcClickHander(param1:MouseEvent) : void
+      private function __npcClickHander(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          HappyLittleGameManager.instance.show();
@@ -364,48 +364,48 @@ package hotSpring.view
          }
       }
       
-      private function playerLoadEnter(param1:PlayerVO) : void
+      private function playerLoadEnter(playerVO:PlayerVO) : void
       {
-         var _loc2_:int = 0;
+         var count:int = 0;
          if(_playerListCellLoadCount && _playerListCellLoadCount.length > 0)
          {
-            _loc2_ = !!_playerListCellLoadCount[param1.playerInfo.ID]?int(_playerListCellLoadCount[param1.playerInfo.ID]):0;
-            if(_loc2_ >= 3)
+            count = !!_playerListCellLoadCount[playerVO.playerInfo.ID]?int(_playerListCellLoadCount[playerVO.playerInfo.ID]):0;
+            if(count >= 3)
             {
                _controller.roomPlayerRemoveSend(LanguageMgr.GetTranslation("tank.hotSpring.room.load.error"));
                return;
             }
          }
-         _playerListCellLoadCount.add(param1.playerInfo.ID,_loc2_ + 1);
-         _currentLoadingPlayer = new HotSpringPlayer(param1,addPlayerCallBack);
+         _playerListCellLoadCount.add(playerVO.playerInfo.ID,count + 1);
+         _currentLoadingPlayer = new HotSpringPlayer(playerVO,addPlayerCallBack);
       }
       
-      private function addPlayerCallBack(param1:HotSpringPlayer, param2:Boolean, param3:int = 0) : void
+      private function addPlayerCallBack(hotSpringPlayer:HotSpringPlayer, isLoadSucceed:Boolean, flag:int = 0) : void
       {
-         var _loc4_:* = null;
+         var playerVO:* = null;
          _currentLoadingPlayer = null;
-         if(!param2)
+         if(!isLoadSucceed)
          {
-            _loc4_ = param1.playerVO.clone();
-            _playerList.remove(_loc4_.playerInfo.ID);
-            _playerListFailure.add(_loc4_.playerInfo.ID,_loc4_);
-            if(param1)
+            playerVO = hotSpringPlayer.playerVO.clone();
+            _playerList.remove(playerVO.playerInfo.ID);
+            _playerListFailure.add(playerVO.playerInfo.ID,playerVO);
+            if(hotSpringPlayer)
             {
-               param1.dispose();
+               hotSpringPlayer.dispose();
             }
-            param1 = null;
+            hotSpringPlayer = null;
             _isPlayerListLoading = false;
             return;
          }
-         param1.playerPoint = param1.playerVO.playerPos;
-         param1.sceneScene = _sceneScene;
-         var _loc5_:* = param1.playerVO.scenePlayerDirection;
-         param1.sceneCharacterDirection = _loc5_;
-         param1.setSceneCharacterDirectionDefault = _loc5_;
-         param1.playerVO.currentlyArea = getCurrentAreaType(param1.playerVO.playerPos.x,param1.playerVO.playerPos.y);
-         if(!_selfPlayer && param1.playerVO.playerInfo.ID == PlayerManager.Instance.Self.ID)
+         hotSpringPlayer.playerPoint = hotSpringPlayer.playerVO.playerPos;
+         hotSpringPlayer.sceneScene = _sceneScene;
+         var _loc5_:* = hotSpringPlayer.playerVO.scenePlayerDirection;
+         hotSpringPlayer.sceneCharacterDirection = _loc5_;
+         hotSpringPlayer.setSceneCharacterDirectionDefault = _loc5_;
+         hotSpringPlayer.playerVO.currentlyArea = getCurrentAreaType(hotSpringPlayer.playerVO.playerPos.x,hotSpringPlayer.playerVO.playerPos.y);
+         if(!_selfPlayer && hotSpringPlayer.playerVO.playerInfo.ID == PlayerManager.Instance.Self.ID)
          {
-            _selfPlayer = param1;
+            _selfPlayer = hotSpringPlayer;
             _playerLayer.addChild(_selfPlayer);
             setCenter();
             _selfPlayer.addEventListener("characterMovement",setCenter);
@@ -414,28 +414,28 @@ package hotSpring.view
          }
          else
          {
-            _playerLayer.addChild(param1);
+            _playerLayer.addChild(hotSpringPlayer);
          }
-         _hotSpringPlayerList.add(param1.playerVO.playerInfo.ID,param1);
-         _playerList.remove(param1.playerVO.playerInfo.ID);
-         _playerListFailure.remove(param1.playerVO.playerInfo.ID);
-         _playerListCellLoadCount.remove(param1.playerVO.playerInfo.ID);
+         _hotSpringPlayerList.add(hotSpringPlayer.playerVO.playerInfo.ID,hotSpringPlayer);
+         _playerList.remove(hotSpringPlayer.playerVO.playerInfo.ID);
+         _playerListFailure.remove(hotSpringPlayer.playerVO.playerInfo.ID);
+         _playerListCellLoadCount.remove(hotSpringPlayer.playerVO.playerInfo.ID);
          _isPlayerListLoading = false;
-         param1.isShowName = _isShowName;
-         param1.isChatBall = _isChatBall;
-         param1.isShowPlayer = _isShowPalyer;
+         hotSpringPlayer.isShowName = _isShowName;
+         hotSpringPlayer.isChatBall = _isChatBall;
+         hotSpringPlayer.isShowPlayer = _isShowPalyer;
       }
       
-      private function roomTimeUp(param1:int, param2:Boolean = false) : void
+      private function roomTimeUp(exp:int, isFirst:Boolean = false) : void
       {
-         expUpPlayer(param1);
+         expUpPlayer(exp);
          _sysDateTime.seconds = _sysDateTime.seconds + 60;
          sysDateTimeScene(_sysDateTime);
       }
       
-      private function playerPropChanged(param1:PlayerPropertyEvent) : void
+      private function playerPropChanged(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Grade"] && PlayerManager.Instance.Self.IsUpGrade)
+         if(event.changedProperties["Grade"] && PlayerManager.Instance.Self.IsUpGrade)
          {
             _grade = new GradeContainer(true);
             _grade.y = -122;
@@ -446,35 +446,35 @@ package hotSpring.view
          }
       }
       
-      private function roomTimeUpdate(param1:CrazyTankSocketEvent) : void
+      private function roomTimeUpdate(evt:CrazyTankSocketEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc4_:int = _loc2_.readInt();
-         var _loc3_:int = _loc2_.readInt();
-         var _loc5_:int = _loc2_.readInt();
-         HotSpringManager.instance.roomCurrently.effectiveTime = _loc4_;
-         HotSpringManager.instance.playerEffectiveTime = _loc4_;
+         var pkg:PackageIn = evt.pkg;
+         var effectiveTime:int = pkg.readInt();
+         var miniExp:int = pkg.readInt();
+         var energy:int = pkg.readInt();
+         HotSpringManager.instance.roomCurrently.effectiveTime = effectiveTime;
+         HotSpringManager.instance.playerEffectiveTime = effectiveTime;
          if(HotSpringManager.instance.roomCurrently.roomType == 1 || HotSpringManager.instance.roomCurrently.roomType == 2)
          {
             _countDown.setFrame(2);
-            _countDownTxt.text = _loc4_ + LanguageMgr.GetTranslation("tank.hotSpring.room.time.minute");
+            _countDownTxt.text = effectiveTime + LanguageMgr.GetTranslation("tank.hotSpring.room.time.minute");
             _energy.setFrame(2);
-            _energyTxt.text = _loc5_.toString();
+            _energyTxt.text = energy.toString();
          }
          else
          {
             _countDown.setFrame(1);
-            _countDownTxt.text = _loc4_ + LanguageMgr.GetTranslation("tank.hotSpring.room.time.minute");
+            _countDownTxt.text = effectiveTime + LanguageMgr.GetTranslation("tank.hotSpring.room.time.minute");
             _energy.setFrame(1);
-            _energyTxt.text = _loc5_.toString();
+            _energyTxt.text = energy.toString();
          }
       }
       
-      private function sysDateTimeScene(param1:Date) : void
+      private function sysDateTimeScene(dateTime:Date) : void
       {
-         _sysDateTime = param1;
-         var _loc2_:int = _sysDateTime.getHours();
-         var _loc3_:int = _sysDateTime.getUTCMinutes();
+         _sysDateTime = dateTime;
+         var nowHour:int = _sysDateTime.getHours();
+         var nowMinute:int = _sysDateTime.getUTCMinutes();
          _dayStart = new Date(_sysDateTime.getFullYear(),_sysDateTime.getMonth(),_sysDateTime.getDate(),5,30);
          _dayEnd = new Date(_sysDateTime.getFullYear(),_sysDateTime.getMonth(),_sysDateTime.getDate(),6,30);
          _nightStart = new Date(_sysDateTime.getFullYear(),_sysDateTime.getMonth(),_sysDateTime.getDate(),17,30);
@@ -659,8 +659,8 @@ package hotSpring.view
       
       private function dayAndNight() : void
       {
-         var _loc1_:Number = NaN;
-         var _loc2_:Number = NaN;
+         var minutesCount:Number = NaN;
+         var resultAlphaValue:Number = NaN;
          if(!_sceneFront)
          {
             _sceneFront = ClassUtils.CreatInstance("asset.hotSpring.HotSpringDaySceneFrontAsset");
@@ -691,7 +691,7 @@ package hotSpring.view
          _loc4_ = 81.7;
          _sceneFrontNight2.y = _loc4_;
          _sceneFront2.y = _loc4_;
-         var _loc3_:* = 60;
+         var alphaValueCount:* = 60;
          if(_sysDateTime >= _dayStart && _sysDateTime <= _dayEnd)
          {
             if(!_sceneBackBox.contains(_sceneBackNight))
@@ -744,8 +744,8 @@ package hotSpring.view
             {
                _playerLayer.stove.addChild(_playerLayer.stove.dayStove);
             }
-            _loc1_ = (_sysDateTime.getHours() - 5) * 60 - 30 + _sysDateTime.minutes;
-            _loc2_ = (_loc1_ / _loc3_ * 100).toFixed(2);
+            minutesCount = (_sysDateTime.getHours() - 5) * 60 - 30 + _sysDateTime.minutes;
+            resultAlphaValue = (minutesCount / alphaValueCount * 100).toFixed(2);
             if(_sceneFront2.daySun && _sceneFront2.daySun.parent)
             {
                _sceneFront2.daySun.parent.removeChild(_sceneFront2.daySun);
@@ -756,7 +756,7 @@ package hotSpring.view
                _sceneFront2.dayFlower.parent.removeChild(_sceneFront2.dayFlower);
             }
             _sceneFront2.dayFlower = null;
-            _loc4_ = _loc2_ / 100;
+            _loc4_ = resultAlphaValue / 100;
             _playerLayer.stove.dayStove.alpha = _loc4_;
             _loc4_ = _loc4_;
             _playerLayer.tree.dayTree.alpha = _loc4_;
@@ -767,8 +767,8 @@ package hotSpring.view
             _loc4_ = _loc4_;
             _sceneFront2.alpha = _loc4_;
             _sceneFront.alpha = _loc4_;
-            _sceneFrontNight2.nightFirefly.alpha = 1 - _loc2_ / 100;
-            if(_loc2_ / 100 >= 1)
+            _sceneFrontNight2.nightFirefly.alpha = 1 - resultAlphaValue / 100;
+            if(resultAlphaValue / 100 >= 1)
             {
                removeSceneNight();
             }
@@ -823,8 +823,8 @@ package hotSpring.view
             {
                _playerLayer.stove.addChild(_playerLayer.stove.nightStove);
             }
-            _loc1_ = (_sysDateTime.getHours() - 17) * 60 - 30 + _sysDateTime.minutes;
-            _loc2_ = (_loc1_ / _loc3_ * 100).toFixed(2);
+            minutesCount = (_sysDateTime.getHours() - 17) * 60 - 30 + _sysDateTime.minutes;
+            resultAlphaValue = (minutesCount / alphaValueCount * 100).toFixed(2);
             if(_sceneFront2.daySun && _sceneFront2.daySun.parent)
             {
                _sceneFront2.daySun.parent.removeChild(_sceneFront2.daySun);
@@ -835,7 +835,7 @@ package hotSpring.view
                _sceneFrontNight2.nightFirefly.parent.removeChild(_sceneFrontNight2.nightFirefly);
             }
             _sceneFrontNight2.nightFirefly = null;
-            _loc4_ = _loc2_ / 100;
+            _loc4_ = resultAlphaValue / 100;
             _playerLayer.stove.nightStove.alpha = _loc4_;
             _loc4_ = _loc4_;
             _playerLayer.tree.nightTree.alpha = _loc4_;
@@ -846,18 +846,18 @@ package hotSpring.view
             _loc4_ = _loc4_;
             _sceneFrontNight2.alpha = _loc4_;
             _sceneFrontNight.alpha = _loc4_;
-            _sceneFront2.dayFlower.alpha = 1 - _loc2_ / 100;
-            if(_loc2_ / 100 >= 1)
+            _sceneFront2.dayFlower.alpha = 1 - resultAlphaValue / 100;
+            if(resultAlphaValue / 100 >= 1)
             {
                removeSceneDay();
             }
          }
       }
       
-      private function roomToolMenu(param1:MouseEvent) : void
+      private function roomToolMenu(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:* = param1.currentTarget;
+         var _loc2_:* = evt.currentTarget;
          if(_ShowNameBtn !== _loc2_)
          {
             if(_ShowPaoBtn !== _loc2_)
@@ -884,34 +884,33 @@ package hotSpring.view
       
       private function setPlayerShowItem() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         _loc2_ = 0;
-         while(_loc2_ < _playerLayer.numChildren)
+         var i:int = 0;
+         var hotSpringPlayer:* = null;
+         for(i = 0; i < _playerLayer.numChildren; )
          {
-            _loc1_ = _playerLayer.getChildAt(_loc2_) as HotSpringPlayer;
-            if(_loc1_)
+            hotSpringPlayer = _playerLayer.getChildAt(i) as HotSpringPlayer;
+            if(hotSpringPlayer)
             {
-               _loc1_.isShowName = _isShowName;
-               _loc1_.isChatBall = _isChatBall;
-               _loc1_.isShowPlayer = _isShowPalyer;
-               if(_loc1_.playerVO.playerInfo.ID != PlayerManager.Instance.Self.ID)
+               hotSpringPlayer.isShowName = _isShowName;
+               hotSpringPlayer.isChatBall = _isChatBall;
+               hotSpringPlayer.isShowPlayer = _isShowPalyer;
+               if(hotSpringPlayer.playerVO.playerInfo.ID != PlayerManager.Instance.Self.ID)
                {
-                  _loc1_.character.visible = _isShowPalyer;
+                  hotSpringPlayer.character.visible = _isShowPalyer;
                }
-               _loc1_.visible = _loc1_.playerVO.playerInfo.ID != PlayerManager.Instance.Self.ID?_isShowPalyer:true;
+               hotSpringPlayer.visible = hotSpringPlayer.playerVO.playerInfo.ID != PlayerManager.Instance.Self.ID?_isShowPalyer:true;
             }
-            _loc2_++;
+            i++;
          }
       }
       
-      private function addPlayer(param1:HotSpringRoomEvent) : void
+      private function addPlayer(evt:HotSpringRoomEvent) : void
       {
-         var _loc2_:PlayerVO = param1.data as PlayerVO;
-         _playerList.add(_loc2_.playerInfo.ID,_loc2_);
+         var playerVO:PlayerVO = evt.data as PlayerVO;
+         _playerList.add(playerVO.playerInfo.ID,playerVO);
       }
       
-      private function onEnterFrame(param1:Event) : void
+      private function onEnterFrame(evt:Event) : void
       {
          if(!_isPlayerListLoading)
          {
@@ -923,104 +922,101 @@ package hotSpring.view
          }
          var _loc4_:int = 0;
          var _loc3_:* = _hotSpringPlayerList.list;
-         for each(var _loc2_ in _hotSpringPlayerList.list)
+         for each(var hotSpringPlayer in _hotSpringPlayerList.list)
          {
-            _loc2_.updatePlayer();
+            hotSpringPlayer.updatePlayer();
          }
          BuildEntityDepth();
       }
       
-      private function getPointDepth(param1:Number, param2:Number) : Number
+      private function getPointDepth(x:Number, y:Number) : Number
       {
-         return _mapVO.mapWidth * param2 + param1;
+         return _mapVO.mapWidth * y + x;
       }
       
       private function BuildEntityDepth() : void
       {
-         var _loc9_:int = 0;
-         var _loc4_:* = null;
-         var _loc8_:Number = NaN;
-         var _loc7_:* = 0;
-         var _loc5_:* = NaN;
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:Number = NaN;
-         var _loc2_:int = _playerLayer.numChildren;
-         _loc9_ = 0;
-         while(_loc9_ < _loc2_ - 1)
+         var i:int = 0;
+         var obj:* = null;
+         var depth:Number = NaN;
+         var minIndex:* = 0;
+         var minDepth:* = NaN;
+         var j:int = 0;
+         var temp:* = null;
+         var tempDepth:Number = NaN;
+         var count:int = _playerLayer.numChildren;
+         for(i = 0; i < count - 1; )
          {
-            _loc4_ = _playerLayer.getChildAt(_loc9_);
-            _loc8_ = this.getPointDepth(_loc4_.x,_loc4_.y);
-            _loc5_ = 1.79769313486232e308;
-            _loc6_ = _loc9_ + 1;
-            while(_loc6_ < _loc2_)
+            obj = _playerLayer.getChildAt(i);
+            depth = this.getPointDepth(obj.x,obj.y);
+            minDepth = 1.79769313486232e308;
+            for(j = i + 1; j < count; )
             {
-               _loc3_ = _playerLayer.getChildAt(_loc6_);
-               _loc1_ = this.getPointDepth(_loc3_.x,_loc3_.y);
-               if(_loc1_ < _loc5_)
+               temp = _playerLayer.getChildAt(j);
+               tempDepth = this.getPointDepth(temp.x,temp.y);
+               if(tempDepth < minDepth)
                {
-                  _loc7_ = _loc6_;
-                  _loc5_ = _loc1_;
+                  minIndex = j;
+                  minDepth = tempDepth;
                }
-               _loc6_++;
+               j++;
             }
-            if(_loc8_ > _loc5_)
+            if(depth > minDepth)
             {
-               _playerLayer.swapChildrenAt(_loc9_,_loc7_);
+               _playerLayer.swapChildrenAt(i,minIndex);
             }
-            _loc9_++;
+            i++;
          }
       }
       
-      private function removePlayer(param1:HotSpringRoomEvent) : void
+      private function removePlayer(evt:HotSpringRoomEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:int = param1.data;
-         var _loc3_:HotSpringPlayer = _hotSpringPlayerList[_loc2_] as HotSpringPlayer;
-         _hotSpringPlayerList.remove(_loc2_);
+         var i:int = 0;
+         var playerID:int = evt.data;
+         var hotSpringPlayer:HotSpringPlayer = _hotSpringPlayerList[playerID] as HotSpringPlayer;
+         _hotSpringPlayerList.remove(playerID);
          if(_playerList)
          {
-            _playerList.remove(_loc2_);
+            _playerList.remove(playerID);
          }
          if(_playerListFailure)
          {
-            _playerListFailure.remove(_loc2_);
+            _playerListFailure.remove(playerID);
          }
          if(_playerListCellLoadCount)
          {
-            _playerListCellLoadCount.remove(_loc2_);
+            _playerListCellLoadCount.remove(playerID);
          }
-         if(!_loc3_)
+         if(!hotSpringPlayer)
          {
-            _loc4_ = 0;
-            while(_loc4_ < _playerLayer.numChildren)
+            for(i = 0; i < _playerLayer.numChildren; )
             {
-               _loc3_ = _playerLayer.getChildAt(_loc4_) as HotSpringPlayer;
-               if(_loc3_ && _loc3_.playerVO.playerInfo.ID == _loc2_)
+               hotSpringPlayer = _playerLayer.getChildAt(i) as HotSpringPlayer;
+               if(hotSpringPlayer && hotSpringPlayer.playerVO.playerInfo.ID == playerID)
                {
-                  _loc3_.removeEventListener("characterActionChange",playerActionChange);
-                  if(_loc3_.parent)
+                  hotSpringPlayer.removeEventListener("characterActionChange",playerActionChange);
+                  if(hotSpringPlayer.parent)
                   {
-                     _loc3_.parent.removeChild(_loc3_);
+                     hotSpringPlayer.parent.removeChild(hotSpringPlayer);
                   }
-                  _loc3_.dispose();
-                  _loc3_ = null;
+                  hotSpringPlayer.dispose();
+                  hotSpringPlayer = null;
                   break;
                }
-               _loc4_++;
+               i++;
             }
          }
-         if(_loc3_)
+         if(hotSpringPlayer)
          {
-            _loc3_.removeEventListener("characterActionChange",playerActionChange);
-            if(_loc3_.parent)
+            hotSpringPlayer.removeEventListener("characterActionChange",playerActionChange);
+            if(hotSpringPlayer.parent)
             {
-               _loc3_.parent.removeChild(_loc3_);
+               hotSpringPlayer.parent.removeChild(hotSpringPlayer);
             }
-            _loc3_.dispose();
-            _loc3_ = null;
+            hotSpringPlayer.dispose();
+            hotSpringPlayer = null;
          }
-         if(_loc2_ == PlayerManager.Instance.Self.ID)
+         if(playerID == PlayerManager.Instance.Self.ID)
          {
             _selfPlayer.removeEventListener("characterMovement",setCenter);
             PlayerManager.Instance.Self.removeEventListener("propertychange",playerPropChanged);
@@ -1028,78 +1024,78 @@ package hotSpring.view
          }
       }
       
-      private function onMouseClick(param1:MouseEvent) : void
+      private function onMouseClick(evt:MouseEvent) : void
       {
          if(!_selfPlayer)
          {
             return;
          }
-         var _loc2_:Point = _hotSpringViewAsset.globalToLocal(new Point(param1.stageX,param1.stageY));
+         var targetPoint:Point = _hotSpringViewAsset.globalToLocal(new Point(evt.stageX,evt.stageY));
          if(getTimer() - _lastClick > _clickInterval)
          {
             _lastClick = getTimer();
-            if(!_sceneScene.hit(_loc2_))
+            if(!_sceneScene.hit(targetPoint))
             {
-               _selfPlayer.playerVO.walkPath = _sceneScene.searchPath(_selfPlayer.playerPoint,_loc2_);
+               _selfPlayer.playerVO.walkPath = _sceneScene.searchPath(_selfPlayer.playerPoint,targetPoint);
                _selfPlayer.playerVO.walkPath.shift();
                _selfPlayer.playerVO.scenePlayerDirection = SceneCharacterDirection.getDirection(_selfPlayer.playerPoint,_selfPlayer.playerVO.walkPath[0]);
                _selfPlayer.playerVO.currentWalkStartPoint = _selfPlayer.currentWalkStartPoint;
                _controller.roomPlayerTargetPointSend(_selfPlayer.playerVO);
-               _mouseMovie.x = _loc2_.x;
-               _mouseMovie.y = _loc2_.y;
+               _mouseMovie.x = targetPoint.x;
+               _mouseMovie.y = targetPoint.y;
                _mouseMovie.play();
             }
          }
       }
       
-      private function setCenter(param1:SceneCharacterEvent = null) : void
+      private function setCenter(event:SceneCharacterEvent = null) : void
       {
          if(!stage || !_model || !_model.mapVO)
          {
             return;
          }
-         var _loc3_:* = Number(-(_selfPlayer.x - stage.stageWidth / 2));
-         var _loc2_:* = Number(-(_selfPlayer.y - stage.stageHeight / 2) + 50);
-         if(_loc3_ > 0)
+         var xf:* = Number(-(_selfPlayer.x - stage.stageWidth / 2));
+         var yf:* = Number(-(_selfPlayer.y - stage.stageHeight / 2) + 50);
+         if(xf > 0)
          {
-            _loc3_ = 0;
+            xf = 0;
          }
-         if(_loc3_ < stage.stageWidth - _model.mapVO.mapWidth)
+         if(xf < stage.stageWidth - _model.mapVO.mapWidth)
          {
-            _loc3_ = Number(stage.stageWidth - _model.mapVO.mapWidth);
+            xf = Number(stage.stageWidth - _model.mapVO.mapWidth);
          }
-         if(_loc2_ > 0)
+         if(yf > 0)
          {
-            _loc2_ = 0;
+            yf = 0;
          }
-         if(_loc2_ < stage.stageHeight - _model.mapVO.mapHeight)
+         if(yf < stage.stageHeight - _model.mapVO.mapHeight)
          {
-            _loc2_ = Number(stage.stageHeight - _model.mapVO.mapHeight);
+            yf = Number(stage.stageHeight - _model.mapVO.mapHeight);
          }
-         if(_loc3_ > 0)
+         if(xf > 0)
          {
-            _loc3_ = 0;
+            xf = 0;
          }
-         if(_loc2_ > 0)
+         if(yf > 0)
          {
-            _loc2_ = 0;
+            yf = 0;
          }
-         _hotSpringViewAsset.x = _loc3_;
-         _hotSpringViewAsset.y = _loc2_;
-         _sceneBackBox.x = _loc3_ * 0.6 - 40;
-         _sceneBackBox.y = _loc2_ * 0.6 - 10;
+         _hotSpringViewAsset.x = xf;
+         _hotSpringViewAsset.y = yf;
+         _sceneBackBox.x = xf * 0.6 - 40;
+         _sceneBackBox.y = yf * 0.6 - 10;
       }
       
-      private function playerActionChange(param1:SceneCharacterEvent) : void
+      private function playerActionChange(evt:SceneCharacterEvent) : void
       {
-         var _loc2_:String = param1.data.toString();
-         if(_loc2_ == "naturalStandFront" || _loc2_ == "naturalStandBack" || _loc2_ == "waterFrontEyes" || _loc2_ == "waterStandBack")
+         var type:String = evt.data.toString();
+         if(type == "naturalStandFront" || type == "naturalStandBack" || type == "waterFrontEyes" || type == "waterStandBack")
          {
             _mouseMovie.gotoAndStop(1);
          }
       }
       
-      public function expUpPlayer(param1:int) : void
+      public function expUpPlayer(exp:int) : void
       {
          if(!_selfPlayer || !_selfPlayer.playerVO)
          {
@@ -1122,7 +1118,7 @@ package hotSpring.view
          _expUpBox.x = (_selfPlayer.playerWitdh - 75) / 2 - _selfPlayer.playerWitdh / 2;
          _expUpBox.y = _selfPlayer.playerVO.currentlyArea == 1?-_selfPlayer.playerHeight - 30:Number(-_selfPlayer.playerHeight + 33);
          _selfPlayer.addChild(_expUpBox);
-         _expUpText.text = "điểm hoạt bát +" + param1.toString();
+         _expUpText.text = "điểm hoạt bát +" + exp.toString();
          expUpMoviePlayer();
       }
       
@@ -1184,10 +1180,10 @@ package hotSpring.view
       
       public function dispose() : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
+         var playerVO:* = null;
+         var playerVO2:* = null;
+         var player:* = null;
+         var hotSpringPlayer:* = null;
          TweenLite.killTweensOf(_expUpText);
          TweenLite.killTweensOf(_expUpAsset);
          removeEventListener("enterFrame",onEnterFrame);
@@ -1327,12 +1323,12 @@ package hotSpring.view
          _mouseMovie = null;
          while(_model.roomPlayerList && _model.roomPlayerList.list.length > 0)
          {
-            _loc4_ = _model.roomPlayerList.list[0] as PlayerVO;
-            if(_loc4_)
+            playerVO = _model.roomPlayerList.list[0] as PlayerVO;
+            if(playerVO)
             {
-               _loc4_.dispose();
+               playerVO.dispose();
             }
-            _loc4_ = null;
+            playerVO = null;
             _model.roomPlayerList.list.shift();
          }
          if(_model.roomPlayerList)
@@ -1341,12 +1337,12 @@ package hotSpring.view
          }
          while(_playerList && _playerList.length > 0)
          {
-            _loc3_ = _playerList.list[0] as PlayerVO;
-            if(_loc3_)
+            playerVO2 = _playerList.list[0] as PlayerVO;
+            if(playerVO2)
             {
-               _loc3_.dispose();
+               playerVO2.dispose();
             }
-            _loc3_ = null;
+            playerVO2 = null;
             _playerList.list.shift();
          }
          _playerList.clear();
@@ -1364,12 +1360,12 @@ package hotSpring.view
          {
             while(_hotSpringPlayerList.length > 0)
             {
-               _loc1_ = _hotSpringPlayerList.list[0] as HotSpringPlayer;
-               if(_loc1_)
+               player = _hotSpringPlayerList.list[0] as HotSpringPlayer;
+               if(player)
                {
-                  _loc1_.dispose();
+                  player.dispose();
                }
-               _loc1_ = null;
+               player = null;
                _hotSpringPlayerList.list.shift();
             }
             _hotSpringPlayerList.clear();
@@ -1379,12 +1375,12 @@ package hotSpring.view
          {
             while(_playerLayer.numChildren > 0)
             {
-               _loc2_ = _playerLayer.getChildAt(0) as HotSpringPlayer;
-               if(_loc2_)
+               hotSpringPlayer = _playerLayer.getChildAt(0) as HotSpringPlayer;
+               if(hotSpringPlayer)
                {
-                  _loc2_.dispose();
+                  hotSpringPlayer.dispose();
                }
-               _loc2_ = null;
+               hotSpringPlayer = null;
                _playerLayer.removeChildAt(0);
             }
          }

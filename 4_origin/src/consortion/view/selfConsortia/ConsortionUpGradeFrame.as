@@ -86,10 +86,10 @@ package consortion.view.selfConsortia
       
       private var _selectIndex:int;
       
-      public function ConsortionUpGradeFrame(param1:int)
+      public function ConsortionUpGradeFrame(buildId:int)
       {
          super();
-         _buildId = param1;
+         _buildId = buildId;
          initView();
          initEvent();
       }
@@ -204,7 +204,7 @@ package consortion.view.selfConsortia
          PlayerManager.Instance.Self.consortiaInfo.removeEventListener("propertychange",_consortiaInfoChange);
       }
       
-      private function _consortiaInfoChange(param1:PlayerPropertyEvent) : void
+      private function _consortiaInfoChange(event:PlayerPropertyEvent) : void
       {
          setLeveText();
       }
@@ -234,24 +234,24 @@ package consortion.view.selfConsortia
          showView(_selectIndex);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             SoundManager.instance.play("008");
             dispose();
          }
       }
       
-      private function showView(param1:int) : void
+      private function showView(type:int) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:Vector.<String> = new Vector.<String>();
-         switch(int(param1))
+         var frameTitle:* = null;
+         var data:Vector.<String> = new Vector.<String>();
+         switch(int(type))
          {
             case 0:
-               _loc2_ = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.titleText");
-               _loc3_ = ConsortionModelManager.Instance.model.getLevelString(0,PlayerManager.Instance.Self.consortiaInfo.Level);
+               frameTitle = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.titleText");
+               data = ConsortionModelManager.Instance.model.getLevelString(0,PlayerManager.Instance.Self.consortiaInfo.Level);
                if(PlayerManager.Instance.Self.consortiaInfo.Level >= 10)
                {
                   _ok.enable = false;
@@ -262,8 +262,8 @@ package consortion.view.selfConsortia
                }
                break;
             case 1:
-               _loc2_ = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.storeUpgrade");
-               _loc3_ = ConsortionModelManager.Instance.model.getLevelString(2,PlayerManager.Instance.Self.consortiaInfo.SmithLevel);
+               frameTitle = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.storeUpgrade");
+               data = ConsortionModelManager.Instance.model.getLevelString(2,PlayerManager.Instance.Self.consortiaInfo.SmithLevel);
                if(PlayerManager.Instance.Self.consortiaInfo.SmithLevel >= 10)
                {
                   _ok.enable = false;
@@ -274,8 +274,8 @@ package consortion.view.selfConsortia
                }
                break;
             case 2:
-               _loc2_ = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.consortiaShopUpgrade");
-               _loc3_ = ConsortionModelManager.Instance.model.getLevelString(1,PlayerManager.Instance.Self.consortiaInfo.ShopLevel);
+               frameTitle = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.consortiaShopUpgrade");
+               data = ConsortionModelManager.Instance.model.getLevelString(1,PlayerManager.Instance.Self.consortiaInfo.ShopLevel);
                if(PlayerManager.Instance.Self.consortiaInfo.ShopLevel >= 5)
                {
                   _ok.enable = false;
@@ -286,8 +286,8 @@ package consortion.view.selfConsortia
                }
                break;
             case 3:
-               _loc2_ = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.consortiaSmithUpgrade");
-               _loc3_ = ConsortionModelManager.Instance.model.getLevelString(3,PlayerManager.Instance.Self.consortiaInfo.StoreLevel);
+               frameTitle = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.consortiaSmithUpgrade");
+               data = ConsortionModelManager.Instance.model.getLevelString(3,PlayerManager.Instance.Self.consortiaInfo.StoreLevel);
                if(PlayerManager.Instance.Self.consortiaInfo.StoreLevel >= 10)
                {
                   _ok.enable = false;
@@ -298,8 +298,8 @@ package consortion.view.selfConsortia
                }
                break;
             case 4:
-               _loc2_ = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.consortiaSkillUpgrade");
-               _loc3_ = ConsortionModelManager.Instance.model.getLevelString(4,PlayerManager.Instance.Self.consortiaInfo.BufferLevel);
+               frameTitle = LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.consortiaSkillUpgrade");
+               data = ConsortionModelManager.Instance.model.getLevelString(4,PlayerManager.Instance.Self.consortiaInfo.BufferLevel);
                if(PlayerManager.Instance.Self.consortiaInfo.BufferLevel >= 10)
                {
                   _ok.enable = false;
@@ -309,17 +309,17 @@ package consortion.view.selfConsortia
                   _ok.enable = true;
                }
          }
-         titleText = _loc2_;
-         _tiptitle.text = _loc2_;
-         _explain.text = _loc3_[0];
-         _next.text = _loc3_[1];
-         _require.text = _loc3_[2];
-         _consume.htmlText = _loc3_[3];
+         titleText = frameTitle;
+         _tiptitle.text = frameTitle;
+         _explain.text = data[0];
+         _next.text = data[1];
+         _require.text = data[2];
+         _consume.htmlText = data[3];
       }
       
-      private function __okHandler(param1:MouseEvent) : void
+      private function __okHandler(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var confirm:* = null;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -336,45 +336,45 @@ package consortion.view.selfConsortia
             switch(int(_selectIndex))
             {
                case 0:
-                  _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.sure"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
-                  _loc2_.moveEnable = false;
-                  _loc2_.addEventListener("response",__confirmResponse);
+                  confirm = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.sure"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
+                  confirm.moveEnable = false;
+                  confirm.addEventListener("response",__confirmResponse);
                   break;
                case 1:
-                  _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.CONSORTIASMITHGRADE"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
-                  _loc2_.moveEnable = false;
-                  _loc2_.addEventListener("response",__confirmResponse);
+                  confirm = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.CONSORTIASMITHGRADE"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
+                  confirm.moveEnable = false;
+                  confirm.addEventListener("response",__confirmResponse);
                   break;
                case 2:
-                  _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.CONSORTIASHOPGRADE"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
-                  _loc2_.moveEnable = false;
-                  _loc2_.addEventListener("response",__confirmResponse);
+                  confirm = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.CONSORTIASHOPGRADE"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
+                  confirm.moveEnable = false;
+                  confirm.addEventListener("response",__confirmResponse);
                   break;
                case 3:
-                  _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.CONSORTIASTOREGRADE"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
-                  _loc2_.moveEnable = false;
-                  _loc2_.addEventListener("response",__confirmResponse);
+                  confirm = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.CONSORTIASTOREGRADE"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
+                  confirm.moveEnable = false;
+                  confirm.addEventListener("response",__confirmResponse);
                   break;
                case 4:
-                  _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.CONSORTIASKILLGRADE"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
-                  _loc2_.moveEnable = false;
-                  _loc2_.addEventListener("response",__confirmResponse);
+                  confirm = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaUpgrade.CONSORTIASKILLGRADE"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
+                  confirm.moveEnable = false;
+                  confirm.addEventListener("response",__confirmResponse);
             }
          }
       }
       
-      private function __confirmResponse(param1:FrameEvent) : void
+      private function __confirmResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__confirmResponse);
-         ObjectUtils.disposeObject(_loc2_);
-         if(_loc2_ && _loc2_.parent)
+         var frame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__confirmResponse);
+         ObjectUtils.disposeObject(frame);
+         if(frame && frame.parent)
          {
-            _loc2_.parent.removeChild(_loc2_);
+            frame.parent.removeChild(frame);
          }
-         _loc2_ = null;
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         frame = null;
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
             sendUpGradeData();
          }
@@ -404,28 +404,28 @@ package consortion.view.selfConsortia
       private function openRichesTip() : void
       {
          SoundManager.instance.play("047");
-         var _loc1_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.consortion.skillItem.click.enough1"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
-         _loc1_.addEventListener("response",__noEnoughHandler);
+         var enoughFrame:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("ddt.consortion.skillItem.click.enough1"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
+         enoughFrame.addEventListener("response",__noEnoughHandler);
       }
       
-      private function __noEnoughHandler(param1:FrameEvent) : void
+      private function __noEnoughHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
                ConsortionModelManager.Instance.alertTaxFrame();
          }
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__noEnoughHandler);
-         _loc2_.dispose();
-         _loc2_ = null;
+         var frame:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__noEnoughHandler);
+         frame.dispose();
+         frame = null;
       }
       
       private function checkGoldOrLevel() : Boolean
       {
-         var _loc1_:* = null;
+         var goldAlert:* = null;
          switch(int(_selectIndex))
          {
             case 0:
@@ -491,36 +491,36 @@ package consortion.view.selfConsortia
                BaglockedManager.Instance.show();
                return false;
             }
-            _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.GoldInadequate"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
-            _loc1_.moveEnable = false;
-            _loc1_.addEventListener("response",__quickBuyResponse);
+            goldAlert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.GoldInadequate"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
+            goldAlert.moveEnable = false;
+            goldAlert.addEventListener("response",__quickBuyResponse);
             return false;
          }
          return true;
       }
       
-      private function __quickBuyResponse(param1:FrameEvent) : void
+      private function __quickBuyResponse(evt:FrameEvent) : void
       {
-         var _loc3_:* = null;
+         var quickBuy:* = null;
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__quickBuyResponse);
-         _loc2_.dispose();
-         if(_loc2_.parent)
+         var frame:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         frame.removeEventListener("response",__quickBuyResponse);
+         frame.dispose();
+         if(frame.parent)
          {
-            _loc2_.parent.removeChild(_loc2_);
+            frame.parent.removeChild(frame);
          }
-         _loc2_ = null;
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         frame = null;
+         if(evt.responseCode == 3 || evt.responseCode == 2)
          {
-            _loc3_ = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
-            _loc3_.itemID = 11233;
-            _loc3_.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
-            LayerManager.Instance.addToLayer(_loc3_,3,true,1);
+            quickBuy = ComponentFactory.Instance.creatComponentByStylename("ddtcore.QuickFrame");
+            quickBuy.itemID = 11233;
+            quickBuy.setTitleText(LanguageMgr.GetTranslation("tank.view.store.matte.goldQuickBuy"));
+            LayerManager.Instance.addToLayer(quickBuy,3,true,1);
          }
       }
       
-      private function __cancelHandler(param1:MouseEvent) : void
+      private function __cancelHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();

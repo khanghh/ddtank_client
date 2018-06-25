@@ -34,19 +34,19 @@ package gameStarling.actions
       
       private var _maxY:Number;
       
-      public function LivingFallingAction(param1:GameLiving3D, param2:Point, param3:int, param4:int = 0)
+      public function LivingFallingAction(living:GameLiving3D, target:Point, speed:int, fallType:int = 0)
       {
-         _living = param1;
-         _target = param2;
-         _speed = param3;
-         _fallType = param4;
+         _living = living;
+         _target = target;
+         _speed = speed;
+         _fallType = fallType;
          super();
       }
       
-      override public function connect(param1:BaseAction) : Boolean
+      override public function connect(action:BaseAction) : Boolean
       {
-         var _loc2_:LivingFallingAction = param1 as LivingFallingAction;
-         if(_loc2_ && _loc2_._target.y < _target.y)
+         var ac:LivingFallingAction = action as LivingFallingAction;
+         if(ac && ac._target.y < _target.y)
          {
             return true;
          }
@@ -165,9 +165,9 @@ package gameStarling.actions
          }
       }
       
-      private function setPoint(param1:Number) : void
+      private function setPoint($speed:Number) : void
       {
-         _living.info.pos = new Point(_target.x,_living.info.pos.y + param1);
+         _living.info.pos = new Point(_target.x,_living.info.pos.y + $speed);
          _living.map.animateSet.addAnimation(new BaseSetCenterAnimation(_living.x,_living.y - 150,1,true));
       }
       

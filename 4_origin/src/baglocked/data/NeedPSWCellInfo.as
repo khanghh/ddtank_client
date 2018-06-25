@@ -8,17 +8,17 @@ package baglocked.data
       
       public var lanID:String;
       
-      public function NeedPSWCellInfo(param1:int, param2:String)
+      public function NeedPSWCellInfo($index:int, $lanID:String)
       {
          super();
-         index = param1;
-         if(param2 == "")
+         index = $index;
+         if($lanID == "")
          {
             lanID = "test测试";
          }
          else
          {
-            lanID = param2;
+            lanID = $lanID;
          }
       }
    }

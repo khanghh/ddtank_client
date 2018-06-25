@@ -98,9 +98,9 @@ package church.view.invite
          }
       }
       
-      private function onFrameResponse(param1:FrameEvent) : void
+      private function onFrameResponse(evt:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -114,13 +114,13 @@ package church.view.invite
          }
       }
       
-      private function sumbitConfirm(param1:MouseEvent = null) : void
+      private function sumbitConfirm(evt:MouseEvent = null) : void
       {
          SoundManager.instance.play("008");
          _controller.refleshList(_currentTab);
       }
       
-      private function __changeHandler(param1:Event) : void
+      private function __changeHandler(event:Event) : void
       {
          SoundManager.instance.play("008");
          switch(int(_btnGroup.selectIndex))
@@ -143,79 +143,77 @@ package church.view.invite
          _controller.refleshList(_currentTab);
       }
       
-      private function listUpdate(param1:Event = null) : void
+      private function listUpdate(evt:Event = null) : void
       {
-         var _loc9_:int = 0;
-         var _loc2_:* = null;
-         var _loc6_:* = null;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc8_:int = 0;
-         var _loc7_:* = null;
-         var _loc5_:* = null;
+         var i:int = 0;
+         var inviteInfo:* = null;
+         var plyeetInfo:* = null;
+         var inviteInfoII:* = null;
+         var plyeetInfoII:* = null;
+         var j:int = 0;
+         var playerInfo:* = null;
+         var obj:* = null;
          _currentList = [];
-         _loc9_ = 0;
-         while(_loc9_ < _model.currentList.length)
+         for(i = 0; i < _model.currentList.length; )
          {
-            if(_model.currentList[_loc9_] is PlayerInfo)
+            if(_model.currentList[i] is PlayerInfo)
             {
-               _loc2_ = new InvitePlayerInfo();
-               _loc6_ = _model.currentList[_loc9_] as PlayerInfo;
-               _loc2_.NickName = _loc6_.NickName;
-               _loc2_.Sex = _loc6_.Sex;
-               _loc2_.Grade = _loc6_.Grade;
-               _loc2_.Repute = _loc6_.Repute;
-               _loc2_.WinCount = _loc6_.WinCount;
-               _loc2_.TotalCount = _loc6_.TotalCount;
-               _loc2_.FightPower = _loc6_.FightPower;
-               _loc2_.ID = _loc6_.ID;
-               _loc2_.Offer = _loc6_.Offer;
-               _loc2_.typeVIP = _loc6_.typeVIP;
-               _loc2_.invited = false;
-               _currentList.push(_loc2_);
+               inviteInfo = new InvitePlayerInfo();
+               plyeetInfo = _model.currentList[i] as PlayerInfo;
+               inviteInfo.NickName = plyeetInfo.NickName;
+               inviteInfo.Sex = plyeetInfo.Sex;
+               inviteInfo.Grade = plyeetInfo.Grade;
+               inviteInfo.Repute = plyeetInfo.Repute;
+               inviteInfo.WinCount = plyeetInfo.WinCount;
+               inviteInfo.TotalCount = plyeetInfo.TotalCount;
+               inviteInfo.FightPower = plyeetInfo.FightPower;
+               inviteInfo.ID = plyeetInfo.ID;
+               inviteInfo.Offer = plyeetInfo.Offer;
+               inviteInfo.typeVIP = plyeetInfo.typeVIP;
+               inviteInfo.invited = false;
+               _currentList.push(inviteInfo);
             }
-            else if(_model.currentList[_loc9_] is ConsortiaPlayerInfo)
+            else if(_model.currentList[i] is ConsortiaPlayerInfo)
             {
-               _loc3_ = new InvitePlayerInfo();
-               _loc4_ = _model.currentList[_loc9_] as ConsortiaPlayerInfo;
-               _loc3_.NickName = _loc4_.NickName;
-               _loc3_.Sex = _loc4_.Sex;
-               _loc3_.Grade = _loc4_.Grade;
-               _loc3_.Repute = _loc4_.Repute;
-               _loc3_.WinCount = _loc4_.WinCount;
-               _loc3_.TotalCount = _loc4_.TotalCount;
-               _loc3_.FightPower = _loc4_.FightPower;
-               _loc3_.ID = _loc4_.ID;
-               _loc3_.Offer = _loc4_.Offer;
-               _loc3_.typeVIP = _loc4_.typeVIP;
-               _loc3_.invited = false;
-               _currentList.push(_loc3_);
+               inviteInfoII = new InvitePlayerInfo();
+               plyeetInfoII = _model.currentList[i] as ConsortiaPlayerInfo;
+               inviteInfoII.NickName = plyeetInfoII.NickName;
+               inviteInfoII.Sex = plyeetInfoII.Sex;
+               inviteInfoII.Grade = plyeetInfoII.Grade;
+               inviteInfoII.Repute = plyeetInfoII.Repute;
+               inviteInfoII.WinCount = plyeetInfoII.WinCount;
+               inviteInfoII.TotalCount = plyeetInfoII.TotalCount;
+               inviteInfoII.FightPower = plyeetInfoII.FightPower;
+               inviteInfoII.ID = plyeetInfoII.ID;
+               inviteInfoII.Offer = plyeetInfoII.Offer;
+               inviteInfoII.typeVIP = plyeetInfoII.typeVIP;
+               inviteInfoII.invited = false;
+               _currentList.push(inviteInfoII);
             }
-            _loc9_++;
+            i++;
          }
          _listPanel.vectorListModel.clear();
-         _loc8_ = 0;
-         while(_loc8_ < _model.currentList.length)
+         for(j = 0; j < _model.currentList.length; )
          {
-            _loc7_ = _currentList[_loc8_] as PlayerInfo;
-            _loc5_ = changeData(_loc7_,_loc8_ + 1);
-            _listPanel.vectorListModel.insertElementAt(_loc5_,_loc8_);
-            _loc8_++;
+            playerInfo = _currentList[j] as PlayerInfo;
+            obj = changeData(playerInfo,j + 1);
+            _listPanel.vectorListModel.insertElementAt(obj,j);
+            j++;
          }
          _listPanel.list.updateListView();
       }
       
-      private function __soundPlay(param1:MouseEvent) : void
+      private function __soundPlay(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
       }
       
-      private function changeData(param1:PlayerInfo, param2:int) : Object
+      private function changeData(info:PlayerInfo, index:int) : Object
       {
-         var _loc3_:Object = {};
-         _loc3_["playerInfo"] = param1;
-         _loc3_["index"] = param2;
-         return _loc3_;
+         var obj:Object = {};
+         obj["playerInfo"] = info;
+         obj["index"] = index;
+         return obj;
       }
       
       public function show() : void
@@ -239,9 +237,9 @@ package church.view.invite
          return _model;
       }
       
-      public function set model(param1:ChurchInviteModel) : void
+      public function set model(value:ChurchInviteModel) : void
       {
-         _model = param1;
+         _model = value;
       }
       
       public function get controller() : ChurchInviteController
@@ -249,9 +247,9 @@ package church.view.invite
          return _controller;
       }
       
-      public function set controller(param1:ChurchInviteController) : void
+      public function set controller(value:ChurchInviteController) : void
       {
-         _controller = param1;
+         _controller = value;
       }
       
       private function removeEvent() : void

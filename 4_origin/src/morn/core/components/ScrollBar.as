@@ -46,12 +46,12 @@ package morn.core.components
       
       protected var _sliderOffset:Number = 1.5;
       
-      public function ScrollBar(param1:String = null)
+      public function ScrollBar(skin:String = null)
       {
-         this._touchScrollEnable = Config.touchScrollEnable;
-         this._mouseWheelEnable = Config.mouseWheelEnable;
+         _touchScrollEnable = Config.touchScrollEnable;
+         _mouseWheelEnable = Config.mouseWheelEnable;
          super();
-         this.skin = param1;
+         this.skin = skin;
       }
       
       override protected function preinitialize() : void
@@ -61,423 +61,426 @@ package morn.core.components
       
       override protected function createChildren() : void
       {
-         addChild(this._slider = new Slider());
-         addChild(this._upButton = new Button());
-         addChild(this._downButton = new Button());
-         this._upButton.stateNum = 1;
-         this._upButton.enableClickMoveDownEffect = false;
-         this._downButton.stateNum = 1;
-         this._downButton.enableClickMoveDownEffect = false;
+         _slider = new Slider();
+         addChild(new Slider());
+         _upButton = new Button();
+         addChild(new Button());
+         _downButton = new Button();
+         addChild(new Button());
+         _upButton.stateNum = 1;
+         _upButton.enableClickMoveDownEffect = false;
+         _downButton.stateNum = 1;
+         _downButton.enableClickMoveDownEffect = false;
       }
       
       override protected function initialize() : void
       {
-         this._slider.showLabel = false;
-         this._slider.addEventListener(Event.CHANGE,this.onSliderChange);
-         this._slider.setSlider(0,0,0);
-         this._upButton.addEventListener(MouseEvent.MOUSE_DOWN,this.onButtonMouseDown);
-         this._downButton.addEventListener(MouseEvent.MOUSE_DOWN,this.onButtonMouseDown);
+         _slider.showLabel = false;
+         _slider.addEventListener("change",onSliderChange);
+         _slider.setSlider(0,0,0);
+         _upButton.addEventListener("mouseDown",onButtonMouseDown);
+         _downButton.addEventListener("mouseDown",onButtonMouseDown);
       }
       
-      protected function onSliderChange(param1:Event) : void
+      protected function onSliderChange(e:Event) : void
       {
-         sendEvent(Event.CHANGE);
-         if(this._changeHandler != null)
+         sendEvent("change");
+         if(_changeHandler != null)
          {
-            this._changeHandler.executeWith([this.value]);
+            _changeHandler.executeWith([value]);
          }
       }
       
-      protected function onButtonMouseDown(param1:MouseEvent) : void
+      protected function onButtonMouseDown(e:MouseEvent) : void
       {
-         var _loc2_:* = param1.currentTarget == this._upButton;
-         this.slide(_loc2_);
-         App.timer.doOnce(Styles.scrollBarDelayTime,this.startLoop,[_loc2_]);
-         App.stage.addEventListener(MouseEvent.MOUSE_UP,this.onStageMouseUp);
+         var isUp:* = e.currentTarget == _upButton;
+         slide(isUp);
+         App.timer.doOnce(Styles.scrollBarDelayTime,startLoop,[isUp]);
+         App.stage.addEventListener("mouseUp",onStageMouseUp);
       }
       
-      protected function startLoop(param1:Boolean) : void
+      protected function startLoop(isUp:Boolean) : void
       {
-         App.timer.doFrameLoop(1,this.slide,[param1]);
+         App.timer.doFrameLoop(1,slide,[isUp]);
       }
       
-      protected function slide(param1:Boolean) : void
+      protected function slide(isUp:Boolean) : void
       {
-         if(param1)
+         if(isUp)
          {
-            this.value = this.value - this._scrollSize;
+            value = value - _scrollSize;
          }
          else
          {
-            this.value = this.value + this._scrollSize;
+            value = value + _scrollSize;
          }
       }
       
-      protected function onStageMouseUp(param1:MouseEvent) : void
+      protected function onStageMouseUp(e:MouseEvent) : void
       {
-         App.stage.removeEventListener(MouseEvent.MOUSE_UP,this.onStageMouseUp);
-         App.timer.clearTimer(this.startLoop);
-         App.timer.clearTimer(this.slide);
+         App.stage.removeEventListener("mouseUp",onStageMouseUp);
+         App.timer.clearTimer(startLoop);
+         App.timer.clearTimer(slide);
       }
       
       public function get skin() : String
       {
-         return this._skin;
+         return _skin;
       }
       
-      public function set skin(param1:String) : void
+      public function set skin(value:String) : void
       {
-         if(this._skin != param1)
+         if(_skin != value)
          {
-            this._skin = param1;
-            this._slider.skin = this._skin;
-            callLater(this.changeScrollBar);
+            _skin = value;
+            _slider.skin = _skin;
+            callLater(changeScrollBar);
          }
       }
       
       protected function changeScrollBar() : void
       {
-         this._upButton.visible = this._showButtons;
-         this._downButton.visible = this._showButtons;
-         if(this._showButtons)
+         _upButton.visible = _showButtons;
+         _downButton.visible = _showButtons;
+         if(_showButtons)
          {
-            this._upButton.skin = this._skin + "$up";
-            this._downButton.skin = this._skin + "$down";
+            _upButton.skin = _skin + "$up";
+            _downButton.skin = _skin + "$down";
          }
-         if(this._slider.direction == VERTICAL)
+         if(_slider.direction == "vertical")
          {
-            this._slider.y = this._upButton.height;
-            this._slider.x = this._sliderOffset;
+            _slider.y = _upButton.height;
+            _slider.x = _sliderOffset;
          }
          else
          {
-            this._slider.x = this._upButton.width;
-            this._slider.y = this._sliderOffset;
+            _slider.x = _upButton.width;
+            _slider.y = _sliderOffset;
          }
-         this.resetPositions();
+         resetPositions();
       }
       
       protected function resetButtonPosition() : void
       {
-         if(this._slider.direction == VERTICAL)
+         if(_slider.direction == "vertical")
          {
-            this._downButton.y = this._slider.y + this._slider.height;
-            _contentWidth = this._slider.width;
-            _contentHeight = this._downButton.y + this._downButton.height;
+            _downButton.y = _slider.y + _slider.height;
+            _contentWidth = _slider.width;
+            _contentHeight = _downButton.y + _downButton.height;
          }
          else
          {
-            this._downButton.x = this._slider.x + this._slider.width;
-            _contentWidth = this._downButton.x + this._downButton.width;
-            _contentHeight = this._slider.height;
+            _downButton.x = _slider.x + _slider.width;
+            _contentWidth = _downButton.x + _downButton.width;
+            _contentHeight = _slider.height;
          }
       }
       
       override protected function changeSize() : void
       {
          super.changeSize();
-         this.resetPositions();
+         resetPositions();
       }
       
       private function resetPositions() : void
       {
-         if(this._slider.direction == VERTICAL)
+         if(_slider.direction == "vertical")
          {
-            this._slider.height = height - this._upButton.height - this._downButton.height;
+            _slider.height = height - _upButton.height - _downButton.height;
          }
          else
          {
-            this._slider.width = width - this._upButton.width - this._downButton.width;
+            _slider.width = width - _upButton.width - _downButton.width;
          }
-         this.resetButtonPosition();
+         resetButtonPosition();
       }
       
-      public function setScroll(param1:Number, param2:Number, param3:Number) : void
+      public function setScroll(min:Number, max:Number, value:Number) : void
       {
-         exeCallLater(this.changeSize);
-         this._slider.setSlider(param1,param2,param3);
-         this._upButton.disabled = param2 <= 0;
-         this._downButton.disabled = param2 <= 0;
-         this._slider.bar.visible = param2 > 0;
-         visible = !(this._autoHide && param2 <= param1);
+         exeCallLater(changeSize);
+         _slider.setSlider(min,max,value);
+         _upButton.disabled = max <= 0;
+         _downButton.disabled = max <= 0;
+         _slider.bar.visible = max > 0;
+         visible = !(_autoHide && max <= min);
       }
       
       public function get max() : Number
       {
-         return this._slider.max;
+         return _slider.max;
       }
       
-      public function set max(param1:Number) : void
+      public function set max(value:Number) : void
       {
-         this._slider.max = param1;
+         _slider.max = value;
       }
       
       public function get min() : Number
       {
-         return this._slider.min;
+         return _slider.min;
       }
       
-      public function set min(param1:Number) : void
+      public function set min(value:Number) : void
       {
-         this._slider.min = param1;
+         _slider.min = value;
       }
       
       public function get value() : Number
       {
-         return this._slider.value;
+         return _slider.value;
       }
       
-      public function set value(param1:Number) : void
+      public function set value(value:Number) : void
       {
-         this._slider.value = param1;
+         _slider.value = value;
       }
       
       public function get direction() : String
       {
-         return this._slider.direction;
+         return _slider.direction;
       }
       
-      public function set direction(param1:String) : void
+      public function set direction(value:String) : void
       {
-         this._slider.direction = param1;
+         _slider.direction = value;
       }
       
       public function get sizeGrid() : String
       {
-         return this._slider.sizeGrid;
+         return _slider.sizeGrid;
       }
       
-      public function set sizeGrid(param1:String) : void
+      public function set sizeGrid(value:String) : void
       {
-         this._slider.sizeGrid = param1;
+         _slider.sizeGrid = value;
       }
       
       public function get scrollSize() : Number
       {
-         return this._scrollSize;
+         return _scrollSize;
       }
       
-      public function set scrollSize(param1:Number) : void
+      public function set scrollSize(value:Number) : void
       {
-         this._scrollSize = param1;
+         _scrollSize = value;
       }
       
-      override public function set dataSource(param1:Object) : void
+      override public function set dataSource(value:Object) : void
       {
-         _dataSource = param1;
-         if(param1 is Number || param1 is String)
+         _dataSource = value;
+         if(value is Number || value is String)
          {
-            this.value = Number(param1);
+            this.value = Number(value);
          }
          else
          {
-            super.dataSource = param1;
+            .super.dataSource = value;
          }
       }
       
       public function get thumbPercent() : Number
       {
-         return this._thumbPercent;
+         return _thumbPercent;
       }
       
-      public function set thumbPercent(param1:Number) : void
+      public function set thumbPercent(value:Number) : void
       {
-         exeCallLater(this.changeSize);
-         this._thumbPercent = param1;
-         if(this._slider.direction == VERTICAL)
+         exeCallLater(changeSize);
+         _thumbPercent = value;
+         if(_slider.direction == "vertical")
          {
-            this._slider.bar.height = Math.max(int(this._slider.height * param1),Styles.scrollBarMinNum);
+            _slider.bar.height = Math.max(int(_slider.height * value),Styles.scrollBarMinNum);
          }
          else
          {
-            this._slider.bar.width = Math.max(int(this._slider.width * param1),Styles.scrollBarMinNum);
+            _slider.bar.width = Math.max(int(_slider.width * value),Styles.scrollBarMinNum);
          }
       }
       
       public function get target() : InteractiveObject
       {
-         return this._target;
+         return _target;
       }
       
-      public function set target(param1:InteractiveObject) : void
+      public function set target(value:InteractiveObject) : void
       {
-         if(this._target)
+         if(_target)
          {
-            this._target.removeEventListener(MouseEvent.MOUSE_WHEEL,this.onMouseWheel);
-            this._target.removeEventListener(MouseEvent.MOUSE_DOWN,this.onTargetMouseDown);
+            _target.removeEventListener("mouseWheel",onMouseWheel);
+            _target.removeEventListener("mouseDown",onTargetMouseDown);
          }
-         this._target = param1;
-         if(param1)
+         _target = value;
+         if(value)
          {
-            if(this._mouseWheelEnable)
+            if(_mouseWheelEnable)
             {
-               this._target.addEventListener(MouseEvent.MOUSE_WHEEL,this.onMouseWheel);
+               _target.addEventListener("mouseWheel",onMouseWheel);
             }
-            if(this._touchScrollEnable)
+            if(_touchScrollEnable)
             {
-               this._target.addEventListener(MouseEvent.MOUSE_DOWN,this.onTargetMouseDown);
+               _target.addEventListener("mouseDown",onTargetMouseDown);
             }
          }
       }
       
       public function get touchScrollEnable() : Boolean
       {
-         return this._touchScrollEnable;
+         return _touchScrollEnable;
       }
       
-      public function set touchScrollEnable(param1:Boolean) : void
+      public function set touchScrollEnable(value:Boolean) : void
       {
-         this._touchScrollEnable = param1;
-         this.target = this._target;
+         _touchScrollEnable = value;
+         target = _target;
       }
       
       public function get mouseWheelEnable() : Boolean
       {
-         return this._mouseWheelEnable;
+         return _mouseWheelEnable;
       }
       
-      public function set mouseWheelEnable(param1:Boolean) : void
+      public function set mouseWheelEnable(value:Boolean) : void
       {
-         this._mouseWheelEnable = param1;
-         this.target = this._target;
+         _mouseWheelEnable = value;
+         target = _target;
       }
       
       public function get autoHide() : Boolean
       {
-         return this._autoHide;
+         return _autoHide;
       }
       
-      public function set autoHide(param1:Boolean) : void
+      public function set autoHide(value:Boolean) : void
       {
-         this._autoHide = param1;
+         _autoHide = value;
       }
       
       public function get showButtons() : Boolean
       {
-         return this._showButtons;
+         return _showButtons;
       }
       
-      public function set showButtons(param1:Boolean) : void
+      public function set showButtons(value:Boolean) : void
       {
-         this._showButtons = param1;
+         _showButtons = value;
       }
       
       public function get changeHandler() : Handler
       {
-         return this._changeHandler;
+         return _changeHandler;
       }
       
-      public function set changeHandler(param1:Handler) : void
+      public function set changeHandler(value:Handler) : void
       {
-         this._changeHandler = param1;
+         _changeHandler = value;
       }
       
-      protected function onTargetMouseDown(param1:MouseEvent) : void
+      protected function onTargetMouseDown(e:MouseEvent) : void
       {
-         App.timer.clearTimer(this.tweenMove);
-         if(!this.contains(param1.target as DisplayObject))
+         App.timer.clearTimer(tweenMove);
+         if(!this.contains(e.target as DisplayObject))
          {
-            App.stage.addEventListener(MouseEvent.MOUSE_UP,this.onStageMouseUp2);
-            App.stage.addEventListener(Event.ENTER_FRAME,this.onStageEnterFrame);
-            this._lastPoint = new Point(App.stage.mouseX,App.stage.mouseY);
+            App.stage.addEventListener("mouseUp",onStageMouseUp2);
+            App.stage.addEventListener("enterFrame",onStageEnterFrame);
+            _lastPoint = new Point(App.stage.mouseX,App.stage.mouseY);
          }
       }
       
-      protected function onStageEnterFrame(param1:Event) : void
+      protected function onStageEnterFrame(e:Event) : void
       {
-         this._lastOffset = this._slider.direction == VERTICAL?Number(App.stage.mouseY - this._lastPoint.y):Number(App.stage.mouseX - this._lastPoint.x);
-         if(Math.abs(this._lastOffset) >= 1)
+         _lastOffset = _slider.direction == "vertical"?App.stage.mouseY - _lastPoint.y:Number(App.stage.mouseX - _lastPoint.x);
+         if(Math.abs(_lastOffset) >= 1)
          {
-            this._lastPoint.x = App.stage.mouseX;
-            this._lastPoint.y = App.stage.mouseY;
-            this.value = this.value - this._lastOffset;
+            _lastPoint.x = App.stage.mouseX;
+            _lastPoint.y = App.stage.mouseY;
+            value = value - _lastOffset;
          }
       }
       
-      protected function onStageMouseUp2(param1:MouseEvent) : void
+      protected function onStageMouseUp2(e:MouseEvent) : void
       {
-         App.stage.removeEventListener(MouseEvent.MOUSE_UP,this.onStageMouseUp2);
-         App.stage.removeEventListener(Event.ENTER_FRAME,this.onStageEnterFrame);
-         this._lastOffset = this._slider.direction == VERTICAL?Number(App.stage.mouseY - this._lastPoint.y):Number(App.stage.mouseX - this._lastPoint.x);
-         if(Math.abs(this._lastOffset) > 50)
+         App.stage.removeEventListener("mouseUp",onStageMouseUp2);
+         App.stage.removeEventListener("enterFrame",onStageEnterFrame);
+         _lastOffset = _slider.direction == "vertical"?App.stage.mouseY - _lastPoint.y:Number(App.stage.mouseX - _lastPoint.x);
+         if(Math.abs(_lastOffset) > 50)
          {
-            this._lastOffset = this._lastOffset > 0?50:-50;
+            _lastOffset = _lastOffset > 0?50:-50;
          }
-         App.timer.doFrameLoop(1,this.tweenMove);
+         App.timer.doFrameLoop(1,tweenMove);
       }
       
       private function tweenMove() : void
       {
-         this._lastOffset = this._lastOffset * 0.92;
-         this.value = this.value - this._lastOffset;
-         if(Math.abs(this._lastOffset) < 0.5)
+         _lastOffset = _lastOffset * 0.92;
+         value = value - _lastOffset;
+         if(Math.abs(_lastOffset) < 0.5)
          {
-            App.timer.clearTimer(this.tweenMove);
+            App.timer.clearTimer(tweenMove);
          }
       }
       
-      public function set sliderOffset(param1:Number) : void
+      public function set sliderOffset(value:Number) : void
       {
-         this._sliderOffset = param1;
+         _sliderOffset = value;
       }
       
       public function get sliderOffset() : Number
       {
-         return this._sliderOffset;
+         return _sliderOffset;
       }
       
-      protected function onMouseWheel(param1:MouseEvent) : void
+      protected function onMouseWheel(e:MouseEvent) : void
       {
-         this.value = this.value + (param1.delta < 0?3:-3) * this._scrollSize;
-         if(this.value < this.max && this.value > this.min)
+         value = value + (e.delta < 0?3:-3) * _scrollSize;
+         if(value < max && value > min)
          {
-            param1.stopPropagation();
+            e.stopPropagation();
          }
       }
       
       override public function dispose() : void
       {
          super.dispose();
-         App.timer.clearTimer(this.tweenMove);
-         this._upButton && this._upButton.dispose();
-         this._downButton && this._downButton.dispose();
-         this._slider && this._slider.dispose();
-         this._upButton = null;
-         this._downButton = null;
-         this._slider = null;
-         this._changeHandler = null;
-         this._target = null;
-         this._lastPoint = null;
+         App.timer.clearTimer(tweenMove);
+         _upButton && _upButton.dispose();
+         _downButton && _downButton.dispose();
+         _slider && _slider.dispose();
+         _upButton = null;
+         _downButton = null;
+         _slider = null;
+         _changeHandler = null;
+         _target = null;
+         _lastPoint = null;
       }
       
       public function get slider() : Slider
       {
-         return this._slider;
+         return _slider;
       }
       
-      public function set slider(param1:Slider) : void
+      public function set slider(value:Slider) : void
       {
-         this._slider = param1;
+         _slider = value;
       }
       
       public function get downButton() : Button
       {
-         return this._downButton;
+         return _downButton;
       }
       
-      public function set downButton(param1:Button) : void
+      public function set downButton(value:Button) : void
       {
-         this._downButton = param1;
+         _downButton = value;
       }
       
       public function get upButton() : Button
       {
-         return this._upButton;
+         return _upButton;
       }
       
-      public function set upButton(param1:Button) : void
+      public function set upButton(value:Button) : void
       {
-         this._upButton = param1;
+         _upButton = value;
       }
    }
 }

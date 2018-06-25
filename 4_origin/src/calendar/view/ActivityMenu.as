@@ -26,49 +26,48 @@ package calendar.view
       
       private var _selectedItem:ActivityCell;
       
-      public function ActivityMenu(param1:CalendarModel)
+      public function ActivityMenu(model:CalendarModel)
       {
          _cells = new Vector.<ActivityCell>();
          super();
-         _model = param1;
+         _model = model;
          configUI();
       }
       
       private function cleanCells() : void
       {
-         var _loc1_:ActivityCell = _cells.shift();
-         while(_loc1_ != null)
+         var cell:ActivityCell = _cells.shift();
+         while(cell != null)
          {
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_.removeEventListener("click",__cellClick);
-            _loc1_ = _cells.shift();
+            ObjectUtils.disposeObject(cell);
+            cell.removeEventListener("click",__cellClick);
+            cell = _cells.shift();
          }
       }
       
-      public function setActivityDate(param1:Date) : void
+      public function setActivityDate(date:Date) : void
       {
-         var _loc4_:* = null;
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var activeInfo:* = null;
+         var i:int = 0;
+         var active:* = null;
+         var cell:* = null;
          cleanCells();
-         var _loc5_:int = _model.eventActives.length;
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_)
+         var len:int = _model.eventActives.length;
+         for(i = 0; i < len; )
          {
-            _loc3_ = _model.eventActives[_loc6_];
-            if(isInValidDate(param1,_loc3_,isAfterToday(param1)))
+            active = _model.eventActives[i];
+            if(isInValidDate(date,active,isAfterToday(date)))
             {
-               if(!(isAfterToday(param1) && !_loc3_.IsAdvance && !isActivityStartedAndInProgress(param1,_loc3_)))
+               if(!(isAfterToday(date) && !active.IsAdvance && !isActivityStartedAndInProgress(date,active)))
                {
-                  _loc2_ = new ActivityCell(_loc3_);
-                  _loc2_.y = _loc6_ * 54;
-                  _loc2_.addEventListener("click",__cellClick);
-                  addChild(_loc2_);
-                  _cells.push(_loc2_);
+                  cell = new ActivityCell(active);
+                  cell.y = i * 54;
+                  cell.addEventListener("click",__cellClick);
+                  addChild(cell);
+                  _cells.push(cell);
                }
             }
-            _loc6_++;
+            i++;
          }
          if(_cells.length > 0)
          {
@@ -76,7 +75,7 @@ package calendar.view
             CalendarControl.getInstance().setState(_cells[0].info);
             _contentHolder.visible = true;
          }
-         else if(param1.time != _model.today.time)
+         else if(date.time != _model.today.time)
          {
             _contentHolder.visible = false;
          }
@@ -86,48 +85,48 @@ package calendar.view
          }
       }
       
-      private function isActivityStartedAndInProgress(param1:Date, param2:ActiveEventsInfo) : Boolean
+      private function isActivityStartedAndInProgress(date:Date, activity:ActiveEventsInfo) : Boolean
       {
-         var _loc4_:Date = TimeManager.Instance.Now();
-         var _loc3_:Date = new Date(param1.fullYear,param1.month,param1.date,param1.hours,param1.minutes,param1.seconds);
-         var _loc5_:Date = new Date(param2.start.fullYear,param2.start.month,param2.start.date,param2.start.hours,param2.start.minutes,param2.start.seconds);
-         return _loc4_.time > _loc5_.time && _loc3_.time > _loc5_.time;
+         var now:Date = TimeManager.Instance.Now();
+         var newDate:Date = new Date(date.fullYear,date.month,date.date,date.hours,date.minutes,date.seconds);
+         var activityDate:Date = new Date(activity.start.fullYear,activity.start.month,activity.start.date,activity.start.hours,activity.start.minutes,activity.start.seconds);
+         return now.time > activityDate.time && newDate.time > activityDate.time;
       }
       
-      private function isInValidDate(param1:Date, param2:ActiveEventsInfo, param3:Boolean = false) : Boolean
+      private function isInValidDate(date:Date, activeInfo:ActiveEventsInfo, ignoreConcreteTime:Boolean = false) : Boolean
       {
-         var _loc4_:Date = null;
-         var _loc5_:Date = null;
-         var _loc6_:Date = null;
-         if(param3)
+         var newDate:Date = null;
+         var newActiveDateStart:Date = null;
+         var newActiveDateEnd:Date = null;
+         if(ignoreConcreteTime)
          {
-            _loc4_ = new Date(param1.fullYear,param1.month,param1.date);
-            _loc5_ = new Date(param2.start.fullYear,param2.start.month,param2.start.date);
-            _loc6_ = new Date(param2.end.fullYear,param2.end.month,param2.end.date);
+            newDate = new Date(date.fullYear,date.month,date.date);
+            newActiveDateStart = new Date(activeInfo.start.fullYear,activeInfo.start.month,activeInfo.start.date);
+            newActiveDateEnd = new Date(activeInfo.end.fullYear,activeInfo.end.month,activeInfo.end.date);
          }
          else
          {
-            _loc4_ = new Date(param1.fullYear,param1.month,param1.date,param1.hours,param1.minutes,param1.seconds);
-            _loc5_ = new Date(param2.start.fullYear,param2.start.month,param2.start.date,param2.start.hours,param2.start.minutes,param2.start.seconds);
-            _loc6_ = new Date(param2.end.fullYear,param2.end.month,param2.end.date,param2.end.hours,param2.end.minutes,param2.end.seconds);
+            newDate = new Date(date.fullYear,date.month,date.date,date.hours,date.minutes,date.seconds);
+            newActiveDateStart = new Date(activeInfo.start.fullYear,activeInfo.start.month,activeInfo.start.date,activeInfo.start.hours,activeInfo.start.minutes,activeInfo.start.seconds);
+            newActiveDateEnd = new Date(activeInfo.end.fullYear,activeInfo.end.month,activeInfo.end.date,activeInfo.end.hours,activeInfo.end.minutes,activeInfo.end.seconds);
          }
-         if(_loc4_.time <= _loc6_.time && _loc4_.time >= _loc5_.time)
+         if(newDate.time <= newActiveDateEnd.time && newDate.time >= newActiveDateStart.time)
          {
             return true;
          }
          return false;
       }
       
-      private function isBeforeToday(param1:Date) : Boolean
+      private function isBeforeToday(date:Date) : Boolean
       {
-         var _loc2_:Date = new Date(param1.fullYear,param1.month,param1.date);
-         return _loc2_ <= TimeManager.Instance.Now();
+         var newDate:Date = new Date(date.fullYear,date.month,date.date);
+         return newDate <= TimeManager.Instance.Now();
       }
       
-      private function isAfterToday(param1:Date) : Boolean
+      private function isAfterToday(date:Date) : Boolean
       {
-         var _loc2_:Date = new Date(param1.fullYear,param1.month,param1.date);
-         return _loc2_ > TimeManager.Instance.Now();
+         var newDate:Date = new Date(date.fullYear,date.month,date.date);
+         return newDate > TimeManager.Instance.Now();
       }
       
       private function configUI() : void
@@ -135,72 +134,71 @@ package calendar.view
          _contentHolder = ComponentFactory.Instance.creatCustomObject("ddtcalendar.ActivityContentHolder");
       }
       
-      public function setSeletedItem(param1:ActivityCell) : void
+      public function setSeletedItem(item:ActivityCell) : void
       {
-         var _loc2_:int = 0;
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         if(param1 != _selectedItem)
+         var idx:int = 0;
+         var len:int = 0;
+         var i:int = 0;
+         if(item != _selectedItem)
          {
             if(_selectedItem)
             {
                _selectedItem.selected = false;
             }
-            _selectedItem = param1;
+            _selectedItem = item;
             _selectedItem.selected = true;
             addChildAt(_contentHolder,0);
-            _loc2_ = _cells.indexOf(_selectedItem);
-            _loc3_ = _cells.length;
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_)
+            idx = _cells.indexOf(_selectedItem);
+            len = _cells.length;
+            for(i = 0; i < len; )
             {
-               if(_loc4_ <= _loc2_)
+               if(i <= idx)
                {
-                  _cells[_loc4_].y = _loc4_ * 54;
+                  _cells[i].y = i * 54;
                }
                else
                {
-                  _cells[_loc4_].y = _loc4_ * 54 + _contentHolder.height - 53;
+                  _cells[i].y = i * 54 + _contentHolder.height - 53;
                }
-               _loc4_++;
+               i++;
             }
             _contentHolder.y = _selectedItem.y + 33;
             dispatchEvent(new Event("activitymenu_refresh"));
          }
       }
       
-      private function __cellClick(param1:MouseEvent) : void
+      private function __cellClick(event:MouseEvent) : void
       {
-         var _loc2_:ActivityCell = param1.currentTarget as ActivityCell;
-         setSeletedItem(_loc2_);
-         CalendarControl.getInstance().setState(_loc2_.info);
+         var item:ActivityCell = event.currentTarget as ActivityCell;
+         setSeletedItem(item);
+         CalendarControl.getInstance().setState(item.info);
          SoundManager.instance.play("008");
       }
       
       override public function get height() : Number
       {
-         var _loc1_:int = 0;
+         var h:int = 0;
          if(_cells.length == 1)
          {
-            _loc1_ = _contentHolder.y + _contentHolder.height;
+            h = _contentHolder.y + _contentHolder.height;
          }
          else if(_cells.length > 0)
          {
-            _loc1_ = 53 * _cells.length + _contentHolder.height - 28;
+            h = 53 * _cells.length + _contentHolder.height - 28;
          }
-         return _loc1_;
+         return h;
       }
       
-      public function showByQQ(param1:int) : void
+      public function showByQQ(activeID:int) : void
       {
          var _loc4_:int = 0;
          var _loc3_:* = _cells;
-         for each(var _loc2_ in _cells)
+         for each(var cell in _cells)
          {
-            if(_loc2_.info.ActiveID == param1)
+            if(cell.info.ActiveID == activeID)
             {
-               _loc2_.dispatchEvent(new MouseEvent("click"));
-               _loc2_.openCell();
+               cell.dispatchEvent(new MouseEvent("click"));
+               cell.openCell();
                _contentHolder.visible = true;
                break;
             }
@@ -209,12 +207,12 @@ package calendar.view
       
       public function dispose() : void
       {
-         var _loc1_:ActivityCell = _cells.shift();
-         while(_loc1_ != null)
+         var cell:ActivityCell = _cells.shift();
+         while(cell != null)
          {
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_.removeEventListener("click",__cellClick);
-            _loc1_ = _cells.shift();
+            ObjectUtils.disposeObject(cell);
+            cell.removeEventListener("click",__cellClick);
+            cell = _cells.shift();
          }
          ObjectUtils.disposeObject(_contentHolder);
          _contentHolder = null;

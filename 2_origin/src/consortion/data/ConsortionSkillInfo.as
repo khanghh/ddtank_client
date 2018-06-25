@@ -40,18 +40,18 @@ package consortion.data
       
       public function get validity() : String
       {
-         var _loc2_:int = TimeManager.Instance.TotalDaysToNow(beginDate);
-         var _loc1_:int = validDate - _loc2_;
-         if(_loc1_ <= 1)
+         var days:int = TimeManager.Instance.TotalDaysToNow(beginDate);
+         var valid:int = validDate - days;
+         if(valid <= 1)
          {
-            _loc1_ = validDate * 24 - TimeManager.Instance.TotalHoursToNow(beginDate);
-            if(_loc1_ < 1)
+            valid = validDate * 24 - TimeManager.Instance.TotalHoursToNow(beginDate);
+            if(valid < 1)
             {
                return int(validDate * 24 * 60 - TimeManager.Instance.TotalMinuteToNow(beginDate)) + LanguageMgr.GetTranslation("minute");
             }
             return int(validDate * 24 - TimeManager.Instance.TotalHoursToNow(beginDate)) + LanguageMgr.GetTranslation("hours");
          }
-         return _loc1_ + LanguageMgr.GetTranslation("shop.ShopIIShoppingCarItem.day");
+         return valid + LanguageMgr.GetTranslation("shop.ShopIIShoppingCarItem.day");
       }
    }
 }

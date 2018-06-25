@@ -30,10 +30,10 @@ package cryptBoss.view
       
       private var _setFrame:CryptBossSetFrame;
       
-      public function CryptBossItem(param1:CryptBossItemInfo)
+      public function CryptBossItem(data:CryptBossItemInfo)
       {
          super();
-         _info = param1;
+         _info = data;
          _lightStarVec = new Vector.<Bitmap>();
          initView();
          initEvent();
@@ -41,67 +41,65 @@ package cryptBoss.view
       
       private function initView() : void
       {
-         var _loc2_:* = null;
-         var _loc5_:int = 0;
-         var _loc8_:int = 0;
-         var _loc1_:int = 0;
-         var _loc9_:int = 0;
-         var _loc7_:int = 0;
-         var _loc6_:* = null;
-         var _loc4_:Array = _info.openWeekDaysArr;
-         var _loc3_:int = TimeManager.Instance.currentDay;
-         _loc9_ = 0;
-         while(_loc9_ < _loc4_.length)
+         var posStr:* = null;
+         var dis:int = 0;
+         var spWidth:int = 0;
+         var spHeight:int = 0;
+         var i:int = 0;
+         var k:int = 0;
+         var star:* = null;
+         var daysArr:Array = _info.openWeekDaysArr;
+         var currentDay:int = TimeManager.Instance.currentDay;
+         for(i = 0; i < daysArr.length; )
          {
-            if(_loc4_[_loc9_] == _loc3_)
+            if(daysArr[i] == currentDay)
             {
                _isOpen = true;
                break;
             }
-            _loc9_++;
+            i++;
          }
          _iconMovie = ComponentFactory.Instance.creat("asset.cryptBoss.light.icon" + _info.id);
          _clickSp = new Sprite();
          if(_isOpen)
          {
-            _loc2_ = "cryptBoss.open.starPos";
-            _loc5_ = 25;
-            _loc8_ = 166;
-            _loc1_ = 170;
+            posStr = "cryptBoss.open.starPos";
+            dis = 25;
+            spWidth = 166;
+            spHeight = 170;
             _iconMovie.gotoAndStop(2);
             PositionUtils.setPos(this,"cryptBoss.open.itemPos" + _info.id);
          }
          else
          {
-            _loc2_ = "cryptBoss.notOpen.starPos";
-            _loc5_ = 24;
-            _loc1_ = 100;
-            _loc8_ = 100;
+            posStr = "cryptBoss.notOpen.starPos";
+            dis = 24;
+            spHeight = 100;
+            spWidth = 100;
             _iconMovie.gotoAndStop(1);
             PositionUtils.setPos(this,"cryptBoss.notOpen.itemPos" + _info.id);
          }
          _clickSp.graphics.beginFill(16777215,0);
-         _clickSp.graphics.drawRect(0,0,_loc8_,_loc1_);
+         _clickSp.graphics.drawRect(0,0,spWidth,spHeight);
          _clickSp.graphics.endFill();
          _clickSp.buttonMode = true;
          addChild(_iconMovie);
          addChild(_clickSp);
-         _loc7_ = 0;
-         while(_loc7_ < _info.star)
+         for(k = 0; k < _info.star; )
          {
-            _loc6_ = ComponentFactory.Instance.creat("asset.cryptBoss.star");
-            if(_loc7_ == 0)
+            star = ComponentFactory.Instance.creat("asset.cryptBoss.star");
+            if(k == 0)
             {
-               PositionUtils.setPos(_loc6_,_loc2_);
+               PositionUtils.setPos(star,posStr);
             }
             else
             {
-               _loc6_.x = _loc6_.x + (_lightStarVec[0].x + _loc7_ * _loc5_);
-               _loc6_.y = _lightStarVec[0].y;
+               star.x = star.x + (_lightStarVec[0].x + k * dis);
+               star.y = _lightStarVec[0].y;
             }
-            addChild(_loc6_);
-            _lightStarVec.push(_loc6_);
-            _loc7_++;
+            addChild(star);
+            _lightStarVec.push(star);
+            k++;
          }
       }
       
@@ -115,7 +113,7 @@ package cryptBoss.view
          return _info;
       }
       
-      protected function __fightSetHandler(param1:MouseEvent) : void
+      protected function __fightSetHandler(event:MouseEvent) : void
       {
          if(!_isOpen)
          {
@@ -127,7 +125,7 @@ package cryptBoss.view
          LayerManager.Instance.addToLayer(_setFrame,3,true,1);
       }
       
-      private function frameDisposeHandler(param1:ComponentEvent) : void
+      private function frameDisposeHandler(event:ComponentEvent) : void
       {
          if(_setFrame)
          {
@@ -149,10 +147,10 @@ package cryptBoss.view
          _iconMovie = null;
          var _loc3_:int = 0;
          var _loc2_:* = _lightStarVec;
-         for each(var _loc1_ in _lightStarVec)
+         for each(var star in _lightStarVec)
          {
-            ObjectUtils.disposeObject(_loc1_);
-            _loc1_ = null;
+            ObjectUtils.disposeObject(star);
+            star = null;
          }
          _clickSp.graphics.clear();
          removeChild(_clickSp);

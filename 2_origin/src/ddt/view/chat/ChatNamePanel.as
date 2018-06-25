@@ -81,9 +81,9 @@ package ddt.view.chat
          return _bg.height;
       }
       
-      private function __onBtnClicked(param1:MouseEvent) : void
+      private function __onBtnClicked(event:MouseEvent) : void
       {
-         event = param1;
+         event = event;
          var _loc3_:* = event.currentTarget;
          if(_blackListBtn !== _loc3_)
          {
@@ -120,9 +120,9 @@ package ddt.view.chat
                            if(_data.Grade == 0)
                            {
                               SocketManager.Instance.out.sendItemEquip(playerName,true);
-                              _data.addEventListener("propertychange",function(param1:PlayerPropertyEvent):void
+                              _data.addEventListener("propertychange",function(event:PlayerPropertyEvent):void
                               {
-                                 param1.currentTarget.removeEventListener("propertychange",arguments.callee);
+                                 event.currentTarget.removeEventListener("propertychange",arguments.callee);
                                  exeInvite();
                               });
                            }
@@ -157,27 +157,27 @@ package ddt.view.chat
       
       private function exeInvite() : void
       {
-         var _loc1_:RoomInfo = RoomManager.Instance.current;
-         if(_loc1_.type == 0)
+         var roominfo:RoomInfo = RoomManager.Instance.current;
+         if(roominfo.type == 0)
          {
             if(inviteLvTip(6))
             {
                return;
             }
          }
-         else if(_loc1_.type == 1)
+         else if(roominfo.type == 1)
          {
             if(inviteLvTip(12))
             {
                return;
             }
          }
-         if((_loc1_.type == 4 || _loc1_.type == 11 || _loc1_.type == 23 || _loc1_.type == 123) && _data.Grade < GameManager.MinLevelDuplicate)
+         if((roominfo.type == 4 || roominfo.type == 11 || roominfo.type == 23 || roominfo.type == 123) && _data.Grade < GameManager.MinLevelDuplicate)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.manager.PlayerManager.gradeLow",GameManager.MinLevelDuplicate));
             return;
          }
-         if(_loc1_.type == 21 && _data.Grade < GameManager.MinLevelActivity)
+         if(roominfo.type == 21 && _data.Grade < GameManager.MinLevelActivity)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.manager.PlayerManager.activityLow"));
             return;
@@ -188,9 +188,9 @@ package ddt.view.chat
          }
       }
       
-      public function set playerName(param1:String) : void
+      public function set playerName(value:String) : void
       {
-         _playerName = param1;
+         _playerName = value;
          update();
       }
       
@@ -240,13 +240,13 @@ package ddt.view.chat
          }
          _btnContainer.addChild(_viewInfoBtn);
          _btnContainer.addChild(_blackListBtn);
-         var _loc1_:RoomInfo = RoomManager.Instance.current;
-         if(_loc1_ && StateManager.currentStateType != "fighting")
+         var roominfo:RoomInfo = RoomManager.Instance.current;
+         if(roominfo && StateManager.currentStateType != "fighting")
          {
-            if(_loc1_.type == 0 || _loc1_.type == 1 || _loc1_.type == 4 || _loc1_.type == 123 || _loc1_.type == 11 || _loc1_.type == 21 || _loc1_.type == 23)
+            if(roominfo.type == 0 || roominfo.type == 1 || roominfo.type == 4 || roominfo.type == 123 || roominfo.type == 11 || roominfo.type == 21 || roominfo.type == 23)
             {
                _bg.height = _bg.height + 20;
-               if(_loc1_.type != 25)
+               if(roominfo.type != 25)
                {
                   _btnContainer.addChild(_inviteBtn);
                }
@@ -254,19 +254,19 @@ package ddt.view.chat
          }
       }
       
-      private function checkLevel(param1:int) : Boolean
+      private function checkLevel(level:int) : Boolean
       {
-         var _loc2_:RoomInfo = RoomManager.Instance.current;
-         if(_loc2_.type > 2)
+         var roominfo:RoomInfo = RoomManager.Instance.current;
+         if(roominfo.type > 2)
          {
-            if(param1 < GameManager.MinLevelDuplicate)
+            if(level < GameManager.MinLevelDuplicate)
             {
                return false;
             }
          }
-         else if(_loc2_.type == 2)
+         else if(roominfo.type == 2)
          {
-            if((_loc2_.levelLimits - 1) * 10 > param1)
+            if((roominfo.levelLimits - 1) * 10 > level)
             {
                return false;
             }
@@ -274,11 +274,11 @@ package ddt.view.chat
          return true;
       }
       
-      private function inviteLvTip(param1:int) : Boolean
+      private function inviteLvTip(lv:int) : Boolean
       {
-         if(_data.Grade < param1)
+         if(_data.Grade < lv)
          {
-            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.invite.InvitePlayerItem.cannot",param1));
+            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.invite.InvitePlayerItem.cannot",lv));
             return true;
          }
          return false;

@@ -50,11 +50,11 @@ package ddt.view.horse
       
       public function HorseInfoView()
       {
-         var _loc6_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var tmp:* = null;
+         var j:int = 0;
+         var nameTxt:* = null;
+         var valueTxt:* = null;
          super();
          this.mouseEnabled = false;
          _horseNameStrList = LanguageMgr.GetTranslation("horse.horseNameStr").split(",");
@@ -86,33 +86,31 @@ package ddt.view.horse
          addChild(_bookHorseHeadBG);
          addChild(_bookHorseRidingState);
          _starCellList = new Vector.<HorseFrameLeftBottomStarCell>();
-         _loc6_ = 0;
-         while(_loc6_ < 9)
+         for(i = 0; i < 9; )
          {
-            _loc3_ = new HorseFrameLeftBottomStarCell();
-            _loc3_.x = 76 + 35 * _loc6_;
-            _loc3_.y = 319;
-            addChild(_loc3_);
-            _starCellList.push(_loc3_);
-            _loc6_++;
+            tmp = new HorseFrameLeftBottomStarCell();
+            tmp.x = 76 + 35 * i;
+            tmp.y = 319;
+            addChild(tmp);
+            _starCellList.push(tmp);
+            i++;
          }
          _addPropertyValueTxtList = new Vector.<FilterFrameText>();
-         var _loc5_:Array = LanguageMgr.GetTranslation("horse.addPropertyNameStr").split(",");
-         _loc4_ = 0;
-         while(_loc4_ < 5)
+         var nameStrList:Array = LanguageMgr.GetTranslation("horse.addPropertyNameStr").split(",");
+         for(j = 0; j < 5; )
          {
-            _loc2_ = ComponentFactory.Instance.creatComponentByStylename("horse.frame.addPorpertyNameTxt");
-            _loc2_.text = _loc5_[_loc4_];
-            _loc2_.x = 28 + 123 * (_loc4_ % 3);
-            _loc2_.y = 376 + 29 * (int(_loc4_ / 3));
-            _loc1_ = ComponentFactory.Instance.creatComponentByStylename("horse.frame.addPorpertyValueTxt");
-            _loc1_.text = "0";
-            _loc1_.x = 53 + 123 * (_loc4_ % 3) + 51;
-            _loc1_.y = 376 + 29 * (int(_loc4_ / 3));
-            _addPropertyValueTxtList.push(_loc1_);
-            addChild(_loc2_);
-            addChild(_loc1_);
-            _loc4_++;
+            nameTxt = ComponentFactory.Instance.creatComponentByStylename("horse.frame.addPorpertyNameTxt");
+            nameTxt.text = nameStrList[j];
+            nameTxt.x = 28 + 123 * (j % 3);
+            nameTxt.y = 376 + 29 * (int(j / 3));
+            valueTxt = ComponentFactory.Instance.creatComponentByStylename("horse.frame.addPorpertyValueTxt");
+            valueTxt.text = "0";
+            valueTxt.x = 53 + 123 * (j % 3) + 51;
+            valueTxt.y = 376 + 29 * (int(j / 3));
+            _addPropertyValueTxtList.push(valueTxt);
+            addChild(nameTxt);
+            addChild(valueTxt);
+            j++;
          }
          _horseAmuletTips = ComponentFactory.Instance.creatComponentByStylename("ddtcorei.horseAmulet.tips");
          PositionUtils.setPos(_horseAmuletTips,"horse.amulet.playerTipsPos");
@@ -125,27 +123,26 @@ package ddt.view.horse
       
       private function refreshView() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:int = int(_level / 10) + 1;
-         _nameTxt.text = _horseNameStrList[_loc2_ - 1];
-         _horseMc.gotoAndStop(_loc2_);
+         var i:int = 0;
+         var curHorse:int = int(_level / 10) + 1;
+         _nameTxt.text = _horseNameStrList[curHorse - 1];
+         _horseMc.gotoAndStop(curHorse);
          _levelTxt.text = (int(_level / 10 + 1)).toString();
          _starTxt.text = String(_level % 10);
-         var _loc1_:int = int(_level / 10) * 10;
-         _loc4_ = 0;
-         while(_loc4_ < 9)
+         var startIndex:int = int(_level / 10) * 10;
+         for(i = 0; i < 9; )
          {
-            _starCellList[_loc4_].refreshView(_loc1_ + _loc4_ + 1,_level);
-            _loc4_++;
+            _starCellList[i].refreshView(startIndex + i + 1,_level);
+            i++;
          }
-         var _loc3_:HorseTemplateVo = HorseManager.instance.getHorseTemplateInfoByLevel(_level);
-         if(_loc3_)
+         var tmp:HorseTemplateVo = HorseManager.instance.getHorseTemplateInfoByLevel(_level);
+         if(tmp)
          {
-            _addPropertyValueTxtList[0].text = _loc3_.AddDamage.toString();
-            _addPropertyValueTxtList[1].text = _loc3_.AddGuard.toString();
-            _addPropertyValueTxtList[2].text = _loc3_.AddBlood.toString();
-            _addPropertyValueTxtList[3].text = _loc3_.MagicAttack.toString();
-            _addPropertyValueTxtList[4].text = _loc3_.MagicDefence.toString();
+            _addPropertyValueTxtList[0].text = tmp.AddDamage.toString();
+            _addPropertyValueTxtList[1].text = tmp.AddGuard.toString();
+            _addPropertyValueTxtList[2].text = tmp.AddBlood.toString();
+            _addPropertyValueTxtList[3].text = tmp.MagicAttack.toString();
+            _addPropertyValueTxtList[4].text = tmp.MagicDefence.toString();
          }
          if(_bookRidingHeadBitmap != null && _bookRidingHeadBitmap.parent)
          {
@@ -169,11 +166,11 @@ package ddt.view.horse
          addChild(_bookRidingHeadBitmap);
       }
       
-      public function set info(param1:PlayerInfo) : void
+      public function set info(value:PlayerInfo) : void
       {
-         _level = param1.curHorseLevel;
-         _curRidingBookHorseID = param1.MountsType;
-         _horseAmuletTips.tipData = param1;
+         _level = value.curHorseLevel;
+         _curRidingBookHorseID = value.MountsType;
+         _horseAmuletTips.tipData = value;
          refreshView();
       }
       

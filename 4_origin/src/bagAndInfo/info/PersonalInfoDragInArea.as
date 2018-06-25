@@ -36,57 +36,57 @@ package bagAndInfo.info
          graphics.endFill();
       }
       
-      public function dragDrop(param1:DragEffect) : void
+      public function dragDrop(effect:DragEffect) : void
       {
-         var _loc2_:* = null;
+         var alert:* = null;
          if(PlayerManager.Instance.Self.bagLocked)
          {
             return;
          }
-         var _loc3_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         if((_loc3_.BindType == 1 || _loc3_.BindType == 2 || _loc3_.BindType == 3) && _loc3_.IsBinds == false && _loc3_.TemplateID != 11560 && _loc3_.TemplateID != 11561 && _loc3_.TemplateID != 11562)
+         var info:InventoryItemInfo = effect.data as InventoryItemInfo;
+         if((info.BindType == 1 || info.BindType == 2 || info.BindType == 3) && info.IsBinds == false && info.TemplateID != 11560 && info.TemplateID != 11561 && info.TemplateID != 11562)
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.bagII.BagIIView.BindsInfo"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
-            _loc2_.addEventListener("response",__onResponse);
-            temInfo = _loc3_;
-            temEffect = param1;
+            alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.bagII.BagIIView.BindsInfo"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),true,true,true,2);
+            alert.addEventListener("response",__onResponse);
+            temInfo = info;
+            temEffect = effect;
             return;
          }
-         if(_loc3_)
+         if(info)
          {
-            param1.action = "none";
-            if(_loc3_.Place < 31)
+            effect.action = "none";
+            if(info.Place < 31)
             {
                DragManager.acceptDrag(this);
             }
-            else if(PlayerManager.Instance.Self.canEquip(_loc3_))
+            else if(PlayerManager.Instance.Self.canEquip(info))
             {
-               if(_loc3_.CategoryID == 50 && int(_loc3_.Property2) <= PetsBagManager.instance().petModel.currentPetInfo.Level)
+               if(info.CategoryID == 50 && int(info.Property2) <= PetsBagManager.instance().petModel.currentPetInfo.Level)
                {
-                  SocketManager.Instance.out.addPetEquip(_loc3_.Place,PetsBagManager.instance().petModel.currentPetInfo.Place,0);
+                  SocketManager.Instance.out.addPetEquip(info.Place,PetsBagManager.instance().petModel.currentPetInfo.Place,0);
                }
-               else if(_loc3_.CategoryID == 51 && int(_loc3_.Property2) <= PetsBagManager.instance().petModel.currentPetInfo.Level)
+               else if(info.CategoryID == 51 && int(info.Property2) <= PetsBagManager.instance().petModel.currentPetInfo.Level)
                {
-                  SocketManager.Instance.out.addPetEquip(_loc3_.Place,PetsBagManager.instance().petModel.currentPetInfo.Place,0);
+                  SocketManager.Instance.out.addPetEquip(info.Place,PetsBagManager.instance().petModel.currentPetInfo.Place,0);
                }
-               else if(_loc3_.CategoryID == 52 && int(_loc3_.Property2) <= PetsBagManager.instance().petModel.currentPetInfo.Level)
+               else if(info.CategoryID == 52 && int(info.Property2) <= PetsBagManager.instance().petModel.currentPetInfo.Level)
                {
-                  SocketManager.Instance.out.addPetEquip(_loc3_.Place,PetsBagManager.instance().petModel.currentPetInfo.Place,0);
+                  SocketManager.Instance.out.addPetEquip(info.Place,PetsBagManager.instance().petModel.currentPetInfo.Place,0);
                }
                else
                {
-                  if(_loc3_.CategoryID == 52 || _loc3_.CategoryID == 51 || _loc3_.CategoryID == 50)
+                  if(info.CategoryID == 52 || info.CategoryID == 51 || info.CategoryID == 50)
                   {
                      DragManager.acceptDrag(this);
                      MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ddt.petEquipLevelNo"));
                      return;
                   }
-                  if(EquipType.isArmShell(_loc3_))
+                  if(EquipType.isArmShell(info))
                   {
                      DragManager.acceptDrag(this,"none");
                      return;
                   }
-                  SocketManager.Instance.out.sendMoveGoods(0,_loc3_.Place,0,PlayerManager.Instance.getDressEquipPlace(_loc3_),_loc3_.Count);
+                  SocketManager.Instance.out.sendMoveGoods(0,info.Place,0,PlayerManager.Instance.getDressEquipPlace(info),info.Count);
                }
                DragManager.acceptDrag(this,"move");
             }
@@ -97,15 +97,15 @@ package bagAndInfo.info
          }
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(evt:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = BaseAlerFrame(param1.currentTarget);
-         _loc2_.removeEventListener("response",__onResponse);
-         switch(int(param1.responseCode))
+         var alert:BaseAlerFrame = BaseAlerFrame(evt.currentTarget);
+         alert.removeEventListener("response",__onResponse);
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
-               _loc2_.dispose();
+               alert.dispose();
                break;
             case 2:
             case 3:

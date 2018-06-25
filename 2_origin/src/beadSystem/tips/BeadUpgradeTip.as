@@ -29,35 +29,35 @@ package beadSystem.tips
          super.addChildren();
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         .super.tipData = param1;
-         beadUpgradeTip(param1 as GoodTipInfo);
+         .super.tipData = data;
+         beadUpgradeTip(data as GoodTipInfo);
       }
       
-      override public function showTip(param1:ItemTemplateInfo, param2:Boolean = false) : void
+      override public function showTip(info:ItemTemplateInfo, typeIsSecond:Boolean = false) : void
       {
-         super.showTip(param1,param2);
+         super.showTip(info,typeIsSecond);
       }
       
-      private function beadUpgradeTip(param1:GoodTipInfo) : void
+      private function beadUpgradeTip(pTipInfo:GoodTipInfo) : void
       {
-         var _loc3_:InventoryItemInfo = null;
-         var _loc2_:GoodTipInfo = null;
-         var _loc4_:InventoryItemInfo = null;
-         if(param1)
+         var tInfo:InventoryItemInfo = null;
+         var tGoodTipInfo:GoodTipInfo = null;
+         var itemInfo:InventoryItemInfo = null;
+         if(pTipInfo)
          {
-            _loc4_ = param1.itemInfo as InventoryItemInfo;
+            itemInfo = pTipInfo.itemInfo as InventoryItemInfo;
          }
-         if(_loc4_ && _loc4_.Hole1 < 21)
+         if(itemInfo && itemInfo.Hole1 < 21)
          {
-            _loc2_ = new GoodTipInfo();
-            _loc3_ = new InventoryItemInfo();
-            ObjectUtils.copyProperties(_loc3_,_loc4_);
-            _loc3_.Hole1 = _loc3_.Hole1 + 1;
-            _loc3_.TemplateID = BeadTemplateManager.Instance.GetBeadTemplateIDByLv(_loc3_.Hole1,_loc4_.TemplateID);
-            _loc2_.itemInfo = _loc3_;
-            _loc2_.beadName = _loc3_.Name + "-" + BeadTemplateManager.Instance.GetBeadInfobyID(_loc3_.TemplateID).Name + "Lv" + _loc3_.Hole1;
+            tGoodTipInfo = new GoodTipInfo();
+            tInfo = new InventoryItemInfo();
+            ObjectUtils.copyProperties(tInfo,itemInfo);
+            tInfo.Hole1 = tInfo.Hole1 + 1;
+            tInfo.TemplateID = BeadTemplateManager.Instance.GetBeadTemplateIDByLv(tInfo.Hole1,itemInfo.TemplateID);
+            tGoodTipInfo.itemInfo = tInfo;
+            tGoodTipInfo.beadName = tInfo.Name + "-" + BeadTemplateManager.Instance.GetBeadInfobyID(tInfo.TemplateID).Name + "Lv" + tInfo.Hole1;
             if(!_upgradeBeadTip)
             {
                _upgradeBeadTip = new BeadUpgradeTipView();
@@ -67,7 +67,7 @@ package beadSystem.tips
             {
                addChild(_upgradeBeadTip);
             }
-            _upgradeBeadTip.tipData = _loc2_;
+            _upgradeBeadTip.tipData = tGoodTipInfo;
          }
          else
          {

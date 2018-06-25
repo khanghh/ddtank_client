@@ -48,10 +48,10 @@ package campbattle.event
       
       public var data;
       
-      public function MapEvent(param1:String, param2:* = null)
+      public function MapEvent(type:String, $data:* = null)
       {
-         super(param1);
-         data = param2;
+         super(type);
+         data = $data;
       }
    }
 }

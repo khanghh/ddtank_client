@@ -80,23 +80,22 @@ package roleRecharge.view
       
       private function initGoods() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
+         var i:int = 0;
+         var item:* = null;
+         var moneyValue:int = 0;
          if(!_xmlData)
          {
             return;
          }
-         var _loc1_:Array = _xmlData.giftbagArray;
-         _loc4_ = 0;
-         while(_loc4_ < 3)
+         var arr:Array = _xmlData.giftbagArray;
+         for(i = 0; i < 3; )
          {
-            _loc3_ = _giftbagArray[_loc4_].giftConditionArr[0].conditionValue;
-            _loc2_ = ComponentFactory.Instance.creatCustomObject("RoleRechargeFrame.RoleRechargeItem",[_loc3_,_loc4_]);
-            _loc2_.setGoods(_loc1_[_loc4_]);
-            _itemList.push(_loc2_);
-            _list.addChild(_loc2_);
-            _loc4_++;
+            moneyValue = _giftbagArray[i].giftConditionArr[0].conditionValue;
+            item = ComponentFactory.Instance.creatCustomObject("RoleRechargeFrame.RoleRechargeItem",[moneyValue,i]);
+            item.setGoods(arr[i]);
+            _itemList.push(item);
+            _list.addChild(item);
+            i++;
          }
          _panel.setView(_list);
          _panel.invalidateViewport();
@@ -105,12 +104,11 @@ package roleRecharge.view
       
       public function refresh() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ <= _itemList.length - 1)
+         var i:int = 0;
+         for(i = 0; i <= _itemList.length - 1; )
          {
-            (_itemList[_loc1_] as RoleRechargeItem).setStatus(_statusArr,_giftInfoDic);
-            _loc1_++;
+            (_itemList[i] as RoleRechargeItem).setStatus(_statusArr,_giftInfoDic);
+            i++;
          }
       }
       
@@ -124,9 +122,9 @@ package roleRecharge.view
          removeEventListener("response",__responseHandler);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.play("008");
             SocketManager.Instance.out.requestWonderfulActInit(2);

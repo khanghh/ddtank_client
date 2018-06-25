@@ -117,28 +117,28 @@ package battleSkill.view
          BattleSkillManager.instance.removeEventListener(BattleSkillEvent.UPDATE_SKILL,refreshView);
       }
       
-      private function refreshView(param1:BattleSkillEvent) : void
+      private function refreshView(evt:BattleSkillEvent) : void
       {
-         var _loc2_:* = null;
+         var str:* = null;
          if(_type == BattleSkillOptionType.UPDATE)
          {
-            _loc2_ = "ddt.battleSkill.UpSuccess";
+            str = "ddt.battleSkill.UpSuccess";
             §§push("ddt.battleSkill.UpSuccess");
          }
          else
          {
-            _loc2_ = "ddt.battleSkill.ActivateSuccess";
+            str = "ddt.battleSkill.ActivateSuccess";
             §§push("ddt.battleSkill.ActivateSuccess");
          }
          §§pop();
-         MessageTipManager.getInstance().show(LanguageMgr.GetTranslation(_loc2_));
+         MessageTipManager.getInstance().show(LanguageMgr.GetTranslation(str));
          _type = BattleSkillOptionType.UPDATE;
-         var _loc3_:int = param1.data as int;
-         _curInfo = BattleSkillManager.instance.getBattleSKillInfoBySkillID(_loc3_);
+         var skillId:int = evt.data as int;
+         _curInfo = BattleSkillManager.instance.getBattleSKillInfoBySkillID(skillId);
          updateView();
       }
       
-      private function updateSkill_Handler(param1:MouseEvent) : void
+      private function updateSkill_Handler(evt:MouseEvent) : void
       {
          if(getTimer() - _lastUpClickTime <= 1000)
          {
@@ -153,10 +153,10 @@ package battleSkill.view
          BattleSkillManager.instance.sendUpSkill(_curInfo.SkillID);
       }
       
-      public function show(param1:BattleSkillSkillInfo, param2:int) : void
+      public function show(info:BattleSkillSkillInfo, type:int) : void
       {
-         _curInfo = param1;
-         _type = param2;
+         _curInfo = info;
+         _type = type;
          updateView();
       }
       
@@ -177,13 +177,13 @@ package battleSkill.view
       
       private function updateState() : void
       {
-         var _loc1_:* = _type == BattleSkillOptionType.UPDATE;
-         _updateMaterialImgTxt.visible = _loc1_;
-         _updateBtn.visible = _loc1_;
-         var _loc2_:* = !_loc1_;
+         var isUp:* = _type == BattleSkillOptionType.UPDATE;
+         _updateMaterialImgTxt.visible = isUp;
+         _updateBtn.visible = isUp;
+         var _loc2_:* = !isUp;
          _activateBtn.visible = _loc2_;
          _activateMaterialImgTxt.visible = _loc2_;
-         _curSkillCell.filters = !!_loc1_?null:ComponentFactory.Instance.creatFilters("grayFilter");
+         _curSkillCell.filters = !!isUp?null:ComponentFactory.Instance.creatFilters("grayFilter");
          if(_isCanUp)
          {
             _updateBtn.filters = null;
@@ -232,35 +232,35 @@ package battleSkill.view
          {
             ObjectUtils.disposeAllChildren(_materialHBox);
          }
-         var _loc6_:BattleSkillUpdateInfo = BattleSkillManager.instance.getUpMaterialArr(_nextInfo.SkillID);
+         var upInfo:BattleSkillUpdateInfo = BattleSkillManager.instance.getUpMaterialArr(_nextInfo.SkillID);
          _isCanUp = true;
-         if(_loc6_ == null)
+         if(upInfo == null)
          {
             return;
          }
-         var _loc7_:int = _loc6_.UpdateMaterialInfo.length;
-         var _loc3_:int = 0;
-         var _loc2_:int = 0;
-         var _loc4_:BagInfo = PlayerManager.Instance.Self.getBag(1);
+         var len:int = upInfo.UpdateMaterialInfo.length;
+         var index:int = 0;
+         var haveCount:int = 0;
+         var bagInfo:BagInfo = PlayerManager.Instance.Self.getBag(1);
          var _loc9_:int = 0;
-         var _loc8_:* = _loc6_.UpdateMaterialInfo;
-         for each(var _loc1_ in _loc6_.UpdateMaterialInfo)
+         var _loc8_:* = upInfo.UpdateMaterialInfo;
+         for each(var materialInfo in upInfo.UpdateMaterialInfo)
          {
-            _loc2_ = _loc4_.getItemCountByTemplateId(_loc1_.TemplateID);
-            _materialCell = new BattleSkillMaterialCell(_loc1_.TemplateID,_loc1_.Count,_loc2_,_loc1_.OrderID);
+            haveCount = bagInfo.getItemCountByTemplateId(materialInfo.TemplateID);
+            _materialCell = new BattleSkillMaterialCell(materialInfo.TemplateID,materialInfo.Count,haveCount,materialInfo.OrderID);
             _materialHBox.addChild(_materialCell);
-            if(_loc2_ < _loc1_.Count)
+            if(haveCount < materialInfo.Count)
             {
                _isCanUp = false;
             }
          }
-         var _loc5_:* = _bg.width - _materialHBox.width >> 1;
-         _materialHBox.x = _loc5_;
+         var temX:* = _bg.width - _materialHBox.width >> 1;
+         _materialHBox.x = temX;
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.playButtonSound();
             dispose();

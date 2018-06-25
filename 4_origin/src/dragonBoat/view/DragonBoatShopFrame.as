@@ -79,8 +79,8 @@ package dragonBoat.view
             case 7:
                _goodsInfoList = ShopManager.Instance.getValidGoodByType(108);
          }
-         var _loc1_:int = _goodsInfoList.length;
-         _totlePage = Math.ceil(_loc1_ / 8);
+         var tmpLen:int = _goodsInfoList.length;
+         _totlePage = Math.ceil(tmpLen / 8);
          _currentPage = 1;
          initView();
          initEvent();
@@ -88,13 +88,13 @@ package dragonBoat.view
       
       private function initView() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
-         var _loc3_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("ddt.dragonBoat.shopTitleTxt"),"",LanguageMgr.GetTranslation("tank.calendar.Activity.BackButtonText"),false);
-         _loc3_.moveEnable = false;
-         _loc3_.autoDispose = false;
-         _loc3_.sound = "008";
-         info = _loc3_;
+         var i:int = 0;
+         var tmpCell:* = null;
+         var alertInfo:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("ddt.dragonBoat.shopTitleTxt"),"",LanguageMgr.GetTranslation("tank.calendar.Activity.BackButtonText"),false);
+         alertInfo.moveEnable = false;
+         alertInfo.autoDispose = false;
+         alertInfo.sound = "008";
+         info = alertInfo;
          _bg = ComponentFactory.Instance.creatComponentByStylename("dragonBoat.shopFrame.bg");
          _coinText = ComponentFactory.Instance.creatComponentByStylename("dragonBoat.shopFrame.coinTxt");
          _coinText.text = LanguageMgr.GetTranslation("ddt.dragonBoat.shopCoinTxt");
@@ -117,43 +117,41 @@ package dragonBoat.view
          addToContent(_preBtn);
          addToContent(_nextBtn);
          _shopCellList = new Vector.<DragonBoatShopCell>(8);
-         _loc2_ = 0;
-         while(_loc2_ < 8)
+         for(i = 0; i < 8; )
          {
-            _loc1_ = new DragonBoatShopCell();
-            _loc1_.x = 10 + _loc2_ % 2 * (_loc1_.width + 6);
-            _loc1_.y = 15 + int(_loc2_ / 2) * (_loc1_.height + 5);
-            addToContent(_loc1_);
-            _shopCellList[_loc2_] = _loc1_;
-            _loc2_++;
+            tmpCell = new DragonBoatShopCell();
+            tmpCell.x = 10 + i % 2 * (tmpCell.width + 6);
+            tmpCell.y = 15 + int(i / 2) * (tmpCell.height + 5);
+            addToContent(tmpCell);
+            _shopCellList[i] = tmpCell;
+            i++;
          }
          refreshView();
       }
       
       private function refreshShopView() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
+         var i:int = 0;
+         var tmpTag:int = 0;
          _pageTxt.text = _currentPage + "/" + _totlePage;
-         var _loc1_:int = (_currentPage - 1) * 8;
-         var _loc3_:int = _goodsInfoList.length;
-         _loc4_ = 0;
-         while(_loc4_ < 8)
+         var startIndex:int = (_currentPage - 1) * 8;
+         var tmpCount:int = _goodsInfoList.length;
+         for(i = 0; i < 8; )
          {
-            _loc2_ = _loc1_ + _loc4_;
-            if(_loc2_ >= _loc3_)
+            tmpTag = startIndex + i;
+            if(tmpTag >= tmpCount)
             {
-               _shopCellList[_loc4_].refreshShow(null);
+               _shopCellList[i].refreshShow(null);
             }
             else
             {
-               _shopCellList[_loc4_].refreshShow(_goodsInfoList[_loc2_]);
+               _shopCellList[i].refreshShow(_goodsInfoList[tmpTag]);
             }
-            _loc4_++;
+            i++;
          }
       }
       
-      private function refreshView(param1:Event = null) : void
+      private function refreshView(event:Event = null) : void
       {
          refreshShopView();
          refreshMoneyTxt();
@@ -172,11 +170,11 @@ package dragonBoat.view
          DragonBoatManager.instance.addEventListener("DragonBoatBuildOrDecorateUpdate",refreshView);
       }
       
-      private function changePageHandler(param1:MouseEvent) : void
+      private function changePageHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:SimpleBitmapButton = param1.currentTarget as SimpleBitmapButton;
-         var _loc3_:* = _loc2_;
+         var tmp:SimpleBitmapButton = event.currentTarget as SimpleBitmapButton;
+         var _loc3_:* = tmp;
          if(_preBtn !== _loc3_)
          {
             if(_nextBtn === _loc3_)
@@ -202,9 +200,9 @@ package dragonBoat.view
          refreshShopView();
       }
       
-      private function responseHandler(param1:FrameEvent) : void
+      private function responseHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

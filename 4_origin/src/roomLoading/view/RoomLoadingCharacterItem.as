@@ -81,11 +81,11 @@ package roomLoading.view
       
       private var _teamIcon:ScaleFrameImage;
       
-      public function RoomLoadingCharacterItem(param1:RoomPlayer, param2:Boolean = false)
+      public function RoomLoadingCharacterItem($info:RoomPlayer, survival:Boolean = false)
       {
          super();
-         _info = param1;
-         _survivalFlag = param2;
+         _info = $info;
+         _survivalFlag = survival;
          init();
       }
       
@@ -191,7 +191,7 @@ package roomLoading.view
          }
       }
       
-      protected function __onAppeared(param1:Event) : void
+      protected function __onAppeared(event:Event) : void
       {
          _animationFinish = true;
       }
@@ -206,9 +206,9 @@ package roomLoading.view
          return _index;
       }
       
-      public function set index(param1:int) : void
+      public function set index(val:int) : void
       {
-         _index = param1;
+         _index = val;
       }
       
       public function get displayMc() : DisplayObject
@@ -216,17 +216,17 @@ package roomLoading.view
          return _displayMc;
       }
       
-      public function appear(param1:String) : void
+      public function appear(no:String) : void
       {
-         _displayMc.gotoAndPlay("appear" + param1);
+         _displayMc.gotoAndPlay("appear" + no);
       }
       
-      public function disappear(param1:String) : void
+      public function disappear(no:String) : void
       {
-         _displayMc.gotoAndPlay("disappear" + param1);
+         _displayMc.gotoAndPlay("disappear" + no);
       }
       
-      public function addWeapon(param1:Boolean, param2:int) : void
+      public function addWeapon(small:Boolean, dir:int) : void
       {
          if(_info.playerInfo.WeaponID <= 0 || _info.playerInfo.WeaponID == 70016)
          {
@@ -236,63 +236,63 @@ package roomLoading.view
          {
             ObjectUtils.disposeObject(_weapon);
          }
-         var _loc4_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_info.playerInfo.WeaponID);
-         var _loc5_:String = PathManager.solveGoodsPath(_loc4_.CategoryID,_loc4_.Pic,_info.playerInfo.Sex == 1,"show","A","1",_loc4_.Level);
-         var _loc3_:Rectangle = ComponentFactory.Instance.creatCustomObject("asset.roomloading.smallWeaponSize");
-         var _loc6_:Rectangle = ComponentFactory.Instance.creatCustomObject("asset.roomloading.bigWeaponSize");
-         _weapon = new BitmapLoaderProxy(_loc5_,!!param1?_loc3_:_loc6_);
-         _weapon.scaleX = param2;
-         setWeaponPos(param1);
+         var weaponItem:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_info.playerInfo.WeaponID);
+         var url:String = PathManager.solveGoodsPath(weaponItem.CategoryID,weaponItem.Pic,_info.playerInfo.Sex == 1,"show","A","1",weaponItem.Level);
+         var smallRect:Rectangle = ComponentFactory.Instance.creatCustomObject("asset.roomloading.smallWeaponSize");
+         var bigRect:Rectangle = ComponentFactory.Instance.creatCustomObject("asset.roomloading.bigWeaponSize");
+         _weapon = new BitmapLoaderProxy(url,!!small?smallRect:bigRect);
+         _weapon.scaleX = dir;
+         setWeaponPos(small);
          _displayMc["character"].addChild(_weapon);
       }
       
-      private function setWeaponPos(param1:Boolean) : void
+      private function setWeaponPos(small:Boolean) : void
       {
-         var _loc2_:String = "";
+         var team:String = "";
          if(_survivalFlag)
          {
-            _loc2_ = _info.team % 2 == 1?"survivalLeft":"survivalRight";
+            team = _info.team % 2 == 1?"survivalLeft":"survivalRight";
          }
          else
          {
-            _loc2_ = _info.team == 1?"blueTeam":"redTeam";
+            team = _info.team == 1?"blueTeam":"redTeam";
          }
-         if(!param1)
+         if(!small)
          {
-            PositionUtils.setPos(_weapon,"asset.roomLoadingPlayerItem." + _loc2_ + ".bigWeaponPos");
+            PositionUtils.setPos(_weapon,"asset.roomLoadingPlayerItem." + team + ".bigWeaponPos");
             PositionUtils.setPos(_teamIcon,"room.view.roomView.SingleRoomView.teamIconPos1");
          }
          else
          {
-            PositionUtils.setPos(_weapon,"asset.roomLoadingPlayerItem." + _loc2_ + ".smallWeaponPos");
+            PositionUtils.setPos(_weapon,"asset.roomLoadingPlayerItem." + team + ".smallWeaponPos");
             PositionUtils.setPos(_teamIcon,"room.view.roomView.SingleRoomView.teamIconPos2");
          }
       }
       
-      protected function __onProgress(param1:RoomPlayerEvent) : void
+      protected function __onProgress(event:RoomPlayerEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var pos:* = null;
+         var posStylename:* = null;
          _perecentageTxt.text = String(int(_info.progress)) + "%";
          if(_info.progress > 99)
          {
             _okTxt = ComponentFactory.Instance.creatBitmap("asset.roomLoading.LoadingOK");
             if(_survivalFlag)
             {
-               _loc2_ = _info.team % 2 == 1?"roomLoading.survival.leftLoadingOkPos":"roomLoading.survival.rightLoadingOkPos";
-               _loc3_ = ComponentFactory.Instance.creatCustomObject(_loc2_);
-               PositionUtils.setPos(_okTxt,_loc3_);
+               posStylename = _info.team % 2 == 1?"roomLoading.survival.leftLoadingOkPos":"roomLoading.survival.rightLoadingOkPos";
+               pos = ComponentFactory.Instance.creatCustomObject(posStylename);
+               PositionUtils.setPos(_okTxt,pos);
             }
             else
             {
-               _loc3_ = ComponentFactory.Instance.creatCustomObject("asset.roomLoading.LoadingOKStartPos");
+               pos = ComponentFactory.Instance.creatCustomObject("asset.roomLoading.LoadingOKStartPos");
             }
             TweenMax.from(_okTxt,0.5,{
                "alpha":0,
                "scaleX":2,
                "scaleY":2,
-               "x":_loc3_.x,
-               "y":_loc3_.y,
+               "x":pos.x,
+               "y":pos.y,
                "ease":Quint.easeIn,
                "onStart":finishTxt
             });
@@ -323,12 +323,12 @@ package roomLoading.view
          {
             _iconPos = ComponentFactory.Instance.creatCustomObject("roomLoading.CharacterItemIconStartPos2");
          }
-         var _loc1_:int = 30;
+         var distance:int = 30;
          _levelIcon = new LevelIcon();
          _levelIcon.setInfo(_info.playerInfo.Grade,_info.playerInfo.ddtKingGrade,_info.playerInfo.Repute,_info.playerInfo.WinCount,_info.playerInfo.TotalCount,_info.playerInfo.FightPower,_info.playerInfo.Offer,true,true,_info.team);
          PositionUtils.setPos(_levelIcon,_iconPos);
          addChild(_levelIcon);
-         _iconPos.y = _iconPos.y + _loc1_;
+         _iconPos.y = _iconPos.y + distance;
          _iconPos.x = _iconPos.x + 3;
          _vipIcon = new VipLevelIcon();
          if(_info.playerInfo.ID == PlayerManager.Instance.Self.ID || _info.playerInfo.IsVIP)
@@ -347,7 +347,7 @@ package roomLoading.view
                "gender":_info.playerInfo.Sex
             };
             _iconContainer.addChild(_marriedIcon);
-            _iconPos.y = _iconPos.y + _loc1_;
+            _iconPos.y = _iconPos.y + distance;
          }
          if(_info.playerInfo.shouldShowAcademyIcon())
          {

@@ -36,16 +36,16 @@ package starling.display.cell
       
       private var _h:Number;
       
-      public function CellContent3D(param1:ItemTemplateInfo = null)
+      public function CellContent3D($info:ItemTemplateInfo = null)
       {
          super();
          _factory = LayerFactory.instance;
-         _info = param1;
+         _info = $info;
       }
       
-      public function set info(param1:ItemTemplateInfo) : void
+      public function set info($info:ItemTemplateInfo) : void
       {
-         _info = param1;
+         _info = $info;
       }
       
       public function get info() : ItemTemplateInfo
@@ -53,10 +53,10 @@ package starling.display.cell
          return _info;
       }
       
-      public function loadSync(param1:Function = null) : void
+      public function loadSync(callBack:Function = null) : void
       {
-         var _loc2_:* = null;
-         _callBack = param1;
+         var color:* = null;
+         _callBack = callBack;
          if(_info.CategoryID == 10)
          {
             _timer = TimerManager.getInstance().addTimerJuggler(100,1);
@@ -67,8 +67,8 @@ package starling.display.cell
          {
             if(_info is InventoryItemInfo)
             {
-               _loc2_ = EquipType.isEditable(_info) && InventoryItemInfo(_info).Color != null?InventoryItemInfo(_info).Color:"";
-               _loader = _factory.createLayer(_info,_info.NeedSex == 1,_loc2_,"icon");
+               color = EquipType.isEditable(_info) && InventoryItemInfo(_info).Color != null?InventoryItemInfo(_info).Color:"";
+               _loader = _factory.createLayer(_info,_info.NeedSex == 1,color,"icon");
             }
             else
             {
@@ -87,9 +87,9 @@ package starling.display.cell
          }
       }
       
-      protected function __timerComplete(param1:Event) : void
+      protected function __timerComplete(evt:Event) : void
       {
-         var _loc2_:* = null;
+         var image:* = null;
          if(_timer)
          {
             _timer.removeEventListener("timerComplete",__timerComplete);
@@ -99,45 +99,45 @@ package starling.display.cell
          }
          if(_info.Pic == "wish")
          {
-            _loc2_ = StarlingMain.instance.createImage("game_wishBtn");
+            image = StarlingMain.instance.createImage("game_wishBtn");
          }
          else
          {
-            _loc2_ = StarlingMain.instance.createImage("game_prop_" + _info.Pic);
+            image = StarlingMain.instance.createImage("game_prop_" + _info.Pic);
          }
-         addChild(_loc2_);
+         addChild(image);
          if(_callBack)
          {
             _callBack();
          }
       }
       
-      protected function loadComplete(param1:ILayer) : void
+      protected function loadComplete(layer:ILayer) : void
       {
-         if((param1.getContent() as DisplayObjectContainer).numChildren == 0)
+         if((layer.getContent() as DisplayObjectContainer).numChildren == 0)
          {
             return;
          }
-         var _loc4_:Bitmap = (param1.getContent() as DisplayObjectContainer).getChildAt(0) as Bitmap;
-         var _loc2_:Texture = Texture.fromBitmap(_loc4_,false);
-         DDTAssetManager.instance.addTexture("gameusingItemPic" + _info.Pic,_loc2_,"fighting3d");
-         var _loc3_:Image = new Image(_loc2_);
+         var obj:Bitmap = (layer.getContent() as DisplayObjectContainer).getChildAt(0) as Bitmap;
+         var texture:Texture = Texture.fromBitmap(obj,false);
+         DDTAssetManager.instance.addTexture("gameusingItemPic" + _info.Pic,texture,"fighting3d");
+         var img:Image = new Image(texture);
          var _loc5_:int = 64;
-         _loc3_.height = _loc5_;
-         _loc3_.width = _loc5_;
-         _loc3_.x = _loc3_.x - 10;
-         addChild(_loc3_);
+         img.height = _loc5_;
+         img.width = _loc5_;
+         img.x = img.x - 10;
+         addChild(img);
          if(_callBack)
          {
             _callBack();
          }
       }
       
-      public function setColor(param1:*) : Boolean
+      public function setColor(color:*) : Boolean
       {
          if(_loader != null)
          {
-            return _loader.setColor(param1);
+            return _loader.setColor(color);
          }
          return false;
       }
@@ -151,16 +151,16 @@ package starling.display.cell
          return _loader.currentEdit;
       }
       
-      override public function set width(param1:Number) : void
+      override public function set width(value:Number) : void
       {
-         .super.width = param1;
-         _w = param1;
+         .super.width = value;
+         _w = value;
       }
       
-      override public function set height(param1:Number) : void
+      override public function set height(value:Number) : void
       {
-         .super.height = param1;
-         _h = param1;
+         .super.height = value;
+         _h = value;
       }
       
       override public function dispose() : void

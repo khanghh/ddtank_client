@@ -144,11 +144,11 @@ package hallIcon.model
          return _instance;
       }
       
-      public function IsEnterGame(param1:int) : Boolean
+      public function IsEnterGame(_grade:int) : Boolean
       {
-         if(PlayerManager.Instance.Self.Grade < param1)
+         if(PlayerManager.Instance.Self.Grade < _grade)
          {
-            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ActivityEnterGrapType.Tip",param1));
+            MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("ActivityEnterGrapType.Tip",_grade));
             return false;
          }
          return true;

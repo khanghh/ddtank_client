@@ -128,40 +128,40 @@ package battleGroud.view
          SocketManager.Instance.out.battleGroundUpdata(1);
       }
       
-      public function setTxt(param1:BattleUpdateData) : void
+      public function setTxt(data:BattleUpdateData) : void
       {
-         _txt2.text = String(param1.totalPrestige);
-         _txt3.text = param1.addDayPrestge.toString();
-         _txt1.text = String(param1.rankings);
-         _txt5.text = String(param1.weekPrestige);
-         setMilitary(param1.totalPrestige);
+         _txt2.text = String(data.totalPrestige);
+         _txt3.text = data.addDayPrestge.toString();
+         _txt1.text = String(data.rankings);
+         _txt5.text = String(data.weekPrestige);
+         setMilitary(data.totalPrestige);
       }
       
-      private function setMilitary(param1:int) : void
+      private function setMilitary(num:int) : void
       {
-         var _loc3_:BatlleData = BattleGroudControl.Instance.getBattleDataByPrestige(param1);
-         var _loc2_:BatlleData = BattleGroudControl.Instance.getBattleDataByLevel(_loc3_.Level + 1);
-         _txt4.text = _loc3_.Name;
-         if(_loc2_.Prestige)
+         var tmpData:BatlleData = BattleGroudControl.Instance.getBattleDataByPrestige(num);
+         var nextData:BatlleData = BattleGroudControl.Instance.getBattleDataByLevel(tmpData.Level + 1);
+         _txt4.text = tmpData.Name;
+         if(nextData.Prestige)
          {
-            _miliContent.tipData = LanguageMgr.GetTranslation("ddt.battleGroud.updataLeavl",_loc2_.Prestige - param1);
+            _miliContent.tipData = LanguageMgr.GetTranslation("ddt.battleGroud.updataLeavl",nextData.Prestige - num);
          }
          else
          {
             _miliContent.tipStyle = null;
             ShowTipManager.Instance.removeTip(_miliContent);
          }
-         creatIcon(_MiliIconList[_loc3_.Level]);
+         creatIcon(_MiliIconList[tmpData.Level]);
       }
       
-      private function creatIcon(param1:String) : void
+      private function creatIcon(url:String) : void
       {
          if(_miliIcon)
          {
             ObjectUtils.disposeObject(_miliIcon);
             _miliIcon = null;
          }
-         _miliIcon = ComponentFactory.Instance.creat(param1);
+         _miliIcon = ComponentFactory.Instance.creat(url);
          _miliIcon.x = _goodBack.x + (_goodBack.width - _miliIcon.width) / 2;
          _miliIcon.y = _goodBack.y + (_goodBack.height - _miliIcon.height) / 2;
          addToContent(_miliIcon);
@@ -173,7 +173,7 @@ package battleGroud.view
          _battleSkillBtn.addEventListener("click",skillBtnClick_Handler);
       }
       
-      private function skillBtnClick_Handler(param1:MouseEvent) : void
+      private function skillBtnClick_Handler(evt:MouseEvent) : void
       {
          onResponse(4);
          SoundManager.instance.play("008");
@@ -182,9 +182,9 @@ package battleGroud.view
       
       private function initRewardList() : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
+         var hBox:* = null;
+         var cell:* = null;
+         var i:int = 0;
          _hBox1 = ComponentFactory.Instance.creatComponentByStylename("battleGroud.battleGroudView.hBox");
          addToContent(_hBox1);
          _hBox2 = ComponentFactory.Instance.creatComponentByStylename("battleGroud.battleGroudView.hBox");
@@ -193,26 +193,25 @@ package battleGroud.view
          _hBox3 = ComponentFactory.Instance.creatComponentByStylename("battleGroud.battleGroudView.hBox");
          PositionUtils.setPos(_hBox3,"battleGroud.hBox3Pos");
          addToContent(_hBox3);
-         var _loc1_:Sprite = new Sprite();
-         _loc1_.graphics.beginFill(16777215,0);
-         _loc1_.graphics.drawRect(0,0,53,53);
-         _loc1_.graphics.endFill();
-         var _loc5_:Array = BattleGroudControl.Instance.awardDataList;
-         _loc4_ = 0;
-         while(_loc4_ < 12)
+         var sp:Sprite = new Sprite();
+         sp.graphics.beginFill(16777215,0);
+         sp.graphics.drawRect(0,0,53,53);
+         sp.graphics.endFill();
+         var array:Array = BattleGroudControl.Instance.awardDataList;
+         for(i = 0; i < 12; )
          {
-            _loc3_ = this["_hBox" + (int(_loc4_ / 4 + 1))] as HBox;
-            _loc2_ = new BagCell(_loc4_,BattleGroudControl.Instance.awardDataList[_loc4_],true,_loc1_);
-            _loc2_.refreshTbxPos();
-            _loc3_.addChild(_loc2_);
-            _loc4_++;
+            hBox = this["_hBox" + (int(i / 4 + 1))] as HBox;
+            cell = new BagCell(i,BattleGroudControl.Instance.awardDataList[i],true,sp);
+            cell.refreshTbxPos();
+            hBox.addChild(cell);
+            i++;
          }
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:

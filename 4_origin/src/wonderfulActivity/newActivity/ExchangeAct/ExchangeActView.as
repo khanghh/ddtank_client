@@ -37,10 +37,10 @@ package wonderfulActivity.newActivity.ExchangeAct
       
       private var _goodsExchange:ExchangeGoodsView;
       
-      public function ExchangeActView(param1:String)
+      public function ExchangeActView(id:String)
       {
          super();
-         _actId = param1;
+         _actId = id;
       }
       
       public function init() : void
@@ -84,7 +84,7 @@ package wonderfulActivity.newActivity.ExchangeAct
          _goodsExchange.setData(_activityInfo);
       }
       
-      public function setState(param1:int, param2:int) : void
+      public function setState(type:int, id:int) : void
       {
       }
       
@@ -104,9 +104,9 @@ package wonderfulActivity.newActivity.ExchangeAct
          _goodsExchange.addEventListener("ExchangeGoodsChange",__ExchangeGoodsChangeHandler);
       }
       
-      private function __ExchangeGoodsChangeHandler(param1:ExchangeGoodsEvent) : void
+      private function __ExchangeGoodsChangeHandler(event:ExchangeGoodsEvent) : void
       {
-         if(param1.enable == false)
+         if(event.enable == false)
          {
             _exchangeButton.enable = false;
          }
@@ -116,7 +116,7 @@ package wonderfulActivity.newActivity.ExchangeAct
          }
       }
       
-      private function __exchange(param1:MouseEvent) : void
+      private function __exchange(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
@@ -124,15 +124,15 @@ package wonderfulActivity.newActivity.ExchangeAct
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc4_:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
-         var _loc2_:SendGiftInfo = new SendGiftInfo();
-         _loc2_.activityId = _activityInfo.activityId;
-         _loc2_.awardCount = _goodsExchange.count;
-         var _loc3_:Array = [];
-         _loc3_.push(_activityInfo.giftbagArray[_goodsExchange.selectedIndex].giftbagId);
-         _loc2_.giftIdArr = _loc3_;
-         _loc4_.push(_loc2_);
-         SocketManager.Instance.out.sendWonderfulActivityGetReward(_loc4_);
+         var sendInfoVec:Vector.<SendGiftInfo> = new Vector.<SendGiftInfo>();
+         var sendInfo:SendGiftInfo = new SendGiftInfo();
+         sendInfo.activityId = _activityInfo.activityId;
+         sendInfo.awardCount = _goodsExchange.count;
+         var giftIdArr:Array = [];
+         giftIdArr.push(_activityInfo.giftbagArray[_goodsExchange.selectedIndex].giftbagId);
+         sendInfo.giftIdArr = giftIdArr;
+         sendInfoVec.push(sendInfo);
+         SocketManager.Instance.out.sendWonderfulActivityGetReward(sendInfoVec);
       }
       
       private function removeEvent() : void

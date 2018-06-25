@@ -37,11 +37,11 @@ package equipretrieve
          return _instance;
       }
       
-      public function start(param1:SelfInfo) : void
+      public function start(_info:SelfInfo) : void
       {
          _CellsInfoArr = [];
          _CellsInfoArr = [null,null,null,null,null];
-         _equipmentBag = param1.Bag;
+         _equipmentBag = _info.Bag;
       }
       
       public function get equipmentBag() : BagInfo
@@ -49,50 +49,50 @@ package equipretrieve
          return _equipmentBag;
       }
       
-      public function setSaveCells(param1:BaseCell, param2:int) : void
+      public function setSaveCells(cell:BaseCell, i:int) : void
       {
-         if(_CellsInfoArr[param2] == null)
+         if(_CellsInfoArr[i] == null)
          {
-            _CellsInfoArr[param2] = {};
+            _CellsInfoArr[i] = {};
          }
-         _CellsInfoArr[param2].info = param1.info;
-         _CellsInfoArr[param2].oldx = param1.x;
-         _CellsInfoArr[param2].oldy = param1.y;
+         _CellsInfoArr[i].info = cell.info;
+         _CellsInfoArr[i].oldx = cell.x;
+         _CellsInfoArr[i].oldy = cell.y;
       }
       
-      public function setSaveInfo(param1:InventoryItemInfo, param2:int) : void
+      public function setSaveInfo(info:InventoryItemInfo, i:int) : void
       {
-         _CellsInfoArr[param2].info = param1;
+         _CellsInfoArr[i].info = info;
       }
       
-      public function setSavePlaceType(param1:InventoryItemInfo, param2:int) : void
+      public function setSavePlaceType(info:InventoryItemInfo, i:int) : void
       {
-         if(param1.BagType == 0 || param1.BagType == 1)
+         if(info.BagType == 0 || info.BagType == 1)
          {
-            _CellsInfoArr[param2].Place = param1.Place;
-            _CellsInfoArr[param2].BagType = param1.BagType;
+            _CellsInfoArr[i].Place = info.Place;
+            _CellsInfoArr[i].BagType = info.BagType;
          }
       }
       
-      public function getSaveCells(param1:int) : Object
+      public function getSaveCells(i:int) : Object
       {
-         if(_CellsInfoArr[param1].info)
+         if(_CellsInfoArr[i].info)
          {
-            _CellsInfoArr[param1].info.Count = 1;
+            _CellsInfoArr[i].info.Count = 1;
          }
-         return _CellsInfoArr[param1];
+         return _CellsInfoArr[i];
       }
       
-      public function setresultCell(param1:Object) : void
+      public function setresultCell(obj:Object) : void
       {
          if(_resultCell == null)
          {
             _resultCell = {};
          }
-         _resultCell.point = param1.point;
-         _resultCell.place = int(param1.place);
-         _resultCell.bagType = int(param1.bagType);
-         _resultCell.cell = param1.cell;
+         _resultCell.point = obj.point;
+         _resultCell.place = int(obj.place);
+         _resultCell.bagType = int(obj.bagType);
+         _resultCell.cell = obj.cell;
       }
       
       public function getresultCell() : Object

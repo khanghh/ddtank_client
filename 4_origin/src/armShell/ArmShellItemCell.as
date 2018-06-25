@@ -11,24 +11,24 @@ package armShell
    {
        
       
-      public function ArmShellItemCell(param1:Array, param2:int)
+      public function ArmShellItemCell(stoneType:Array, $index:int)
       {
-         super(param1,param2);
+         super(stoneType,$index);
       }
       
       override public function dragStart() : void
       {
       }
       
-      override public function dragStop(param1:DragEffect) : void
+      override public function dragStop(effect:DragEffect) : void
       {
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
       }
       
-      override protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      override protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
          if(!DoubleClickEnabled)
          {
@@ -38,7 +38,7 @@ package armShell
          {
             return;
          }
-         if((param1.currentTarget as BagCell).info != null)
+         if((evt.currentTarget as BagCell).info != null)
          {
             SocketManager.Instance.out.sendMoveGoods(0,index,itemBagType,-1);
             if(!mouseSilenced)

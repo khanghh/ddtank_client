@@ -54,7 +54,7 @@ package team.view.main
          SocketManager.Instance.out.sendTeamGetRecord(PlayerManager.Instance.Self.teamID);
       }
       
-      private function __onUpdateRecord(param1:TeamEvent) : void
+      private function __onUpdateRecord(e:TeamEvent) : void
       {
          list_tab.array = TeamManager.instance.model.selfTeamRecordList;
          page_select.maxPage = list_tab.totalPage;
@@ -64,8 +64,8 @@ package team.view.main
       
       private function updateBgView() : void
       {
-         var _loc1_:Array = TeamManager.instance.model.selfTeamRecordList;
-         if(_loc1_ && _loc1_.length == 0)
+         var list:Array = TeamManager.instance.model.selfTeamRecordList;
+         if(list && list.length == 0)
          {
             if(_bg == null)
             {
@@ -81,83 +81,83 @@ package team.view.main
          }
       }
       
-      private function __onRenderFailList(param1:Box, param2:int) : void
+      private function __onRenderFailList(item:Box, index:int) : void
       {
-         var _loc6_:* = null;
-         var _loc5_:LevelIconEx = param1.getChildByName("lv") as LevelIconEx;
-         var _loc3_:Label = param1.getChildByName("name") as Label;
-         var _loc4_:Label = param1.getChildByName("score") as Label;
-         if(param2 < list_fail.array.length)
+         var info:* = null;
+         var lv:LevelIconEx = item.getChildByName("lv") as LevelIconEx;
+         var name:Label = item.getChildByName("name") as Label;
+         var score:Label = item.getChildByName("score") as Label;
+         if(index < list_fail.array.length)
          {
-            _loc6_ = String(list_fail.array[param2]).split(",");
-            _loc5_.level = int(_loc6_[1]);
-            _loc3_.text = _loc6_[2];
-            if(_loc6_[0] < 0)
+            info = String(list_fail.array[index]).split(",");
+            lv.level = int(info[1]);
+            name.text = info[2];
+            if(info[0] < 0)
             {
-               _loc4_.text = _loc6_[0];
+               score.text = info[0];
             }
             else
             {
-               _loc4_.text = "+" + _loc6_[0];
+               score.text = "+" + info[0];
             }
-            _loc5_.visible = true;
+            lv.visible = true;
          }
          else
          {
-            _loc3_.text = "";
-            _loc4_.text = "";
-            _loc5_.visible = false;
+            name.text = "";
+            score.text = "";
+            lv.visible = false;
          }
       }
       
-      private function __onRenderWinList(param1:Box, param2:int) : void
+      private function __onRenderWinList(item:Box, index:int) : void
       {
-         var _loc6_:* = null;
-         var _loc5_:LevelIconEx = param1.getChildByName("lv") as LevelIconEx;
-         var _loc3_:Label = param1.getChildByName("name") as Label;
-         var _loc4_:Label = param1.getChildByName("score") as Label;
-         if(param2 < list_win.array.length)
+         var info:* = null;
+         var lv:LevelIconEx = item.getChildByName("lv") as LevelIconEx;
+         var name:Label = item.getChildByName("name") as Label;
+         var score:Label = item.getChildByName("score") as Label;
+         if(index < list_win.array.length)
          {
-            _loc6_ = String(list_win.array[param2]).split(",");
-            _loc5_.level = int(_loc6_[1]);
-            _loc3_.text = _loc6_[2];
-            if(_loc6_[0] < 0)
+            info = String(list_win.array[index]).split(",");
+            lv.level = int(info[1]);
+            name.text = info[2];
+            if(info[0] < 0)
             {
-               _loc4_.text = _loc6_[0];
+               score.text = info[0];
             }
             else
             {
-               _loc4_.text = "+" + _loc6_[0];
+               score.text = "+" + info[0];
             }
-            _loc5_.visible = true;
+            lv.visible = true;
          }
          else
          {
-            _loc3_.text = "";
-            _loc4_.text = "";
-            _loc5_.visible = false;
+            name.text = "";
+            score.text = "";
+            lv.visible = false;
          }
       }
       
-      private function __onRenderTabList(param1:Box, param2:int) : void
+      private function __onRenderTabList(item:Box, index:int) : void
       {
-         var _loc3_:TeamRecordItem = param1 as TeamRecordItem;
-         if(param2 < list_tab.array.length)
+         var view:TeamRecordItem = item as TeamRecordItem;
+         if(index < list_tab.array.length)
          {
-            _loc3_.info = list_tab.array[param2] as TeamRecordInfo;
+            view.info = list_tab.array[index] as TeamRecordInfo;
          }
          else
          {
-            _loc3_.info = null;
+            view.info = null;
          }
       }
       
-      private function __onSelectTabList(param1:int) : void
+      private function __onSelectTabList(index:int) : void
       {
          SoundManager.instance.playButtonSound();
-         if(list_tab.array && list_tab.array.length > param1)
+         if(list_tab.array && list_tab.array.length > index)
          {
-            updateGameInfo(list_tab.array[param1]);
+            updateGameInfo(list_tab.array[index]);
          }
          else
          {
@@ -165,28 +165,28 @@ package team.view.main
          }
       }
       
-      private function __onPageSelect(param1:int) : void
+      private function __onPageSelect(index:int) : void
       {
          SoundManager.instance.playButtonSound();
-         list_tab.page = param1 - 1;
+         list_tab.page = index - 1;
          list_tab.selectedIndex = list_tab.page * list_tab.repeatY;
       }
       
-      public function updateGameInfo(param1:TeamRecordInfo) : void
+      public function updateGameInfo(value:TeamRecordInfo) : void
       {
-         var _loc2_:* = param1;
-         if(_loc2_)
+         var info:* = value;
+         if(info)
          {
-            label_winName.text = _loc2_.getName(_loc2_.isWin);
-            label_winZone.text = _loc2_.getZone(_loc2_.isWin);
-            label_winKill.text = _loc2_.getKill(_loc2_.isWin).toString();
-            label_winSurvival.text = _loc2_.getSurvival(_loc2_.isWin).toString();
-            list_win.array = _loc2_.getMemberInfo(_loc2_.isWin);
-            label_failName.text = _loc2_.getName(!_loc2_.isWin);
-            label_failZone.text = _loc2_.getZone(!_loc2_.isWin);
-            label_failKill.text = _loc2_.getKill(!_loc2_.isWin).toString();
-            label_failSurvival.text = _loc2_.getSurvival(!_loc2_.isWin).toString();
-            list_fail.array = _loc2_.getMemberInfo(!_loc2_.isWin);
+            label_winName.text = info.getName(info.isWin);
+            label_winZone.text = info.getZone(info.isWin);
+            label_winKill.text = info.getKill(info.isWin).toString();
+            label_winSurvival.text = info.getSurvival(info.isWin).toString();
+            list_win.array = info.getMemberInfo(info.isWin);
+            label_failName.text = info.getName(!info.isWin);
+            label_failZone.text = info.getZone(!info.isWin);
+            label_failKill.text = info.getKill(!info.isWin).toString();
+            label_failSurvival.text = info.getSurvival(!info.isWin).toString();
+            list_fail.array = info.getMemberInfo(!info.isWin);
          }
       }
       

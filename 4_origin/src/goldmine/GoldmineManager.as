@@ -39,11 +39,11 @@ package goldmine
       
       private var _model:GoldmineModel;
       
-      public function GoldmineManager(param1:IEventDispatcher = null)
+      public function GoldmineManager(target:IEventDispatcher = null)
       {
          _dateStart = new Date();
          _dateEnd = new Date();
-         super(param1);
+         super(target);
          initEvent();
       }
       
@@ -83,11 +83,11 @@ package goldmine
          SocketManager.Instance.addEventListener(PkgEvent.format(624,2),__onUse);
       }
       
-      private function __onIsOpen(param1:PkgEvent) : void
+      private function __onIsOpen(e:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:Boolean = _loc2_.readBoolean();
-         _isOpen = _loc3_;
+         var pkg:PackageIn = e.pkg;
+         var isOpen:Boolean = pkg.readBoolean();
+         _isOpen = isOpen;
          if(_isOpen)
          {
             ChatManager.Instance.sysChatAmaranth(LanguageMgr.GetTranslation("goldmine.beginTips"));
@@ -103,91 +103,89 @@ package goldmine
          }
       }
       
-      private function __onInit(param1:PkgEvent) : void
+      private function __onInit(e:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc3_:int = 0;
-         var _loc2_:PackageIn = param1.pkg;
-         _dateStart = _loc2_.readDate();
-         _dateEnd = _loc2_.readDate();
-         _model.usedTimes = _loc2_.readInt();
-         _model.score = _loc2_.readInt();
-         _model.maxTimes = _loc2_.readInt();
+         var i:int = 0;
+         var j:int = 0;
+         var pkg:PackageIn = e.pkg;
+         _dateStart = pkg.readDate();
+         _dateEnd = pkg.readDate();
+         _model.usedTimes = pkg.readInt();
+         _model.score = pkg.readInt();
+         _model.maxTimes = pkg.readInt();
          _model.goldArr = new Array(_model.maxTimes);
          _model.goldNeedArr = new Array(_model.maxTimes);
-         _loc5_ = 0;
-         while(_loc5_ < _model.maxTimes)
+         for(i = 0; i < _model.maxTimes; )
          {
-            _model.goldArr[_loc5_] = _loc2_.readInt();
-            _model.goldNeedArr[_loc5_] = _loc2_.readInt();
-            _loc5_++;
+            _model.goldArr[i] = pkg.readInt();
+            _model.goldNeedArr[i] = pkg.readInt();
+            i++;
          }
-         _model.mineSmall = _loc2_.readInt();
-         _model.mineMiddle = _loc2_.readInt();
-         _model.mineBig = _loc2_.readInt();
-         var _loc4_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < _model.maxTimes)
+         _model.mineSmall = pkg.readInt();
+         _model.mineMiddle = pkg.readInt();
+         _model.mineBig = pkg.readInt();
+         var currentTimes:int = 0;
+         for(j = 0; j < _model.maxTimes; )
          {
-            if(_model.score >= _model.goldArr[_loc3_])
+            if(_model.score >= _model.goldArr[j])
             {
-               _loc4_++;
+               currentTimes++;
             }
-            _loc3_++;
+            j++;
          }
-         _model.currentTimes = _loc4_ - _model.usedTimes;
-         if(_loc4_ <= _model.maxTimes)
+         _model.currentTimes = currentTimes - _model.usedTimes;
+         if(currentTimes <= _model.maxTimes)
          {
-            _model.nextScoreNeed = _model.goldArr[_loc4_] - _model.score;
+            _model.nextScoreNeed = _model.goldArr[currentTimes] - _model.score;
          }
          this.dispatchEvent(new CEvent("goldmine_showview"));
       }
       
-      private function __onUse(param1:PkgEvent) : void
+      private function __onUse(e:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         var _loc4_:int = -1;
-         if(_loc2_ == _model.mineSmall)
+         var pkg:PackageIn = e.pkg;
+         var bindGold:int = pkg.readInt();
+         var prizeType:int = -1;
+         if(bindGold == _model.mineSmall)
          {
-            _loc4_ = 0;
+            prizeType = 0;
          }
-         else if(_loc2_ == _model.mineMiddle)
+         else if(bindGold == _model.mineMiddle)
          {
-            _loc4_ = 2;
+            prizeType = 2;
          }
-         else if(_loc2_ == _model.mineBig)
+         else if(bindGold == _model.mineBig)
          {
-            _loc4_ = 1;
+            prizeType = 1;
          }
-         _model.mineSmall = _loc3_.readInt();
-         _model.mineMiddle = _loc3_.readInt();
-         _model.mineBig = _loc3_.readInt();
-         this.dispatchEvent(new CEvent("goldmine_use",[_loc4_,_loc2_]));
+         _model.mineSmall = pkg.readInt();
+         _model.mineMiddle = pkg.readInt();
+         _model.mineBig = pkg.readInt();
+         this.dispatchEvent(new CEvent("goldmine_use",[prizeType,bindGold]));
       }
       
-      public function testUse(param1:int = 8666) : void
+      public function testUse(gold:int = 8666) : void
       {
-         var _loc2_:* = param1;
-         var _loc3_:int = -1;
-         if(_loc2_ == _model.mineSmall)
+         var bindGold:* = gold;
+         var prizeType:int = -1;
+         if(bindGold == _model.mineSmall)
          {
-            _loc3_ = 0;
+            prizeType = 0;
          }
-         else if(_loc2_ == _model.mineMiddle)
+         else if(bindGold == _model.mineMiddle)
          {
-            _loc3_ = 2;
+            prizeType = 2;
          }
-         else if(_loc2_ == _model.mineBig)
+         else if(bindGold == _model.mineBig)
          {
-            _loc3_ = 1;
+            prizeType = 1;
          }
-         this.dispatchEvent(new CEvent("goldmine_use",[_loc3_,_loc2_]));
+         this.dispatchEvent(new CEvent("goldmine_use",[prizeType,bindGold]));
       }
       
-      public function updataEnterIcon(param1:Boolean) : void
+      public function updataEnterIcon(flag:Boolean) : void
       {
-         HallIconManager.instance.updateSwitchHandler("goldmine",param1);
+         HallIconManager.instance.updateSwitchHandler("goldmine",flag);
       }
       
       override protected function start() : void

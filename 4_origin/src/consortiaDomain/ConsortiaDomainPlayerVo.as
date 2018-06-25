@@ -9,9 +9,9 @@ package consortiaDomain
       
       public var repairBuildId:int;
       
-      public function ConsortiaDomainPlayerVo(param1:IEventDispatcher = null)
+      public function ConsortiaDomainPlayerVo(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
    }
 }

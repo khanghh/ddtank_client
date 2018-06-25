@@ -14,14 +14,14 @@ package gameCommon.view.playerThumbnail
       
       public function show() : void
       {
-         var _loc1_:* = null;
+         var pos:* = null;
          this.mouseChildren = false;
          this.mouseEnabled = false;
          if(stage && parent)
          {
-            _loc1_ = parent.globalToLocal(new Point(stage.mouseX,stage.mouseY));
-            this.x = _loc1_.x + 15;
-            this.y = _loc1_.y + 15;
+            pos = parent.globalToLocal(new Point(stage.mouseX,stage.mouseY));
+            this.x = pos.x + 15;
+            this.y = pos.y + 15;
             if(x + 182 > 1000)
             {
                this.x = x - 182;

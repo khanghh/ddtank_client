@@ -23,19 +23,19 @@ package yyvip.view
       
       private var _itemNameTxt:FilterFrameText;
       
-      public function YYVipAwardCell(param1:Object)
+      public function YYVipAwardCell(info:Object)
       {
          super();
          _bg = ComponentFactory.Instance.creatBitmap("asset.yyvip.awardCell.bg");
          _itemCell = new BagCell(1,null,true,null,false);
          _itemCell.setBgVisible(false);
-         _itemCell.info = param1.itemInfo;
+         _itemCell.info = info.itemInfo;
          PositionUtils.setPos(_itemCell,"yyvip.awardCell.itemCellPos");
          _countBg = ComponentFactory.Instance.creatBitmap("asset.yyvip.awardCount.bg");
          _itemCountTxt = ComponentFactory.Instance.creatComponentByStylename("yyvip.awardCell.itemCountTxt");
-         _itemCountTxt.text = param1.itemCount;
+         _itemCountTxt.text = info.itemCount;
          _itemNameTxt = ComponentFactory.Instance.creatComponentByStylename("yyvip.awardCell.itemNameTxt");
-         _itemNameTxt.text = param1.itemInfo.Name;
+         _itemNameTxt.text = info.itemInfo.Name;
          addChild(_bg);
          addChild(_itemCell);
          addChild(_countBg);

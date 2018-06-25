@@ -18,9 +18,9 @@ package bagAndInfo.cell
       
       public var DoubleClickEnabled:Boolean = true;
       
-      public function LinkedBagCell(param1:Sprite)
+      public function LinkedBagCell(bg:Sprite)
       {
-         super(0,null,true,param1);
+         super(0,null,true,bg);
       }
       
       override protected function init() : void
@@ -31,7 +31,7 @@ package bagAndInfo.cell
          super.init();
       }
       
-      private function __clickHandler(param1:InteractiveEvent) : void
+      private function __clickHandler(evt:InteractiveEvent) : void
       {
          if(_info && !locked && stage && allowDrag)
          {
@@ -45,7 +45,7 @@ package bagAndInfo.cell
          return _bagCell;
       }
       
-      public function set bagCell(param1:BagCell) : void
+      public function set bagCell(value:BagCell) : void
       {
          if(_bagCell)
          {
@@ -61,11 +61,16 @@ package bagAndInfo.cell
             _bagCell.locked = false;
             info = null;
          }
-         _bagCell = param1;
+         _bagCell = value;
          if(_bagCell)
          {
             _bagCell.addEventListener("change",__changed);
             this.info = _bagCell.info;
+            if(_info && _info.CategoryID == 74)
+            {
+               tipData = _bagCell.tipData;
+               updateCellStar();
+            }
          }
       }
       
@@ -78,22 +83,22 @@ package bagAndInfo.cell
          return -1;
       }
       
-      protected function __doubleClickHandler(param1:InteractiveEvent) : void
+      protected function __doubleClickHandler(evt:InteractiveEvent) : void
       {
          if(!DoubleClickEnabled)
          {
             return;
          }
-         if((param1.currentTarget as BagCell).info != null)
+         if((evt.currentTarget as BagCell).info != null)
          {
-            if((param1.currentTarget as BagCell).info != null)
+            if((evt.currentTarget as BagCell).info != null)
             {
                dispatchEvent(new CellEvent("doubleclick",this,true));
             }
          }
       }
       
-      override public function dragStop(param1:DragEffect) : void
+      override public function dragStop(effect:DragEffect) : void
       {
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -101,9 +106,9 @@ package bagAndInfo.cell
          }
          if(_bagCell)
          {
-            if(param1.action != "none" || param1.target)
+            if(effect.action != "none" || effect.target)
             {
-               _bagCell.dragStop(param1);
+               _bagCell.dragStop(effect);
                _bagCell.removeEventListener("change",__changed);
                _bagCell = null;
                info = null;
@@ -115,7 +120,7 @@ package bagAndInfo.cell
          }
       }
       
-      private function __changed(param1:Event) : void
+      private function __changed(event:Event) : void
       {
          this.info = _bagCell == null?null:_bagCell.info;
          if(_bagCell == null || _bagCell.info == null)
@@ -154,7 +159,7 @@ package bagAndInfo.cell
          bagCell = null;
       }
       
-      override public function set locked(param1:Boolean) : void
+      override public function set locked(b:Boolean) : void
       {
       }
       

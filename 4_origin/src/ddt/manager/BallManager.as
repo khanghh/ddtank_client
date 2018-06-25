@@ -36,131 +36,127 @@ package ddt.manager
          gameInBombAssets = new Dictionary();
       }
       
-      public static function solveBulletMovieName(param1:int) : String
+      public static function solveBulletMovieName(id:int) : String
       {
-         return "bullet" + param1;
+         return "bullet" + id;
       }
       
-      public static function getSceneEffectMovie(param1:String) : MovieClip
+      public static function getSceneEffectMovie(movieName:String) : MovieClip
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
-         if(sceneEffectDic.hasOwnProperty(param1))
+         var movies:* = null;
+         var currentMovie:* = null;
+         var i:int = 0;
+         if(sceneEffectDic.hasOwnProperty(movieName))
          {
-            _loc3_ = sceneEffectDic[param1];
-            _loc4_ = 0;
-            while(_loc4_ < _loc3_.length)
+            movies = sceneEffectDic[movieName];
+            for(i = 0; i < movies.length; )
             {
-               if(_loc3_[_loc4_].parent == null)
+               if(movies[i].parent == null)
                {
-                  _loc2_ = _loc3_[_loc4_];
+                  currentMovie = movies[i];
                   break;
                }
-               _loc4_++;
+               i++;
             }
-            if(_loc2_ == null)
+            if(currentMovie == null)
             {
-               if(ClassUtils.uiSourceDomain.hasDefinition(param1))
+               if(ClassUtils.uiSourceDomain.hasDefinition(movieName))
                {
-                  _loc2_ = ClassUtils.CreatInstance(param1) as MovieClip;
-                  _loc3_.push(_loc2_);
+                  currentMovie = ClassUtils.CreatInstance(movieName) as MovieClip;
+                  movies.push(currentMovie);
                }
             }
-            return _loc2_;
+            return currentMovie;
          }
-         if(ClassUtils.uiSourceDomain.hasDefinition(param1))
+         if(ClassUtils.uiSourceDomain.hasDefinition(movieName))
          {
-            _loc3_ = [];
-            _loc2_ = ClassUtils.CreatInstance(param1) as MovieClip;
-            _loc3_.push(_loc2_);
-            sceneEffectDic[param1] = _loc3_;
+            movies = [];
+            currentMovie = ClassUtils.CreatInstance(movieName) as MovieClip;
+            movies.push(currentMovie);
+            sceneEffectDic[movieName] = movies;
          }
-         return _loc2_;
+         return currentMovie;
       }
       
       public static function clearSceneEffectMovie() : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
+         var movies:* = null;
+         var i:int = 0;
          var _loc5_:int = 0;
          var _loc4_:* = sceneEffectDic;
-         for(var _loc1_ in sceneEffectDic)
+         for(var movieName in sceneEffectDic)
          {
-            _loc2_ = sceneEffectDic[_loc1_];
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_.length)
+            movies = sceneEffectDic[movieName];
+            for(i = 0; i < movies.length; )
             {
-               ObjectUtils.disposeObject(_loc2_[_loc3_]);
-               _loc3_++;
+               ObjectUtils.disposeObject(movies[i]);
+               i++;
             }
-            delete sceneEffectDic[_loc1_];
+            delete sceneEffectDic[movieName];
          }
       }
       
-      public static function createSceneEffectMovie(param1:int) : MovieClip
+      public static function createSceneEffectMovie(id:int) : MovieClip
       {
-         var _loc2_:String = "asset.gameBattle.sceneEffectMovie" + param1;
-         return getSceneEffectMovie(_loc2_);
+         var sceneEffectMovieName:String = "asset.gameBattle.sceneEffectMovie" + id;
+         return getSceneEffectMovie(sceneEffectMovieName);
       }
       
-      public static function getSceneEffectMovieBone(param1:String, param2:int = 0) : IBoneMovie
+      public static function getSceneEffectMovieBone(movieName:String, type:int = 0) : IBoneMovie
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         if(sceneEffectDic.hasOwnProperty(param1))
+         var movies:* = null;
+         var currentMovie:* = null;
+         var i:int = 0;
+         if(sceneEffectDic.hasOwnProperty(movieName))
          {
-            _loc4_ = sceneEffectDic[param1];
-            _loc5_ = 0;
-            while(_loc5_ < _loc4_.length)
+            movies = sceneEffectDic[movieName];
+            for(i = 0; i < movies.length; )
             {
-               if(_loc4_[_loc5_].parent == null)
+               if(movies[i].parent == null)
                {
-                  _loc3_ = _loc4_[_loc5_];
+                  currentMovie = movies[i];
                   break;
                }
-               _loc5_++;
+               i++;
             }
-            if(_loc3_ == null)
+            if(currentMovie == null)
             {
-               _loc3_ = BoneMovieFactory.instance.creatBoneMovie(param1,param2,"fighting3d");
-               _loc4_.push(_loc3_);
+               currentMovie = BoneMovieFactory.instance.creatBoneMovie(movieName,type,"fighting3d");
+               movies.push(currentMovie);
             }
          }
          else
          {
-            _loc4_ = [];
-            _loc3_ = BoneMovieFactory.instance.creatBoneMovie(param1,param2,"fighting3d");
-            _loc4_.push(_loc3_);
-            sceneEffectDic[param1] = _loc4_;
+            movies = [];
+            currentMovie = BoneMovieFactory.instance.creatBoneMovie(movieName,type,"fighting3d");
+            movies.push(currentMovie);
+            sceneEffectDic[movieName] = movies;
          }
-         return _loc3_;
+         return currentMovie;
       }
       
       public static function clearSceneEffectMovieBone() : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
+         var movies:* = null;
+         var i:int = 0;
          var _loc5_:int = 0;
          var _loc4_:* = sceneEffectDic;
-         for(var _loc1_ in sceneEffectDic)
+         for(var movieName in sceneEffectDic)
          {
-            _loc2_ = sceneEffectDic[_loc1_];
-            _loc3_ = 0;
-            while(_loc3_ < _loc2_.length)
+            movies = sceneEffectDic[movieName];
+            for(i = 0; i < movies.length; )
             {
-               StarlingObjectUtils.disposeObject(_loc2_[_loc3_]);
-               _loc3_++;
+               StarlingObjectUtils.disposeObject(movies[i]);
+               i++;
             }
-            delete sceneEffectDic[_loc1_];
+            delete sceneEffectDic[movieName];
          }
       }
       
-      public static function createSceneEffectMovieBone(param1:int, param2:int = 0) : IBoneMovie
+      public static function createSceneEffectMovieBone(id:int, type:int = 0) : IBoneMovie
       {
-         var _loc3_:String = "bones.game.sceneEffectMovie" + param1;
-         return BoneMovieFactory.instance.creatBoneMovie(_loc3_,param2,"fighting3d");
+         var sceneEffectMovieName:String = "bones.game.sceneEffectMovie" + id;
+         return BoneMovieFactory.instance.creatBoneMovie(sceneEffectMovieName,type,"fighting3d");
       }
       
       public static function get instance() : BallManager
@@ -172,75 +168,75 @@ package ddt.manager
          return _instance;
       }
       
-      public function setup(param1:BallInfoAnalyzer) : void
+      public function setup(analyzer:BallInfoAnalyzer) : void
       {
-         _list = param1.list;
+         _list = analyzer.list;
       }
       
-      public function hasBombAsset(param1:int) : Boolean
+      public function hasBombAsset(id:int) : Boolean
       {
-         return gameInBombAssets[param1] != null;
+         return gameInBombAssets[id] != null;
       }
       
-      public function findBall(param1:int) : BallInfo
+      public function findBall(id:int) : BallInfo
       {
-         var _loc2_:* = null;
+         var result:* = null;
          var _loc5_:int = 0;
          var _loc4_:* = _list;
-         for each(var _loc3_ in _list)
+         for each(var info in _list)
          {
-            if(_loc3_.ID == param1)
+            if(info.ID == id)
             {
-               _loc2_ = _loc3_;
+               result = info;
                break;
             }
          }
-         return _loc2_;
+         return result;
       }
       
-      public function solveBlastOutMovieName(param1:int) : String
+      public function solveBlastOutMovieName(id:int) : String
       {
-         return "blastOutMovie" + param1;
+         return "blastOutMovie" + id;
       }
       
-      public function solveShootMovieMovieName(param1:int) : String
+      public function solveShootMovieMovieName(id:int) : String
       {
-         return "shootMovie" + param1;
+         return "shootMovie" + id;
       }
       
-      public function createBlastOutMovie(param1:int) : MovieClip
+      public function createBlastOutMovie(id:int) : MovieClip
       {
-         return ClassUtils.CreatInstance(solveBlastOutMovieName(param1)) as MovieClip;
+         return ClassUtils.CreatInstance(solveBlastOutMovieName(id)) as MovieClip;
       }
       
-      public function createBulletMovie(param1:int) : MovieClip
+      public function createBulletMovie(id:int) : MovieClip
       {
-         return ClassUtils.CreatInstance(solveBulletMovieName(param1)) as MovieClip;
+         return ClassUtils.CreatInstance(solveBulletMovieName(id)) as MovieClip;
       }
       
-      public function createShootMovieMovie(param1:int) : MovieClip
+      public function createShootMovieMovie(id:int) : MovieClip
       {
-         return ClassUtils.CreatInstance(solveShootMovieMovieName(param1)) as MovieClip;
+         return ClassUtils.CreatInstance(solveShootMovieMovieName(id)) as MovieClip;
       }
       
-      public function addBombAsset(param1:int, param2:Bitmap, param3:int) : void
+      public function addBombAsset(id:int, asset:Bitmap, type:int) : void
       {
-         if(gameInBombAssets[param1] == null)
+         if(gameInBombAssets[id] == null)
          {
-            gameInBombAssets[param1] = new BombAsset();
+            gameInBombAssets[id] = new BombAsset();
          }
-         if(param3 == 0)
+         if(type == 0)
          {
-            if(gameInBombAssets[param1].crater == null)
+            if(gameInBombAssets[id].crater == null)
             {
-               gameInBombAssets[param1].crater = param2;
+               gameInBombAssets[id].crater = asset;
             }
          }
-         else if(param3 == 1)
+         else if(type == 1)
          {
-            if(gameInBombAssets[param1].craterBrink == null)
+            if(gameInBombAssets[id].craterBrink == null)
             {
-               gameInBombAssets[param1].craterBrink = param2;
+               gameInBombAssets[id].craterBrink = asset;
             }
          }
       }
@@ -249,35 +245,35 @@ package ddt.manager
       {
          var _loc3_:int = 0;
          var _loc2_:* = gameInBombAssets;
-         for(var _loc1_ in gameInBombAssets)
+         for(var id in gameInBombAssets)
          {
-            gameInBombAssets[_loc1_].dispose();
-            delete gameInBombAssets[_loc1_];
+            gameInBombAssets[id].dispose();
+            delete gameInBombAssets[id];
          }
       }
       
-      public function createSceneEffectBullet(param1:int) : MovieClip
+      public function createSceneEffectBullet(id:int) : MovieClip
       {
-         var _loc2_:String = "asset.gameBattle.sceneEffectBullet" + param1;
-         return getSceneEffectMovie(_loc2_);
+         var sceneEffectBulletName:String = "asset.gameBattle.sceneEffectBullet" + id;
+         return getSceneEffectMovie(sceneEffectBulletName);
       }
       
-      public function createSceneEffectBlastOut(param1:int) : MovieClip
+      public function createSceneEffectBlastOut(id:int) : MovieClip
       {
-         var _loc2_:String = "asset.gameBattle.sceneEffectBlastOut" + param1;
-         return getSceneEffectMovie(_loc2_);
+         var sceneEffectBlastOutName:String = "asset.gameBattle.sceneEffectBlastOut" + id;
+         return getSceneEffectMovie(sceneEffectBlastOutName);
       }
       
-      public function createSceneEffectBulletBone(param1:int, param2:int = 0) : IBoneMovie
+      public function createSceneEffectBulletBone(id:int, type:int = 0) : IBoneMovie
       {
-         var _loc3_:String = "bones.game.sceneEffectBullet" + param1;
-         return BoneMovieFactory.instance.creatBoneMovie(_loc3_,param2,"fighting3d");
+         var sceneEffectBulletName:String = "bones.game.sceneEffectBullet" + id;
+         return BoneMovieFactory.instance.creatBoneMovie(sceneEffectBulletName,type,"fighting3d");
       }
       
-      public function createSceneEffectBlastOutBone(param1:int, param2:int = 0) : IBoneMovie
+      public function createSceneEffectBlastOutBone(id:int, type:int = 0) : IBoneMovie
       {
-         var _loc3_:String = "bones.game.sceneEffectBlastOut" + param1;
-         return BoneMovieFactory.instance.creatBoneMovie(_loc3_,param2,"fighting3d");
+         var sceneEffectBlastOutName:String = "bones.game.sceneEffectBlastOut" + id;
+         return BoneMovieFactory.instance.creatBoneMovie(sceneEffectBlastOutName,type,"fighting3d");
       }
    }
 }

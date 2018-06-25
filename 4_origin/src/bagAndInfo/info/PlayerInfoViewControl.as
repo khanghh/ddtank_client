@@ -33,112 +33,112 @@ package bagAndInfo.info
          super();
       }
       
-      public static function view(param1:*, param2:Boolean = true, param3:Boolean = false, param4:Boolean = false) : void
+      public static function view(info:*, achivEnable:Boolean = true, bool:Boolean = false, isBombKing:Boolean = false) : void
       {
          if(PetsAdvancedManager.Instance.evolutionDataList == null)
          {
-            new HelperDataModuleLoad().loadDataModule([LoaderCreate.Instance.createPetsEvolutionDataLoader()],loadDataComplete,[param1,param2,param3,param4]);
+            new HelperDataModuleLoad().loadDataModule([LoaderCreate.Instance.createPetsEvolutionDataLoader()],loadDataComplete,[info,achivEnable,bool,isBombKing]);
          }
          else
          {
-            loadDataComplete(param1,param2,param3,param4);
+            loadDataComplete(info,achivEnable,bool,isBombKing);
          }
       }
       
-      private static function loadDataComplete(param1:*, param2:Boolean = true, param3:Boolean = false, param4:Boolean = false) : void
+      private static function loadDataComplete(info:*, achivEnable:Boolean = true, bool:Boolean = false, isBombKing:Boolean = false) : void
       {
-         new HelperDataModuleLoad().loadDataModule([LoaderCreate.Instance.creatTexpExpLoader()],loadModule,[param1,param2,param3,param4]);
+         new HelperDataModuleLoad().loadDataModule([LoaderCreate.Instance.creatTexpExpLoader()],loadModule,[info,achivEnable,bool,isBombKing]);
       }
       
-      private static function loadModule(param1:*, param2:Boolean = true, param3:Boolean = false, param4:Boolean = false) : void
+      private static function loadModule(info:*, achivEnable:Boolean = true, bool:Boolean = false, isBombKing:Boolean = false) : void
       {
          AssetModuleLoader.addModelLoader("ddtbagandinfo",6);
          AssetModuleLoader.addModelLoader("ddtbead",6);
          AssetModuleLoader.addModelLoader("gemstone",6);
          AssetModuleLoader.addModelLoader("ddtim",6);
          AssetModuleLoader.addModelLoader("ddtstore",6);
-         AssetModuleLoader.startCodeLoader(loadComplete,[param1,param2,param3,param4]);
+         AssetModuleLoader.startCodeLoader(loadComplete,[info,achivEnable,bool,isBombKing]);
       }
       
-      private static function loadComplete(param1:*, param2:Boolean = true, param3:Boolean = false, param4:Boolean = false) : void
+      private static function loadComplete(info:*, achivEnable:Boolean = true, bool:Boolean = false, isBombKing:Boolean = false) : void
       {
-         _isBattle = param3;
-         if(param1 && _isBattle)
+         _isBattle = bool;
+         if(info && _isBattle)
          {
             if(_view == null)
             {
                _view = ComponentFactory.Instance.creatComponentByStylename("bag.personelInfoViewFrame");
             }
-            _view.info = param1;
+            _view.info = info;
             _view.show();
-            _view.setAchivEnable(param2);
+            _view.setAchivEnable(achivEnable);
             _view.addEventListener("response",__responseHandler);
             return;
          }
-         if(param1 && param1 is PlayerInfo)
+         if(info && info is PlayerInfo)
          {
-            if(param1.Style != null)
+            if(info.Style != null)
             {
                if(_view == null)
                {
                   _view = ComponentFactory.Instance.creatComponentByStylename("bag.personelInfoViewFrame");
                }
-               _view.info = param1;
+               _view.info = info;
                _view.show();
-               _view.setAchivEnable(param2);
+               _view.setAchivEnable(achivEnable);
                _view.addEventListener("response",__responseHandler);
             }
             else
             {
-               param1.addEventListener("propertychange",__infoChange);
+               info.addEventListener("propertychange",__infoChange);
             }
-            if(param4)
+            if(isBombKing)
             {
-               SocketManager.Instance.out.updateBKingItemEquip(param1.ID,param1.ZoneID,0);
-               SocketManager.Instance.out.updateBKingItemEquip(param1.ID,param1.ZoneID,1);
-               SocketManager.Instance.out.updateBKingItemEquip(param1.ID,param1.ZoneID,2);
+               SocketManager.Instance.out.updateBKingItemEquip(info.ID,info.ZoneID,0);
+               SocketManager.Instance.out.updateBKingItemEquip(info.ID,info.ZoneID,1);
+               SocketManager.Instance.out.updateBKingItemEquip(info.ID,info.ZoneID,2);
             }
             else
             {
-               SocketManager.Instance.out.getPlayerCardInfo(param1.ID);
-               SocketManager.Instance.out.sendItemEquip(param1.ID);
-               SocketManager.Instance.out.sendUpdatePetInfo(param1.ID);
+               SocketManager.Instance.out.getPlayerCardInfo(info.ID);
+               SocketManager.Instance.out.sendItemEquip(info.ID);
+               SocketManager.Instance.out.sendUpdatePetInfo(info.ID);
             }
          }
       }
       
-      private static function __infoChange(param1:PlayerPropertyEvent) : void
+      private static function __infoChange(evt:PlayerPropertyEvent) : void
       {
-         if(PlayerInfo(param1.currentTarget).Style)
+         if(PlayerInfo(evt.currentTarget).Style)
          {
-            PlayerInfo(param1.target).removeEventListener("propertychange",__infoChange);
+            PlayerInfo(evt.target).removeEventListener("propertychange",__infoChange);
             if(_view == null)
             {
                _view = ComponentFactory.Instance.creatComponentByStylename("bag.personelInfoViewFrame");
             }
-            _view.info = PlayerInfo(param1.target);
+            _view.info = PlayerInfo(evt.target);
             _view.show();
             _view.addEventListener("response",__responseHandler);
          }
       }
       
-      public static function viewByID(param1:int, param2:int = -1, param3:Boolean = true, param4:Boolean = false, param5:Boolean = false) : void
+      public static function viewByID(id:int, zoneID:int = -1, achivEnable:Boolean = true, _isbattle:Boolean = false, isBombKing:Boolean = false) : void
       {
-         var _loc6_:PlayerInfo = PlayerManager.Instance.findPlayer(param1,param2);
-         if(param2 != -1)
+         var info:PlayerInfo = PlayerManager.Instance.findPlayer(id,zoneID);
+         if(zoneID != -1)
          {
-            _loc6_.ZoneID = param2;
+            info.ZoneID = zoneID;
          }
-         view(_loc6_,param3,param4,param5);
+         view(info,achivEnable,_isbattle,isBombKing);
       }
       
-      public static function viewByNickName(param1:String, param2:int = -1, param3:Boolean = true) : void
+      public static function viewByNickName(nickName:String, zoneID:int = -1, achivEnable:Boolean = true) : void
       {
          _tempInfo = new PlayerInfo();
-         _tempInfo = PlayerManager.Instance.findPlayerByNickName(_tempInfo,param1);
+         _tempInfo = PlayerManager.Instance.findPlayerByNickName(_tempInfo,nickName);
          if(_tempInfo.ID)
          {
-            view(_tempInfo,param3);
+            view(_tempInfo,achivEnable);
          }
          else
          {
@@ -147,16 +147,16 @@ package bagAndInfo.info
          }
       }
       
-      private static function __IDChange(param1:PlayerPropertyEvent) : void
+      private static function __IDChange(evt:PlayerPropertyEvent) : void
       {
          _tempInfo.removeEventListener("propertychange",__IDChange);
          view(_tempInfo);
       }
       
-      private static function __responseHandler(param1:FrameEvent) : void
+      private static function __responseHandler(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:

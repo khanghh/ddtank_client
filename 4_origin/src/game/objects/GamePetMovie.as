@@ -22,11 +22,11 @@ package game.objects
       
       private var _petMovie:ActionMovie;
       
-      public function GamePetMovie(param1:PetInfo, param2:GamePlayer)
+      public function GamePetMovie(info:PetInfo, player:GamePlayer)
       {
          super();
-         _petInfo = param1;
-         _player = param2;
+         _petInfo = info;
+         _player = player;
          init();
          initEvent();
       }
@@ -39,26 +39,26 @@ package game.objects
          }
       }
       
-      protected function __playPlayerEffect(param1:Event) : void
+      protected function __playPlayerEffect(event:Event) : void
       {
          dispatchEvent(new Event("PlayEffect"));
       }
       
       public function init() : void
       {
-         var _loc1_:* = null;
+         var movieClass:* = null;
          if(_petInfo.assetReady)
          {
-            _loc1_ = ModuleLoader.getDefinition(_petInfo.actionMovieName) as Class;
-            _petMovie = new _loc1_();
+            movieClass = ModuleLoader.getDefinition(_petInfo.actionMovieName) as Class;
+            _petMovie = new movieClass();
             addChild(_petMovie);
          }
       }
       
-      public function show(param1:int = 0, param2:int = 0) : void
+      public function show(x:int = 0, y:int = 0) : void
       {
          _player.map.addToPhyLayer(this);
-         PositionUtils.setPos(this,new Point(param1,param2));
+         PositionUtils.setPos(this,new Point(x,y));
       }
       
       public function hide() : void
@@ -74,16 +74,16 @@ package game.objects
          return _petInfo;
       }
       
-      public function set direction(param1:int) : void
+      public function set direction(val:int) : void
       {
-         _petMovie.scaleX = -param1;
+         _petMovie.scaleX = -val;
       }
       
-      public function doAction(param1:String, param2:Function = null, param3:Array = null) : void
+      public function doAction(type:String, callBack:Function = null, args:Array = null) : void
       {
          if(_petMovie)
          {
-            _petMovie.doAction(param1,param2,param3);
+            _petMovie.doAction(type,callBack,args);
          }
       }
       

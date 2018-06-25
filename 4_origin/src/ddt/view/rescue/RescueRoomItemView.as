@@ -90,49 +90,49 @@ package ddt.view.rescue
          _closeBtn.addEventListener("click",__closeBtnClick);
       }
       
-      protected function __closeBtnClick(param1:MouseEvent) : void
+      protected function __closeBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _openSp.visible = false;
          _closeSp.visible = true;
       }
       
-      protected function __openBtnClick(param1:MouseEvent) : void
+      protected function __openBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _openSp.visible = true;
          _closeSp.visible = false;
       }
       
-      public function update(param1:RescueRoomInfo) : void
+      public function update(info:RescueRoomInfo) : void
       {
-         if(param1.sceneId != _sceneId)
+         if(info.sceneId != _sceneId)
          {
             ObjectUtils.disposeObject(_sceneImg);
             _sceneImg = null;
-            _sceneImg = ComponentFactory.Instance.creat("rescue.scene" + param1.sceneId);
+            _sceneImg = ComponentFactory.Instance.creat("rescue.scene" + info.sceneId);
             PositionUtils.setPos(_sceneImg,"rescue.room.sceneImgPos");
             _openSp.addChild(_sceneImg);
-            _sceneId = param1.sceneId;
+            _sceneId = info.sceneId;
          }
          ObjectUtils.disposeObject(_scoreTxt);
          _scoreTxt = null;
-         _scoreTxt = ImgNumConverter.instance.convertToImg(param1.score,"rescue.room.num",11);
+         _scoreTxt = ImgNumConverter.instance.convertToImg(info.score,"rescue.room.num",11);
          PositionUtils.setPos(_scoreTxt,"rescue.room.scoreTxtPos");
          _openSp.addChild(_scoreTxt);
          ObjectUtils.disposeObject(_arrowTxt);
          _arrowTxt = null;
-         _arrowTxt = ImgNumConverter.instance.convertToImg(param1.defaultArrow,"rescue.room.num",11);
+         _arrowTxt = ImgNumConverter.instance.convertToImg(info.defaultArrow,"rescue.room.num",11);
          PositionUtils.setPos(_arrowTxt,"rescue.room.arrowTxtPos");
          _openSp.addChild(_arrowTxt);
          ObjectUtils.disposeObject(_arrowTxt2);
          _arrowTxt2 = null;
-         _arrowTxt2 = ImgNumConverter.instance.convertToImg(param1.arrow,"rescue.room.num",11);
+         _arrowTxt2 = ImgNumConverter.instance.convertToImg(info.arrow,"rescue.room.num",11);
          PositionUtils.setPos(_arrowTxt2,"rescue.room.arrowTxt2Pos");
          _openSp.addChild(_arrowTxt2);
          ObjectUtils.disposeObject(_bloodBagTxt);
          _bloodBagTxt = null;
-         _bloodBagTxt = ImgNumConverter.instance.convertToImg(param1.bloodBag,"rescue.room.num",11);
+         _bloodBagTxt = ImgNumConverter.instance.convertToImg(info.bloodBag,"rescue.room.num",11);
          PositionUtils.setPos(_bloodBagTxt,"rescue.room.bloodBagTxtPos");
          _openSp.addChild(_bloodBagTxt);
       }

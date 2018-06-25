@@ -50,9 +50,9 @@ package room.view.roomView
       
       private var _self:SelfInfo;
       
-      public function ChallengeRoomView(param1:RoomInfo)
+      public function ChallengeRoomView(info:RoomInfo)
       {
-         super(param1);
+         super(info);
       }
       
       override public function dispose() : void
@@ -70,8 +70,8 @@ package room.view.roomView
       
       override protected function updateButtons() : void
       {
-         var _loc4_:int = 0;
-         var _loc3_:* = null;
+         var i:int = 0;
+         var item:* = null;
          super.updateButtons();
          if(_info.selfRoomPlayer.isViewer)
          {
@@ -88,23 +88,22 @@ package room.view.roomView
             _btnSwitchTeam.enable = _prepareBtn.visible;
             _cancelBtn.visible = !_prepareBtn.visible;
          }
-         var _loc1_:Boolean = false;
-         var _loc2_:Boolean = false;
-         _loc4_ = 0;
-         while(_loc4_ < _playerItems.length)
+         var sbInBlueTeam:Boolean = false;
+         var sbInRedTeam:Boolean = false;
+         for(i = 0; i < _playerItems.length; )
          {
-            _loc3_ = _playerItems[_loc4_] as RoomPlayerItem;
-            if(_loc3_.info && _loc3_.info.team == 1)
+            item = _playerItems[i] as RoomPlayerItem;
+            if(item.info && item.info.team == 1)
             {
-               _loc1_ = true;
+               sbInBlueTeam = true;
             }
-            if(_loc3_.info && _loc3_.info.team == 2)
+            if(item.info && item.info.team == 2)
             {
-               _loc2_ = true;
+               sbInRedTeam = true;
             }
-            _loc4_++;
+            i++;
          }
-         if(!_loc1_ || !_loc2_)
+         if(!sbInBlueTeam || !sbInRedTeam)
          {
             _startBtn.removeEventListener("click",__startClick);
             _startBtn.filters = [ComponentFactory.Instance.model.getSet("grayFilter")];
@@ -127,7 +126,7 @@ package room.view.roomView
          }
       }
       
-      private function __onMapChangedHandler(param1:RoomEvent) : void
+      private function __onMapChangedHandler(evt:RoomEvent) : void
       {
          __switchProViewHandler(null);
       }
@@ -157,16 +156,16 @@ package room.view.roomView
          PositionUtils.setPos(_viewerItems[1],"asset.ddtchallengeroom.ViewerItemPos_1");
       }
       
-      private function __switchProViewHandler(param1:Event) : void
+      private function __switchProViewHandler(evt:Event) : void
       {
-         var _loc3_:int = RoomManager.Instance.current.dungeonMode;
-         var _loc2_:Boolean = false;
-         _loc2_ = _loc3_ == _curSelectType?false:true;
-         if(!_loc2_)
+         var type:int = RoomManager.Instance.current.dungeonMode;
+         var isSwitch:Boolean = false;
+         isSwitch = type == _curSelectType?false:true;
+         if(!isSwitch)
          {
             return;
          }
-         _curSelectType = _loc3_;
+         _curSelectType = type;
          if(_curSelectType == 120 && !(_roomPropView is PVPBattleRoomRightPropView))
          {
             clearRoomProView();
@@ -184,12 +183,12 @@ package room.view.roomView
          }
       }
       
-      override protected function __prepareClick(param1:MouseEvent) : void
+      override protected function __prepareClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(_info.gameMode != 121)
          {
-            CheckWeaponManager.instance.setFunction(this,__prepareClick,[param1]);
+            CheckWeaponManager.instance.setFunction(this,__prepareClick,[evt]);
             if(CheckWeaponManager.instance.isNoWeapon())
             {
                CheckWeaponManager.instance.showAlert();
@@ -201,24 +200,24 @@ package room.view.roomView
       
       override protected function checkCanStartGame() : Boolean
       {
-         var _loc1_:Boolean = true;
+         var result:Boolean = true;
          if(_info.selfRoomPlayer.isViewer || _info.gameMode == 121)
          {
-            return _loc1_;
+            return result;
          }
          if(CheckWeaponManager.instance.isNoWeapon())
          {
-            _loc1_ = false;
+            result = false;
             CheckWeaponManager.instance.showAlert();
          }
-         return _loc1_;
+         return result;
       }
       
       override protected function initTileList() : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item1:* = null;
+         var item2:* = null;
          super.initTileList();
          _playerItemContainers = new Vector.<SimpleTileList>();
          _playerItemContainers[1 - 1] = new SimpleTileList(2);
@@ -231,16 +230,15 @@ package room.view.roomView
          _playerItemContainers[1 - 1].vSpace = _loc4_;
          PositionUtils.setPos(_playerItemContainers[1 - 1],"asset.ddtchallengeRoom.BlueTeamPos");
          PositionUtils.setPos(_playerItemContainers[2 - 1],"asset.ddtchallengeRoom.RedTeamPos");
-         _loc3_ = 0;
-         while(_loc3_ < 8)
+         for(i = 0; i < 8; )
          {
-            _loc2_ = new RoomPlayerItem(_loc3_);
-            _playerItemContainers[1 - 1].addChild(_loc2_);
-            _playerItems.push(_loc2_);
-            _loc1_ = new RoomPlayerItem(_loc3_ + 1);
-            _playerItemContainers[2 - 1].addChild(_loc1_);
-            _playerItems.push(_loc1_);
-            _loc3_ = _loc3_ + 2;
+            item1 = new RoomPlayerItem(i);
+            _playerItemContainers[1 - 1].addChild(item1);
+            _playerItems.push(item1);
+            item2 = new RoomPlayerItem(i + 1);
+            _playerItemContainers[2 - 1].addChild(item2);
+            _playerItems.push(item2);
+            i = i + 2;
          }
          addChild(_playerItemContainers[1 - 1]);
          addChild(_playerItemContainers[2 - 1]);
@@ -282,29 +280,29 @@ package room.view.roomView
       
       private function openDefyAffiche() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var defyAfficheViewFrame:* = null;
          if(!_info || !_info.defyInfo)
          {
             return;
          }
-         _loc2_ = 0;
-         while(_loc2_ <= _info.defyInfo[0].length)
+         i = 0;
+         while(i <= _info.defyInfo[0].length)
          {
-            if(_self.NickName == _info.defyInfo[0][_loc2_])
+            if(_self.NickName == _info.defyInfo[0][i])
             {
                if(_info.defyInfo[1].length != 0)
                {
-                  _loc1_ = ComponentFactory.Instance.creatComponentByStylename("game.view.defyAfficheViewFrame");
-                  _loc1_.roomInfo = _info;
-                  _loc1_.show();
+                  defyAfficheViewFrame = ComponentFactory.Instance.creatComponentByStylename("game.view.defyAfficheViewFrame");
+                  defyAfficheViewFrame.roomInfo = _info;
+                  defyAfficheViewFrame.show();
                }
             }
-            _loc2_++;
+            i++;
          }
       }
       
-      override protected function __updatePlayerItems(param1:RoomEvent) : void
+      override protected function __updatePlayerItems(evt:RoomEvent) : void
       {
          initPlayerItems();
          updateButtons();
@@ -321,7 +319,7 @@ package room.view.roomView
          _smallMapInfoPanel.removeEventListener("change_proView",__switchProViewHandler);
       }
       
-      private function __switchTeam(param1:MouseEvent) : void
+      private function __switchTeam(evt:MouseEvent) : void
       {
          SoundManager.instance.play("012");
          if(!_info.selfRoomPlayer.isReady || _info.selfRoomPlayer.isHost)

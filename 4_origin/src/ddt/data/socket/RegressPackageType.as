@@ -24,6 +24,10 @@ package ddt.data.socket
       public static const REGRESS_UPDATE_INTEGRAL:int = 9;
       
       public static const REGRESS_INTEGRAL_BUY:int = 10;
+      
+      public static const NEWOLDPLAYER:int = 16;
+      
+      public static const NWEOLDPLAYERMONEY:int = 17;
        
       
       public function RegressPackageType()

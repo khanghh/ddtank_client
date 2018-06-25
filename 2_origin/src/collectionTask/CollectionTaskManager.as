@@ -34,9 +34,9 @@ package collectionTask
       
       private var _mapLoader:BaseLoader;
       
-      public function CollectionTaskManager(param1:IEventDispatcher = null)
+      public function CollectionTaskManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get Instance() : CollectionTaskManager
@@ -50,23 +50,23 @@ package collectionTask
       
       public function setUp() : void
       {
-         var _loc1_:Array = TaskManager.instance.allCurrentQuest;
+         var infoArr:Array = TaskManager.instance.allCurrentQuest;
          var _loc4_:int = 0;
-         var _loc3_:* = _loc1_;
-         for each(var _loc2_ in _loc1_)
+         var _loc3_:* = infoArr;
+         for each(var info in infoArr)
          {
-            if(_loc2_.Condition == 64)
+            if(info.Condition == 64)
             {
-               questInfo = _loc2_;
+               questInfo = info;
                break;
             }
          }
          loadMap();
       }
       
-      public function robertDataSetup(param1:CollectionTaskAnalyzer) : void
+      public function robertDataSetup(analyzer:CollectionTaskAnalyzer) : void
       {
-         collectionTaskInfoList = param1.collectionTaskInfoList;
+         collectionTaskInfoList = analyzer.collectionTaskInfoList;
       }
       
       private function loadMap() : void
@@ -76,7 +76,7 @@ package collectionTask
          LoadResourceManager.Instance.startLoad(_mapLoader);
       }
       
-      private function onMapSrcLoadedComplete(param1:LoaderEvent = null) : void
+      private function onMapSrcLoadedComplete(event:LoaderEvent = null) : void
       {
          if(_mapLoader.isSuccess)
          {

@@ -45,7 +45,7 @@ package playerDress
          SocketManager.Instance.addEventListener(PkgEvent.format(237,7),unlockDressBag);
       }
       
-      protected function __setBtnStatus(param1:PlayerDressEvent) : void
+      protected function __setBtnStatus(event:PlayerDressEvent) : void
       {
          if(_dressView)
          {
@@ -53,9 +53,9 @@ package playerDress
          }
       }
       
-      protected function __playerDressViewDispose(param1:PlayerDressEvent) : void
+      protected function __playerDressViewDispose(event:PlayerDressEvent) : void
       {
-         var _loc2_:* = param1.info;
+         var _loc2_:* = event.info;
          if(0 !== _loc2_)
          {
             if(1 === _loc2_)
@@ -69,39 +69,39 @@ package playerDress
          }
       }
       
-      protected function __playerDressViewOpen(param1:PlayerDressEvent) : void
+      protected function __playerDressViewOpen(event:PlayerDressEvent) : void
       {
          _uiLoader = new HelperUIModuleLoad();
-         _uiLoader.loadUIModule(["playerDress"],openPlayerDressView,[param1.info]);
+         _uiLoader.loadUIModule(["playerDress"],openPlayerDressView,[event.info]);
       }
       
-      protected function openPlayerDressView(param1:int) : void
+      protected function openPlayerDressView(type:int) : void
       {
-         var _loc2_:* = null;
+         var event:* = null;
          _uiLoader = null;
-         switch(int(param1))
+         switch(int(type))
          {
             case 0:
                if(!_dressView)
                {
                   _dressView = ComponentFactory.Instance.creatCustomObject("playerDress.playerDressView");
                }
-               _loc2_ = new PlayerDressEvent("dressViewComplete");
-               _loc2_.info = _dressView;
-               PlayerDressManager.instance.dispatchEvent(_loc2_);
+               event = new PlayerDressEvent("dressViewComplete");
+               event.info = _dressView;
+               PlayerDressManager.instance.dispatchEvent(event);
                break;
             case 1:
                if(!_dressBag)
                {
                   _dressBag = ComponentFactory.Instance.creatCustomObject("playerDress.dressBagView");
                }
-               _loc2_ = new PlayerDressEvent("bagViewComplete");
-               _loc2_.info = _dressBag;
-               PlayerDressManager.instance.dispatchEvent(_loc2_);
+               event = new PlayerDressEvent("bagViewComplete");
+               event.info = _dressBag;
+               PlayerDressManager.instance.dispatchEvent(event);
          }
       }
       
-      protected function unlockDressBag(param1:PkgEvent) : void
+      protected function unlockDressBag(event:PkgEvent) : void
       {
          if(_dressBag)
          {
@@ -117,9 +117,9 @@ package playerDress
          }
       }
       
-      public function putOnDress(param1:InventoryItemInfo) : void
+      public function putOnDress(item:InventoryItemInfo) : void
       {
-         _dressView.putOnDress(param1);
+         _dressView.putOnDress(item);
       }
       
       public function get dressView() : PlayerDressView

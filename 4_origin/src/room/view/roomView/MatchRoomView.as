@@ -82,10 +82,10 @@ package room.view.roomView
       
       private var _alert2:BaseAlerFrame;
       
-      public function MatchRoomView(param1:RoomInfo)
+      public function MatchRoomView(info:RoomInfo)
       {
          _timerII = new Timer(1000);
-         super(param1);
+         super(info);
       }
       
       override protected function initEvents() : void
@@ -118,9 +118,9 @@ package room.view.roomView
          }
       }
       
-      private function __loadWeakGuild(param1:Event) : void
+      private function __loadWeakGuild(evt:Event) : void
       {
-         var _loc2_:* = null;
+         var vane:* = null;
          removeEventListener("addedToStage",__loadWeakGuild);
          if(!WeakGuildManager.Instance.switchUserGuide)
          {
@@ -129,8 +129,8 @@ package room.view.roomView
          showStart();
          if(!PlayerManager.Instance.Self.IsWeakGuildFinish(39) && PlayerManager.Instance.Self.IsWeakGuildFinish(9))
          {
-            _loc2_ = ComponentFactory.Instance.creat("trainer.vane.mainFrame");
-            _loc2_.show();
+            vane = ComponentFactory.Instance.creat("trainer.vane.mainFrame");
+            vane.show();
          }
          if(!PlayerManager.Instance.Self.IsWeakGuildFinish(89) && PlayerManager.Instance.Self.Grade >= 12)
          {
@@ -156,22 +156,22 @@ package room.view.roomView
          }
       }
       
-      private function userGuideAlert(param1:int, param2:String) : void
+      private function userGuideAlert(step:int, info:String) : void
       {
-         var _loc3_:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation(param2),"","",false,false,false,2);
-         _loc3_.addEventListener("response",__responseTip);
-         SocketManager.Instance.out.syncWeakStep(param1);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation(info),"","",false,false,false,2);
+         alert.addEventListener("response",__responseTip);
+         SocketManager.Instance.out.syncWeakStep(step);
       }
       
-      private function __responseTip(param1:FrameEvent) : void
+      private function __responseTip(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__responseTip);
-         ObjectUtils.disposeObject(_loc2_);
+         var alert:BaseAlerFrame = evt.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__responseTip);
+         ObjectUtils.disposeObject(alert);
       }
       
-      private function __crossZoneChangeHandler(param1:RoomEvent) : void
+      private function __crossZoneChangeHandler(evt:RoomEvent) : void
       {
          _crossZoneBtn.selected = _info.isCrossZone;
          if(_info.isCrossZone)
@@ -184,7 +184,7 @@ package room.view.roomView
          }
       }
       
-      private function __onTweentySec(param1:RoomEvent) : void
+      private function __onTweentySec(event:RoomEvent) : void
       {
          if(RoomManager.Instance.current.selfRoomPlayer.isViewer)
          {
@@ -193,7 +193,7 @@ package room.view.roomView
          _cancelBtn.enable = true;
       }
       
-      private function __onTimer(param1:TimerEvent) : void
+      private function __onTimer(evt:TimerEvent) : void
       {
          if(false && _timerII.currentCount == 40 && _info.selfRoomPlayer.isHost)
          {
@@ -207,34 +207,34 @@ package room.view.roomView
       
       private function showMatchNpc() : void
       {
-         var _loc1_:AlertInfo = new AlertInfo();
-         _loc1_.title = LanguageMgr.GetTranslation("AlertDialog.Info");
-         _loc1_.data = LanguageMgr.GetTranslation("tank.room.PickupPanel.ChangeStyle");
-         _alert1 = AlertManager.Instance.alert("SimpleAlert",_loc1_,2);
+         var alertInfo:AlertInfo = new AlertInfo();
+         alertInfo.title = LanguageMgr.GetTranslation("AlertDialog.Info");
+         alertInfo.data = LanguageMgr.GetTranslation("tank.room.PickupPanel.ChangeStyle");
+         _alert1 = AlertManager.Instance.alert("SimpleAlert",alertInfo,2);
          _alert1.addEventListener("response",__onResponse);
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(evt:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         var msg:* = null;
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
             GameInSocketOut.sendGameStyle(2);
-            _loc2_ = new ChatData();
-            _loc2_.channel = 7;
-            _loc2_.msg = LanguageMgr.GetTranslation("tank.room.UpdateGameStyle");
+            msg = new ChatData();
+            msg.channel = 7;
+            msg.msg = LanguageMgr.GetTranslation("tank.room.UpdateGameStyle");
             if(!StateManager.currentStateType != "teamRoom")
             {
-               ChatManager.Instance.chat(_loc2_);
+               ChatManager.Instance.chat(msg);
             }
          }
          _alert1.removeEventListener("response",__onResponse);
          _alert1.dispose();
       }
       
-      override protected function __startHandler(param1:RoomEvent) : void
+      override protected function __startHandler(evt:RoomEvent) : void
       {
-         super.__startHandler(param1);
+         super.__startHandler(evt);
          if(_info.started)
          {
             _timerII.start();
@@ -254,33 +254,33 @@ package room.view.roomView
          _alert2.addEventListener("response",__onResponseII);
       }
       
-      private function __onResponseII(param1:FrameEvent) : void
+      private function __onResponseII(evt:FrameEvent) : void
       {
-         var _loc2_:* = null;
+         var msg:* = null;
          SoundManager.instance.play("008");
          _alert2.removeEventListener("response",__onResponseII);
          _alert2.dispose();
-         if(param1.responseCode == 2 || param1.responseCode == 3)
+         if(evt.responseCode == 2 || evt.responseCode == 3)
          {
             GameInSocketOut.sendGameStyle(2);
-            _loc2_ = new ChatData();
-            _loc2_.channel = 7;
-            _loc2_.msg = LanguageMgr.GetTranslation("tank.room.UpdateGameStyle");
+            msg = new ChatData();
+            msg.channel = 7;
+            msg.msg = LanguageMgr.GetTranslation("tank.room.UpdateGameStyle");
             if(!StateManager.currentStateType != "teamRoom")
             {
-               ChatManager.Instance.chat(_loc2_);
+               ChatManager.Instance.chat(msg);
             }
          }
       }
       
-      private function __crossZoneClick(param1:MouseEvent) : void
+      private function __crossZoneClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          GameInSocketOut.sendGameRoomSetUp(_info.mapId,_info.type,false,_info.roomPass,_info.roomName,3,0,0,!_info.isCrossZone,0);
          _crossZoneBtn.selected = _info.isCrossZone;
       }
       
-      private function __onFightNpc(param1:PkgEvent) : void
+      private function __onFightNpc(evt:PkgEvent) : void
       {
          showMatchNpc();
       }
@@ -356,23 +356,22 @@ package room.view.roomView
       
       override protected function initTileList() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          super.initTileList();
          _playerItemContainer = new SimpleTileList(2);
-         var _loc3_:Point = ComponentFactory.Instance.creatCustomObject("asset.ddtroom.matchRoom.listSpace");
-         _playerItemContainer.hSpace = _loc3_.x;
-         _playerItemContainer.vSpace = _loc3_.y;
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("asset.ddtroom.playerListPos");
-         _playerItemContainer.x = _bg.x + _loc2_.x;
-         _playerItemContainer.y = _bg.y + _loc2_.y;
-         _loc4_ = 0;
-         while(_loc4_ < 4)
+         var space:Point = ComponentFactory.Instance.creatCustomObject("asset.ddtroom.matchRoom.listSpace");
+         _playerItemContainer.hSpace = space.x;
+         _playerItemContainer.vSpace = space.y;
+         var p:Point = ComponentFactory.Instance.creatCustomObject("asset.ddtroom.playerListPos");
+         _playerItemContainer.x = _bg.x + p.x;
+         _playerItemContainer.y = _bg.y + p.y;
+         for(i = 0; i < 4; )
          {
-            _loc1_ = new RoomPlayerItem(_loc4_);
-            _playerItemContainer.addChild(_loc1_);
-            _playerItems.push(_loc1_);
-            _loc4_++;
+            item = new RoomPlayerItem(i);
+            _playerItemContainer.addChild(item);
+            _playerItems.push(item);
+            i++;
          }
          addChild(_playerItemContainer);
          if(isViewerRoom)
@@ -381,46 +380,45 @@ package room.view.roomView
             addChild(_viewerItems[0]);
             if(_info.gameMode == 41 || _info.gameMode == 42)
             {
-               _loc4_ = 0;
-               while(_loc4_ < _viewerItems.length)
+               for(i = 0; i < _viewerItems.length; )
                {
-                  _viewerItems[_loc4_].visible = false;
-                  _loc4_++;
+                  _viewerItems[i].visible = false;
+                  i++;
                }
             }
          }
       }
       
-      override protected function __addPlayer(param1:RoomEvent) : void
+      override protected function __addPlayer(evt:RoomEvent) : void
       {
-         var _loc2_:RoomPlayer = param1.params[0] as RoomPlayer;
-         if(_loc2_.isFirstIn)
+         var player:RoomPlayer = evt.params[0] as RoomPlayer;
+         if(player.isFirstIn)
          {
             SoundManager.instance.play("158");
          }
-         if(_loc2_.isViewer)
+         if(player.isViewer)
          {
-            _viewerItems[_loc2_.place - 8].info = _loc2_;
+            _viewerItems[player.place - 8].info = player;
          }
          else
          {
-            _playerItems[_loc2_.place].info = _loc2_;
+            _playerItems[player.place].info = player;
          }
          updateButtons();
       }
       
-      override protected function __removePlayer(param1:RoomEvent) : void
+      override protected function __removePlayer(evt:RoomEvent) : void
       {
-         var _loc2_:RoomPlayer = param1.params[0] as RoomPlayer;
-         if(_loc2_.place >= 8)
+         var player:RoomPlayer = evt.params[0] as RoomPlayer;
+         if(player.place >= 8)
          {
-            _viewerItems[_loc2_.place - 8].info = null;
+            _viewerItems[player.place - 8].info = null;
          }
          else
          {
-            _playerItems[_loc2_.place].info = null;
+            _playerItems[player.place].info = null;
          }
-         _loc2_.dispose();
+         player.dispose();
          updateButtons();
       }
       

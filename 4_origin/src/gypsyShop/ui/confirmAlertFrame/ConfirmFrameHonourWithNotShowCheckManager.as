@@ -37,53 +37,53 @@ package gypsyShop.ui.confirmAlertFrame
       
       protected static function showFillFrame() : BaseAlerFrame
       {
-         var _loc1_:* = null;
-         _loc1_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("gypsy.honourNotEnough"),LanguageMgr.GetTranslation("ok"),"",true,false,false,2);
-         _loc1_.addEventListener("response",__onResponse);
-         return _loc1_;
+         var frame:* = null;
+         frame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("gypsy.honourNotEnough"),LanguageMgr.GetTranslation("ok"),"",true,false,false,2);
+         frame.addEventListener("response",__onResponse);
+         return frame;
       }
       
-      private static function __onResponse(param1:FrameEvent) : void
+      private static function __onResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:BaseAlerFrame = param1.target as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onResponse);
-         _loc2_.dispose();
+         var alert:BaseAlerFrame = evt.target as BaseAlerFrame;
+         alert.removeEventListener("response",__onResponse);
+         alert.dispose();
       }
       
-      public function set detail(param1:String) : void
+      public function set detail(value:String) : void
       {
-         _detail = param1;
+         _detail = value;
       }
       
-      public function set title(param1:String) : void
+      public function set title(value:String) : void
       {
-         _title = param1;
+         _title = value;
       }
       
-      public function set frameType(param1:String) : void
+      public function set frameType(value:String) : void
       {
-         _frameType = param1;
+         _frameType = value;
       }
       
-      public function set needMoney(param1:int) : void
+      public function set needMoney(value:int) : void
       {
-         _needMoney = param1;
+         _needMoney = value;
       }
       
-      public function set onNotShowAgain(param1:Function) : void
+      public function set onNotShowAgain(value:Function) : void
       {
-         _onNotShowAgain = param1;
+         _onNotShowAgain = value;
       }
       
-      public function set isBind(param1:Function) : void
+      public function set isBind(value:Function) : void
       {
-         _isBind = param1;
+         _isBind = value;
       }
       
-      public function set onComfirm(param1:Function) : void
+      public function set onComfirm(value:Function) : void
       {
-         _onComfirm = param1;
+         _onComfirm = value;
       }
       
       public function alert() : ConfirmFrameHonourWithNotShowCheckAlert
@@ -93,24 +93,24 @@ package gypsyShop.ui.confirmAlertFrame
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("gypsy.honourNotEnough"),0,true,3);
             return null;
          }
-         var _loc1_:ConfirmFrameHonourWithNotShowCheckAlert = ComponentFactory.Instance.creat("gypsy.confirmViewHonour");
-         _loc1_.titleTxt = LanguageMgr.GetTranslation("AlertDialog.Info");
-         _loc1_.detail = LanguageMgr.GetTranslation("tank.game.GameView.gypsyHonourConfirm",_needMoney);
-         _loc1_.onNotShowAgain = _onNotShowAgain;
-         _loc1_.onComfirm = _onComfirm;
-         _loc1_.initView();
-         _loc1_.moveEnable = false;
-         _loc1_.addEventListener("response",comfirmHandler,false,0,true);
-         LayerManager.Instance.addToLayer(_loc1_,1,true,1);
-         return _loc1_;
+         var confirmFrame:ConfirmFrameHonourWithNotShowCheckAlert = ComponentFactory.Instance.creat("gypsy.confirmViewHonour");
+         confirmFrame.titleTxt = LanguageMgr.GetTranslation("AlertDialog.Info");
+         confirmFrame.detail = LanguageMgr.GetTranslation("tank.game.GameView.gypsyHonourConfirm",_needMoney);
+         confirmFrame.onNotShowAgain = _onNotShowAgain;
+         confirmFrame.onComfirm = _onComfirm;
+         confirmFrame.initView();
+         confirmFrame.moveEnable = false;
+         confirmFrame.addEventListener("response",comfirmHandler,false,0,true);
+         LayerManager.Instance.addToLayer(confirmFrame,1,true,1);
+         return confirmFrame;
       }
       
-      private function comfirmHandler(param1:FrameEvent) : void
+      private function comfirmHandler(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:ConfirmFrameHonourWithNotShowCheckAlert = param1.currentTarget as ConfirmFrameHonourWithNotShowCheckAlert;
-         _loc2_.removeEventListener("response",comfirmHandler);
-         if(param1.responseCode == 3 || param1.responseCode == 2)
+         var confirmFrame:ConfirmFrameHonourWithNotShowCheckAlert = event.currentTarget as ConfirmFrameHonourWithNotShowCheckAlert;
+         confirmFrame.removeEventListener("response",comfirmHandler);
+         if(event.responseCode == 3 || event.responseCode == 2)
          {
             if(PlayerManager.Instance.Self.myHonor < _needMoney)
             {
@@ -120,7 +120,7 @@ package gypsyShop.ui.confirmAlertFrame
             {
                _onComfirm != null && _onComfirm();
             }
-            if(_loc2_.isNoPrompt)
+            if(confirmFrame.isNoPrompt)
             {
                _onNotShowAgain != null && _onNotShowAgain(true);
             }

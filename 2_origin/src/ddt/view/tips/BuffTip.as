@@ -95,13 +95,13 @@ package ddt.view.tips
          _activeSp.mouseChildren = false;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         _tempData = param1;
-         if(param1 is BuffTipInfo)
+         _tempData = data;
+         if(data is BuffTipInfo)
          {
             this.visible = true;
-            setShow(param1.isActive,param1.isFree,param1.day,param1.hour,param1.min,param1.describe);
+            setShow(data.isActive,data.isFree,data.day,data.hour,data.min,data.describe);
          }
          else
          {
@@ -145,14 +145,14 @@ package ddt.view.tips
          super.dispose();
       }
       
-      protected function setShow(param1:Boolean, param2:Boolean, param3:int, param4:int, param5:int, param6:String) : void
+      protected function setShow(isActive:Boolean, isFree:Boolean, day:int, hour:int, min:int, describe:String) : void
       {
-         _active = param1;
-         if(param1)
+         _active = isActive;
+         if(isActive)
          {
             _activeSp.visible = true;
             describe_txt.visible = false;
-            if(param2)
+            if(isFree)
             {
                showFree(true);
                name_txt.text = LanguageMgr.GetTranslation("tank.view.buffControl.buffButton.freeCard");
@@ -163,9 +163,9 @@ package ddt.view.tips
             {
                showFree(false);
                name_txt.text = _tempData.name;
-               day_txt.text = String(param3);
-               hour_txt.text = String(param4);
-               min_txt.text = String(param5);
+               day_txt.text = String(day);
+               hour_txt.text = String(hour);
+               min_txt.text = String(min);
                day_txt.x = lefttime_txt.x + lefttime_txt.width + _timegap;
                days_txt.x = day_txt.x + day_txt.width + _timegap;
                hour_txt.x = days_txt.x + days_txt.width + _timegap;
@@ -176,7 +176,7 @@ package ddt.view.tips
          }
          else
          {
-            describe_txt.text = param6;
+            describe_txt.text = describe;
             _activeSp.visible = false;
             describe_txt.visible = true;
          }
@@ -185,15 +185,15 @@ package ddt.view.tips
       
       protected function updateWH() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
+         var wid1:int = 0;
+         var wid2:int = 0;
          if(_tempData.isActive)
          {
             if(_tempData.isFree)
             {
-               _loc1_ = Math.abs(name_txt.x) * 2 + name_txt.width;
-               _loc2_ = day_txt.x + day_txt.width + name_txt.x;
-               _bg.width = _loc1_ > _loc2_?_loc1_:int(_loc2_);
+               wid1 = Math.abs(name_txt.x) * 2 + name_txt.width;
+               wid2 = day_txt.x + day_txt.width + name_txt.x;
+               _bg.width = wid1 > wid2?wid1:int(wid2);
             }
             else
             {
@@ -210,13 +210,13 @@ package ddt.view.tips
          _height = _bg.height;
       }
       
-      private function showFree(param1:Boolean) : void
+      private function showFree(bol:Boolean) : void
       {
-         days_txt.visible = !param1;
-         hours_txt.visible = !param1;
-         hour_txt.visible = !param1;
-         mins_txt.visible = !param1;
-         min_txt.visible = !param1;
+         days_txt.visible = !bol;
+         hours_txt.visible = !bol;
+         hour_txt.visible = !bol;
+         mins_txt.visible = !bol;
+         min_txt.visible = !bol;
       }
    }
 }

@@ -41,13 +41,13 @@ package com.pickgliss.ui.controls
          super();
       }
       
-      public function set autoSelect(param1:Boolean) : void
+      public function set autoSelect(value:Boolean) : void
       {
-         if(_autoSelect == param1)
+         if(_autoSelect == value)
          {
             return;
          }
-         _autoSelect = param1;
+         _autoSelect = value;
       }
       
       override public function dispose() : void
@@ -69,9 +69,9 @@ package com.pickgliss.ui.controls
          return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         _selected = param1;
+         _selected = value;
          if(_selectedButton)
          {
             _selectedButton.visible = _selected;
@@ -90,19 +90,19 @@ package com.pickgliss.ui.controls
          return _selectedStyle;
       }
       
-      public function set selectedStyle(param1:String) : void
+      public function set selectedStyle(stylename:String) : void
       {
-         if(_selectedStyle == param1)
+         if(_selectedStyle == stylename)
          {
             return;
          }
-         _selectedStyle = param1;
+         _selectedStyle = stylename;
          onPropertiesChanged("selectedStyle");
       }
       
-      override public function setFrame(param1:int) : void
+      override public function setFrame(frameIndex:int) : void
       {
-         super.setFrame(param1);
+         super.setFrame(frameIndex);
          if(_selectedButton)
          {
             DisplayUtils.setFrame(_selectedButton,_currentFrameIndex);
@@ -113,18 +113,18 @@ package com.pickgliss.ui.controls
          }
       }
       
-      public function setSelectedButton(param1:DisplayObject) : void
+      public function setSelectedButton(button:DisplayObject) : void
       {
          ObjectUtils.disposeObject(_selectedButton);
-         _selectedButton = param1;
+         _selectedButton = button;
          DisplayUtils.setDisplayObjectNotEnable(_selectedButton);
          setFrame(1);
       }
       
-      public function setUnselectedButton(param1:DisplayObject) : void
+      public function setUnselectedButton(button:DisplayObject) : void
       {
          ObjectUtils.disposeObject(_unSelectedButton);
-         _unSelectedButton = param1;
+         _unSelectedButton = button;
          DisplayUtils.setDisplayObjectNotEnable(_unSelectedButton);
          setFrame(1);
       }
@@ -134,19 +134,19 @@ package com.pickgliss.ui.controls
          return _unSelectedStyle;
       }
       
-      public function set unSelectedStyle(param1:String) : void
+      public function set unSelectedStyle(stylename:String) : void
       {
-         if(_unSelectedStyle == param1)
+         if(_unSelectedStyle == stylename)
          {
             return;
          }
-         _unSelectedStyle = param1;
+         _unSelectedStyle = stylename;
          onPropertiesChanged("unSelectedStyle");
       }
       
-      override protected function __onMouseClick(param1:MouseEvent) : void
+      override protected function __onMouseClick(event:MouseEvent) : void
       {
-         super.__onMouseClick(param1);
+         super.__onMouseClick(event);
          if(_autoSelect)
          {
             selected = !_selected;

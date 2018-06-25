@@ -41,17 +41,17 @@ package baglocked
          super();
       }
       
-      public function __onTextEnter(param1:KeyboardEvent) : void
+      public function __onTextEnter(event:KeyboardEvent) : void
       {
-         param1.stopImmediatePropagation();
-         if(param1.keyCode == 13)
+         event.stopImmediatePropagation();
+         if(event.keyCode == 13)
          {
             if(_certainBtn.enable)
             {
                __certainBtnClick(null);
             }
          }
-         else if(param1.keyCode == 27)
+         else if(event.keyCode == 27)
          {
             SoundManager.instance.play("008");
             _bagLockedController.closeBagLockedGetFrame();
@@ -59,9 +59,9 @@ package baglocked
          }
       }
       
-      public function set bagLockedController(param1:BagLockedController) : void
+      public function set bagLockedController(value:BagLockedController) : void
       {
-         _bagLockedController = param1;
+         _bagLockedController = value;
       }
       
       override public function dispose() : void
@@ -93,9 +93,9 @@ package baglocked
          addEventListener("keyDown",__getFocus);
       }
       
-      override protected function __onAddToStage(param1:Event) : void
+      override protected function __onAddToStage(event:Event) : void
       {
-         super.__onAddToStage(param1);
+         super.__onAddToStage(event);
          _textInput4.setFocus();
       }
       
@@ -107,9 +107,9 @@ package baglocked
          }
       }
       
-      private function __getFocus(param1:KeyboardEvent) : void
+      private function __getFocus(event:KeyboardEvent) : void
       {
-         param1.stopImmediatePropagation();
+         event.stopImmediatePropagation();
          if(parent && this)
          {
             _textInput4.setFocus();
@@ -147,7 +147,7 @@ package baglocked
          addEvent();
       }
       
-      private function __certainBtnClick(param1:MouseEvent) : void
+      private function __certainBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          removeEventListener("keyDown",__getFocus);
@@ -155,21 +155,21 @@ package baglocked
          _bagLockedController.BagLockedGetFrameController();
       }
       
-      private function __deselectBtnClick(param1:MouseEvent) : void
+      private function __deselectBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _bagLockedController.closeBagLockedGetFrame();
          BaglockedManager.Instance.dispatchEvent(new SetPassEvent("cancelBtn"));
       }
       
-      private function __clearSuccessHandler(param1:BagEvent) : void
+      private function __clearSuccessHandler(event:BagEvent) : void
       {
          _bagLockedController.closeBagLockedGetFrame();
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -179,7 +179,7 @@ package baglocked
          }
       }
       
-      private function __textChange(param1:Event) : void
+      private function __textChange(event:Event) : void
       {
          if(_textInput4.text != "")
          {
@@ -191,7 +191,7 @@ package baglocked
          }
       }
       
-      protected function __forgetPwdBtnClick(param1:MouseEvent) : void
+      protected function __forgetPwdBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          switch(int(BaglockedManager.LOCK_SETTING))

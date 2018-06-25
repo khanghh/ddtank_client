@@ -12,12 +12,12 @@ package dragonBones.textures
       
       public var rotated:Boolean;
       
-      public function TextureData(param1:Rectangle, param2:Rectangle, param3:Boolean)
+      public function TextureData(region:Rectangle, frame:Rectangle, rotated:Boolean)
       {
          super();
-         this.region = param1;
-         this.frame = param2;
-         this.rotated = param3;
+         this.region = region;
+         this.frame = frame;
+         this.rotated = rotated;
       }
    }
 }

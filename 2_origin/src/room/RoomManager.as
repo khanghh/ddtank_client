@@ -91,9 +91,9 @@ package room
          super();
       }
       
-      public static function getTurnTimeByType(param1:int) : int
+      public static function getTurnTimeByType(type:int) : int
       {
-         switch(int(param1) - 1)
+         switch(int(type) - 1)
          {
             case 0:
                return 6;
@@ -119,9 +119,9 @@ package room
          return _instance;
       }
       
-      public function set current(param1:RoomInfo) : void
+      public function set current(val:RoomInfo) : void
       {
-         setCurrent(param1);
+         setCurrent(val);
       }
       
       public function get current() : RoomInfo
@@ -133,18 +133,18 @@ package room
          return _current;
       }
       
-      public function isReset(param1:int) : Boolean
+      public function isReset(type:int) : Boolean
       {
-         return param1 != 15 && param1 != 56;
+         return type != 15 && type != 56 && type != 70;
       }
       
-      public function setCurrent(param1:RoomInfo) : void
+      public function setCurrent(value:RoomInfo) : void
       {
          if(_current)
          {
             _current.dispose();
          }
-         _current = param1;
+         _current = value;
       }
       
       public function isChristmasFight() : Boolean
@@ -158,11 +158,11 @@ package room
          _current.timeType = 3;
       }
       
-      public function setRoomDefyInfo(param1:Array) : void
+      public function setRoomDefyInfo(value:Array) : void
       {
          if(_current)
          {
-            _current.defyInfo = param1;
+            _current.defyInfo = value;
          }
       }
       
@@ -192,30 +192,30 @@ package room
          SocketManager.Instance.addEventListener("gameReconnection",__onReconnection);
       }
       
-      private function __hasPassedWarriorsarena(param1:CrazyTankSocketEvent) : void
+      private function __hasPassedWarriorsarena(event:CrazyTankSocketEvent) : void
       {
-         var _loc2_:BaseAlerFrame = AlertManager.Instance.simpleAlert("",LanguageMgr.GetTranslation("ddt.dungeonroom.pass.warriorsArena",10),LanguageMgr.GetTranslation("ok"),"",false,true,true,2);
-         _loc2_.addEventListener("response",__onResponse);
+         var alert:BaseAlerFrame = AlertManager.Instance.simpleAlert("",LanguageMgr.GetTranslation("ddt.dungeonroom.pass.warriorsArena",10),LanguageMgr.GetTranslation("ok"),"",false,true,true,2);
+         alert.addEventListener("response",__onResponse);
       }
       
-      private function __onResponse(param1:FrameEvent) : void
+      private function __onResponse(event:FrameEvent) : void
       {
-         var _loc2_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc2_.removeEventListener("response",__onResponse);
-         ObjectUtils.disposeObject(_loc2_);
-         _loc2_ = null;
+         var alert:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         alert.removeEventListener("response",__onResponse);
+         ObjectUtils.disposeObject(alert);
+         alert = null;
       }
       
-      private function __isLastForWarriorsarena(param1:CrazyTankSocketEvent) : void
+      private function __isLastForWarriorsarena(e:CrazyTankSocketEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         IsLastMisstion = _loc2_.readBoolean();
+         var pkg:PackageIn = e.pkg;
+         IsLastMisstion = pkg.readBoolean();
       }
       
-      private function __noWarriorsarenaTicket(param1:CrazyTankSocketEvent) : void
+      private function __noWarriorsarenaTicket(event:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:String = _loc3_.readUTF();
+         var pkg:PackageIn = event.pkg;
+         var str:String = pkg.readUTF();
          if(_alert)
          {
             _alert.removeEventListener("response",__alertResponse);
@@ -223,12 +223,12 @@ package room
             _alert.dispose();
             _alert = null;
          }
-         _alert = AlertManager.Instance.simpleAlert("",_loc2_,LanguageMgr.GetTranslation("ok"),"",false,true,true,1);
+         _alert = AlertManager.Instance.simpleAlert("",str,LanguageMgr.GetTranslation("ok"),"",false,true,true,1);
          _alert.moveEnable = false;
          _alert.addEventListener("response",__alertResponse);
       }
       
-      private function __alertResponse(param1:FrameEvent) : void
+      private function __alertResponse(event:FrameEvent) : void
       {
          if(_alert)
          {
@@ -239,65 +239,65 @@ package room
          _alert = null;
       }
       
-      protected function __onReconnection(param1:CrazyTankSocketEvent) : void
+      protected function __onReconnection(event:CrazyTankSocketEvent) : void
       {
-         var _loc2_:CoreManager = new CoreManager();
-         _loc2_.addEventListener("complete",__onLoadCoreComplete);
-         _loc2_.show();
+         var core:CoreManager = new CoreManager();
+         core.addEventListener("complete",__onLoadCoreComplete);
+         core.show();
       }
       
-      protected function __onLoadCoreComplete(param1:Event) : void
+      protected function __onLoadCoreComplete(event:Event) : void
       {
-         var _loc2_:CoreManager = param1.currentTarget as CoreManager;
-         _loc2_.removeEventListener("complete",__onLoadCoreComplete);
+         var core:CoreManager = event.currentTarget as CoreManager;
+         core.removeEventListener("complete",__onLoadCoreComplete);
          SocketManager.Instance.out.sendReconnection();
       }
       
-      private function dataHandler(param1:CrazyTankSocketEvent) : void
+      private function dataHandler(event:CrazyTankSocketEvent) : void
       {
-         pkgs.push(param1);
+         pkgs.push(event);
          dispatchEvent(new Event("updateData"));
       }
       
-      private function getSecondType(param1:int, param2:int) : int
+      private function getSecondType(infoId:int, difficulty:int) : int
       {
-         var _loc3_:int = 0;
-         if(param1 == 1001 || param1 == 1002 || param1 == 1003)
+         var secondType:int = 0;
+         if(infoId == 1001 || infoId == 1002 || infoId == 1003)
          {
-            if(param2 == 0)
+            if(difficulty == 0)
             {
-               _loc3_ = 6;
+               secondType = 6;
             }
-            else if(param2 == 1)
+            else if(difficulty == 1)
             {
-               _loc3_ = 5;
+               secondType = 5;
             }
             else
             {
-               _loc3_ = 3;
+               secondType = 3;
             }
          }
-         else if(param1 == 1004)
+         else if(infoId == 1004)
          {
-            if(param2 == 0)
+            if(difficulty == 0)
             {
-               _loc3_ = 5;
+               secondType = 5;
             }
-            else if(param2 == 1)
+            else if(difficulty == 1)
             {
-               _loc3_ = 4;
+               secondType = 4;
             }
             else
             {
-               _loc3_ = 3;
+               secondType = 3;
             }
          }
-         return _loc3_;
+         return secondType;
       }
       
-      public function set tempInventPlayerID(param1:int) : void
+      public function set tempInventPlayerID(id:int) : void
       {
-         _tempInventPlayerID = param1;
+         _tempInventPlayerID = id;
       }
       
       public function get tempInventPlayerID() : int
@@ -315,9 +315,9 @@ package room
          dispatchEvent(new CEvent("update_battle_remain"));
       }
       
-      public function addBattleSingleRoom(param1:int = 6) : void
+      public function addBattleSingleRoom(type:int = 6) : void
       {
-         _battleType = param1;
+         _battleType = type;
          new HelperUIModuleLoad().loadUIModule(["ddtroom"],enconterUIOnLoaded);
       }
       
@@ -326,17 +326,17 @@ package room
          dispatchEvent(new CEvent("showSingleRoomView"));
       }
       
-      public function findRoomPlayer(param1:int) : RoomPlayer
+      public function findRoomPlayer(id:int) : RoomPlayer
       {
-         var _loc2_:* = null;
+         var roomPlayer:* = null;
          if(_current)
          {
-            _loc2_ = _current.players[param1] as RoomPlayer;
-            if(_loc2_ == null && param1 == this._current.selfRoomPlayer.playerInfo.ID)
+            roomPlayer = _current.players[id] as RoomPlayer;
+            if(roomPlayer == null && id == this._current.selfRoomPlayer.playerInfo.ID)
             {
-               _loc2_ = this._current.selfRoomPlayer;
+               roomPlayer = this._current.selfRoomPlayer;
             }
-            return _loc2_;
+            return roomPlayer;
          }
          return null;
       }
@@ -345,30 +345,30 @@ package room
       {
          var _loc3_:int = 0;
          var _loc2_:* = _current.players;
-         for each(var _loc1_ in _current.players)
+         for each(var player in _current.players)
          {
-            _loc1_.isReady = false;
-            _loc1_.progress = 0;
+            player.isReady = false;
+            player.progress = 0;
             if(_current.type != 1)
             {
-               _loc1_.team = 1;
+               player.team = 1;
             }
          }
       }
       
-      public function isIdenticalRoom(param1:int = 0, param2:String = "") : Boolean
+      public function isIdenticalRoom(id:int = 0, name:String = "") : Boolean
       {
-         var _loc3_:DictionaryData = current.players;
-         var _loc4_:SelfInfo = PlayerManager.Instance.Self;
-         if(param1 == _loc4_.ID)
+         var roomPlayers:DictionaryData = current.players;
+         var selfInfo:SelfInfo = PlayerManager.Instance.Self;
+         if(id == selfInfo.ID)
          {
             return false;
          }
          var _loc7_:int = 0;
-         var _loc6_:* = _loc3_;
-         for each(var _loc5_ in _loc3_)
+         var _loc6_:* = roomPlayers;
+         for each(var i in roomPlayers)
          {
-            if(_loc5_.playerInfo.ID == param1 || _loc5_.playerInfo.NickName == param2)
+            if(i.playerInfo.ID == id || i.playerInfo.NickName == name)
             {
                return true;
             }
@@ -385,9 +385,9 @@ package room
          }
       }
       
-      public function set battleType(param1:int) : void
+      public function set battleType(value:int) : void
       {
-         _battleType = param1;
+         _battleType = value;
       }
       
       public function get battleType() : int
@@ -395,25 +395,24 @@ package room
          return _battleType;
       }
       
-      public function canCloseItem(param1:*) : Boolean
+      public function canCloseItem(target:*) : Boolean
       {
-         var _loc5_:int = 0;
-         var _loc4_:int = param1.place;
-         var _loc3_:uint = 4;
-         var _loc2_:Array = RoomManager.Instance.current.placesState;
-         _loc5_ = 0;
-         while(_loc5_ < 8)
+         var i:int = 0;
+         var place:int = target.place;
+         var openCount:uint = 4;
+         var arr:Array = RoomManager.Instance.current.placesState;
+         for(i = 0; i < 8; )
          {
-            if(_loc5_ % 2 == _loc4_ % 2)
+            if(i % 2 == place % 2)
             {
-               if(_loc2_[_loc5_] == 0)
+               if(arr[i] == 0)
                {
-                  _loc3_--;
+                  openCount--;
                }
             }
-            _loc5_++;
+            i++;
          }
-         if(_loc3_ <= 1)
+         if(openCount <= 1)
          {
             return false;
          }

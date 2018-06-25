@@ -26,33 +26,33 @@ package ddt.view.academyCommon.myAcademy.myAcademyItem
          _sexIcon.visible = false;
       }
       
-      override protected function __removeClick(param1:MouseEvent) : void
+      override protected function __removeClick(event:MouseEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var baseAlerFrame:* = null;
+         var alerFrame:* = null;
          SoundManager.instance.play("008");
-         var _loc4_:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("AlertDialog.Info"));
+         var alertInfo:AlertInfo = new AlertInfo(LanguageMgr.GetTranslation("AlertDialog.Info"));
          if(!getTimerOvertop())
          {
-            _loc4_.data = LanguageMgr.GetTranslation("ddt.view.academyCommon.myAcademy.MyAcademyMasterItem.remove",_info.NickName);
-            _loc3_ = AlertManager.Instance.alert("academySimpleAlert",_loc4_,2);
-            _loc3_.addEventListener("response",__frameEvent);
+            alertInfo.data = LanguageMgr.GetTranslation("ddt.view.academyCommon.myAcademy.MyAcademyMasterItem.remove",_info.NickName);
+            baseAlerFrame = AlertManager.Instance.alert("academySimpleAlert",alertInfo,2);
+            baseAlerFrame.addEventListener("response",__frameEvent);
          }
          else
          {
-            _loc4_.data = LanguageMgr.GetTranslation("ddt.view.academyCommon.myAcademy.MyAcademyApprenticeItem.removeIII",_info.NickName);
-            _loc2_ = AlertManager.Instance.alert("academySimpleAlert",_loc4_,2);
-            _loc2_.addEventListener("response",__alerFrameEvent);
+            alertInfo.data = LanguageMgr.GetTranslation("ddt.view.academyCommon.myAcademy.MyAcademyApprenticeItem.removeIII",_info.NickName);
+            alerFrame = AlertManager.Instance.alert("academySimpleAlert",alertInfo,2);
+            alerFrame.addEventListener("response",__alerFrameEvent);
          }
       }
       
-      override protected function __frameEvent(param1:FrameEvent) : void
+      override protected function __frameEvent(event:FrameEvent) : void
       {
-         var _loc2_:* = null;
-         (param1.currentTarget as BaseAlerFrame).removeEventListener("response",__frameEvent);
-         (param1.currentTarget as BaseAlerFrame).dispose();
+         var alert:* = null;
+         (event.currentTarget as BaseAlerFrame).removeEventListener("response",__frameEvent);
+         (event.currentTarget as BaseAlerFrame).dispose();
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode) - 2)
+         switch(int(event.responseCode) - 2)
          {
             case 0:
             case 1:
@@ -61,9 +61,9 @@ package ddt.view.academyCommon.myAcademy.myAcademyItem
                   submit();
                   break;
                }
-               _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.GoldInadequate"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
-               _loc2_.moveEnable = false;
-               _loc2_.addEventListener("response",__quickBuyResponse);
+               alert = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("AlertDialog.Info"),LanguageMgr.GetTranslation("tank.view.GoldInadequate"),LanguageMgr.GetTranslation("ok"),LanguageMgr.GetTranslation("cancel"),false,false,false,1);
+               alert.moveEnable = false;
+               alert.addEventListener("response",__quickBuyResponse);
                break;
          }
       }

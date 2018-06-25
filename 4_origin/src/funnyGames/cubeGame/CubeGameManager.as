@@ -41,10 +41,10 @@ package funnyGames.cubeGame
       
       public var lock:Boolean = false;
       
-      public function CubeGameManager(param1:SingleTon)
+      public function CubeGameManager(single:SingleTon)
       {
          super();
-         if(!param1)
+         if(!single)
          {
             throw new Error("this is a single instance");
          }
@@ -134,14 +134,14 @@ package funnyGames.cubeGame
          return _status;
       }
       
-      public function addTotalRankData(param1:CubeGameRankData) : void
+      public function addTotalRankData(data:CubeGameRankData) : void
       {
-         _totalRankDataList.push(param1);
+         _totalRankDataList.push(data);
       }
       
-      public function addTodayRankData(param1:CubeGameRankData) : void
+      public function addTodayRankData(data:CubeGameRankData) : void
       {
-         _todayRankDataList.push(param1);
+         _todayRankDataList.push(data);
       }
       
       public function clearTotalRankData() : void
@@ -160,25 +160,24 @@ package funnyGames.cubeGame
          }
       }
       
-      public function getRankDataList(param1:int = 0, param2:int = 16777215, param3:Boolean = false) : Vector.<CubeGameRankData>
+      public function getRankDataList(startIndex:int = 0, endIndex:int = 16777215, isTotal:Boolean = false) : Vector.<CubeGameRankData>
       {
-         var _loc4_:Vector.<CubeGameRankData> = !!param3?_totalRankDataList:_todayRankDataList;
-         param2 = param2 > _loc4_.length?_loc4_.length:param2;
-         return _loc4_.slice(param1,param2);
+         var list:Vector.<CubeGameRankData> = !!isTotal?_totalRankDataList:_todayRankDataList;
+         endIndex = endIndex > list.length?list.length:endIndex;
+         return list.slice(startIndex,endIndex);
       }
       
-      public function getSelfRank(param1:Boolean = false) : int
+      public function getSelfRank(isTotal:Boolean = false) : int
       {
-         var _loc3_:* = 0;
-         var _loc2_:Vector.<CubeGameRankData> = !!param1?_totalRankDataList:_todayRankDataList;
-         _loc3_ = uint(0);
-         while(_loc3_ < _loc2_.length)
+         var i:* = 0;
+         var list:Vector.<CubeGameRankData> = !!isTotal?_totalRankDataList:_todayRankDataList;
+         for(i = uint(0); i < list.length; )
          {
-            if(_loc2_[_loc3_].name == PlayerManager.Instance.Self.NickName)
+            if(list[i].name == PlayerManager.Instance.Self.NickName)
             {
-               return _loc2_[_loc3_].rank;
+               return list[i].rank;
             }
-            _loc3_++;
+            i++;
          }
          return -1;
       }
@@ -194,123 +193,120 @@ package funnyGames.cubeGame
       
       public function requestStartCubeGame() : void
       {
-         var _loc1_:PackageOut = new PackageOut(372);
-         _loc1_.writeByte(9);
-         SocketManager.Instance.out.sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(372);
+         pkg.writeByte(9);
+         SocketManager.Instance.out.sendPackage(pkg);
       }
       
-      private function __onResponseStartCubeGame(param1:PkgEvent) : void
+      private function __onResponseStartCubeGame(pkg:PkgEvent) : void
       {
-         var _loc9_:int = 0;
-         var _loc2_:int = 0;
-         var _loc8_:int = 0;
-         var _loc3_:int = 0;
-         var _loc7_:int = 0;
-         var _loc5_:* = null;
+         var i:int = 0;
+         var id:int = 0;
+         var gridType:int = 0;
+         var column:int = 0;
+         var row:int = 0;
+         var cube:* = null;
          _status = true;
          lock = false;
          this._gameInfo.curWaveNum = 1;
-         this._gameInfo.level = param1.pkg.readInt();
-         this._gameInfo.totalWaveNum = param1.pkg.readInt();
-         this._gameInfo.dailyHighScore = param1.pkg.readInt();
-         this._gameInfo.historyHgihScore = param1.pkg.readInt();
-         var _loc6_:int = param1.pkg.readInt();
-         var _loc4_:Vector.<CubeData> = new Vector.<CubeData>();
-         _loc9_ = 0;
-         while(_loc9_ < _loc6_)
+         this._gameInfo.level = pkg.pkg.readInt();
+         this._gameInfo.totalWaveNum = pkg.pkg.readInt();
+         this._gameInfo.dailyHighScore = pkg.pkg.readInt();
+         this._gameInfo.historyHgihScore = pkg.pkg.readInt();
+         var len:int = pkg.pkg.readInt();
+         var cubes:Vector.<CubeData> = new Vector.<CubeData>();
+         for(i = 0; i < len; )
          {
-            _loc2_ = param1.pkg.readInt();
-            _loc8_ = param1.pkg.readInt();
-            _loc3_ = param1.pkg.readInt();
-            _loc7_ = param1.pkg.readInt();
-            _loc5_ = new CubeData(_loc2_,_loc8_);
-            _loc4_.push(_loc5_);
-            _loc9_++;
+            id = pkg.pkg.readInt();
+            gridType = pkg.pkg.readInt();
+            column = pkg.pkg.readInt();
+            row = pkg.pkg.readInt();
+            cube = new CubeData(id,gridType);
+            cubes.push(cube);
+            i++;
          }
-         this.dispatchEvent(new CubeGameEvent("gameStart",_loc4_));
+         this.dispatchEvent(new CubeGameEvent("gameStart",cubes));
       }
       
-      public function resquestDeleteCube(param1:int) : void
+      public function resquestDeleteCube(id:int) : void
       {
-         if(_lastCubeId == param1)
+         if(_lastCubeId == id)
          {
             return;
          }
-         _lastCubeId = param1;
-         var _loc2_:PackageOut = new PackageOut(372);
-         _loc2_.writeByte(10);
-         _loc2_.writeInt(0);
-         _loc2_.writeInt(0);
-         _loc2_.writeInt(param1);
-         SocketManager.Instance.out.sendPackage(_loc2_);
+         _lastCubeId = id;
+         var pkg:PackageOut = new PackageOut(372);
+         pkg.writeByte(10);
+         pkg.writeInt(0);
+         pkg.writeInt(0);
+         pkg.writeInt(id);
+         SocketManager.Instance.out.sendPackage(pkg);
       }
       
-      private function __onResponseDeleteCube(param1:PkgEvent) : void
+      private function __onResponseDeleteCube(pkg:PkgEvent) : void
       {
-         var _loc5_:* = 0;
-         var _loc2_:int = 0;
-         var _loc4_:int = 0;
-         this._gameInfo.curScore = param1.pkg.readInt();
-         var _loc6_:int = param1.pkg.readInt();
-         var _loc3_:Vector.<Object> = new Vector.<Object>();
-         _loc5_ = uint(0);
-         while(_loc5_ < _loc6_)
+         var j:* = 0;
+         var id:int = 0;
+         var score:int = 0;
+         this._gameInfo.curScore = pkg.pkg.readInt();
+         var size:int = pkg.pkg.readInt();
+         var deathDataList:Vector.<Object> = new Vector.<Object>();
+         for(j = uint(0); j < size; )
          {
-            _loc2_ = param1.pkg.readInt();
-            _loc4_ = param1.pkg.readInt();
-            _loc3_.push({
-               "id":_loc2_,
-               "score":_loc4_
+            id = pkg.pkg.readInt();
+            score = pkg.pkg.readInt();
+            deathDataList.push({
+               "id":id,
+               "score":score
             });
-            _loc5_++;
+            j++;
          }
-         dispatchEvent(new CubeGameEvent("cubeDeath",_loc3_));
+         dispatchEvent(new CubeGameEvent("cubeDeath",deathDataList));
       }
       
-      private function __onResponseGenerateCube(param1:PkgEvent) : void
+      private function __onResponseGenerateCube(pkg:PkgEvent) : void
       {
-         var _loc9_:int = 0;
-         var _loc2_:int = 0;
-         var _loc8_:int = 0;
-         var _loc3_:int = 0;
-         var _loc7_:int = 0;
-         var _loc5_:* = null;
+         var i:int = 0;
+         var id:int = 0;
+         var gridType:int = 0;
+         var column:int = 0;
+         var row:int = 0;
+         var cube:* = null;
          if(lock)
          {
             return;
          }
-         this._gameInfo.curWaveNum = param1.pkg.readInt() + 1;
-         var _loc6_:int = param1.pkg.readInt();
-         var _loc4_:Vector.<CubeData> = new Vector.<CubeData>();
-         _loc9_ = 0;
-         while(_loc9_ < _loc6_)
+         this._gameInfo.curWaveNum = pkg.pkg.readInt() + 1;
+         var len:int = pkg.pkg.readInt();
+         var cubes:Vector.<CubeData> = new Vector.<CubeData>();
+         for(i = 0; i < len; )
          {
-            _loc2_ = param1.pkg.readInt();
-            _loc8_ = param1.pkg.readInt();
-            _loc3_ = param1.pkg.readInt();
-            _loc7_ = param1.pkg.readInt();
-            _loc5_ = new CubeData(_loc2_,_loc8_);
-            _loc4_.push(_loc5_);
-            _loc9_++;
+            id = pkg.pkg.readInt();
+            gridType = pkg.pkg.readInt();
+            column = pkg.pkg.readInt();
+            row = pkg.pkg.readInt();
+            cube = new CubeData(id,gridType);
+            cubes.push(cube);
+            i++;
          }
-         this.dispatchEvent(new CubeGameEvent("cubeGenerate",_loc4_));
+         this.dispatchEvent(new CubeGameEvent("cubeGenerate",cubes));
       }
       
-      private function __onResponseRandomCube(param1:PkgEvent) : void
+      private function __onResponseRandomCube(pkg:PkgEvent) : void
       {
-         var _loc6_:int = param1.pkg.readInt();
-         var _loc3_:int = param1.pkg.readInt();
-         var _loc5_:int = param1.pkg.readInt();
-         var _loc2_:int = param1.pkg.readInt();
-         var _loc4_:CubeData = new CubeData(_loc2_,_loc6_);
+         var gridType:int = pkg.pkg.readInt();
+         var column:int = pkg.pkg.readInt();
+         var row:int = pkg.pkg.readInt();
+         var id:int = pkg.pkg.readInt();
+         var cube:CubeData = new CubeData(id,gridType);
          this.dispatchEvent(new CubeGameEvent("cubeRandom",{
-            "cubeData":_loc4_,
-            "column":_loc3_,
-            "row":_loc5_
+            "cubeData":cube,
+            "column":column,
+            "row":row
          }));
       }
       
-      private function __onResponseGameResult(param1:PkgEvent) : void
+      private function __onResponseGameResult(pkg:PkgEvent) : void
       {
          if(checkNeedRequestRankInfo())
          {
@@ -318,36 +314,36 @@ package funnyGames.cubeGame
             FunnyGamesManager.getInstance().requestRankInfo(3,1);
          }
          _status = false;
-         var _loc2_:Boolean = param1.pkg.readBoolean();
-         this._gameInfo.curScore = param1.pkg.readInt();
-         this.dispatchEvent(new CubeGameEvent("gameResult",_loc2_));
+         var result:Boolean = pkg.pkg.readBoolean();
+         this._gameInfo.curScore = pkg.pkg.readInt();
+         this.dispatchEvent(new CubeGameEvent("gameResult",result));
       }
       
       public function requestExitCubeGame() : void
       {
-         var _loc1_:PackageOut = new PackageOut(372);
-         _loc1_.writeByte(14);
-         _loc1_.writeInt(0);
-         SocketManager.Instance.out.sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(372);
+         pkg.writeByte(14);
+         pkg.writeInt(0);
+         SocketManager.Instance.out.sendPackage(pkg);
       }
       
       public function requestRestartGame() : void
       {
-         var _loc1_:PackageOut = new PackageOut(372);
-         _loc1_.writeByte(14);
-         _loc1_.writeInt(1);
-         SocketManager.Instance.out.sendPackage(_loc1_);
+         var pkg:PackageOut = new PackageOut(372);
+         pkg.writeByte(14);
+         pkg.writeInt(1);
+         SocketManager.Instance.out.sendPackage(pkg);
       }
       
-      private function __onResponseGameExit(param1:PkgEvent) : void
+      private function __onResponseGameExit(pkg:PkgEvent) : void
       {
          gameInfo.curWaveNum = 0;
          gameInfo.totalWaveNum = 0;
          gameInfo.curScore = 0;
          gameInfo.level = 0;
          _lastCubeId = 0;
-         var _loc2_:int = param1.pkg.readInt();
-         switch(int(_loc2_))
+         var type:int = pkg.pkg.readInt();
+         switch(int(type))
          {
             default:
             case 1:

@@ -88,9 +88,9 @@ package room.view.chooseMap
          _limitLevelText.visible = false;
       }
       
-      public function setLimitLevel(param1:int, param2:int) : void
+      public function setLimitLevel(min:int, max:int) : void
       {
-         _limitLevelText.text = LanguageMgr.GetTranslation("room.mapItem.limitLevel.Text",param1,param2);
+         _limitLevelText.text = LanguageMgr.GetTranslation("room.mapItem.limitLevel.Text",min,max);
       }
       
       protected function initEvents() : void
@@ -119,18 +119,18 @@ package room.view.chooseMap
          return PathManager.SITE_MAIN + "image/map/" + _mapId.toString() + "/samll_map_s.jpg";
       }
       
-      protected function __onComplete(param1:LoaderEvent) : void
+      protected function __onComplete(evt:LoaderEvent) : void
       {
-         var _loc2_:* = null;
+         var bm:* = null;
          ObjectUtils.disposeAllChildren(_mapIconContaioner);
          _loader.removeEventListener("complete",__onComplete);
          _loader = null;
-         if(BaseLoader(param1.loader).isSuccess)
+         if(BaseLoader(evt.loader).isSuccess)
          {
-            _loc2_ = Bitmap(param1.loader.content);
-            _loc2_.width = _bg.width;
-            _loc2_.height = _bg.height;
-            _mapIconContaioner.addChild(_loc2_);
+            bm = Bitmap(evt.loader.content);
+            bm.width = _bg.width;
+            bm.height = _bg.height;
+            _mapIconContaioner.addChild(bm);
             _limitLevel.visible = true;
          }
       }
@@ -140,40 +140,39 @@ package room.view.chooseMap
          _selectedBg.visible = _selected;
       }
       
-      private function __onClick(param1:MouseEvent) : void
+      private function __onClick(evt:MouseEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc5_:Boolean = false;
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
+         var dungeon:* = null;
+         var currentRoom:* = null;
+         var bool:Boolean = false;
+         var i:int = 0;
+         var rp:* = null;
          if(_mapId > -1)
          {
             SoundManager.instance.play("045");
-            _loc4_ = MapManager.getDungeonInfo(_mapId) as DungeonInfo;
-            if(_loc4_ && _loc4_.LevelLimits > PlayerManager.Instance.Self.Grade)
+            dungeon = MapManager.getDungeonInfo(_mapId) as DungeonInfo;
+            if(dungeon && dungeon.LevelLimits > PlayerManager.Instance.Self.Grade)
             {
-               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.room.RoomMapSetPanelDuplicate.clew",_loc4_.LevelLimits));
+               MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.room.RoomMapSetPanelDuplicate.clew",dungeon.LevelLimits));
                return;
             }
-            _loc3_ = RoomManager.Instance.current;
-            if(_loc4_ && _loc3_ && _loc3_.currentPlayers)
+            currentRoom = RoomManager.Instance.current;
+            if(dungeon && currentRoom && currentRoom.currentPlayers)
             {
-               _loc5_ = true;
-               _loc6_ = 0;
-               while(_loc6_ < _loc3_.currentPlayers.length)
+               bool = true;
+               for(i = 0; i < currentRoom.currentPlayers.length; )
                {
-                  _loc2_ = _loc3_.currentPlayers[_loc6_];
-                  if(_loc4_.LevelLimits > _loc2_.playerInfo.Grade)
+                  rp = currentRoom.currentPlayers[i];
+                  if(dungeon.LevelLimits > rp.playerInfo.Grade)
                   {
-                     _loc5_ = false;
+                     bool = false;
                      break;
                   }
-                  _loc6_++;
+                  i++;
                }
-               if(!_loc5_)
+               if(!bool)
                {
-                  MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.room.RoomMapSetPanelDuplicate.clew2",_loc4_.LevelLimits));
+                  MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.room.RoomMapSetPanelDuplicate.clew2",dungeon.LevelLimits));
                   return;
                }
             }
@@ -215,13 +214,13 @@ package room.view.chooseMap
          return _selected;
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         if(_selected == param1)
+         if(_selected == value)
          {
             return;
          }
-         _selected = param1;
+         _selected = value;
          updateSelectState();
          if(_selected)
          {
@@ -234,9 +233,9 @@ package room.view.chooseMap
          return _mapId;
       }
       
-      public function set mapId(param1:int) : void
+      public function set mapId(value:int) : void
       {
-         _mapId = param1;
+         _mapId = value;
          updateMapIcon();
          buttonMode = mapId != 10000;
       }

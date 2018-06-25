@@ -40,11 +40,11 @@ package store.newFusion.view
       
       private var _selectedValue:FusionNewVo;
       
-      public function FusionNewUnitView(param1:int, param2:FusionNewRightView)
+      public function FusionNewUnitView(index:int, rightView:FusionNewRightView)
       {
          super();
-         _index = param1;
-         _rightView = param2;
+         _index = index;
+         _rightView = rightView;
          initView();
          initEvent();
          initData();
@@ -67,20 +67,20 @@ package store.newFusion.view
       
       private function autoSelect() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:IListModel = _list.list.model;
-         var _loc3_:int = _loc1_.getSize();
-         if(_loc3_ > 0)
+         var tmpSelectedIndex:int = 0;
+         var intPoint:* = null;
+         var _model:IListModel = _list.list.model;
+         var len:int = _model.getSize();
+         if(len > 0)
          {
             if(!_selectedValue)
             {
-               _selectedValue = _loc1_.getElementAt(0) as FusionNewVo;
+               _selectedValue = _model.getElementAt(0) as FusionNewVo;
             }
-            _loc4_ = _loc1_.indexOf(_selectedValue);
-            _loc2_ = new IntPoint(0,_loc1_.getCellPosFromIndex(_loc4_));
-            _list.list.viewPosition = _loc2_;
-            _list.list.currentSelectedIndex = _loc4_;
+            tmpSelectedIndex = _model.indexOf(_selectedValue);
+            intPoint = new IntPoint(0,_model.getCellPosFromIndex(tmpSelectedIndex));
+            _list.list.viewPosition = intPoint;
+            _list.list.currentSelectedIndex = tmpSelectedIndex;
          }
          else
          {
@@ -89,9 +89,9 @@ package store.newFusion.view
          _rightView.refreshView(_selectedValue);
       }
       
-      public function set isFilter(param1:Boolean) : void
+      public function set isFilter(value:Boolean) : void
       {
-         _isFilter = param1;
+         _isFilter = value;
          refreshList();
       }
       
@@ -105,30 +105,29 @@ package store.newFusion.view
       
       private function refreshList() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:Array = [];
+         var len:int = 0;
+         var i:int = 0;
+         var tmpArray:Array = [];
          if(_isFilter)
          {
-            _loc1_ = _dataList.length;
-            _loc2_ = 0;
-            while(_loc2_ < _loc1_)
+            len = _dataList.length;
+            for(i = 0; i < len; )
             {
-               if((_dataList[_loc2_] as FusionNewVo).canFusionCount > 0)
+               if((_dataList[i] as FusionNewVo).canFusionCount > 0)
                {
-                  _loc3_.push(_dataList[_loc2_]);
+                  tmpArray.push(_dataList[i]);
                }
-               _loc2_++;
+               i++;
             }
          }
          else
          {
-            _loc3_ = _dataList;
+            tmpArray = _dataList;
          }
          _list.vectorListModel.clear();
-         _list.vectorListModel.appendAll(_loc3_);
+         _list.vectorListModel.appendAll(tmpArray);
          _list.list.updateListView();
-         if(_selectedValue && _loc3_.indexOf(_selectedValue) == -1)
+         if(_selectedValue && tmpArray.indexOf(_selectedValue) == -1)
          {
             _selectedValue = null;
          }
@@ -158,22 +157,22 @@ package store.newFusion.view
          PlayerManager.Instance.Self.PropBag.addEventListener("update",updateBag);
       }
       
-      private function updateBag(param1:BagEvent) : void
+      private function updateBag(evt:BagEvent) : void
       {
          refreshList();
       }
       
-      private function __itemClick(param1:ListItemEvent) : void
+      private function __itemClick(event:ListItemEvent) : void
       {
          SoundManager.instance.play("008");
-         _selectedValue = param1.cellValue as FusionNewVo;
+         _selectedValue = event.cellValue as FusionNewVo;
          if(_rightView)
          {
             _rightView.refreshView(_selectedValue);
          }
       }
       
-      private function clickHandler(param1:MouseEvent) : void
+      private function clickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          extendSelecteTheFirst();
@@ -198,54 +197,54 @@ package store.newFusion.view
       
       private function getDataList() : Array
       {
-         var _loc1_:* = null;
+         var tmp:* = null;
          switch(int(_index) - 1)
          {
             case 0:
-               _loc1_ = FusionNewManager.instance.getDataListByType(1);
+               tmp = FusionNewManager.instance.getDataListByType(1);
                break;
             case 1:
-               _loc1_ = FusionNewManager.instance.getDataListByType(2);
+               tmp = FusionNewManager.instance.getDataListByType(2);
                break;
             case 2:
-               _loc1_ = FusionNewManager.instance.getDataListByType(3);
+               tmp = FusionNewManager.instance.getDataListByType(3);
                break;
             case 3:
-               _loc1_ = FusionNewManager.instance.getDataListByType(4);
+               tmp = FusionNewManager.instance.getDataListByType(4);
                break;
             case 4:
-               _loc1_ = FusionNewManager.instance.getDataListByType(5);
+               tmp = FusionNewManager.instance.getDataListByType(5);
                break;
             case 5:
-               _loc1_ = FusionNewManager.instance.getDataListByType(6);
+               tmp = FusionNewManager.instance.getDataListByType(6);
          }
-         return !!_loc1_?_loc1_:[];
+         return !!tmp?tmp:[];
       }
       
       private function getSelectedBtn() : SelectedButton
       {
-         var _loc1_:* = null;
+         var tmp:* = null;
          switch(int(_index) - 1)
          {
             case 0:
-               _loc1_ = ComponentFactory.Instance.creatComponentByStylename("store.newFusion.weaponBtn");
+               tmp = ComponentFactory.Instance.creatComponentByStylename("store.newFusion.weaponBtn");
                break;
             case 1:
-               _loc1_ = ComponentFactory.Instance.creatComponentByStylename("store.newFusion.jewellryBtn");
+               tmp = ComponentFactory.Instance.creatComponentByStylename("store.newFusion.jewellryBtn");
                break;
             case 2:
-               _loc1_ = ComponentFactory.Instance.creatComponentByStylename("store.newFusion.avatarBtn");
+               tmp = ComponentFactory.Instance.creatComponentByStylename("store.newFusion.avatarBtn");
                break;
             case 3:
-               _loc1_ = ComponentFactory.Instance.creatComponentByStylename("store.newFusion.drillBtn");
+               tmp = ComponentFactory.Instance.creatComponentByStylename("store.newFusion.drillBtn");
                break;
             case 4:
-               _loc1_ = ComponentFactory.Instance.creatComponentByStylename("store.newFusion.combineBtn");
+               tmp = ComponentFactory.Instance.creatComponentByStylename("store.newFusion.combineBtn");
                break;
             case 5:
-               _loc1_ = ComponentFactory.Instance.creatComponentByStylename("store.newFusion.otherBtn");
+               tmp = ComponentFactory.Instance.creatComponentByStylename("store.newFusion.otherBtn");
          }
-         return _loc1_;
+         return tmp;
       }
       
       override public function get height() : Number

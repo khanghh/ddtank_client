@@ -31,15 +31,15 @@ package ddt.view
          return _instance;
       }
       
-      private static function __onCloseClick(param1:Event) : void
+      private static function __onCloseClick(event:Event) : void
       {
          _instance.dispatchEvent(new Event("close"));
       }
       
-      public function show(param1:Boolean = true, param2:Boolean = true) : void
+      public function show(blackGound:Boolean = true, autoRemoveChild:Boolean = true) : void
       {
          setLoadingAlpha(1);
-         _loadingInstance.show(param1,param2);
+         _loadingInstance.show(blackGound,autoRemoveChild);
       }
       
       public function hide() : void
@@ -52,9 +52,9 @@ package ddt.view
          return _loadingInstance.isShow;
       }
       
-      public function set progress(param1:int) : void
+      public function set progress(p:int) : void
       {
-         _loadingInstance.progress = param1;
+         _loadingInstance.progress = p;
       }
       
       public function get progress() : int
@@ -62,9 +62,9 @@ package ddt.view
          return _loadingInstance.progress;
       }
       
-      public function setLoadingAlpha(param1:*) : void
+      public function setLoadingAlpha(value:*) : void
       {
-         _loadingInstance.alpha = param1;
+         _loadingInstance.alpha = value;
       }
    }
 }

@@ -49,9 +49,9 @@ package demonChiYou.view
             "x":647,
             "y":36
          },LanguageMgr.GetTranslation("store.view.HelpButtonText"),"Demonchiyou.help",438,550);
-         var _loc1_:DemonChiYouModel = DemonChiYouManager.instance.model;
-         var _loc2_:int = _loc1_.rankInfo.myConsortiaRank;
-         if(_loc2_ > 0 && _loc2_ < 4)
+         var model:DemonChiYouModel = DemonChiYouManager.instance.model;
+         var myConsortiaRank:int = model.rankInfo.myConsortiaRank;
+         if(myConsortiaRank > 0 && myConsortiaRank < 4)
          {
             UICreatShortcut.creatAndAdd("demonChiYou.resultTitleImage",_container);
          }
@@ -69,45 +69,44 @@ package demonChiYou.view
       
       private function updateView() : void
       {
-         var _loc2_:* = null;
-         var _loc5_:* = null;
-         var _loc6_:* = null;
-         var _loc1_:* = null;
-         var _loc4_:DemonChiYouModel = DemonChiYouManager.instance.model;
-         var _loc3_:Array = _loc4_.shopInfoArr;
+         var itemData:* = null;
+         var inventoryItemInfo:* = null;
+         var bg:* = null;
+         var bagCell:* = null;
+         var model:DemonChiYouModel = DemonChiYouManager.instance.model;
+         var shopInfoArr:Array = model.shopInfoArr;
          _myGetBagCellHBox.removeAllChild();
-         var _loc8_:int = 0;
+         var i:int = 0;
          if(_resultItemArr)
          {
             var _loc10_:int = 0;
             var _loc9_:* = _resultItemArr;
-            for each(var _loc7_ in _resultItemArr)
+            for each(var resultItem in _resultItemArr)
             {
-               ObjectUtils.disposeObject(_loc7_);
+               ObjectUtils.disposeObject(resultItem);
             }
          }
          _resultItemArr = [];
-         _loc8_ = 0;
-         while(_loc8_ < _loc3_.length)
+         for(i = 0; i < shopInfoArr.length; )
          {
-            _loc2_ = _loc3_[_loc8_];
-            if(_loc2_["HasBuy"] && PlayerManager.Instance.Self.ID == _loc2_["PlayerId"])
+            itemData = shopInfoArr[i];
+            if(itemData["HasBuy"] && PlayerManager.Instance.Self.ID == itemData["PlayerId"])
             {
-               _loc5_ = _loc2_["InventoryItemInfo"];
-               _loc6_ = ComponentFactory.Instance.creatBitmap("asset.horse.frame.itemBg");
-               _loc1_ = new BagCell(_loc8_,_loc5_,true,_loc6_,false);
-               _loc1_.PicPos = new Point(9,9);
-               _loc1_.setContentSize(59,59);
-               _loc1_.setCount(_loc5_.Count);
-               _loc1_.refreshTbxPos();
-               _myGetBagCellHBox.addChild(_loc1_);
+               inventoryItemInfo = itemData["InventoryItemInfo"];
+               bg = ComponentFactory.Instance.creatBitmap("asset.horse.frame.itemBg");
+               bagCell = new BagCell(i,inventoryItemInfo,true,bg,false);
+               bagCell.PicPos = new Point(9,9);
+               bagCell.setContentSize(59,59);
+               bagCell.setCount(inventoryItemInfo.Count);
+               bagCell.refreshTbxPos();
+               _myGetBagCellHBox.addChild(bagCell);
             }
-            _loc7_ = new RewardResultItem(_loc8_);
-            _loc7_.x = 10;
-            _loc7_.y = 200 + 32 * _loc8_;
-            _resultItemArr.push(_loc7_);
-            _container.addChild(_loc7_);
-            _loc8_++;
+            resultItem = new RewardResultItem(i);
+            resultItem.x = 10;
+            resultItem.y = 200 + 32 * i;
+            _resultItemArr.push(resultItem);
+            _container.addChild(resultItem);
+            i++;
          }
          _myGetBagCellHBox.x = 344 - _myGetBagCellHBox.width / 2;
          _buyBtn.enable = DemonChiYouManager.instance.canBuyItem();
@@ -126,18 +125,18 @@ package demonChiYou.view
          DemonChiYouManager.instance.removeEventListener("event_shop_info_back",onShopInfoBack);
       }
       
-      private function onClick(param1:MouseEvent) : void
+      private function onClick(evt:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          DemonChiYouManager.instance.showFrame(3);
       }
       
-      private function onBuyItemBack(param1:Event) : void
+      private function onBuyItemBack(evt:Event) : void
       {
          updateView();
       }
       
-      private function onShopInfoBack(param1:Event) : void
+      private function onShopInfoBack(evt:Event) : void
       {
          initView();
          initEvent();
@@ -147,9 +146,9 @@ package demonChiYou.view
          }
       }
       
-      private function responseHandler(param1:FrameEvent) : void
+      private function responseHandler(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             SoundManager.instance.playButtonSound();
             DemonChiYouController.instance.disposeRewardResultFrame();

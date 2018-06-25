@@ -111,11 +111,11 @@ package Indiana
          _contain.addChild(_bangState);
       }
       
-      public function setInfo(param1:IndianaShopItemInfo) : void
+      public function setInfo(info:IndianaShopItemInfo) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         _info = param1;
+         var str:* = null;
+         var tempinfo:* = null;
+         _info = info;
          if(_info)
          {
             _itemInfo = IndianaDataManager.instance.getIndianaGoodsItemInfoByshopId(_info.ShopId);
@@ -138,8 +138,8 @@ package Indiana
             {
                _attribute.visible = true;
             }
-            _loc3_ = _itemInfo.Desc == ""?LanguageMgr.GetTranslation("ddt.fram.helperItem.Text"):_itemInfo.Desc;
-            _disValue.setDis(_loc3_);
+            str = _itemInfo.Desc == ""?LanguageMgr.GetTranslation("ddt.fram.helperItem.Text"):_itemInfo.Desc;
+            _disValue.setDis(str);
             if(_disValue.textField.textWidth > 180)
             {
                _disValue.setWidth(_disValue.textField.textWidth + 10);
@@ -150,52 +150,52 @@ package Indiana
             }
             if(_info.Validity == 0)
             {
-               _loc3_ = LanguageMgr.GetTranslation("shop.ShopIIShoppingCarItem.forever");
+               str = LanguageMgr.GetTranslation("shop.ShopIIShoppingCarItem.forever");
             }
             else
             {
-               _loc3_ = _info.Validity.toString();
+               str = _info.Validity.toString();
             }
-            _validityValue.setDis(_loc3_);
+            _validityValue.setDis(str);
             if(_info.IsBind == 1)
             {
-               _loc3_ = LanguageMgr.GetTranslation("Indiana.banding");
+               str = LanguageMgr.GetTranslation("Indiana.banding");
             }
             else
             {
-               _loc3_ = LanguageMgr.GetTranslation("Indiana.notBanding");
+               str = LanguageMgr.GetTranslation("Indiana.notBanding");
             }
-            _bangvalu.setDis(_loc3_);
-            _loc2_ = ItemManager.Instance.getTemplateById(_itemInfo.GoodsID);
-            setAttribute(_loc2_);
+            _bangvalu.setDis(str);
+            tempinfo = ItemManager.Instance.getTemplateById(_itemInfo.GoodsID);
+            setAttribute(tempinfo);
          }
       }
       
       private function clearContain() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:* = null;
+         var len:int = 0;
+         var displayer:* = null;
          if(_vbox)
          {
             _vbox.clearAllChild();
          }
          if(_petskillContain)
          {
-            _loc1_ = _petskillContain.numChildren;
+            len = _petskillContain.numChildren;
             while(_petskillContain.numChildren > 0)
             {
-               _loc2_ = _petskillContain.removeChildAt(0);
-               ObjectUtils.disposeObject(_loc2_);
-               _loc2_ = null;
+               displayer = _petskillContain.removeChildAt(0);
+               ObjectUtils.disposeObject(displayer);
+               displayer = null;
             }
          }
       }
       
-      private function setAttribute(param1:ItemTemplateInfo) : void
+      private function setAttribute(value:ItemTemplateInfo) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         if(param1)
+         var attributeItem:* = null;
+         var str:* = null;
+         if(value)
          {
             clearContain();
             if(_itemInfo.GoodType == 2)
@@ -208,44 +208,44 @@ package Indiana
             }
             else
             {
-               if(_itemInfo.GoodType == 1 && param1.Property7 != "")
+               if(_itemInfo.GoodType == 1 && value.Property7 != "")
                {
-                  _loc3_ = new AttributeItem();
-                  _loc2_ = LanguageMgr.GetTranslation("damage") + ":" + param1.Property7;
-                  _loc3_.setDis(_loc2_);
-                  _vbox.addChild(_loc3_);
+                  attributeItem = new AttributeItem();
+                  str = LanguageMgr.GetTranslation("damage") + ":" + value.Property7;
+                  attributeItem.setDis(str);
+                  _vbox.addChild(attributeItem);
                }
-               if(param1.Attack > 0)
+               if(value.Attack > 0)
                {
-                  _loc3_ = new AttributeItem();
-                  _loc2_ = LanguageMgr.GetTranslation("activationPotential.propertyDescTxt1") + ":" + param1.Attack;
-                  _loc3_.setDis(_loc2_);
-                  _vbox.addChild(_loc3_);
+                  attributeItem = new AttributeItem();
+                  str = LanguageMgr.GetTranslation("activationPotential.propertyDescTxt1") + ":" + value.Attack;
+                  attributeItem.setDis(str);
+                  _vbox.addChild(attributeItem);
                }
-               if(param1.Defence > 0)
+               if(value.Defence > 0)
                {
-                  _loc3_ = new AttributeItem();
-                  _loc2_ = LanguageMgr.GetTranslation("activationPotential.propertyDescTxt2") + ":" + param1.Defence;
-                  _loc3_.setDis(_loc2_);
-                  _vbox.addChild(_loc3_);
+                  attributeItem = new AttributeItem();
+                  str = LanguageMgr.GetTranslation("activationPotential.propertyDescTxt2") + ":" + value.Defence;
+                  attributeItem.setDis(str);
+                  _vbox.addChild(attributeItem);
                }
-               if(param1.Agility > 0)
+               if(value.Agility > 0)
                {
-                  _loc3_ = new AttributeItem();
-                  _loc2_ = LanguageMgr.GetTranslation("activationPotential.propertyDescTxt3") + ":" + param1.Agility;
-                  _loc3_.setDis(_loc2_);
-                  _vbox.addChild(_loc3_);
+                  attributeItem = new AttributeItem();
+                  str = LanguageMgr.GetTranslation("activationPotential.propertyDescTxt3") + ":" + value.Agility;
+                  attributeItem.setDis(str);
+                  _vbox.addChild(attributeItem);
                }
-               if(param1.Luck > 0)
+               if(value.Luck > 0)
                {
-                  _loc3_ = new AttributeItem();
-                  _loc2_ = LanguageMgr.GetTranslation("activationPotential.propertyDescTxt4") + ":" + param1.Luck;
-                  _loc3_.setDis(_loc2_);
-                  _vbox.addChild(_loc3_);
+                  attributeItem = new AttributeItem();
+                  str = LanguageMgr.GetTranslation("activationPotential.propertyDescTxt4") + ":" + value.Luck;
+                  attributeItem.setDis(str);
+                  _vbox.addChild(attributeItem);
                }
-               _loc3_ = new AttributeItem();
-               _loc3_.visible = false;
-               _vbox.addChild(_loc3_);
+               attributeItem = new AttributeItem();
+               attributeItem.visible = false;
+               _vbox.addChild(attributeItem);
             }
          }
          this._scoller.displayObjectViewport.invalidateView();
@@ -253,93 +253,91 @@ package Indiana
       
       private function setHorse() : void
       {
-         var _loc3_:* = null;
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc1_:Array = LanguageMgr.GetTranslation("horse.horsePicCherish.peopertyTxt").split(",");
-         var _loc4_:Array = HorseControl.instance.getHorsePicCherishAddProperty(int(_itemInfo.Remark));
-         _loc5_ = 0;
-         while(_loc5_ < _loc1_.length)
+         var attributeItem:* = null;
+         var i:int = 0;
+         var str:* = null;
+         var pTxtList:Array = LanguageMgr.GetTranslation("horse.horsePicCherish.peopertyTxt").split(",");
+         var pValueList:Array = HorseControl.instance.getHorsePicCherishAddProperty(int(_itemInfo.Remark));
+         for(i = 0; i < pTxtList.length; )
          {
-            if(int(_loc4_[_loc5_]) > 0)
+            if(int(pValueList[i]) > 0)
             {
-               _loc3_ = new AttributeItem();
-               _loc2_ = _loc1_[_loc5_] + _loc4_[_loc5_];
-               _loc3_.setDis(_loc2_);
-               _vbox.addChild(_loc3_);
+               attributeItem = new AttributeItem();
+               str = pTxtList[i] + pValueList[i];
+               attributeItem.setDis(str);
+               _vbox.addChild(attributeItem);
             }
-            _loc5_++;
+            i++;
          }
-         _loc3_ = new AttributeItem();
-         _loc3_.visible = false;
-         _vbox.addChild(_loc3_);
+         attributeItem = new AttributeItem();
+         attributeItem.visible = false;
+         _vbox.addChild(attributeItem);
       }
       
       private function setPetSkill() : void
       {
-         var _loc6_:* = null;
-         var _loc7_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:* = null;
-         var _loc2_:int = _itemInfo.Remark.split("|")[0];
-         var _loc1_:Array = _itemInfo.Remark.split("|")[1].split(",");
-         var _loc5_:int = _loc1_.length;
-         _loc7_ = 0;
-         while(_loc7_ < _loc5_)
+         var petInfo:* = null;
+         var i:int = 0;
+         var item:* = null;
+         var temp:* = null;
+         var petId:int = _itemInfo.Remark.split("|")[0];
+         var skillIds:Array = _itemInfo.Remark.split("|")[1].split(",");
+         var len:int = skillIds.length;
+         for(i = 0; i < len; )
          {
-            _loc6_ = PetSkillManager.getSkillByID(_loc1_[_loc7_]);
-            _loc3_ = new IndianaSkillItem(_loc6_,_loc7_,false);
+            petInfo = PetSkillManager.getSkillByID(skillIds[i]);
+            item = new IndianaSkillItem(petInfo,i,false);
             var _loc8_:* = 0.7;
-            _loc3_.scaleY = _loc8_;
-            _loc3_.scaleX = _loc8_;
-            _loc3_.isLock = false;
-            _loc3_.x = 63 * (_loc7_ % 4);
-            _loc3_.y = 63 * (int(_loc7_ / 4));
-            _loc3_.McType = 2;
-            _loc3_.setExclusiveSkillMc();
-            _petskillContain.addChild(_loc3_);
-            _loc7_++;
+            item.scaleY = _loc8_;
+            item.scaleX = _loc8_;
+            item.isLock = false;
+            item.x = 63 * (i % 4);
+            item.y = 63 * (int(i / 4));
+            item.McType = 2;
+            item.setExclusiveSkillMc();
+            _petskillContain.addChild(item);
+            i++;
          }
-         if(_loc5_ > 0)
+         if(len > 0)
          {
-            _loc4_ = new AttributeItem();
-            _loc4_.visible = false;
-            _loc4_.y = 63 * Math.ceil(_loc5_ / 4);
-            _petskillContain.addChild(_loc4_);
+            temp = new AttributeItem();
+            temp.visible = false;
+            temp.y = 63 * Math.ceil(len / 4);
+            _petskillContain.addChild(temp);
          }
       }
       
-      private function addBottomItem(param1:DisplayObject) : void
+      private function addBottomItem(contain:DisplayObject) : void
       {
       }
       
-      private function getType(param1:int) : String
+      private function getType(type:int) : String
       {
-         var _loc2_:* = null;
-         switch(int(param1) - 1)
+         var str:* = null;
+         switch(int(type) - 1)
          {
             case 0:
-               _loc2_ = LanguageMgr.GetTranslation("tank.auctionHouse.view.BrowseLeftMenuView.Weapon");
+               str = LanguageMgr.GetTranslation("tank.auctionHouse.view.BrowseLeftMenuView.Weapon");
                break;
             case 1:
-               _loc2_ = LanguageMgr.GetTranslation("Indiana.detaile.pet");
+               str = LanguageMgr.GetTranslation("Indiana.detaile.pet");
                break;
             case 2:
-               _loc2_ = LanguageMgr.GetTranslation("tank.auctionHouse.view.BrowseLeftMenuView.Prop");
+               str = LanguageMgr.GetTranslation("tank.auctionHouse.view.BrowseLeftMenuView.Prop");
                break;
             case 3:
-               _loc2_ = LanguageMgr.GetTranslation("tank.data.EquipType.wing");
+               str = LanguageMgr.GetTranslation("tank.data.EquipType.wing");
                break;
             case 4:
-               _loc2_ = LanguageMgr.GetTranslation("playerDress.sort1");
+               str = LanguageMgr.GetTranslation("playerDress.sort1");
                break;
             case 5:
-               _loc2_ = LanguageMgr.GetTranslation("tank.data.EquipType.offhand");
+               str = LanguageMgr.GetTranslation("tank.data.EquipType.offhand");
                break;
             case 6:
-               _loc2_ = LanguageMgr.GetTranslation("tank.menu.mounts");
+               str = LanguageMgr.GetTranslation("tank.menu.mounts");
          }
-         return _loc2_;
+         return str;
       }
       
       public function dispose() : void

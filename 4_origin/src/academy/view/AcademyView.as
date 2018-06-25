@@ -20,10 +20,10 @@ package academy.view
       
       private var _flowerPatternBg:MovieClip;
       
-      public function AcademyView(param1:AcademyController)
+      public function AcademyView(controller:AcademyController)
       {
          super();
-         _controller = param1;
+         _controller = controller;
          init();
       }
       

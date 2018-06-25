@@ -78,22 +78,22 @@ package magpieBridge.view
          _cancelBtn.addEventListener("click",__cancelBtnClick);
       }
       
-      protected function __selectedItemChange(param1:Event) : void
+      protected function __selectedItemChange(event:Event) : void
       {
          updateTotalCost();
       }
       
       public function updateTotalCost() : void
       {
-         var _loc1_:int = _price * int(_numberSelecter.currentValue);
-         _totalText.text = _loc1_ + " " + Price.MONEYTOSTRING;
+         var tmpNeedMoney:int = _price * int(_numberSelecter.currentValue);
+         _totalText.text = tmpNeedMoney + " " + Price.MONEYTOSTRING;
       }
       
-      protected function __okBtnClick(param1:MouseEvent) : void
+      protected function __okBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
-         var _loc2_:int = _price * int(_numberSelecter.currentValue);
-         if(PlayerManager.Instance.Self.Money < _loc2_)
+         var tmpNeedMoney:int = _price * int(_numberSelecter.currentValue);
+         if(PlayerManager.Instance.Self.Money < tmpNeedMoney)
          {
             LeavePageManager.showFillFrame();
             return;
@@ -102,20 +102,20 @@ package magpieBridge.view
          dispose();
       }
       
-      private function reConfirmHandler(param1:FrameEvent) : void
+      private function reConfirmHandler(event:FrameEvent) : void
       {
-         var _loc2_:int = 0;
+         var tmpNeedMoney:int = 0;
          SoundManager.instance.play("008");
-         var _loc3_:BaseAlerFrame = param1.currentTarget as BaseAlerFrame;
-         _loc3_.removeEventListener("response",reConfirmHandler);
-         switch(int(param1.responseCode))
+         var confirmFrame:BaseAlerFrame = event.currentTarget as BaseAlerFrame;
+         confirmFrame.removeEventListener("response",reConfirmHandler);
+         switch(int(event.responseCode))
          {
             default:
             default:
             case 2:
             case 3:
-               _loc2_ = _price * int(_numberSelecter.currentValue);
-               if(PlayerManager.Instance.Self.Money < _loc2_)
+               tmpNeedMoney = _price * int(_numberSelecter.currentValue);
+               if(PlayerManager.Instance.Self.Money < tmpNeedMoney)
                {
                   LeavePageManager.showFillFrame();
                   return;
@@ -123,8 +123,8 @@ package magpieBridge.view
                SocketManager.Instance.out.buyMagpieCount(int(_numberSelecter.currentValue),false);
                break;
             default:
-               _loc2_ = _price * int(_numberSelecter.currentValue);
-               if(PlayerManager.Instance.Self.Money < _loc2_)
+               tmpNeedMoney = _price * int(_numberSelecter.currentValue);
+               if(PlayerManager.Instance.Self.Money < tmpNeedMoney)
                {
                   LeavePageManager.showFillFrame();
                   return;
@@ -132,26 +132,26 @@ package magpieBridge.view
                SocketManager.Instance.out.buyMagpieCount(int(_numberSelecter.currentValue),false);
                break;
          }
-         param1.currentTarget.removeEventListener("response",reConfirmHandler);
-         ObjectUtils.disposeObject(param1.currentTarget);
+         event.currentTarget.removeEventListener("response",reConfirmHandler);
+         ObjectUtils.disposeObject(event.currentTarget);
          dispose();
       }
       
-      protected function __cancelBtnClick(param1:MouseEvent) : void
+      protected function __cancelBtnClick(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          dispose();
       }
       
-      private function __seleterChange(param1:Event) : void
+      private function __seleterChange(event:Event) : void
       {
          SoundManager.instance.play("008");
          updateTotalCost();
       }
       
-      private function __frameEventHandler(param1:FrameEvent) : void
+      private function __frameEventHandler(event:FrameEvent) : void
       {
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
@@ -191,9 +191,9 @@ package magpieBridge.view
          _cancelBtn = null;
       }
       
-      public function set price(param1:int) : void
+      public function set price(value:int) : void
       {
-         _price = param1;
+         _price = value;
          updateTotalCost();
       }
    }

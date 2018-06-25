@@ -48,28 +48,28 @@ package farm.view.compose.item
          addEventListener("mouseOut",__mouseOut);
       }
       
-      private function __mouseOver(param1:MouseEvent) : void
+      private function __mouseOver(event:MouseEvent) : void
       {
          _bgImg.alpha = 1;
       }
       
-      private function __mouseOut(param1:MouseEvent) : void
+      private function __mouseOut(event:MouseEvent) : void
       {
          _bgImg.alpha = 0;
       }
       
-      private function __click(param1:MouseEvent) : void
+      private function __click(e:MouseEvent) : void
       {
          dispatchEvent(new SelectComposeItemEvent("itemclick",_id));
       }
       
-      public function set info(param1:FoodComposeListTemplateInfo) : void
+      public function set info(food:FoodComposeListTemplateInfo) : void
       {
-         var _loc2_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(param1.FoodID);
-         if(_loc2_)
+         var itemInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(food.FoodID);
+         if(itemInfo)
          {
-            _nameTxt.text = _loc2_.Name;
-            _id = param1.FoodID;
+            _nameTxt.text = itemInfo.Name;
+            _id = food.FoodID;
          }
       }
       

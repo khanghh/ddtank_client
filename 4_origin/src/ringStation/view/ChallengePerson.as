@@ -136,46 +136,46 @@ package ringStation.view
          addChild(_waiting);
       }
       
-      public function updatePerson(param1:PlayerInfo) : void
+      public function updatePerson(personInfo:PlayerInfo) : void
       {
-         _playerInfo = param1;
-         _levelIcon.setInfo(param1.Grade,param1.ddtKingGrade,param1.Repute,param1.WinCount,param1.TotalCount,param1.FightPower,param1.Offer,true,false);
-         _nickNameText.text = param1.NickName;
-         if(param1.IsVIP)
+         _playerInfo = personInfo;
+         _levelIcon.setInfo(personInfo.Grade,personInfo.ddtKingGrade,personInfo.Repute,personInfo.WinCount,personInfo.TotalCount,personInfo.FightPower,personInfo.Offer,true,false);
+         _nickNameText.text = personInfo.NickName;
+         if(personInfo.IsVIP)
          {
-            _vipName = VipController.instance.getVipNameTxt(104,param1.typeVIP);
+            _vipName = VipController.instance.getVipNameTxt(104,personInfo.typeVIP);
             _vipName.textSize = 16;
             _vipName.x = _nickNameText.x;
             _vipName.y = _nickNameText.y - 2;
-            _vipName.text = param1.NickName;
+            _vipName.text = personInfo.NickName;
             addChild(_vipName);
          }
-         PositionUtils.adaptNameStyle(param1,_nickNameText,_vipName);
-         _player = CharactoryFactory.createCharacter(param1,"room");
+         PositionUtils.adaptNameStyle(personInfo,_nickNameText,_vipName);
+         _player = CharactoryFactory.createCharacter(personInfo,"room");
          _player.showGun = true;
          _player.show();
          _player.setShowLight(true);
          PositionUtils.setPos(_player,"ringStation.view.player.playerPos");
          _playerSprite.addChild(_player as DisplayObject);
          addChild(_challengeBtn);
-         if(param1.Rank == 0)
+         if(personInfo.Rank == 0)
          {
             _rank.text = LanguageMgr.GetTranslation("ringStation.view.person.noRank");
          }
          else
          {
-            _rank.text = LanguageMgr.GetTranslation("ringStation.view.person.rankText",param1.Rank);
+            _rank.text = LanguageMgr.GetTranslation("ringStation.view.person.rankText",personInfo.Rank);
          }
          addChild(_rank);
          addSignCell();
-         var _loc2_:String = LanguageMgr.GetTranslation("ringstation.view.signNormal");
-         if(param1.signMsg == "" || param1.signMsg == _loc2_)
+         var nomal:String = LanguageMgr.GetTranslation("ringstation.view.signNormal");
+         if(personInfo.signMsg == "" || personInfo.signMsg == nomal)
          {
             _signText.text = LanguageMgr.GetTranslation("ringstation.view.signNormal");
          }
          else
          {
-            _signText.text = param1.signMsg;
+            _signText.text = personInfo.signMsg;
             if(_signText.text.length > 25)
             {
                _signText.text = _signText.text.substr(0,25) + "...";
@@ -185,13 +185,13 @@ package ringStation.view
          {
             _signBG.height = _signText.textHeight + 5;
          }
-         _fightPower.setPowerNum(param1.FightPower);
+         _fightPower.setPowerNum(personInfo.FightPower);
          addChild(_fightingBg);
          addChild(_fightPower);
          creatAttestBtn();
       }
       
-      protected function __onMouseClick(param1:MouseEvent) : void
+      protected function __onMouseClick(event:MouseEvent) : void
       {
          if(new Date().time - _clickDate > 1000)
          {
@@ -202,12 +202,12 @@ package ringStation.view
          }
       }
       
-      protected function __onMouseOver(param1:MouseEvent) : void
+      protected function __onMouseOver(event:MouseEvent) : void
       {
          _challengeBtn.visible = true;
       }
       
-      protected function __onMouseOut(param1:MouseEvent) : void
+      protected function __onMouseOut(event:MouseEvent) : void
       {
          _challengeBtn.visible = false;
       }

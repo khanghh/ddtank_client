@@ -20,7 +20,7 @@ package hall.hallInfo.playerInfo
          ServerManager.Instance.addEventListener("changeServer",__changeServerHandler);
       }
       
-      protected function __changeServerHandler(param1:Event) : void
+      protected function __changeServerHandler(event:Event) : void
       {
          _cb.textField.text = ServerManager.Instance.current.Name;
       }

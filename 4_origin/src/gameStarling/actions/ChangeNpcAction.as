@@ -30,83 +30,81 @@ package gameStarling.actions
       
       private var _ignoreSmallEnemy:Boolean;
       
-      public function ChangeNpcAction(param1:GameView3D, param2:MapView3D, param3:Living, param4:CrazyTankSocketEvent, param5:PackageIn, param6:Boolean)
+      public function ChangeNpcAction(game:GameView3D, map:MapView3D, info:Living, event:CrazyTankSocketEvent, sysMap:PackageIn, ignoreSmallEnemy:Boolean)
       {
          super();
-         _gameView = param1;
-         _event = param4;
+         _gameView = game;
+         _event = event;
          _event.executed = false;
-         _pkg = param5;
-         _map = param2;
-         _info = param3;
-         _ignoreSmallEnemy = param6;
+         _pkg = sysMap;
+         _map = map;
+         _info = info;
+         _ignoreSmallEnemy = ignoreSmallEnemy;
       }
       
       private function syncMap() : void
       {
-         var _loc9_:Boolean = false;
-         var _loc3_:int = 0;
-         var _loc5_:int = 0;
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
-         var _loc16_:Number = NaN;
-         var _loc20_:int = 0;
-         var _loc19_:* = null;
-         var _loc1_:int = 0;
-         var _loc11_:* = 0;
-         var _loc18_:int = 0;
-         var _loc7_:int = 0;
-         var _loc6_:int = 0;
-         var _loc14_:* = 0;
-         var _loc17_:* = null;
-         var _loc12_:Boolean = false;
-         var _loc10_:int = 0;
-         var _loc13_:* = null;
-         var _loc8_:int = 0;
-         var _loc15_:* = null;
+         var windDic:Boolean = false;
+         var windPowerNum0:int = 0;
+         var windPowerNum1:int = 0;
+         var windPowerNum2:int = 0;
+         var weatherLevel:int = 0;
+         var weatherRate:Number = NaN;
+         var weatherRotation:int = 0;
+         var windNumArr:* = null;
+         var count:int = 0;
+         var i:* = 0;
+         var bid:int = 0;
+         var bx:int = 0;
+         var by:int = 0;
+         var subType:* = 0;
+         var box:* = null;
+         var isOutCrater:Boolean = false;
+         var outBombsLength:int = 0;
+         var outBombs:* = null;
+         var k:int = 0;
+         var bomb:* = null;
          if(_pkg)
          {
-            _loc9_ = _pkg.readBoolean();
-            _loc3_ = _pkg.readByte();
-            _loc5_ = _pkg.readByte();
-            _loc4_ = _pkg.readByte();
-            _loc2_ = _pkg.readInt();
-            _loc16_ = _pkg.readInt() / 100;
-            _loc20_ = _pkg.readInt();
-            _loc19_ = [_loc9_,_loc3_,_loc5_,_loc4_,_loc2_,_loc20_];
-            GameControl.Instance.Current.setWind(GameControl.Instance.Current.wind,false,_loc19_);
+            windDic = _pkg.readBoolean();
+            windPowerNum0 = _pkg.readByte();
+            windPowerNum1 = _pkg.readByte();
+            windPowerNum2 = _pkg.readByte();
+            weatherLevel = _pkg.readInt();
+            weatherRate = _pkg.readInt() / 100;
+            weatherRotation = _pkg.readInt();
+            windNumArr = [windDic,windPowerNum0,windPowerNum1,windPowerNum2,weatherLevel,weatherRotation];
+            GameControl.Instance.Current.setWind(GameControl.Instance.Current.wind,false,windNumArr);
             _pkg.readBoolean();
             _pkg.readInt();
-            _loc1_ = _pkg.readInt();
-            _loc11_ = uint(0);
-            while(_loc11_ < _loc1_)
+            count = _pkg.readInt();
+            for(i = uint(0); i < count; )
             {
-               _loc18_ = _pkg.readInt();
-               _loc7_ = _pkg.readInt();
-               _loc6_ = _pkg.readInt();
-               _loc14_ = uint(_pkg.readInt());
-               _loc17_ = new SimpleBox3D(_loc18_,String(PathInfo.GAME_BOXPIC),_loc14_);
-               _loc17_.x = _loc7_;
-               _loc17_.y = _loc6_;
-               _map.addPhysical(_loc17_);
-               _loc11_++;
+               bid = _pkg.readInt();
+               bx = _pkg.readInt();
+               by = _pkg.readInt();
+               subType = uint(_pkg.readInt());
+               box = new SimpleBox3D(bid,String(PathInfo.GAME_BOXPIC),subType);
+               box.x = bx;
+               box.y = by;
+               _map.addPhysical(box);
+               i++;
             }
-            _loc12_ = _pkg.readBoolean();
-            if(_loc12_)
+            isOutCrater = _pkg.readBoolean();
+            if(isOutCrater)
             {
-               _loc10_ = _pkg.readInt();
-               _loc13_ = new DictionaryData();
-               _loc8_ = 0;
-               while(_loc8_ < _loc10_)
+               outBombsLength = _pkg.readInt();
+               outBombs = new DictionaryData();
+               for(k = 0; k < outBombsLength; )
                {
-                  _loc15_ = new Bomb();
-                  _loc15_.Id = _pkg.readInt();
-                  _loc15_.X = _pkg.readInt();
-                  _loc15_.Y = _pkg.readInt();
-                  _loc13_.add(_loc8_,_loc15_);
-                  _loc8_++;
+                  bomb = new Bomb();
+                  bomb.Id = _pkg.readInt();
+                  bomb.X = _pkg.readInt();
+                  bomb.Y = _pkg.readInt();
+                  outBombs.add(k,bomb);
+                  k++;
                }
-               _map.DigOutCrater(_loc13_);
+               _map.DigOutCrater(outBombs);
             }
          }
       }
@@ -119,9 +117,9 @@ package gameStarling.actions
          }
          var _loc3_:int = 0;
          var _loc2_:* = GameControl.Instance.Current.livings;
-         for each(var _loc1_ in GameControl.Instance.Current.livings)
+         for each(var p in GameControl.Instance.Current.livings)
          {
-            _loc1_.beginNewTurn();
+            p.beginNewTurn();
          }
          _map.cancelFocus();
          _gameView.setCurrentPlayer(_info);
@@ -139,34 +137,34 @@ package gameStarling.actions
       
       private function getClosestEnemy() : SmallEnemy
       {
-         var _loc1_:* = null;
-         var _loc3_:int = -1;
-         var _loc4_:int = GameControl.Instance.Current.selfGamePlayer.pos.x;
+         var result:* = null;
+         var instance:int = -1;
+         var x:int = GameControl.Instance.Current.selfGamePlayer.pos.x;
          var _loc6_:int = 0;
          var _loc5_:* = GameControl.Instance.Current.livings;
-         for each(var _loc2_ in GameControl.Instance.Current.livings)
+         for each(var p in GameControl.Instance.Current.livings)
          {
-            if(_loc2_ is SmallEnemy && _loc2_.isLiving && _loc2_.typeLiving != 3)
+            if(p is SmallEnemy && p.isLiving && p.typeLiving != 3)
             {
-               if(_loc3_ == -1 || Math.abs(_loc2_.pos.x - _loc4_) < _loc3_)
+               if(instance == -1 || Math.abs(p.pos.x - x) < instance)
                {
-                  _loc3_ = Math.abs(_loc2_.pos.x - _loc4_);
-                  _loc1_ = _loc2_ as SmallEnemy;
+                  instance = Math.abs(p.pos.x - x);
+                  result = p as SmallEnemy;
                }
             }
          }
-         return _loc1_;
+         return result;
       }
       
       private function focusOnSmallEnemy() : void
       {
-         var _loc1_:SmallEnemy = getClosestEnemy();
-         if(_loc1_)
+         var closestEnemy:SmallEnemy = getClosestEnemy();
+         if(closestEnemy)
          {
-            if(_loc1_.LivingID && _map.getPhysical(_loc1_.LivingID))
+            if(closestEnemy.LivingID && _map.getPhysical(closestEnemy.LivingID))
             {
-               (_map.getPhysical(_loc1_.LivingID) as GameSmallEnemy3D).needFocus();
-               _map.currentFocusedLiving = _map.getPhysical(_loc1_.LivingID) as GameSmallEnemy3D;
+               (_map.getPhysical(closestEnemy.LivingID) as GameSmallEnemy3D).needFocus();
+               _map.currentFocusedLiving = _map.getPhysical(closestEnemy.LivingID) as GameSmallEnemy3D;
             }
          }
       }

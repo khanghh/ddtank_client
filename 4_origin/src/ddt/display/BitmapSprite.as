@@ -21,24 +21,24 @@ package ddt.display
       
       protected var _h:int;
       
-      public function BitmapSprite(param1:BitmapObject = null, param2:Matrix = null, param3:Boolean = true, param4:Boolean = false)
+      public function BitmapSprite(bitmap:BitmapObject = null, matrix:Matrix = null, repeat:Boolean = true, smooth:Boolean = false)
       {
          super();
-         _bitmap = param1;
-         _matrix = param2;
-         _repeat = param3;
-         _smooth = param4;
+         _bitmap = bitmap;
+         _matrix = matrix;
+         _repeat = repeat;
+         _smooth = smooth;
          configUI();
       }
       
-      public function set bitmapObject(param1:BitmapObject) : void
+      public function set bitmapObject(val:BitmapObject) : void
       {
-         var _loc2_:BitmapObject = _bitmap;
-         _bitmap = param1;
+         var bitmap:BitmapObject = _bitmap;
+         _bitmap = val;
          drawBitmap();
-         if(_loc2_)
+         if(bitmap)
          {
-            _loc2_.dispose();
+            bitmap.dispose();
          }
       }
       
@@ -49,14 +49,14 @@ package ddt.display
       
       protected function drawBitmap() : void
       {
-         var _loc1_:* = null;
+         var pen:* = null;
          graphics.clear();
          if(_bitmap)
          {
-            _loc1_ = graphics;
-            _loc1_.beginBitmapFill(_bitmap,_matrix,_repeat,_smooth);
-            _loc1_.drawRect(0,0,_bitmap.width,_bitmap.height);
-            _loc1_.endFill();
+            pen = graphics;
+            pen.beginBitmapFill(_bitmap,_matrix,_repeat,_smooth);
+            pen.drawRect(0,0,_bitmap.width,_bitmap.height);
+            pen.endFill();
          }
       }
       

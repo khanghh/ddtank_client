@@ -23,15 +23,15 @@ package ddt.data.analyze
       
       private var _xmlListLength:int;
       
-      public function ItemTempleteAnalyzer(param1:Function)
+      public function ItemTempleteAnalyzer(onCompleteCall:Function)
       {
          list = new DictionaryData();
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         _xml = new XML(param1);
+         _xml = new XML(data);
          list = new DictionaryData();
          parseTemplate();
       }
@@ -54,24 +54,24 @@ package ddt.data.analyze
          }
       }
       
-      private function __partexceute(param1:TimerEvent) : void
+      private function __partexceute(event:TimerEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
-         _loc3_ = 0;
-         while(_loc3_ < 150)
+         var i:int = 0;
+         var info:* = null;
+         for(i = 0; i < 150; )
          {
             _index = Number(_index) + 1;
             if(_index < _xmlListLength)
             {
-               _loc2_ = new ItemTemplateInfo();
-               ObjectUtils.copyPorpertiesByXML(_loc2_,_xmllist[_index]);
-               _loc2_.templateAttack = parseInt(_xmllist[_index].@Attack);
-               _loc2_.templateDefence = parseInt(_xmllist[_index].@Defence);
-               _loc2_.templateLuck = parseInt(_xmllist[_index].@Luck);
-               _loc2_.templateAgility = parseInt(_xmllist[_index].@Agility);
-               list.add(_loc2_.TemplateID,_loc2_);
-               _loc3_++;
+               info = new ItemTemplateInfo();
+               ObjectUtils.copyPorpertiesByXML(info,_xmllist[_index]);
+               parseAttachingData(info);
+               info.templateAttack = parseInt(_xmllist[_index].@Attack);
+               info.templateDefence = parseInt(_xmllist[_index].@Defence);
+               info.templateLuck = parseInt(_xmllist[_index].@Luck);
+               info.templateAgility = parseInt(_xmllist[_index].@Agility);
+               list.add(info.TemplateID,info);
+               i++;
                continue;
             }
             _timer.removeEventListener("timer",__partexceute);
@@ -79,6 +79,40 @@ package ddt.data.analyze
             _timer = null;
             onAnalyzeComplete();
             return;
+         }
+      }
+      
+      private function parseAttachingData(item:ItemTemplateInfo) : void
+      {
+         var _loc2_:* = item.CategoryID;
+         if(17 !== _loc2_)
+         {
+            if(7 !== _loc2_)
+            {
+               if(1 !== _loc2_)
+               {
+                  if(5 !== _loc2_)
+                  {
+                  }
+               }
+               item.Arm = parseInt(item.Property7);
+            }
+            else
+            {
+               item.AddDamage = parseInt(item.Property7);
+            }
+         }
+         else if(parseInt(item.Property3) == 130)
+         {
+            item.reducePower = parseInt(item.Property7) / 2;
+         }
+         else if(parseInt(item.Property6) == 2)
+         {
+            item.Recover = parseInt(item.Property7);
+         }
+         else if(parseInt(item.Property6) == 3)
+         {
+            item.SubDamage = parseInt(item.Property7);
          }
       }
    }

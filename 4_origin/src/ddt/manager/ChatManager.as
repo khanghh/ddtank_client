@@ -173,36 +173,36 @@ package ddt.manager
          return _instance;
       }
       
-      public function chat(param1:ChatData, param2:Boolean = true) : void
+      public function chat(data:ChatData, needFormat:Boolean = true) : void
       {
          if(chatDisabled)
          {
             return;
          }
-         if(param2)
+         if(needFormat)
          {
-            param1.msg = StringHelper.reverseHtmlTextField(param1.msg);
-            param1.msg = FilterWordManager.filterWrodFromServer(param1.msg);
-            if(param1.channel != 21)
+            data.msg = StringHelper.reverseHtmlTextField(data.msg);
+            data.msg = FilterWordManager.filterWrodFromServer(data.msg);
+            if(data.channel != 21)
             {
-               ChatFormats.formatChatStyle(param1);
+               ChatFormats.formatChatStyle(data);
             }
             else
             {
-               ChatFormats.formatComplexChatStyle(param1);
+               ChatFormats.formatComplexChatStyle(data);
             }
          }
-         param1.htmlMessage = Helpers.deCodeString(param1.htmlMessage);
-         _model.addChat(param1);
+         data.htmlMessage = Helpers.deCodeString(data.htmlMessage);
+         _model.addChat(data);
       }
       
-      public function addTimePackTip(param1:String) : void
+      public function addTimePackTip(packName:String) : void
       {
-         var _loc2_:ChatData = new ChatData();
-         _loc2_.type = 105;
-         _loc2_.channel = 7;
-         _loc2_.msg = LanguageMgr.GetTranslation("ddt.timeGiftPack.tip",param1);
-         ChatManager.Instance.chat(_loc2_);
+         var data:ChatData = new ChatData();
+         data.type = 105;
+         data.channel = 7;
+         data.msg = LanguageMgr.GetTranslation("ddt.timeGiftPack.tip",packName);
+         ChatManager.Instance.chat(data);
       }
       
       public function get isInGame() : Boolean
@@ -210,9 +210,9 @@ package ddt.manager
          return output.isInGame();
       }
       
-      public function set focusFuncEnabled(param1:Boolean) : void
+      public function set focusFuncEnabled(value:Boolean) : void
       {
-         _focusFuncEnabled = param1;
+         _focusFuncEnabled = value;
       }
       
       public function get focusFuncEnabled() : Boolean
@@ -225,9 +225,9 @@ package ddt.manager
          return _chatView.input;
       }
       
-      public function set inputChannel(param1:int) : void
+      public function set inputChannel(channel:int) : void
       {
-         _chatView.input.channel = param1;
+         _chatView.input.channel = channel;
       }
       
       public function get lock() : Boolean
@@ -235,9 +235,9 @@ package ddt.manager
          return _chatView.output.isLock;
       }
       
-      public function set lock(param1:Boolean) : void
+      public function set lock(value:Boolean) : void
       {
-         _chatView.output.isLock = param1;
+         _chatView.output.isLock = value;
       }
       
       public function get model() : ChatModel
@@ -250,53 +250,53 @@ package ddt.manager
          return _chatView.output;
       }
       
-      public function set outputChannel(param1:int) : void
+      public function set outputChannel(channel:int) : void
       {
-         _chatView.output.channel = param1;
+         _chatView.output.channel = channel;
       }
       
-      public function privateChatTo(param1:String, param2:int = 0, param3:Object = null) : void
+      public function privateChatTo(nickname:String, id:int = 0, info:Object = null) : void
       {
-         _chatView.input.setPrivateChatTo(param1,param2,param3);
+         _chatView.input.setPrivateChatTo(nickname,id,info);
       }
       
-      public function sendBugle(param1:String, param2:int, param3:Boolean = false) : void
+      public function sendBugle(msg:String, type:int, isFastInvite:Boolean = false) : void
       {
-         _isFastInvite = param3;
-         if(PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(param2,true) <= 0)
+         _isFastInvite = isFastInvite;
+         if(PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(type,true) <= 0)
          {
-            if(ShopManager.Instance.getMoneyShopItemByTemplateID(param2))
+            if(ShopManager.Instance.getMoneyShopItemByTemplateID(type))
             {
-               input.setInputText(param1);
+               input.setInputText(msg);
             }
             sysChatYellow(LanguageMgr.GetTranslation("tank.manager.ChatManager.tool"));
             if(!_shopBugle || !_shopBugle.info)
             {
-               _shopBugle = new NewShopBugleView(param2);
+               _shopBugle = new NewShopBugleView(type);
             }
-            else if(_shopBugle.type != param2)
+            else if(_shopBugle.type != type)
             {
                _shopBugle.dispose();
                _shopBugle = null;
-               _shopBugle = new NewShopBugleView(param2);
+               _shopBugle = new NewShopBugleView(type);
             }
          }
          else
          {
-            param1 = Helpers.enCodeString(param1);
-            if(param2 == 11101 && !param3)
+            msg = Helpers.enCodeString(msg);
+            if(type == 11101 && !isFastInvite)
             {
-               SocketManager.Instance.out.sendSBugle(param1);
+               SocketManager.Instance.out.sendSBugle(msg);
             }
-            else if(param2 == 11102)
+            else if(type == 11102)
             {
-               SocketManager.Instance.out.sendBBugle(param1,param2);
+               SocketManager.Instance.out.sendBBugle(msg,type);
             }
-            else if(param2 == 11100)
+            else if(type == 11100)
             {
-               SocketManager.Instance.out.sendCBugle(param1);
+               SocketManager.Instance.out.sendCBugle(msg);
             }
-            else if(param3)
+            else if(isFastInvite)
             {
                if(NewYearRiceManager.IsOpenFrame)
                {
@@ -308,33 +308,33 @@ package ddt.manager
          }
       }
       
-      public function sendFastAuctionBugle(param1:int, param2:int = 11101) : void
+      public function sendFastAuctionBugle(id:int, type:int = 11101) : void
       {
-         if(PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(param2,true) <= 0)
+         if(PlayerManager.Instance.Self.PropBag.getItemCountByTemplateId(type,true) <= 0)
          {
             sysChatYellow(LanguageMgr.GetTranslation("tank.manager.ChatManager.tool"));
             if(!_shopBugle || !_shopBugle.info)
             {
-               _shopBugle = new NewShopBugleView(param2);
+               _shopBugle = new NewShopBugleView(type);
             }
-            else if(_shopBugle.type != param2)
+            else if(_shopBugle.type != type)
             {
                _shopBugle.dispose();
                _shopBugle = null;
-               _shopBugle = new NewShopBugleView(param2);
+               _shopBugle = new NewShopBugleView(type);
             }
          }
          else
          {
-            SocketManager.Instance.out.sendFastAuctionBugle(param1);
+            SocketManager.Instance.out.sendFastAuctionBugle(id);
          }
       }
       
-      public function sendChat(param1:ChatData) : void
+      public function sendChat($chat:ChatData) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = undefined;
-         if(param1.msg == "showDebugStatus -fps")
+         var i:int = 0;
+         var gameControl:* = undefined;
+         if($chat.msg == "showDebugStatus -fps")
          {
             if(!fpsContainer)
             {
@@ -351,73 +351,72 @@ package ddt.manager
             }
             return;
          }
-         if(param1.msg == "updateFlashP2PKey")
+         if($chat.msg == "updateFlashP2PKey")
          {
-            _loc3_ = 0;
-            while(_loc3_ < PlayerManager.Instance.onlineFriendList.length)
+            for(i = 0; i < PlayerManager.Instance.onlineFriendList.length; )
             {
-               SocketManager.Instance.out.sendPeerID(PlayerManager.Instance.Self.ZoneID,PlayerManager.Instance.onlineFriendList[_loc3_].ID,"");
-               _loc3_++;
+               SocketManager.Instance.out.sendPeerID(PlayerManager.Instance.Self.ZoneID,PlayerManager.Instance.onlineFriendList[i].ID,"");
+               i++;
             }
             return;
          }
-         if(GameManager.GAME_CAN_NOT_EXIT_SEND_LOG == 1 && param1.msg == "发_送_日_志")
+         if(GameManager.GAME_CAN_NOT_EXIT_SEND_LOG == 1 && $chat.msg == "发_送_日_志")
          {
-            _loc2_ = getDefinitionByName("gameCommon.GameControl");
-            if(_loc2_)
+            gameControl = getDefinitionByName("gameCommon.GameControl");
+            if(gameControl)
             {
-               _loc2_.Instance.gameView.logTimeHandler();
+               gameControl.Instance.gameView.logTimeHandler();
             }
          }
          if(chatDisabled)
          {
             return;
          }
-         if(param1.channel == 2)
+         if($chat.channel == 2)
          {
-            if(param1.zoneID == -1 || param1.zoneID == PlayerManager.Instance.Self.ZoneID)
+            if($chat.zoneID == -1 || $chat.zoneID == PlayerManager.Instance.Self.ZoneID)
             {
-               sendPrivateMessage(param1.receiver,param1.msg,param1.receiverID,false);
+               sendPrivateMessage($chat.receiver,$chat.msg,$chat.receiverID,false);
             }
             else
             {
-               sendAreaPrivateMessage(param1.receiver,param1.msg,param1.zoneID);
+               sendAreaPrivateMessage($chat.receiver,$chat.msg,$chat.zoneID);
             }
          }
-         else if(param1.channel == 15)
+         else if($chat.channel == 15)
          {
-            sendBugle(param1.msg,11100);
+            sendBugle($chat.msg,11100);
          }
-         else if(param1.channel == 0)
+         else if($chat.channel == 0)
          {
-            sendBugle(param1.msg,11102);
+            sendBugle($chat.msg,11102);
          }
-         else if(param1.channel == 1)
+         else if($chat.channel == 1)
          {
-            sendBugle(param1.msg,11101);
+            sendBugle($chat.msg,11101);
          }
-         else if(param1.channel == 3)
+         else if($chat.channel == 3)
          {
-            sendMessage(param1.channel,param1.sender,param1.msg,false);
+            sendMessage($chat.channel,$chat.sender,$chat.msg,false);
             dispatchEvent(new ChatEvent("sendConsortia"));
          }
-         else if(param1.channel == 4)
+         else if($chat.channel == 4)
          {
-            sendMessage(param1.channel,param1.sender,param1.msg,true);
+            sendMessage($chat.channel,$chat.sender,$chat.msg,true);
          }
-         else if(param1.channel == 5 || param1.channel == 9 || param1.channel == 13 || param1.channel == 20 || param1.channel == 25 || param1.channel == 99 || param1.channel == 27)
+         else if($chat.channel == 5 || $chat.channel == 9 || $chat.channel == 13 || $chat.channel == 20 || $chat.channel == 25 || $chat.channel == 99 || $chat.channel == 27)
          {
-            sendMessage(param1.channel,param1.sender,param1.msg,false);
+            sendMessage($chat.channel,$chat.sender,$chat.msg,false);
          }
-         else if(param1.channel == 26)
+         else if($chat.channel == 26)
          {
-            sendMessage(param1.channel,param1.sender,param1.msg,false);
+            sendMessage($chat.channel,$chat.sender,$chat.msg,false);
          }
       }
       
-      public function sendFace(param1:int) : void
+      public function sendFace(faceid:int) : void
       {
-         SocketManager.Instance.out.sendFace(param1);
+         SocketManager.Instance.out.sendFace(faceid);
       }
       
       public function setFocus() : void
@@ -448,15 +447,15 @@ package ddt.manager
          return _state;
       }
       
-      public function set state(param1:int) : void
+      public function set state($state:int) : void
       {
-         if(_state == param1)
+         if(_state == $state)
          {
             return;
          }
-         _state = param1;
+         _state = $state;
          _chatView.state = _state;
-         var _loc2_:* = param1 != 27;
+         var _loc2_:* = $state != 27;
          ChatManager.Instance.view.output.contentField.mouseChildren = _loc2_;
          ChatManager.Instance.view.output.contentField.mouseEnabled = _loc2_;
       }
@@ -482,63 +481,63 @@ package ddt.manager
          _chatView.input.hidePanel();
       }
       
-      public function sysChatRed(param1:String) : void
+      public function sysChatRed(message:String) : void
       {
-         var _loc2_:ChatData = new ChatData();
-         _loc2_.channel = 6;
-         _loc2_.msg = StringHelper.trim(param1);
-         chat(_loc2_);
+         var chatData:ChatData = new ChatData();
+         chatData.channel = 6;
+         chatData.msg = StringHelper.trim(message);
+         chat(chatData);
       }
       
-      public function sysChatConsortia(param1:String) : void
+      public function sysChatConsortia(message:String) : void
       {
-         var _loc2_:ChatData = new ChatData();
-         _loc2_.channel = 3;
-         _loc2_.msg = StringHelper.trim(param1);
-         chat(_loc2_);
+         var chatData:ChatData = new ChatData();
+         chatData.channel = 3;
+         chatData.msg = StringHelper.trim(message);
+         chat(chatData);
       }
       
-      public function sysChatYellow(param1:String) : void
+      public function sysChatYellow(message:String) : void
       {
-         var _loc2_:ChatData = new ChatData();
-         _loc2_.channel = 7;
-         _loc2_.msg = StringHelper.trim(param1);
-         chat(_loc2_);
+         var chatData:ChatData = new ChatData();
+         chatData.channel = 7;
+         chatData.msg = StringHelper.trim(message);
+         chat(chatData);
       }
       
-      public function sysChatLinkYellow(param1:String) : void
+      public function sysChatLinkYellow(message:String) : void
       {
-         var _loc2_:ChatData = new ChatData();
-         _loc2_.type = 100;
-         _loc2_.channel = 7;
-         _loc2_.msg = StringHelper.trim(param1);
-         chat(_loc2_);
+         var chatData:ChatData = new ChatData();
+         chatData.type = 100;
+         chatData.channel = 7;
+         chatData.msg = StringHelper.trim(message);
+         chat(chatData);
       }
       
-      public function sysChatAmaranth(param1:String) : void
+      public function sysChatAmaranth(message:String) : void
       {
-         var _loc2_:ChatData = new ChatData();
-         _loc2_.channel = 14;
-         _loc2_.msg = StringHelper.trim(param1);
-         chat(_loc2_);
+         var chatData:ChatData = new ChatData();
+         chatData.channel = 14;
+         chatData.msg = StringHelper.trim(message);
+         chat(chatData);
       }
       
-      public function sysChatNotAgain(param1:String) : void
+      public function sysChatNotAgain(message:String) : void
       {
-         var _loc2_:ChatData = new ChatData();
-         _loc2_.type = 106;
-         _loc2_.channel = 7;
-         _loc2_.msg = StringHelper.trim(param1);
-         chat(_loc2_);
+         var chatData:ChatData = new ChatData();
+         chatData.type = 106;
+         chatData.channel = 7;
+         chatData.msg = StringHelper.trim(message);
+         chat(chatData);
       }
       
-      public function redPackageLink(param1:String) : void
+      public function redPackageLink(msg:String) : void
       {
-         var _loc2_:ChatData = new ChatData();
-         _loc2_.type = 111;
-         _loc2_.channel = 7;
-         _loc2_.msg = StringHelper.trim(param1);
-         chat(_loc2_);
+         var chatData:ChatData = new ChatData();
+         chatData.type = 111;
+         chatData.channel = 7;
+         chatData.msg = StringHelper.trim(msg);
+         chat(chatData);
       }
       
       public function get view() : ChatView
@@ -551,43 +550,43 @@ package ddt.manager
          return _visibleSwitchEnable;
       }
       
-      public function set visibleSwitchEnable(param1:Boolean) : void
+      public function set visibleSwitchEnable(value:Boolean) : void
       {
-         if(_visibleSwitchEnable == param1)
+         if(_visibleSwitchEnable == value)
          {
             return;
          }
-         _visibleSwitchEnable = param1;
+         _visibleSwitchEnable = value;
       }
       
-      private function __bBugle(param1:PkgEvent) : void
+      private function __bBugle(event:PkgEvent) : void
       {
          if(PlayerManager.Instance.Self.Grade <= 1)
          {
             return;
          }
-         var _loc3_:PackageIn = param1.pkg as PackageIn;
-         var _loc2_:ChatData = new ChatData();
-         _loc2_.bigBuggleType = _loc3_.readInt();
-         _loc2_.channel = 0;
-         _loc2_.senderID = _loc3_.readInt();
-         _loc2_.receiver = "";
-         _loc2_.sender = _loc3_.readUTF();
-         _loc2_.msg = _loc3_.readUTF();
-         chat(_loc2_);
+         var pkg:PackageIn = event.pkg as PackageIn;
+         var cm:ChatData = new ChatData();
+         cm.bigBuggleType = pkg.readInt();
+         cm.channel = 0;
+         cm.senderID = pkg.readInt();
+         cm.receiver = "";
+         cm.sender = pkg.readUTF();
+         cm.msg = pkg.readUTF();
+         chat(cm);
       }
       
-      private function __bugleBuyHandler(param1:PkgEvent) : void
+      private function __bugleBuyHandler(event:PkgEvent) : void
       {
          if(PlayerManager.Instance.Self.Grade <= 1)
          {
             return;
          }
-         var _loc3_:PackageIn = param1.pkg;
-         _loc3_.position = 20;
-         var _loc2_:int = _loc3_.readInt();
-         var _loc4_:int = _loc3_.readInt();
-         if(_loc4_ == 3 && _loc2_ == 1)
+         var pkg:PackageIn = event.pkg;
+         pkg.position = 20;
+         var successType:int = pkg.readInt();
+         var buyFrom:int = pkg.readInt();
+         if(buyFrom == 3 && successType == 1)
          {
             if(!_isFastInvite)
             {
@@ -598,468 +597,468 @@ package ddt.manager
                sendBugle("",11101,true);
             }
          }
-         else if(_loc4_ == 5 && _loc2_ >= 1)
+         else if(buyFrom == 5 && successType >= 1)
          {
             dispatchEvent(new Event("buybead"));
          }
       }
       
-      private function __cBugle(param1:PkgEvent) : void
+      private function __cBugle(event:PkgEvent) : void
       {
          if(PlayerManager.Instance.Self.Grade <= 1)
          {
             return;
          }
-         var _loc3_:PackageIn = param1.pkg as PackageIn;
-         var _loc2_:ChatData = new ChatData();
-         _loc2_.channel = 15;
-         _loc2_.zoneID = _loc3_.readInt();
-         _loc2_.senderID = _loc3_.readInt();
-         _loc2_.receiver = "";
-         _loc2_.sender = _loc3_.readUTF();
-         _loc2_.msg = _loc3_.readUTF();
-         _loc2_.zoneName = _loc3_.readUTF();
-         chat(_loc2_);
+         var pkg:PackageIn = event.pkg as PackageIn;
+         var cm:ChatData = new ChatData();
+         cm.channel = 15;
+         cm.zoneID = pkg.readInt();
+         cm.senderID = pkg.readInt();
+         cm.receiver = "";
+         cm.sender = pkg.readUTF();
+         cm.msg = pkg.readUTF();
+         cm.zoneName = pkg.readUTF();
+         chat(cm);
       }
       
-      private function __consortiaChat(param1:PkgEvent) : void
+      private function __consortiaChat(event:PkgEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:* = null;
+         var c:int = 0;
+         var cm:* = null;
          if(PlayerManager.Instance.Self.Grade <= 1)
          {
             return;
          }
-         var _loc4_:PackageIn = param1.pkg as PackageIn;
-         if(_loc4_.clientId != PlayerManager.Instance.Self.ID)
+         var pkg:PackageIn = event.pkg as PackageIn;
+         if(pkg.clientId != PlayerManager.Instance.Self.ID)
          {
-            _loc3_ = _loc4_.readByte();
-            _loc2_ = new ChatData();
-            _loc2_.channel = 3;
-            _loc2_.senderID = _loc4_.clientId;
-            _loc2_.receiver = "";
-            _loc2_.sender = _loc4_.readUTF();
-            _loc2_.msg = _loc4_.readUTF();
-            chatCheckSelf(_loc2_);
+            c = pkg.readByte();
+            cm = new ChatData();
+            cm.channel = 3;
+            cm.senderID = pkg.clientId;
+            cm.receiver = "";
+            cm.sender = pkg.readUTF();
+            cm.msg = pkg.readUTF();
+            chatCheckSelf(cm);
          }
       }
       
-      private function __defyAffiche(param1:PkgEvent) : void
+      private function __defyAffiche(event:PkgEvent) : void
       {
          if(PlayerManager.Instance.Self.Grade <= 1)
          {
             return;
          }
-         var _loc3_:PackageIn = param1.pkg as PackageIn;
-         var _loc2_:ChatData = new ChatData();
-         _loc2_.msg = _loc3_.readUTF();
-         _loc2_.channel = 11;
-         chatCheckSelf(_loc2_);
+         var pkg:PackageIn = event.pkg as PackageIn;
+         var cm:ChatData = new ChatData();
+         cm.msg = pkg.readUTF();
+         cm.channel = 11;
+         chatCheckSelf(cm);
       }
       
-      private function __getItemMsgHandler(param1:PkgEvent) : void
+      private function __getItemMsgHandler(event:PkgEvent) : void
       {
-         var _loc7_:* = null;
-         var _loc19_:* = null;
-         var _loc2_:* = null;
-         var _loc10_:* = null;
-         var _loc11_:* = null;
-         var _loc17_:* = null;
+         var txt:* = null;
+         var battle_str:* = null;
+         var itemName:* = null;
+         var itemNames:* = null;
+         var str:* = null;
+         var goodname:* = null;
          if(PlayerManager.Instance.Self.Grade <= 1)
          {
             return;
          }
-         var _loc6_:PackageIn = param1.pkg as PackageIn;
-         var _loc12_:String = _loc6_.readUTF();
-         var _loc16_:int = _loc6_.readInt();
-         var _loc9_:int = _loc6_.readInt();
-         var _loc18_:Boolean = _loc6_.readBoolean();
-         var _loc8_:int = _loc6_.readInt();
-         var _loc13_:int = _loc6_.readInt();
-         if(_loc16_ == 0)
+         var pkg:PackageIn = event.pkg as PackageIn;
+         var nickName:String = pkg.readUTF();
+         var battle_type:int = pkg.readInt();
+         var templateID:int = pkg.readInt();
+         var isbinds:Boolean = pkg.readBoolean();
+         var isBroadcast:int = pkg.readInt();
+         var goodNum:int = pkg.readInt();
+         if(battle_type == 0)
          {
-            _loc19_ = LanguageMgr.GetTranslation("tank.game.GameView.unexpectedBattle");
+            battle_str = LanguageMgr.GetTranslation("tank.game.GameView.unexpectedBattle");
          }
-         else if(_loc16_ == 2)
+         else if(battle_type == 2)
          {
-            _loc19_ = LanguageMgr.GetTranslation("tank.game.GameView.RouletteBattle");
+            battle_str = LanguageMgr.GetTranslation("tank.game.GameView.RouletteBattle");
          }
-         else if(_loc16_ == 1)
+         else if(battle_type == 1)
          {
-            _loc19_ = LanguageMgr.GetTranslation("tank.game.GameView.dungeonBattle");
+            battle_str = LanguageMgr.GetTranslation("tank.game.GameView.dungeonBattle");
          }
-         else if(_loc16_ == 3)
+         else if(battle_type == 3)
          {
-            _loc19_ = LanguageMgr.GetTranslation("tank.game.GameView.CaddyBattle");
+            battle_str = LanguageMgr.GetTranslation("tank.game.GameView.CaddyBattle");
          }
-         else if(_loc16_ == 4)
+         else if(battle_type == 4)
          {
-            _loc19_ = LanguageMgr.GetTranslation("tank.game.GameView.beadBattle");
+            battle_str = LanguageMgr.GetTranslation("tank.game.GameView.beadBattle");
          }
-         else if(_loc16_ == 5)
+         else if(battle_type == 5)
          {
-            _loc19_ = LanguageMgr.GetTranslation("tank.game.GameView.GiftBattle");
+            battle_str = LanguageMgr.GetTranslation("tank.game.GameView.GiftBattle");
          }
-         else if(_loc16_ == 11)
+         else if(battle_type == 11)
          {
-            _loc19_ = LanguageMgr.GetTranslation("tank.game.GameView.BlessBattle");
+            battle_str = LanguageMgr.GetTranslation("tank.game.GameView.BlessBattle");
          }
-         else if(_loc16_ == 14)
+         else if(battle_type == 14)
          {
-            _loc19_ = LanguageMgr.GetTranslation("tank.game.GameView.celebrationBattle");
+            battle_str = LanguageMgr.GetTranslation("tank.game.GameView.celebrationBattle");
          }
-         else if(_loc16_ == 16)
+         else if(battle_type == 16)
          {
-            _loc2_ = ItemManager.Instance.getTemplateById(_loc9_).Name;
-            _loc19_ = LanguageMgr.GetTranslation("tank.game.GameView.gypsyShopBought",_loc12_);
+            itemName = ItemManager.Instance.getTemplateById(templateID).Name;
+            battle_str = LanguageMgr.GetTranslation("tank.game.GameView.gypsyShopBought",nickName);
          }
-         else if(_loc16_ == 17)
+         else if(battle_type == 17)
          {
-            _loc10_ = ItemManager.Instance.getTemplateById(_loc9_).Name;
-            _loc19_ = LanguageMgr.GetTranslation("tank.game.GameView.gypsyShopBoughtS",_loc12_,_loc10_);
+            itemNames = ItemManager.Instance.getTemplateById(templateID).Name;
+            battle_str = LanguageMgr.GetTranslation("tank.game.GameView.gypsyShopBoughtS",nickName,itemNames);
          }
-         if(_loc8_ == 1)
+         if(isBroadcast == 1)
          {
-            _loc7_ = LanguageMgr.GetTranslation("tank.game.GameView.getgoodstip.broadcast","[" + _loc12_ + "]",_loc19_);
+            txt = LanguageMgr.GetTranslation("tank.game.GameView.getgoodstip.broadcast","[" + nickName + "]",battle_str);
          }
-         else if(_loc8_ == 2)
+         else if(isBroadcast == 2)
          {
-            _loc7_ = LanguageMgr.GetTranslation("tank.game.GameView.getgoodstip",_loc12_,_loc19_);
+            txt = LanguageMgr.GetTranslation("tank.game.GameView.getgoodstip",nickName,battle_str);
          }
-         else if(_loc8_ == 3)
+         else if(isBroadcast == 3)
          {
-            _loc11_ = _loc6_.readUTF();
-            _loc7_ = LanguageMgr.GetTranslation("tank.manager.congratulateGain","[" + _loc12_ + "]",_loc11_);
-            CaddyModel.instance.appendAwardsInfo(_loc12_,_loc9_,false,"",-1,_loc16_);
+            str = pkg.readUTF();
+            txt = LanguageMgr.GetTranslation("tank.manager.congratulateGain","[" + nickName + "]",str);
+            CaddyModel.instance.appendAwardsInfo(nickName,templateID,false,"",-1,battle_type);
          }
-         else if(_loc8_ == 4)
+         else if(isBroadcast == 4)
          {
-            _loc7_ = _loc19_;
+            txt = battle_str;
          }
-         var _loc5_:ItemTemplateInfo = ItemManager.Instance.getTemplateById(_loc9_);
-         if(_loc5_.Property1 != "31")
+         var itemInfo:ItemTemplateInfo = ItemManager.Instance.getTemplateById(templateID);
+         if(itemInfo.Property1 != "31")
          {
-            _loc17_ = "[" + _loc5_.Name + "]";
+            goodname = "[" + itemInfo.Name + "]";
          }
          else
          {
-            _loc17_ = "[" + _loc5_.Name + "-" + BeadTemplateManager.Instance.GetBeadInfobyID(_loc9_).Name + "Lv" + BeadTemplateManager.Instance.GetBeadInfobyID(_loc9_).BaseLevel + "]";
+            goodname = "[" + itemInfo.Name + "-" + BeadTemplateManager.Instance.GetBeadInfobyID(templateID).Name + "Lv" + BeadTemplateManager.Instance.GetBeadInfobyID(templateID).BaseLevel + "]";
          }
-         var _loc4_:ChatData = new ChatData();
-         _loc4_.channel = 6;
-         _loc4_.msg = _loc7_ + _loc17_ + "x" + _loc13_;
-         var _loc3_:Array = ChatFormats.getTagsByChannel(_loc4_);
-         _loc7_ = StringHelper.rePlaceHtmlTextField(_loc7_);
-         var _loc15_:String = ChatFormats.creatBracketsTag(_loc7_,1);
-         var _loc14_:String = ChatFormats.creatGoodTag("[" + _loc5_.Name + "]" + "x" + _loc13_,2,_loc5_.TemplateID,_loc5_.Quality,_loc18_,_loc4_);
-         _loc4_.htmlMessage = _loc3_[0] + _loc15_ + _loc14_ + _loc3_[1] + "<BR>";
-         _loc4_.htmlMessage = Helpers.deCodeString(_loc4_.htmlMessage);
-         _model.addChat(_loc4_);
+         var data:ChatData = new ChatData();
+         data.channel = 6;
+         data.msg = txt + goodname + "x" + goodNum;
+         var channelTag:Array = ChatFormats.getTagsByChannel(data);
+         txt = StringHelper.rePlaceHtmlTextField(txt);
+         var nameTag:String = ChatFormats.creatBracketsTag(txt,1);
+         var goodTag:String = ChatFormats.creatGoodTag("[" + itemInfo.Name + "]" + "x" + goodNum,2,itemInfo.TemplateID,itemInfo.Quality,isbinds,data);
+         data.htmlMessage = channelTag[0] + nameTag + goodTag + channelTag[1] + "<BR>";
+         data.htmlMessage = Helpers.deCodeString(data.htmlMessage);
+         _model.addChat(data);
       }
       
-      private function __goodLinkGetHandler(param1:PkgEvent) : void
+      private function __goodLinkGetHandler(e:PkgEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:* = null;
-         var _loc5_:* = null;
+         var cardGroove:* = null;
+         var guid:* = null;
+         var cardInfo:* = null;
+         var guid2:* = null;
          if(PlayerManager.Instance.Self.Grade <= 1)
          {
             return;
          }
-         var _loc9_:InventoryItemInfo = new InventoryItemInfo();
-         var _loc7_:PackageIn = param1.pkg;
-         var _loc8_:int = _loc7_.readInt();
-         if(_loc8_ == 4)
+         var info:InventoryItemInfo = new InventoryItemInfo();
+         var pkg:PackageIn = e.pkg;
+         var type:int = pkg.readInt();
+         if(type == 4)
          {
-            _loc3_ = new GrooveInfo();
-            _loc2_ = _loc7_.readUTF();
-            _loc3_.CardId = _loc7_.readInt();
-            _loc3_.Place = _loc7_.readInt();
-            _loc3_.Type = _loc7_.readInt();
-            _loc3_.Level = _loc7_.readInt();
-            _loc3_.GP = _loc7_.readInt();
+            cardGroove = new GrooveInfo();
+            guid = pkg.readUTF();
+            cardGroove.CardId = pkg.readInt();
+            cardGroove.Place = pkg.readInt();
+            cardGroove.Type = pkg.readInt();
+            cardGroove.Level = pkg.readInt();
+            cardGroove.GP = pkg.readInt();
             if(CardManager.Instance.model.GrooveInfoVector)
             {
-               CardManager.Instance.model.GrooveInfoVector[_loc3_.Place] = _loc3_;
+               CardManager.Instance.model.GrooveInfoVector[cardGroove.Place] = cardGroove;
             }
             else
             {
-               CardManager.Instance.model.tempCardGroove = _loc3_;
+               CardManager.Instance.model.tempCardGroove = cardGroove;
             }
-            model.addCardGrooveLink(_loc2_,_loc3_);
-            output.contentField.showCardGrooveLinkGoodsInfo(_loc3_,1);
+            model.addCardGrooveLink(guid,cardGroove);
+            output.contentField.showCardGrooveLinkGoodsInfo(cardGroove,1);
             return;
          }
-         if(_loc8_ == 5)
+         if(type == 5)
          {
-            _loc4_ = new CardInfo();
-            _loc5_ = _loc7_.readUTF();
-            _loc4_.TemplateID = _loc7_.readInt();
-            _loc4_.CardType = _loc7_.readInt();
-            _loc4_.Attack = _loc7_.readInt();
-            _loc4_.Defence = _loc7_.readInt();
-            _loc4_.Agility = _loc7_.readInt();
-            _loc4_.Luck = _loc7_.readInt();
-            _loc4_.Damage = _loc7_.readInt();
-            _loc4_.Guard = _loc7_.readInt();
-            _loc4_.Place = 6;
-            model.addCardInfoLink(_loc5_,_loc4_);
-            output.contentField.showCardInfoLinkGoodsInfo(_loc4_,1);
+            cardInfo = new CardInfo();
+            guid2 = pkg.readUTF();
+            cardInfo.TemplateID = pkg.readInt();
+            cardInfo.CardType = pkg.readInt();
+            cardInfo.Attack = pkg.readInt();
+            cardInfo.Defence = pkg.readInt();
+            cardInfo.Agility = pkg.readInt();
+            cardInfo.Luck = pkg.readInt();
+            cardInfo.Damage = pkg.readInt();
+            cardInfo.Guard = pkg.readInt();
+            cardInfo.Place = 6;
+            model.addCardInfoLink(guid2,cardInfo);
+            output.contentField.showCardInfoLinkGoodsInfo(cardInfo,1);
             return;
          }
-         var _loc6_:String = _loc7_.readUTF();
-         _loc9_.TemplateID = _loc7_.readInt();
-         ItemManager.fill(_loc9_);
-         _loc9_.ItemID = _loc7_.readInt();
-         _loc9_.StrengthenLevel = _loc7_.readInt();
-         _loc9_.AttackCompose = _loc7_.readInt();
-         _loc9_.AgilityCompose = _loc7_.readInt();
-         _loc9_.LuckCompose = _loc7_.readInt();
-         _loc9_.DefendCompose = _loc7_.readInt();
-         if(EquipType.isMagicStone(_loc9_.CategoryID))
+         var gUid:String = pkg.readUTF();
+         info.TemplateID = pkg.readInt();
+         ItemManager.fill(info);
+         info.ItemID = pkg.readInt();
+         info.StrengthenLevel = pkg.readInt();
+         info.AttackCompose = pkg.readInt();
+         info.AgilityCompose = pkg.readInt();
+         info.LuckCompose = pkg.readInt();
+         info.DefendCompose = pkg.readInt();
+         if(EquipType.isMagicStone(info.CategoryID))
          {
-            _loc9_.Attack = _loc9_.AttackCompose;
-            _loc9_.Defence = _loc9_.DefendCompose;
-            _loc9_.Agility = _loc9_.AgilityCompose;
-            _loc9_.Luck = _loc9_.LuckCompose;
-            _loc9_.Level = _loc9_.StrengthenLevel;
-            _loc9_.MagicAttack = _loc7_.readInt();
-            _loc9_.MagicDefence = _loc7_.readInt();
+            info.Attack = info.AttackCompose;
+            info.Defence = info.DefendCompose;
+            info.Agility = info.AgilityCompose;
+            info.Luck = info.LuckCompose;
+            info.Level = info.StrengthenLevel;
+            info.MagicAttack = pkg.readInt();
+            info.MagicDefence = pkg.readInt();
          }
          else
          {
-            _loc7_.readInt();
-            _loc7_.readInt();
+            pkg.readInt();
+            pkg.readInt();
          }
-         _loc9_.ValidDate = _loc7_.readInt();
-         _loc9_.IsBinds = _loc7_.readBoolean();
-         _loc9_.IsJudge = _loc7_.readBoolean();
-         _loc9_.IsUsed = _loc7_.readBoolean();
-         if(_loc9_.IsUsed)
+         info.ValidDate = pkg.readInt();
+         info.IsBinds = pkg.readBoolean();
+         info.IsJudge = pkg.readBoolean();
+         info.IsUsed = pkg.readBoolean();
+         if(info.IsUsed)
          {
-            _loc9_.BeginDate = _loc7_.readUTF();
+            info.BeginDate = pkg.readUTF();
          }
-         _loc9_.Hole1 = _loc7_.readInt();
-         _loc9_.Hole2 = _loc7_.readInt();
-         _loc9_.Hole3 = _loc7_.readInt();
-         _loc9_.Hole4 = _loc7_.readInt();
-         _loc9_.Hole5 = _loc7_.readInt();
-         _loc9_.Hole6 = _loc7_.readInt();
-         _loc9_.Hole = _loc7_.readUTF();
-         _loc9_.Pic = _loc7_.readUTF();
-         _loc9_.RefineryLevel = _loc7_.readInt();
-         _loc9_.DiscolorValidDate = _loc7_.readDateString();
-         _loc9_.Hole5Level = _loc7_.readByte();
-         _loc9_.Hole5Exp = _loc7_.readInt();
-         _loc9_.Hole6Level = _loc7_.readByte();
-         _loc9_.Hole6Exp = _loc7_.readInt();
-         _loc9_.isGold = _loc7_.readBoolean();
-         if(_loc9_.isGold)
+         info.Hole1 = pkg.readInt();
+         info.Hole2 = pkg.readInt();
+         info.Hole3 = pkg.readInt();
+         info.Hole4 = pkg.readInt();
+         info.Hole5 = pkg.readInt();
+         info.Hole6 = pkg.readInt();
+         info.Hole = pkg.readUTF();
+         info.Pic = pkg.readUTF();
+         info.RefineryLevel = pkg.readInt();
+         info.DiscolorValidDate = pkg.readDateString();
+         info.Hole5Level = pkg.readByte();
+         info.Hole5Exp = pkg.readInt();
+         info.Hole6Level = pkg.readByte();
+         info.Hole6Exp = pkg.readInt();
+         info.isGold = pkg.readBoolean();
+         if(info.isGold)
          {
-            _loc9_.goldValidDate = _loc7_.readInt();
-            _loc9_.goldBeginTime = _loc7_.readDateString();
+            info.goldValidDate = pkg.readInt();
+            info.goldBeginTime = pkg.readDateString();
          }
-         _loc9_.MagicLevel = _loc7_.readInt();
-         model.addLink(_loc6_,_loc9_);
-         output.contentField.showLinkGoodsInfo(_loc9_,1);
+         info.MagicLevel = pkg.readInt();
+         model.addLink(gUid,info);
+         output.contentField.showLinkGoodsInfo(info,1);
       }
       
-      private function __p2pPrivateChat(param1:StreamEvent) : void
+      private function __p2pPrivateChat(event:StreamEvent) : void
       {
          if(PlayerManager.Instance.Self.Grade <= 1)
          {
             return;
          }
-         var _loc3_:ByteArray = param1.readByteArray;
-         var _loc2_:ChatData = new ChatData();
-         _loc2_.channel = 2;
-         _loc2_.receiverID = _loc3_.readInt();
-         _loc2_.receiver = _loc3_.readUTF();
-         _loc2_.sender = _loc3_.readUTF();
-         _loc2_.senderID = _loc3_.readInt();
-         _loc2_.msg = _loc3_.readUTF();
-         _loc2_.isAutoReply = _loc3_.readBoolean();
-         chatCheckSelf(_loc2_);
-         if(_loc2_.senderID != PlayerManager.Instance.Self.ID)
+         var pkg:ByteArray = event.readByteArray;
+         var cm:ChatData = new ChatData();
+         cm.channel = 2;
+         cm.receiverID = pkg.readInt();
+         cm.receiver = pkg.readUTF();
+         cm.sender = pkg.readUTF();
+         cm.senderID = pkg.readInt();
+         cm.msg = pkg.readUTF();
+         cm.isAutoReply = pkg.readBoolean();
+         chatCheckSelf(cm);
+         if(cm.senderID != PlayerManager.Instance.Self.ID)
          {
-            IMManager.Instance.saveRecentContactsID(_loc2_.senderID);
+            IMManager.Instance.saveRecentContactsID(cm.senderID);
          }
-         else if(_loc2_.receiverID != PlayerManager.Instance.Self.ID)
+         else if(cm.receiverID != PlayerManager.Instance.Self.ID)
          {
-            IMManager.Instance.saveRecentContactsID(_loc2_.receiverID);
+            IMManager.Instance.saveRecentContactsID(cm.receiverID);
          }
       }
       
-      private function __privateChat(param1:PkgEvent) : void
+      private function __privateChat(event:PkgEvent) : void
       {
-         var _loc2_:* = null;
+         var cm:* = null;
          if(PlayerManager.Instance.Self.Grade <= 1)
          {
             return;
          }
-         var _loc3_:PackageIn = param1.pkg;
-         if(_loc3_.clientId)
+         var pkg:PackageIn = event.pkg;
+         if(pkg.clientId)
          {
-            _loc2_ = new ChatData();
-            _loc2_.channel = 2;
-            _loc2_.receiverID = _loc3_.readInt();
-            _loc2_.senderID = _loc3_.clientId;
-            _loc2_.receiver = _loc3_.readUTF();
-            _loc2_.sender = _loc3_.readUTF();
-            _loc2_.msg = _loc3_.readUTF();
-            _loc2_.isAutoReply = _loc3_.readBoolean();
-            chatCheckSelf(_loc2_);
-            if(_loc2_.senderID != PlayerManager.Instance.Self.ID)
+            cm = new ChatData();
+            cm.channel = 2;
+            cm.receiverID = pkg.readInt();
+            cm.senderID = pkg.clientId;
+            cm.receiver = pkg.readUTF();
+            cm.sender = pkg.readUTF();
+            cm.msg = pkg.readUTF();
+            cm.isAutoReply = pkg.readBoolean();
+            chatCheckSelf(cm);
+            if(cm.senderID != PlayerManager.Instance.Self.ID)
             {
-               IMManager.Instance.saveRecentContactsID(_loc2_.senderID);
+               IMManager.Instance.saveRecentContactsID(cm.senderID);
             }
-            else if(_loc2_.receiverID != PlayerManager.Instance.Self.ID)
+            else if(cm.receiverID != PlayerManager.Instance.Self.ID)
             {
-               IMManager.Instance.saveRecentContactsID(_loc2_.receiverID);
+               IMManager.Instance.saveRecentContactsID(cm.receiverID);
             }
          }
       }
       
-      private function __areaPrivateChat(param1:PkgEvent) : void
+      private function __areaPrivateChat(event:PkgEvent) : void
       {
          if(PlayerManager.Instance.Self.Grade <= 1)
          {
             return;
          }
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:ChatData = new ChatData();
-         _loc2_.channel = 2;
-         _loc2_.zoneName = _loc3_.readUTF();
-         _loc2_.sender = _loc3_.readUTF();
-         _loc2_.msg = _loc3_.readUTF();
-         _loc2_.zoneID = _loc3_.readInt();
-         if(SharedManager.Instance.transregionalblackList[_loc2_.sender] != null)
+         var pkg:PackageIn = event.pkg;
+         var cm:ChatData = new ChatData();
+         cm.channel = 2;
+         cm.zoneName = pkg.readUTF();
+         cm.sender = pkg.readUTF();
+         cm.msg = pkg.readUTF();
+         cm.zoneID = pkg.readInt();
+         if(SharedManager.Instance.transregionalblackList[cm.sender] != null)
          {
             return;
          }
-         chatCheckSelf(_loc2_);
+         chatCheckSelf(cm);
       }
       
-      private function __receiveFace(param1:PkgEvent) : void
+      private function __receiveFace(evt:PkgEvent) : void
       {
          if(PlayerManager.Instance.Self.Grade <= 1)
          {
             return;
          }
-         var _loc2_:Object = {};
-         _loc2_.playerid = param1.pkg.clientId;
-         _loc2_.faceid = param1.pkg.readInt();
-         _loc2_.delay = param1.pkg.readInt();
-         dispatchEvent(new ChatEvent("addFace",_loc2_));
+         var data:Object = {};
+         data.playerid = evt.pkg.clientId;
+         data.faceid = evt.pkg.readInt();
+         data.delay = evt.pkg.readInt();
+         dispatchEvent(new ChatEvent("addFace",data));
       }
       
-      private function __sBugle(param1:PkgEvent) : void
+      private function __sBugle(event:PkgEvent) : void
       {
          if(PlayerManager.Instance.Self.Grade <= 1)
          {
             return;
          }
-         var _loc3_:PackageIn = param1.pkg as PackageIn;
-         var _loc2_:ChatData = new ChatData();
-         _loc2_.channel = 1;
-         _loc2_.senderID = _loc3_.readInt();
-         _loc2_.receiver = "";
-         _loc2_.sender = _loc3_.readUTF();
-         _loc2_.msg = _loc3_.readUTF();
-         chat(_loc2_);
+         var pkg:PackageIn = event.pkg as PackageIn;
+         var cm:ChatData = new ChatData();
+         cm.channel = 1;
+         cm.senderID = pkg.readInt();
+         cm.receiver = "";
+         cm.sender = pkg.readUTF();
+         cm.msg = pkg.readUTF();
+         chat(cm);
       }
       
-      private function __fastInviteCall(param1:CrazyTankSocketEvent) : void
+      private function __fastInviteCall(event:CrazyTankSocketEvent) : void
       {
-         var _loc4_:PackageIn = param1.pkg as PackageIn;
-         var _loc3_:ChatData = new ChatData();
-         _loc3_.type = 101;
-         _loc3_.channel = 1;
-         _loc3_.senderID = _loc4_.readInt();
-         if(_loc3_.senderID == -1 && PlayerManager.Instance.Self.ID == _loc4_.clientId)
+         var pkg:PackageIn = event.pkg as PackageIn;
+         var cm:ChatData = new ChatData();
+         cm.type = 101;
+         cm.channel = 1;
+         cm.senderID = pkg.readInt();
+         if(cm.senderID == -1 && PlayerManager.Instance.Self.ID == pkg.clientId)
          {
             PlayerManager.Instance.Self.freeInvitedUsedCnt++;
             ChatManager.Instance.dispatchEvent(new ChatEvent("freeInvited"));
          }
-         _loc3_.receiver = "";
-         var _loc2_:String = _loc4_.readUTF();
-         if(_loc3_.senderID == -1)
+         cm.receiver = "";
+         var sender:String = pkg.readUTF();
+         if(cm.senderID == -1)
          {
-            _loc3_.sender = LanguageMgr.GetTranslation("ddt.newPlayer.smallHorn");
+            cm.sender = LanguageMgr.GetTranslation("ddt.newPlayer.smallHorn");
          }
          else
          {
-            _loc3_.sender = _loc2_;
+            cm.sender = sender;
          }
-         _loc3_.msg = _loc4_.readUTF();
-         _loc3_.roomId = _loc4_.readInt();
-         _loc3_.password = _loc4_.readUTF();
-         chat(_loc3_);
+         cm.msg = pkg.readUTF();
+         cm.roomId = pkg.readInt();
+         cm.password = pkg.readUTF();
+         chat(cm);
       }
       
-      private function __sceneChat(param1:PkgEvent) : void
+      private function __sceneChat(event:PkgEvent) : void
       {
          if(PlayerManager.Instance.Self.Grade <= 1)
          {
             return;
          }
-         var _loc3_:PackageIn = param1.pkg as PackageIn;
-         var _loc2_:ChatData = new ChatData();
-         _loc2_.zoneID = _loc3_.readInt();
-         _loc2_.channel = _loc3_.readByte();
-         if(_loc3_.readBoolean())
+         var pkg:PackageIn = event.pkg as PackageIn;
+         var cm:ChatData = new ChatData();
+         cm.zoneID = pkg.readInt();
+         cm.channel = pkg.readByte();
+         if(pkg.readBoolean())
          {
-            _loc2_.channel = 4;
+            cm.channel = 4;
          }
-         _loc2_.senderID = _loc3_.clientId;
-         _loc2_.receiver = "";
-         _loc2_.sender = _loc3_.readUTF();
-         _loc2_.msg = _loc3_.readUTF();
-         chatCheckSelf(_loc2_);
-         addRecentContacts(_loc2_.senderID);
+         cm.senderID = pkg.clientId;
+         cm.receiver = "";
+         cm.sender = pkg.readUTF();
+         cm.msg = pkg.readUTF();
+         chatCheckSelf(cm);
+         addRecentContacts(cm.senderID);
       }
       
-      private function addRecentContacts(param1:int) : void
+      private function addRecentContacts(id:int) : void
       {
-         var _loc2_:* = undefined;
+         var gameControl:* = undefined;
          if(StateManager.currentStateType == "dungeonRoom" || StateManager.currentStateType == "challengeRoom" || StateManager.currentStateType == "matchRoom" || StateManager.currentStateType == "missionResult" || StateManager.currentStateType == "gameLoading")
          {
-            if(RoomManager.Instance.isIdenticalRoom(param1))
+            if(RoomManager.Instance.isIdenticalRoom(id))
             {
-               IMManager.Instance.saveRecentContactsID(param1);
+               IMManager.Instance.saveRecentContactsID(id);
             }
          }
          else if(StateManager.currentStateType == "fighting")
          {
-            _loc2_ = getDefinitionByName("gameCommon.GameControl");
-            if(_loc2_)
+            gameControl = getDefinitionByName("gameCommon.GameControl");
+            if(gameControl)
             {
-               if(_loc2_.Instance.isIdenticalGame(param1))
+               if(gameControl.Instance.isIdenticalGame(id))
                {
-                  IMManager.Instance.saveRecentContactsID(param1);
+                  IMManager.Instance.saveRecentContactsID(id);
                }
             }
          }
       }
       
-      private function __sysNotice(param1:PkgEvent) : void
+      private function __sysNotice(event:PkgEvent) : void
       {
-         var _loc8_:* = null;
-         var _loc6_:* = null;
-         var _loc3_:int = 0;
-         var _loc4_:* = null;
-         var _loc2_:int = 0;
-         var _loc11_:* = null;
+         var links:* = null;
+         var data:* = null;
+         var caddy:int = 0;
+         var name:* = null;
+         var id:int = 0;
+         var zone:* = null;
          if(PlayerManager.Instance.Self.Grade <= 1)
          {
             return;
          }
-         var _loc9_:int = param1.pkg.readInt();
-         var _loc10_:String = param1.pkg.readUTF();
-         var _loc7_:ChatData = new ChatData();
-         var _loc5_:Boolean = false;
-         var _loc12_:* = _loc9_;
+         var type:int = event.pkg.readInt();
+         var msg:String = event.pkg.readUTF();
+         var o:ChatData = new ChatData();
+         var isReadKey:Boolean = false;
+         var _loc12_:* = type;
          if(0 !== _loc12_)
          {
             if(1 !== _loc12_)
@@ -1098,176 +1097,176 @@ package ddt.manager
                                                             {
                                                                if(4 !== _loc12_)
                                                                {
-                                                                  _loc7_.channel = 7;
+                                                                  o.channel = 7;
                                                                }
                                                                else
                                                                {
-                                                                  _loc6_ = {};
-                                                                  _loc6_["msg"] = _loc10_;
-                                                                  _loc6_["pkg"] = param1.pkg;
-                                                                  ChatManager.Instance.dispatchEvent(new ChatEvent("systemPost",_loc6_));
+                                                                  data = {};
+                                                                  data["msg"] = msg;
+                                                                  data["pkg"] = event.pkg;
+                                                                  ChatManager.Instance.dispatchEvent(new ChatEvent("systemPost",data));
                                                                   return;
                                                                }
                                                             }
                                                             else
                                                             {
-                                                               _loc7_.channel = 7;
+                                                               o.channel = 7;
                                                             }
                                                          }
                                                          else
                                                          {
-                                                            _loc7_.zoneID = param1.pkg.readInt();
-                                                            _loc7_.channel = 12;
+                                                            o.zoneID = event.pkg.readInt();
+                                                            o.channel = 12;
                                                          }
                                                       }
                                                       else
                                                       {
-                                                         _loc7_.zoneID = param1.pkg.readInt();
-                                                         _loc7_.channel = 28;
+                                                         o.zoneID = event.pkg.readInt();
+                                                         o.channel = 28;
                                                       }
                                                    }
                                                 }
-                                                addr74:
-                                                _loc7_.zoneID = param1.pkg.readInt();
-                                                _loc7_.channel = 12;
+                                                addr98:
+                                                o.zoneID = event.pkg.readInt();
+                                                o.channel = 12;
                                              }
-                                             addr71:
-                                             _loc5_ = true;
-                                             §§goto(addr74);
+                                             addr94:
+                                             isReadKey = true;
+                                             §§goto(addr98);
                                           }
-                                          addr70:
-                                          §§goto(addr71);
+                                          addr93:
+                                          §§goto(addr94);
                                        }
-                                       §§goto(addr70);
+                                       §§goto(addr93);
                                     }
                                     else
                                     {
-                                       _loc7_.channel = 3;
+                                       o.channel = 3;
                                     }
                                  }
                                  else
                                  {
-                                    _loc7_.channel = 6;
+                                    o.channel = 6;
                                  }
                               }
                            }
-                           addr53:
-                           _loc7_.channel = 7;
+                           addr73:
+                           o.channel = 7;
                         }
-                        addr52:
-                        §§goto(addr53);
+                        addr72:
+                        §§goto(addr73);
                      }
-                     addr51:
-                     §§goto(addr52);
+                     addr71:
+                     §§goto(addr72);
                   }
-                  addr48:
-                  _loc5_ = true;
-                  §§goto(addr51);
+                  addr67:
+                  isReadKey = true;
+                  §§goto(addr71);
                }
-               addr47:
-               §§goto(addr48);
+               addr66:
+               §§goto(addr67);
             }
-            §§goto(addr47);
+            §§goto(addr66);
          }
          else
          {
-            _loc7_.channel = 14;
+            o.channel = 14;
          }
-         if(param1 && param1.pkg.bytesAvailable)
+         if(event && event.pkg.bytesAvailable)
          {
-            _loc8_ = ChatHelper.readGoodsLinks(param1.pkg,_loc5_);
+            links = ChatHelper.readGoodsLinks(event.pkg,isReadKey);
          }
-         _loc7_.type = _loc9_;
-         _loc7_.zoneName = PlayerManager.Instance.getAreaNameByAreaID(_loc7_.zoneID);
-         _loc7_.msg = StringHelper.rePlaceHtmlTextField(_loc10_);
-         _loc7_.link = _loc8_;
-         chat(_loc7_);
-         if(_loc9_ == 12 && param1.pkg.bytesAvailable)
+         o.type = type;
+         o.zoneName = PlayerManager.Instance.getAreaNameByAreaID(o.zoneID);
+         o.msg = StringHelper.rePlaceHtmlTextField(msg);
+         o.link = links;
+         chat(o);
+         if(type == 12 && event.pkg.bytesAvailable)
          {
-            _loc3_ = param1.pkg.readInt();
-            if(_loc3_ > 0)
+            caddy = event.pkg.readInt();
+            if(caddy > 0)
             {
-               _loc4_ = param1.pkg.readUTF();
-               _loc2_ = param1.pkg.readInt();
-               _loc11_ = param1.pkg.readUTF();
-               if(_loc4_ != PlayerManager.Instance.Self.NickName)
+               name = event.pkg.readUTF();
+               id = event.pkg.readInt();
+               zone = event.pkg.readUTF();
+               if(name != PlayerManager.Instance.Self.NickName)
                {
-                  CaddyModel.instance.appendAwardsInfo(_loc4_,_loc2_,true,_loc11_,_loc7_.zoneID,_loc3_);
+                  CaddyModel.instance.appendAwardsInfo(name,id,true,zone,o.zoneID,caddy);
                }
             }
          }
       }
       
-      private function chatCheckSelf(param1:ChatData) : void
+      private function chatCheckSelf(data:ChatData) : void
       {
-         var _loc3_:* = null;
-         if(!PlayerManager.Instance.Self.IsWeakGuildFinish(70) && TaskManager.instance.getQuestDataByID(344) && param1.channel == 3)
+         var b:* = null;
+         if(!PlayerManager.Instance.Self.IsWeakGuildFinish(70) && TaskManager.instance.getQuestDataByID(344) && data.channel == 3)
          {
             SocketManager.Instance.out.sendQuestCheck(344,1,0);
             SocketManager.Instance.out.syncWeakStep(70);
          }
-         if(param1.zoneID != -1 && param1.zoneID != PlayerManager.Instance.Self.ZoneID)
+         if(data.zoneID != -1 && data.zoneID != PlayerManager.Instance.Self.ZoneID)
          {
-            if(param1.sender != PlayerManager.Instance.Self.NickName || param1.zoneID != PlayerManager.Instance.Self.ZoneID)
+            if(data.sender != PlayerManager.Instance.Self.NickName || data.zoneID != PlayerManager.Instance.Self.ZoneID)
             {
-               chat(param1);
+               chat(data);
                return;
             }
          }
-         else if(param1.sender != PlayerManager.Instance.Self.NickName)
+         else if(data.sender != PlayerManager.Instance.Self.NickName)
          {
-            if(param1.channel == 3)
+            if(data.channel == 3)
             {
-               _loc3_ = PlayerManager.Instance.blackList;
+               b = PlayerManager.Instance.blackList;
                var _loc5_:int = 0;
-               var _loc4_:* = _loc3_;
-               for each(var _loc2_ in _loc3_)
+               var _loc4_:* = b;
+               for each(var player in b)
                {
-                  if(_loc2_.NickName == param1.sender)
+                  if(player.NickName == data.sender)
                   {
                      return;
                   }
                }
             }
-            chat(param1);
+            chat(data);
          }
       }
       
-      protected function __onPlayerOnline(param1:PkgEvent) : void
+      protected function __onPlayerOnline(event:PkgEvent) : void
       {
-         var _loc6_:PackageIn = param1.pkg;
-         var _loc4_:String = _loc6_.readUTF();
-         var _loc3_:int = _loc6_.readInt();
-         var _loc2_:String = NewTitleManager.instance.titleInfo[_loc3_].Name;
-         var _loc5_:ChatData = new ChatData();
-         _loc5_.channel = 21;
-         _loc5_.childChannelArr = [7,_loc3_,7];
-         _loc5_.msg = LanguageMgr.GetTranslation("hall.player.online",_loc2_,_loc4_);
-         chat(_loc5_);
+         var pkg:PackageIn = event.pkg;
+         var name:String = pkg.readUTF();
+         var titleID:int = pkg.readInt();
+         var title:String = NewTitleManager.instance.titleInfo[titleID].Name;
+         var data:ChatData = new ChatData();
+         data.channel = 21;
+         data.childChannelArr = [7,titleID,7];
+         data.msg = LanguageMgr.GetTranslation("hall.player.online",title,name);
+         chat(data);
       }
       
-      private function onConsortiaBackMsg(param1:PkgEvent) : void
+      private function onConsortiaBackMsg(event:PkgEvent) : void
       {
-         var _loc5_:PackageIn = param1.pkg;
-         var _loc6_:int = _loc5_.readByte();
-         var _loc3_:String = _loc5_.readUTF();
-         var _loc2_:int = _loc5_.readInt();
-         var _loc4_:ChatData = new ChatData();
-         if(_loc6_ == 0)
+         var pkg:PackageIn = event.pkg;
+         var type:int = pkg.readByte();
+         var name:String = pkg.readUTF();
+         var playerId:int = pkg.readInt();
+         var data:ChatData = new ChatData();
+         if(type == 0)
          {
-            _loc4_.zoneID = PlayerManager.Instance.Self.ZoneID;
-            _loc4_.zoneName = ServerManager.Instance.zoneName;
-            _loc3_ = ChatFormats.creatBracketsTag("[" + _loc3_ + "]",1,null,_loc4_);
-            _loc4_.htmlMessage = "<font color=\'#F6CF1C\'>" + LanguageMgr.GetTranslation("consortion.callBackView.chat.msg1",_loc3_) + "</font><BR>";
+            data.zoneID = PlayerManager.Instance.Self.ZoneID;
+            data.zoneName = ServerManager.Instance.zoneName;
+            name = ChatFormats.creatBracketsTag("[" + name + "]",1,null,data);
+            data.htmlMessage = "<font color=\'#F6CF1C\'>" + LanguageMgr.GetTranslation("consortion.callBackView.chat.msg1",name) + "</font><BR>";
          }
-         else if(_loc6_ == 1)
+         else if(type == 1)
          {
-            _loc3_ = ChatFormats.creatBracketsTag(LanguageMgr.GetTranslation("consortion.callBackView.chat.msg3"),112);
-            _loc3_ = "<font color=\'#FF00A6\'>" + _loc3_ + "</font>";
-            _loc4_.htmlMessage = "<font color=\'#F6CF1C\'>" + LanguageMgr.GetTranslation("consortion.callBackView.chat.msg2",_loc3_) + "</font><BR>";
+            name = ChatFormats.creatBracketsTag(LanguageMgr.GetTranslation("consortion.callBackView.chat.msg3"),112);
+            name = "<font color=\'#FF00A6\'>" + name + "</font>";
+            data.htmlMessage = "<font color=\'#F6CF1C\'>" + LanguageMgr.GetTranslation("consortion.callBackView.chat.msg2",name) + "</font><BR>";
          }
-         _loc4_.channel = 3;
-         chat(_loc4_,false);
+         data.channel = 3;
+         chat(data,false);
       }
       
       private function initEvent() : void
@@ -1296,38 +1295,38 @@ package ddt.manager
          FlashP2PManager.Instance.addEventListener("PrivateMsg",__p2pPrivateChat);
       }
       
-      private function __fastAuctionBugle(param1:CrazyTankSocketEvent) : void
+      private function __fastAuctionBugle(event:CrazyTankSocketEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg as PackageIn;
-         var _loc2_:ChatData = new ChatData();
-         _loc2_.type = 107;
-         _loc2_.channel = 1;
-         _loc2_.receiver = "";
-         _loc2_.playerCharacterID = _loc3_.readInt();
-         _loc2_.sender = _loc3_.readUTF();
-         _loc2_.auctionID = _loc3_.readInt();
-         _loc2_.teamplateID = _loc3_.readInt();
-         _loc2_.itemCount = _loc3_.readInt();
-         _loc2_.mouthful = _loc3_.readInt();
-         _loc2_.payType = _loc3_.readInt();
-         _loc2_.price = _loc3_.readInt();
-         _loc2_.rise = _loc3_.readInt();
-         _loc2_.validDate = _loc3_.readInt();
-         _loc2_.auctionGoodName = ItemManager.Instance.getTemplateById(_loc2_.teamplateID).Name;
-         _loc2_.msg = "【" + _loc2_.sender + "】" + LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionSellLeftView.bugleTxt",_loc2_.price,_loc2_.mouthful,_loc2_.auctionGoodName,_loc2_.itemCount);
-         chat(_loc2_);
+         var pkg:PackageIn = event.pkg as PackageIn;
+         var cm:ChatData = new ChatData();
+         cm.type = 107;
+         cm.channel = 1;
+         cm.receiver = "";
+         cm.playerCharacterID = pkg.readInt();
+         cm.sender = pkg.readUTF();
+         cm.auctionID = pkg.readInt();
+         cm.teamplateID = pkg.readInt();
+         cm.itemCount = pkg.readInt();
+         cm.mouthful = pkg.readInt();
+         cm.payType = pkg.readInt();
+         cm.price = pkg.readInt();
+         cm.rise = pkg.readInt();
+         cm.validDate = pkg.readInt();
+         cm.auctionGoodName = ItemManager.Instance.getTemplateById(cm.teamplateID).Name;
+         cm.msg = "【" + cm.sender + "】" + LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionSellLeftView.bugleTxt",cm.price,cm.mouthful,cm.auctionGoodName,cm.itemCount);
+         chat(cm);
       }
       
-      private function __yearFoodIsFublish(param1:Event) : void
+      private function __yearFoodIsFublish(event:Event) : void
       {
-         var _loc2_:ChatData = new ChatData();
-         _loc2_.type = 888;
-         _loc2_.channel = 1;
-         _loc2_.senderID = NewYearRiceManager.instance.model.playerID;
-         _loc2_.receiver = "";
-         _loc2_.sender = NewYearRiceManager.instance.model.playerName;
-         _loc2_.msg = "【" + _loc2_.sender + "】" + LanguageMgr.GetTranslation("tank.newyearFood.view.bugleTxt");
-         chat(_loc2_);
+         var cm:ChatData = new ChatData();
+         cm.type = 888;
+         cm.channel = 1;
+         cm.senderID = NewYearRiceManager.instance.model.playerID;
+         cm.receiver = "";
+         cm.sender = NewYearRiceManager.instance.model.playerName;
+         cm.msg = "【" + cm.sender + "】" + LanguageMgr.GetTranslation("tank.newyearFood.view.bugleTxt");
+         chat(cm);
       }
       
       private function initView() : void
@@ -1340,66 +1339,66 @@ package ddt.manager
          outputChannel = 0;
       }
       
-      private function sendMessage(param1:int, param2:String, param3:String, param4:Boolean) : void
+      private function sendMessage(channelid:int, fromnick:String, msg:String, team:Boolean) : void
       {
-         param3 = Helpers.enCodeString(param3);
-         var _loc5_:PackageOut = new PackageOut(19);
-         _loc5_.writeByte(param1);
-         _loc5_.writeBoolean(param4);
-         _loc5_.writeUTF(param2);
-         _loc5_.writeUTF(param3);
-         SocketManager.Instance.out.sendPackage(_loc5_);
+         msg = Helpers.enCodeString(msg);
+         var pkg:PackageOut = new PackageOut(19);
+         pkg.writeByte(channelid);
+         pkg.writeBoolean(team);
+         pkg.writeUTF(fromnick);
+         pkg.writeUTF(msg);
+         SocketManager.Instance.out.sendPackage(pkg);
       }
       
-      public function sendPrivateMessage(param1:String, param2:String, param3:Number = 0, param4:Boolean = false) : void
+      public function sendPrivateMessage(toNick:String, msg:String, toId:Number = 0, isAutoReply:Boolean = false) : void
       {
-         var _loc5_:* = null;
-         if(PathManager.flashP2PEbable && PlayerManager.Instance.findPlayer(param3).peerID != "")
+         var pkg:* = null;
+         if(PathManager.flashP2PEbable && PlayerManager.Instance.findPlayer(toId).peerID != "")
          {
-            param2 = Helpers.enCodeString(param2);
-            FlashP2PManager.Instance.sendPlivateMsg(PlayerManager.Instance.findPlayer(param3).peerID,param1,param2,param3,param4);
+            msg = Helpers.enCodeString(msg);
+            FlashP2PManager.Instance.sendPlivateMsg(PlayerManager.Instance.findPlayer(toId).peerID,toNick,msg,toId,isAutoReply);
          }
          else
          {
-            param2 = Helpers.enCodeString(param2);
-            _loc5_ = new PackageOut(37);
-            _loc5_.writeInt(param3);
-            _loc5_.writeUTF(param1);
-            _loc5_.writeUTF(PlayerManager.Instance.Self.NickName);
-            _loc5_.writeUTF(param2);
-            _loc5_.writeBoolean(param4);
-            SocketManager.Instance.out.sendPackage(_loc5_);
+            msg = Helpers.enCodeString(msg);
+            pkg = new PackageOut(37);
+            pkg.writeInt(toId);
+            pkg.writeUTF(toNick);
+            pkg.writeUTF(PlayerManager.Instance.Self.NickName);
+            pkg.writeUTF(msg);
+            pkg.writeBoolean(isAutoReply);
+            SocketManager.Instance.out.sendPackage(pkg);
          }
          if(RoomManager.Instance.current && !RoomManager.Instance.current.isCrossZone)
          {
-            IMManager.Instance.saveRecentContactsID(param3);
+            IMManager.Instance.saveRecentContactsID(toId);
          }
       }
       
-      public function sendAreaPrivateMessage(param1:String, param2:String, param3:int = -1) : void
+      public function sendAreaPrivateMessage(toNick:String, msg:String, zoneID:int = -1) : void
       {
-         param2 = Helpers.enCodeString(param2);
-         var _loc4_:PackageOut = new PackageOut(107);
-         _loc4_.writeInt(param3);
-         _loc4_.writeUTF(param2);
-         _loc4_.writeUTF(param1);
-         SocketManager.Instance.out.sendPackage(_loc4_);
+         msg = Helpers.enCodeString(msg);
+         var pkg:PackageOut = new PackageOut(107);
+         pkg.writeInt(zoneID);
+         pkg.writeUTF(msg);
+         pkg.writeUTF(toNick);
+         SocketManager.Instance.out.sendPackage(pkg);
       }
       
-      public function sendOldPlayerLoginPrompt(param1:PackageIn) : void
+      public function sendOldPlayerLoginPrompt(pkg:PackageIn) : void
       {
-         var _loc2_:String = param1.readUTF();
-         var _loc3_:ChatData = new ChatData();
-         _loc3_.channel = 21;
-         _loc3_.childChannelArr = [7,14];
-         _loc3_.type = 103;
-         _loc3_.msg = LanguageMgr.GetTranslation("oldPlayer.login.promptTxt",_loc2_);
-         _loc3_.receiver = _loc2_;
+         var tmpName:String = pkg.readUTF();
+         var chatData:ChatData = new ChatData();
+         chatData.channel = 21;
+         chatData.childChannelArr = [7,14];
+         chatData.type = 103;
+         chatData.msg = LanguageMgr.GetTranslation("oldPlayer.login.promptTxt",tmpName);
+         chatData.receiver = tmpName;
          if(PlayerManager.Instance.Self.ConsortiaID != 0 && ConsortiaDutyManager.GetRight(PlayerManager.Instance.Self.Right,2))
          {
-            _loc3_.msg = _loc3_.msg + ("|" + LanguageMgr.GetTranslation("oldPlayer.login.promptTxt2"));
+            chatData.msg = chatData.msg + ("|" + LanguageMgr.GetTranslation("oldPlayer.login.promptTxt2"));
          }
-         chat(_loc3_);
+         chat(chatData);
       }
    }
 }

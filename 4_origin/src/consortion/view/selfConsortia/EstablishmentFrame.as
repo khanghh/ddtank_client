@@ -62,9 +62,9 @@ package consortion.view.selfConsortia
          addEventListener("response",_response);
       }
       
-      private function _response(param1:FrameEvent) : void
+      private function _response(evt:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(evt.responseCode == 0 || evt.responseCode == 1)
          {
             close();
          }
@@ -76,11 +76,11 @@ package consortion.view.selfConsortia
          ObjectUtils.disposeObject(this);
       }
       
-      private function __onClickHandler(param1:MouseEvent) : void
+      private function __onClickHandler(event:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var skillFrame:* = null;
          SoundManager.instance.play("008");
-         var _loc3_:* = param1.currentTarget;
+         var _loc3_:* = event.currentTarget;
          if(_shop !== _loc3_)
          {
             if(_bank !== _loc3_)
@@ -89,8 +89,8 @@ package consortion.view.selfConsortia
                {
                   return;
                }
-               _loc2_ = ComponentFactory.Instance.creatComponentByStylename("consortionSkillFrame");
-               LayerManager.Instance.addToLayer(_loc2_,3,true,1);
+               skillFrame = ComponentFactory.Instance.creatComponentByStylename("consortionSkillFrame");
+               LayerManager.Instance.addToLayer(skillFrame,3,true,1);
             }
             else
             {
@@ -126,9 +126,9 @@ package consortion.view.selfConsortia
          removeEventListener("response",_response);
       }
       
-      override public function set backgound(param1:DisplayObject) : void
+      override public function set backgound(image:DisplayObject) : void
       {
-         .super.backgound = param1;
+         .super.backgound = image;
          (_backgound as MutipleImage).getChildAt(0)["getChildAt"](1)["alpha"] = 0;
       }
       

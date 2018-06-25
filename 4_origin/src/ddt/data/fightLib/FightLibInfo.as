@@ -113,9 +113,9 @@ package ddt.data.fightLib
          return _id;
       }
       
-      public function set id(param1:int) : void
+      public function set id(value:int) : void
       {
-         _id = param1;
+         _id = value;
       }
       
       public function get name() : String
@@ -123,9 +123,9 @@ package ddt.data.fightLib
          return _name;
       }
       
-      public function set name(param1:String) : void
+      public function set name(value:String) : void
       {
-         _name = param1;
+         _name = value;
       }
       
       public function get difficulty() : int
@@ -133,9 +133,9 @@ package ddt.data.fightLib
          return _difficulty;
       }
       
-      public function set difficulty(param1:int) : void
+      public function set difficulty(value:int) : void
       {
-         _difficulty = param1;
+         _difficulty = value;
          if(_commit <= 0)
          {
             dispatchEvent(new Event("change"));
@@ -147,9 +147,9 @@ package ddt.data.fightLib
          return _requiedLevel;
       }
       
-      public function set requiedLevel(param1:int) : void
+      public function set requiedLevel(value:int) : void
       {
-         _requiedLevel = param1;
+         _requiedLevel = value;
          if(_commit <= 0)
          {
             dispatchEvent(new Event("change"));
@@ -161,9 +161,9 @@ package ddt.data.fightLib
          return _description;
       }
       
-      public function set description(param1:String) : void
+      public function set description(value:String) : void
       {
-         _description = param1;
+         _description = value;
       }
       
       public function get mapID() : int
@@ -171,9 +171,9 @@ package ddt.data.fightLib
          return _mapID;
       }
       
-      public function set mapID(param1:int) : void
+      public function set mapID(value:int) : void
       {
-         _mapID = param1;
+         _mapID = value;
       }
       
       public function beginChange() : void
@@ -189,17 +189,17 @@ package ddt.data.fightLib
       
       public function getAwardMedal() : int
       {
-         var _loc2_:* = null;
+         var awardItems:* = null;
          if(difficulty > -1 && difficulty < 3)
          {
-            _loc2_ = getAwardInfoItems();
+            awardItems = getAwardInfoItems();
             var _loc4_:int = 0;
-            var _loc3_:* = _loc2_;
-            for each(var _loc1_ in _loc2_)
+            var _loc3_:* = awardItems;
+            for each(var item in awardItems)
             {
-               if(_loc1_.id == -300)
+               if(item.id == -300)
                {
-                  return _loc1_.count;
+                  return item.count;
                }
             }
          }
@@ -208,17 +208,17 @@ package ddt.data.fightLib
       
       public function getAwardGiftsNum() : int
       {
-         var _loc2_:* = null;
+         var awardItems:* = null;
          if(difficulty > -1 && difficulty < 3)
          {
-            _loc2_ = getAwardInfoItems();
+            awardItems = getAwardInfoItems();
             var _loc4_:int = 0;
-            var _loc3_:* = _loc2_;
-            for each(var _loc1_ in _loc2_)
+            var _loc3_:* = awardItems;
+            for each(var item in awardItems)
             {
-               if(_loc1_.id == -300)
+               if(item.id == -300)
                {
-                  return _loc1_.count;
+                  return item.count;
                }
             }
          }
@@ -227,17 +227,17 @@ package ddt.data.fightLib
       
       public function getAwardEXPNum() : int
       {
-         var _loc2_:* = null;
+         var awardItems:* = null;
          if(difficulty > -1 && difficulty < 3)
          {
-            _loc2_ = getAwardInfoItems();
+            awardItems = getAwardInfoItems();
             var _loc4_:int = 0;
-            var _loc3_:* = _loc2_;
-            for each(var _loc1_ in _loc2_)
+            var _loc3_:* = awardItems;
+            for each(var item in awardItems)
             {
-               if(_loc1_.id == 11107)
+               if(item.id == 11107)
                {
-                  return _loc1_.count;
+                  return item.count;
                }
             }
          }
@@ -246,47 +246,47 @@ package ddt.data.fightLib
       
       public function getAwardItems() : Array
       {
-         var _loc3_:* = null;
-         var _loc1_:Array = [];
+         var awardItems:* = null;
+         var result:Array = [];
          if(difficulty > -1 && difficulty < 3)
          {
-            _loc3_ = getAwardInfoItems();
+            awardItems = getAwardInfoItems();
             var _loc5_:int = 0;
-            var _loc4_:* = _loc3_;
-            for each(var _loc2_ in _loc3_)
+            var _loc4_:* = awardItems;
+            for each(var item in awardItems)
             {
-               if(_loc2_.id != -300 && _loc2_.id != 11107)
+               if(item.id != -300 && item.id != 11107)
                {
-                  _loc1_.push(_loc2_);
+                  result.push(item);
                }
             }
          }
-         return _loc1_;
+         return result;
       }
       
       private function getAwardInfoItems() : Array
       {
-         var _loc1_:* = null;
-         var _loc2_:FightLibAwardInfo = FightLibManager.Instance.getFightLibAwardInfoByID(id);
+         var result:* = null;
+         var awardInfo:FightLibAwardInfo = FightLibManager.Instance.getFightLibAwardInfoByID(id);
          switch(int(difficulty))
          {
             case 0:
-               _loc1_ = _loc2_.easyAward;
+               result = awardInfo.easyAward;
                break;
             case 1:
-               _loc1_ = _loc2_.normalAward;
+               result = awardInfo.normalAward;
                break;
             case 2:
-               _loc1_ = _loc2_.difficultAward;
+               result = awardInfo.difficultAward;
          }
-         return _loc1_;
+         return result;
       }
       
       private function initMissionValue() : void
       {
-         var _loc1_:String = PlayerManager.Instance.Self.fightLibMission.substr((id - 1000) * 2,2);
-         value1 = int(_loc1_.substr(0,1));
-         value2 = int(_loc1_.substr(1,1));
+         var info:String = PlayerManager.Instance.Self.fightLibMission.substr((id - 1000) * 2,2);
+         value1 = int(info.substr(0,1));
+         value2 = int(info.substr(1,1));
       }
       
       public function get InfoCanPlay() : Boolean

@@ -31,110 +31,109 @@ package game.actions
       
       private var _func:Function;
       
-      public function GameOverAction(param1:MapView, param2:CrazyTankSocketEvent, param3:Function, param4:Number = 3000)
+      public function GameOverAction(map:MapView, event:CrazyTankSocketEvent, func:Function, waitTime:Number = 3000)
       {
          super();
-         _func = param3;
-         _event = param2;
-         _map = param1;
-         _count = param4 / 40;
+         _func = func;
+         _event = event;
+         _map = map;
+         _count = waitTime / 40;
          _current = GameControl.Instance.Current;
-         readInfo(param2);
+         readInfo(event);
          if(RoomManager.Instance.current.selfRoomPlayer.isViewer)
          {
             _executed = true;
          }
       }
       
-      private function readInfo(param1:CrazyTankSocketEvent) : void
+      private function readInfo(event:CrazyTankSocketEvent) : void
       {
-         var _loc4_:* = null;
-         var _loc9_:int = 0;
-         var _loc10_:int = 0;
-         var _loc6_:int = 0;
-         var _loc8_:int = 0;
-         var _loc2_:Boolean = false;
-         var _loc11_:int = 0;
-         var _loc13_:int = 0;
-         var _loc12_:* = null;
-         var _loc7_:* = null;
-         var _loc3_:int = 0;
-         var _loc14_:int = 0;
+         var pkg:* = null;
+         var tieStatus:int = 0;
+         var num:int = 0;
+         var i:int = 0;
+         var id:int = 0;
+         var isWin:Boolean = false;
+         var grade:int = 0;
+         var gp:int = 0;
+         var obj:* = null;
+         var info:* = null;
+         var redFinalScore:int = 0;
+         var blueFinalScore:int = 0;
          if(_current)
          {
-            _loc4_ = param1.pkg;
-            _loc9_ = _loc4_.readInt();
-            _loc10_ = _loc4_.readInt();
-            _loc6_ = 0;
-            while(_loc6_ < _loc10_)
+            pkg = event.pkg;
+            tieStatus = pkg.readInt();
+            num = pkg.readInt();
+            for(i = 0; i < num; )
             {
-               _loc8_ = _loc4_.readInt();
-               _loc2_ = _loc4_.readBoolean();
-               _loc11_ = _loc4_.readInt();
-               _loc13_ = _loc4_.readInt();
-               _loc12_ = {};
-               _loc12_.killGP = _loc4_.readInt();
-               _loc12_.hertGP = _loc4_.readInt();
-               _loc12_.fightGP = _loc4_.readInt();
-               _loc12_.ghostGP = _loc4_.readInt();
-               _loc12_.gpForVIP = _loc4_.readInt();
-               _loc12_.gpForConsortia = _loc4_.readInt();
-               _loc12_.gpForSpouse = _loc4_.readInt();
-               _loc12_.gpForServer = _loc4_.readInt();
-               _loc12_.gpForApprenticeOnline = _loc4_.readInt();
-               _loc12_.gpForApprenticeTeam = _loc4_.readInt();
-               _loc12_.gpForDoubleCard = _loc4_.readInt();
-               _loc12_.gpForPower = _loc4_.readInt();
-               _loc12_.consortiaSkill = _loc4_.readInt();
-               _loc12_.luckyExp = _loc4_.readInt();
-               _loc12_.gainGP = _loc4_.readInt();
-               _loc12_.gpCSMUser = _loc4_.readInt();
-               _loc12_.gpAddWell = _loc4_.readInt();
-               trace("gpCSMUser:" + _loc12_.gpCSMUser);
-               _loc12_.offerFight = _loc4_.readInt();
-               _loc12_.offerDoubleCard = _loc4_.readInt();
-               _loc12_.offerVIP = _loc4_.readInt();
-               _loc12_.offerService = _loc4_.readInt();
-               _loc12_.offerBuff = _loc4_.readInt();
-               _loc12_.offerConsortia = _loc4_.readInt();
-               _loc12_.luckyOffer = _loc4_.readInt();
-               _loc12_.gainOffer = _loc4_.readInt();
-               _loc12_.offerCSMUser = _loc4_.readInt();
-               _loc12_.offerAddWell = _loc4_.readInt();
-               trace("offerCSMUser:" + _loc12_.offerCSMUser);
-               _loc12_.canTakeOut = _loc4_.readInt();
-               _loc12_.isDouble = _loc4_.readBoolean();
-               _loc12_.prestige = _loc4_.readInt();
-               _loc12_.killNum = _loc4_.readInt();
-               _loc12_.gameOverType = 1;
-               _loc7_ = _current.findPlayer(_loc8_);
-               if(_loc7_)
+               id = pkg.readInt();
+               isWin = pkg.readBoolean();
+               grade = pkg.readInt();
+               gp = pkg.readInt();
+               obj = {};
+               obj.killGP = pkg.readInt();
+               obj.hertGP = pkg.readInt();
+               obj.fightGP = pkg.readInt();
+               obj.ghostGP = pkg.readInt();
+               obj.gpForVIP = pkg.readInt();
+               obj.gpForConsortia = pkg.readInt();
+               obj.gpForSpouse = pkg.readInt();
+               obj.gpForServer = pkg.readInt();
+               obj.gpForApprenticeOnline = pkg.readInt();
+               obj.gpForApprenticeTeam = pkg.readInt();
+               obj.gpForDoubleCard = pkg.readInt();
+               obj.gpForPower = pkg.readInt();
+               obj.consortiaSkill = pkg.readInt();
+               obj.luckyExp = pkg.readInt();
+               obj.gainGP = pkg.readInt();
+               obj.gpCSMUser = pkg.readInt();
+               obj.gpAddWell = pkg.readInt();
+               trace("gpCSMUser:" + obj.gpCSMUser);
+               obj.offerFight = pkg.readInt();
+               obj.offerDoubleCard = pkg.readInt();
+               obj.offerVIP = pkg.readInt();
+               obj.offerService = pkg.readInt();
+               obj.offerBuff = pkg.readInt();
+               obj.offerConsortia = pkg.readInt();
+               obj.luckyOffer = pkg.readInt();
+               obj.gainOffer = pkg.readInt();
+               obj.offerCSMUser = pkg.readInt();
+               obj.offerAddWell = pkg.readInt();
+               trace("offerCSMUser:" + obj.offerCSMUser);
+               obj.canTakeOut = pkg.readInt();
+               obj.isDouble = pkg.readBoolean();
+               obj.prestige = pkg.readInt();
+               obj.killNum = pkg.readInt();
+               obj.gameOverType = 1;
+               info = _current.findPlayer(id);
+               if(info)
                {
-                  _loc7_.isWin = _loc2_;
-                  _loc7_.CurrentGP = _loc13_;
-                  _loc7_.CurrentLevel = _loc11_;
-                  _loc7_.expObj = _loc12_;
-                  _loc7_.GainGP = _loc12_.gainGP;
-                  _loc7_.GainOffer = _loc12_.gainOffer;
-                  _loc7_.GetCardCount = _loc12_.canTakeOut;
-                  _loc7_.killNum = _loc12_.killNum;
+                  info.isWin = isWin;
+                  info.CurrentGP = gp;
+                  info.CurrentLevel = grade;
+                  info.expObj = obj;
+                  info.GainGP = obj.gainGP;
+                  info.GainOffer = obj.gainOffer;
+                  info.GetCardCount = obj.canTakeOut;
+                  info.killNum = obj.killNum;
                }
-               if(_loc7_ is LocalPlayer)
+               if(info is LocalPlayer)
                {
-                  _loc7_.tieStatus = _loc9_;
+                  info.tieStatus = tieStatus;
                }
-               _loc6_++;
+               i++;
             }
-            _current.GainRiches = _loc4_.readInt();
-            _loc3_ = _loc4_.readInt();
-            _loc14_ = _loc4_.readInt();
+            _current.GainRiches = pkg.readInt();
+            redFinalScore = pkg.readInt();
+            blueFinalScore = pkg.readInt();
             var _loc16_:int = 0;
             var _loc15_:* = _current.livings;
-            for each(var _loc5_ in _current.livings)
+            for each(var j in _current.livings)
             {
-               if(_loc5_.character)
+               if(j.character)
                {
-                  _loc5_.character.resetShowBitmapBig();
+                  j.character.resetShowBitmapBig();
                }
             }
          }
@@ -154,7 +153,7 @@ package game.actions
       
       override public function execute() : void
       {
-         var _loc1_:* = null;
+         var movie:* = null;
          if(!_executed)
          {
             if(_map.hasSomethingMoving() == false && (_map.currentPlayer == null || _map.currentPlayer.actionCount == 0))
@@ -169,38 +168,38 @@ package game.actions
                {
                   if(GameControl.Instance.Current.selfGamePlayer.tieStatus == -1)
                   {
-                     _loc1_ = new MovieClipWrapper(MovieClip(ClassUtils.CreatInstance("asset.game.newTieAsset")),true,true);
-                     _loc1_.movie.x = 434;
-                     _loc1_.movie.y = 244;
+                     movie = new MovieClipWrapper(MovieClip(ClassUtils.CreatInstance("asset.game.newTieAsset")),true,true);
+                     movie.movie.x = 434;
+                     movie.movie.y = 244;
                   }
                   else if(GameControl.Instance.Current.selfGamePlayer.isWin)
                   {
-                     _loc1_ = new MovieClipWrapper(MovieClip(ClassUtils.CreatInstance("asset.game.newWinAsset")),true,true);
-                     _loc1_.movie.x = 359;
-                     _loc1_.movie.y = 217;
+                     movie = new MovieClipWrapper(MovieClip(ClassUtils.CreatInstance("asset.game.newWinAsset")),true,true);
+                     movie.movie.x = 359;
+                     movie.movie.y = 217;
                   }
                   else
                   {
-                     _loc1_ = new MovieClipWrapper(MovieClip(ClassUtils.CreatInstance("asset.game.newLostAsset")),true,true);
-                     _loc1_.movie.x = 438;
-                     _loc1_.movie.y = 244;
+                     movie = new MovieClipWrapper(MovieClip(ClassUtils.CreatInstance("asset.game.newLostAsset")),true,true);
+                     movie.movie.x = 438;
+                     movie.movie.y = 244;
                   }
                }
                else
                {
                   if(GameControl.Instance.Current.selfGamePlayer.isWin)
                   {
-                     _loc1_ = new MovieClipWrapper(MovieClip(ClassUtils.CreatInstance("asset.game.winAsset")),true,true);
+                     movie = new MovieClipWrapper(MovieClip(ClassUtils.CreatInstance("asset.game.winAsset")),true,true);
                   }
                   else
                   {
-                     _loc1_ = new MovieClipWrapper(MovieClip(ClassUtils.CreatInstance("asset.game.lostAsset")),true,true);
+                     movie = new MovieClipWrapper(MovieClip(ClassUtils.CreatInstance("asset.game.lostAsset")),true,true);
                   }
-                  _loc1_.movie.x = 500;
-                  _loc1_.movie.y = 360;
+                  movie.movie.x = 500;
+                  movie.movie.y = 360;
                }
                SoundManager.instance.play("040");
-               _map.gameView.addChild(_loc1_.movie);
+               _map.gameView.addChild(movie.movie);
             }
          }
          else

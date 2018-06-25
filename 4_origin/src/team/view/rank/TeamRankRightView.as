@@ -47,7 +47,7 @@ package team.view.rank
          btn_addFriend.label = LanguageMgr.GetTranslation("ddt.team.allView.text3");
       }
       
-      private function show(param1:PlayerInfo) : void
+      private function show(info:PlayerInfo) : void
       {
          if(_character)
          {
@@ -61,7 +61,7 @@ package team.view.rank
             _figure.bitmapData.dispose();
             _figure = null;
          }
-         _character = CharactoryFactory.createCharacter(param1) as ShowCharacter;
+         _character = CharactoryFactory.createCharacter(info) as ShowCharacter;
          _character.addEventListener("complete",__characterComplete);
          _character.showGun = false;
          _character.setShowLight(false,null);
@@ -74,7 +74,7 @@ package team.view.rank
          _character.buttonMode = _loc2_;
       }
       
-      protected function __characterComplete(param1:Event) : void
+      protected function __characterComplete(event:Event) : void
       {
          if(_figure && _figure.parent && _figure.bitmapData)
          {
@@ -103,63 +103,63 @@ package team.view.rank
          addChild(_figure);
       }
       
-      protected function __onClickAddFriend(param1:MouseEvent) : void
+      protected function __onClickAddFriend(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          IMManager.Instance.addFriend(_info.CreaterName);
       }
       
-      protected function __onClickChat(param1:MouseEvent) : void
+      protected function __onClickChat(event:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          ChatManager.Instance.privateChatTo(_info.CreaterName,_info.CreaterId);
          LayerManager.Instance.addToLayer(ChatManager.Instance.view,3);
       }
       
-      private function getStrLen(param1:String) : String
+      private function getStrLen(_str:String) : String
       {
-         var _loc2_:* = null;
-         var _loc3_:ByteArray = new ByteArray();
-         _loc3_.writeMultiByte(param1,"");
-         if(_loc3_.length > 12)
+         var str:* = null;
+         var _ba:ByteArray = new ByteArray();
+         _ba.writeMultiByte(_str,"");
+         if(_ba.length > 12)
          {
-            _loc3_.position = 0;
-            _loc2_ = _loc3_.readMultiByte(12,"");
-            _loc2_ = _loc2_ + "...";
-            return _loc2_;
+            _ba.position = 0;
+            str = _ba.readMultiByte(12,"");
+            str = str + "...";
+            return str;
          }
-         return param1;
+         return _str;
       }
       
-      private function headerNameProcess(param1:String) : String
+      private function headerNameProcess(_str:String) : String
       {
-         var _loc2_:int = 0;
+         var tempIndex:int = 0;
          if(label_headerName.textField.textWidth > label_headerName.textField.width)
          {
-            _loc2_ = label_headerName.textField.getCharIndexAtPoint(label_headerName.textField.width - 22,5);
-            param1 = param1.substring(0,_loc2_) + "...";
+            tempIndex = label_headerName.textField.getCharIndexAtPoint(label_headerName.textField.width - 22,5);
+            _str = _str.substring(0,tempIndex) + "...";
          }
-         return param1;
+         return _str;
       }
       
-      public function updateInfo(param1:TeamRankInfo) : void
+      public function updateInfo(info:TeamRankInfo) : void
       {
-         var _loc4_:* = null;
-         var _loc2_:Number = NaN;
-         var _loc3_:* = null;
-         var _loc6_:* = null;
-         var _loc5_:int = 0;
-         _info = param1;
-         if(param1)
+         var teamLevelInfo:* = null;
+         var rate:Number = NaN;
+         var arr:* = null;
+         var maxHonor:* = null;
+         var i:int = 0;
+         _info = info;
+         if(info)
          {
             label_headerName.text = _info.CreaterName;
             label_headerName.text = headerNameProcess(label_headerName.text);
             label_teamLevel.text = "LV." + String(_info.TeamLevel);
             label_teamLabel.text = _info.TeamDesc;
-            _loc4_ = TeamManager.instance.model.teamLevelInfoByLevel(_info.TeamLevel);
-            label_teamNumber.text = String(_info.PlayerNum) + "/" + _loc4_.MaxPlayerNum;
-            _loc2_ = _info.Total > 0?_info.Win / _info.Total * 100:0;
-            label_teamWinPer.text = _loc2_.toFixed(2) + "%";
+            teamLevelInfo = TeamManager.instance.model.teamLevelInfoByLevel(_info.TeamLevel);
+            label_teamNumber.text = String(_info.PlayerNum) + "/" + teamLevelInfo.MaxPlayerNum;
+            rate = _info.Total > 0?_info.Win / _info.Total * 100:0;
+            label_teamWinPer.text = rate.toFixed(2) + "%";
             label_teamScreenings.text = String(_info.Total);
             if(_info.SeasonRank == "" || !_info.SeasonRank)
             {
@@ -167,23 +167,22 @@ package team.view.rank
             }
             else
             {
-               _loc3_ = _info.SeasonRank.split("|");
-               _loc6_ = [0,0];
-               _loc5_ = 0;
-               while(_loc5_ < _loc3_.length)
+               arr = _info.SeasonRank.split("|");
+               maxHonor = [0,0];
+               for(i = 0; i < arr.length; )
                {
-                  if(_loc3_[_loc5_].length > 0)
+                  if(arr[i].length > 0)
                   {
-                     _loc3_[_loc5_] = _loc3_[_loc5_].split(",");
-                     if(_loc3_[_loc5_][1] >= _loc6_[1])
+                     arr[i] = arr[i].split(",");
+                     if(arr[i][1] >= maxHonor[1])
                      {
-                        _loc6_[0] = _loc3_[_loc5_][0];
-                        _loc6_[1] = _loc3_[_loc5_][1];
+                        maxHonor[0] = arr[i][0];
+                        maxHonor[1] = arr[i][1];
                      }
                   }
-                  _loc5_++;
+                  i++;
                }
-               label_teamHonor.text = LanguageMgr.GetTranslation("team.rank.teamHonor",_loc6_[0],_loc6_[1]);
+               label_teamHonor.text = LanguageMgr.GetTranslation("team.rank.teamHonor",maxHonor[0],maxHonor[1]);
             }
          }
          else
@@ -206,27 +205,27 @@ package team.view.rank
             deletehead();
             return;
          }
-         var _loc1_:PlayerInfo = PlayerManager.Instance.findPlayer(_info.CreaterId);
-         _loc1_.beginChanges();
-         _loc1_.Style = _info.CreaterStyle;
-         _loc1_.Skin = _info.CreaterSkin;
-         _loc1_.Colors = _info.CreaterColors;
-         _loc1_.Sex = _info.Sex;
+         var playerInfo:PlayerInfo = PlayerManager.Instance.findPlayer(_info.CreaterId);
+         playerInfo.beginChanges();
+         playerInfo.Style = _info.CreaterStyle;
+         playerInfo.Skin = _info.CreaterSkin;
+         playerInfo.Colors = _info.CreaterColors;
+         playerInfo.Sex = _info.Sex;
          if(_info.IsVIP > 0)
          {
-            _loc1_.IsVIP = true;
+            playerInfo.IsVIP = true;
          }
          else
          {
-            _loc1_.IsVIP = false;
+            playerInfo.IsVIP = false;
          }
-         _loc1_.commitChanges();
-         show(_loc1_);
+         playerInfo.commitChanges();
+         show(playerInfo);
       }
       
-      public function set enabled(param1:Boolean) : void
+      public function set enabled(value:Boolean) : void
       {
-         _enabled = param1;
+         _enabled = value;
          if(!_info)
          {
             var _loc2_:* = true;

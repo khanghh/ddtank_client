@@ -107,14 +107,14 @@ package magicHouse.magicBox
          }
       }
       
-      private function __addToStageHandler(param1:Event) : void
+      private function __addToStageHandler(e:Event) : void
       {
          _inputText.appendText(_nowNum.toString());
          _inputText.setFocus();
          _upbtView();
       }
       
-      private function _changeInput(param1:Event) : void
+      private function _changeInput(e:Event) : void
       {
          if(int(_inputText.text) == 0)
          {
@@ -131,38 +131,38 @@ package magicHouse.magicBox
          upSee();
       }
       
-      private function __enterHanlder(param1:KeyboardEvent) : void
+      private function __enterHanlder(event:KeyboardEvent) : void
       {
-         param1.stopImmediatePropagation();
-         if(param1.keyCode == 13)
+         event.stopImmediatePropagation();
+         if(event.keyCode == 13)
          {
             __confirm();
          }
-         if(param1.keyCode == 27)
+         if(event.keyCode == 27)
          {
             SoundManager.instance.play("008");
             dispose();
          }
       }
       
-      private function click_btn1(param1:MouseEvent) : void
+      private function click_btn1(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _nowNum = _nowNum + 1;
          upSee();
       }
       
-      private function click_btn2(param1:MouseEvent) : void
+      private function click_btn2(e:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          _nowNum = _nowNum - 1;
          upSee();
       }
       
-      private function onFrameResponse(param1:FrameEvent) : void
+      private function onFrameResponse(evt:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(evt.responseCode))
          {
             case 0:
             case 1:
@@ -215,10 +215,10 @@ package magicHouse.magicBox
          }
       }
       
-      public function addExeFunction(param1:Function, param2:Function) : void
+      public function addExeFunction(sellFunction:Function, notSellFunction:Function) : void
       {
-         this._sellFunction = param1;
-         this._notSellFunction = param2;
+         this._sellFunction = sellFunction;
+         this._notSellFunction = notSellFunction;
       }
       
       public function get goodsinfo() : InventoryItemInfo
@@ -226,15 +226,15 @@ package magicHouse.magicBox
          return _goodsinfo;
       }
       
-      public function set goodsinfo(param1:InventoryItemInfo) : void
+      public function set goodsinfo(value:InventoryItemInfo) : void
       {
-         _goodsinfo = param1;
+         _goodsinfo = value;
       }
       
-      public function show(param1:int = 5, param2:int = 1) : void
+      public function show(max:int = 5, min:int = 1) : void
       {
-         _maxNum = param1;
-         _minNum = param2;
+         _maxNum = max;
+         _minNum = min;
          _nowNum = _maxNum;
          LayerManager.Instance.addToLayer(this,3,true,1);
       }

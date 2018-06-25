@@ -19,28 +19,27 @@ package yyvip.view
       
       private var _itemList:Vector.<YYVipLevelAwardItemCell>;
       
-      public function YYVipLevelAwardCell(param1:int)
+      public function YYVipLevelAwardCell(index:int)
       {
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var cell:* = null;
          super();
-         _icon = ComponentFactory.Instance.creatBitmap("asset.yyvip.levelIcon" + param1);
+         _icon = ComponentFactory.Instance.creatBitmap("asset.yyvip.levelIcon" + index);
          _txt = ComponentFactory.Instance.creatComponentByStylename("yyvip.levelAwardCell.tipTxt");
-         _txt.text = LanguageMgr.GetTranslation("yyVip.dailyView.levelAwardCell.tipTxt",param1);
+         _txt.text = LanguageMgr.GetTranslation("yyVip.dailyView.levelAwardCell.tipTxt",index);
          addChild(_icon);
          addChild(_txt);
          _itemList = new Vector.<YYVipLevelAwardItemCell>();
-         var _loc3_:Vector.<Object> = YYVipControl.instance.getDailyLevelVipAwardList(param1);
-         var _loc4_:int = _loc3_.length;
-         _loc5_ = 0;
-         while(_loc5_ < _loc4_)
+         var tmp:Vector.<Object> = YYVipControl.instance.getDailyLevelVipAwardList(index);
+         var len:int = tmp.length;
+         for(i = 0; i < len; )
          {
-            _loc2_ = new YYVipLevelAwardItemCell(_loc3_[_loc5_]);
-            _loc2_.x = 170 + _loc5_ * 108;
-            _loc2_.y = -1;
-            addChild(_loc2_);
-            _itemList.push(_loc2_);
-            _loc5_++;
+            cell = new YYVipLevelAwardItemCell(tmp[i]);
+            cell.x = 170 + i * 108;
+            cell.y = -1;
+            addChild(cell);
+            _itemList.push(cell);
+            i++;
          }
       }
       

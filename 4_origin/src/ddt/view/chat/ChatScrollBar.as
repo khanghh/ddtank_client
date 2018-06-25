@@ -30,10 +30,10 @@ package ddt.view.chat
       
       private var _backFun:Function;
       
-      public function ChatScrollBar(param1:Function)
+      public function ChatScrollBar(_fun:Function)
       {
          super();
-         _backFun = param1;
+         _backFun = _fun;
          initView();
          initEvent();
       }
@@ -65,7 +65,7 @@ package ddt.view.chat
          }
       }
       
-      private function __mouseDown(param1:MouseEvent) : void
+      private function __mouseDown(event:MouseEvent) : void
       {
          _isDrag = true;
          stage.addEventListener("mouseUp",__mouseUp);
@@ -73,7 +73,7 @@ package ddt.view.chat
          _moveBtn.startDrag(false,new Rectangle(0,0,0,_height - _moveBtn.height));
       }
       
-      private function __mouseUp(param1:MouseEvent) : void
+      private function __mouseUp(event:MouseEvent) : void
       {
          _isDrag = false;
          stage.removeEventListener("mouseUp",__mouseUp);
@@ -81,16 +81,16 @@ package ddt.view.chat
          _moveBtn.stopDrag();
       }
       
-      private function __mouseMove(param1:MouseEvent) : void
+      private function __mouseMove(event:MouseEvent) : void
       {
-         var _loc2_:int = 0;
+         var pos:int = 0;
          if(_length > _rowsOfScreen)
          {
-            _loc2_ = _length - _rowsOfScreen - int(_moveBtn.y / ((_height - _moveBtn.height) / (_length - _rowsOfScreen)));
-            trace(_loc2_,_currentIndex);
-            if(_loc2_ != _currentIndex)
+            pos = _length - _rowsOfScreen - int(_moveBtn.y / ((_height - _moveBtn.height) / (_length - _rowsOfScreen)));
+            trace(pos,_currentIndex);
+            if(pos != _currentIndex)
             {
-               _backFun(_moveBtn.y + _moveBtn.height + 1 >= _height?0:_loc2_);
+               _backFun(_moveBtn.y + _moveBtn.height + 1 >= _height?0:pos);
             }
          }
       }
@@ -105,12 +105,12 @@ package ddt.view.chat
       
       private function draw() : void
       {
-         var _loc1_:Number = NaN;
+         var _h:Number = NaN;
          if(_length > _rowsOfScreen)
          {
-            _loc1_ = _rowsOfScreen / _length * _height;
-            drawThumb(_loc1_);
-            _moveBtn.y = _height - _moveBtn.height - _currentIndex * (1 / (_length - _rowsOfScreen)) * (_height - _loc1_);
+            _h = _rowsOfScreen / _length * _height;
+            drawThumb(_h);
+            _moveBtn.y = _height - _moveBtn.height - _currentIndex * (1 / (_length - _rowsOfScreen)) * (_height - _h);
          }
          else
          {
@@ -118,49 +118,49 @@ package ddt.view.chat
          }
       }
       
-      private function drawThumb(param1:Number) : void
+      private function drawThumb(val:Number) : void
       {
-         var _loc5_:Matrix = new Matrix();
-         var _loc4_:BitmapData = new BitmapData(12,8);
-         var _loc2_:BitmapData = new BitmapData(12,8);
-         var _loc3_:BitmapData = new BitmapData(12,8);
-         _loc4_.copyPixels(_bitDB,new Rectangle(0,0,12,8),new Point(0,0));
-         _loc2_.copyPixels(_bitDB,new Rectangle(0,8,12,8),new Point(0,0));
-         _loc3_.copyPixels(_bitDB,new Rectangle(0,_bitDB.height - 8,12,8),new Point(0,0));
+         var _matrix:Matrix = new Matrix();
+         var _topBit:BitmapData = new BitmapData(12,8);
+         var _midBit:BitmapData = new BitmapData(12,8);
+         var _bottomBit:BitmapData = new BitmapData(12,8);
+         _topBit.copyPixels(_bitDB,new Rectangle(0,0,12,8),new Point(0,0));
+         _midBit.copyPixels(_bitDB,new Rectangle(0,8,12,8),new Point(0,0));
+         _bottomBit.copyPixels(_bitDB,new Rectangle(0,_bitDB.height - 8,12,8),new Point(0,0));
          _moveBtn.graphics.clear();
-         _moveBtn.graphics.beginBitmapFill(_loc4_,_loc5_,false);
+         _moveBtn.graphics.beginBitmapFill(_topBit,_matrix,false);
          _moveBtn.graphics.drawRect(0,0,12,8);
-         _moveBtn.graphics.beginBitmapFill(_loc2_,_loc5_);
-         _moveBtn.graphics.drawRect(0,8,12,param1 - 16);
-         _loc5_.ty = param1 - 9;
-         _moveBtn.graphics.beginBitmapFill(_loc3_,_loc5_,false);
-         _moveBtn.graphics.drawRect(0,param1 - 9,12,8);
+         _moveBtn.graphics.beginBitmapFill(_midBit,_matrix);
+         _moveBtn.graphics.drawRect(0,8,12,val - 16);
+         _matrix.ty = val - 9;
+         _moveBtn.graphics.beginBitmapFill(_bottomBit,_matrix,false);
+         _moveBtn.graphics.drawRect(0,val - 9,12,8);
          _moveBtn.graphics.endFill();
       }
       
-      public function set length(param1:int) : void
+      public function set length(val:int) : void
       {
-         if(_length != param1)
+         if(_length != val)
          {
-            _length = param1;
+            _length = val;
             draw();
          }
       }
       
-      public function set currentIndex(param1:int) : void
+      public function set currentIndex(val:int) : void
       {
-         if(_currentIndex != param1 && !_isDrag)
+         if(_currentIndex != val && !_isDrag)
          {
-            _currentIndex = param1 + _rowsOfScreen > _length?_length - _rowsOfScreen:param1;
+            _currentIndex = val + _rowsOfScreen > _length?_length - _rowsOfScreen:val;
             draw();
          }
       }
       
-      public function set Height(param1:Number) : void
+      public function set Height(val:Number) : void
       {
-         if(_height != param1)
+         if(_height != val)
          {
-            _height = param1;
+            _height = val;
             drawBackground();
          }
       }

@@ -95,15 +95,15 @@ package shop.manager
          return _instance;
       }
       
-      public function buy(param1:int, param2:Boolean = false, param3:int = 1) : void
+      public function buy($goodsID:int, $isDiscountType:Boolean = false, type:int = 1) : void
       {
          if(_frame)
          {
             return;
          }
-         _goodsID = param1;
-         _isDiscountType = param2;
-         _type = param3;
+         _goodsID = $goodsID;
+         _isDiscountType = $isDiscountType;
+         _type = type;
          initView();
          addEvent();
          LayerManager.Instance.addToLayer(_frame,3,true,1);
@@ -116,8 +116,8 @@ package shop.manager
          _titleTxt = ComponentFactory.Instance.creatComponentByStylename("shop.PresentFrame.titleText");
          _titleTxt.text = LanguageMgr.GetTranslation("shop.PresentFrame.titleText");
          _frame.addToContent(_titleTxt);
-         var _loc2_:Image = ComponentFactory.Instance.creatComponentByStylename("core.ddtshop.CheckOutViewBg");
-         _frame.addToContent(_loc2_);
+         var bg:Image = ComponentFactory.Instance.creatComponentByStylename("core.ddtshop.CheckOutViewBg");
+         _frame.addToContent(bg);
          _giftsBtn = ComponentFactory.Instance.creatComponentByStylename("ddtshop.GiftManager.GiftBtn");
          _frame.addToContent(_giftsBtn);
          if(_type == 1)
@@ -150,33 +150,33 @@ package shop.manager
             _bandMoneyTxt.text = LanguageMgr.GetTranslation("tank.auctionHouse.view.AuctionBrowseView.bandStipple");
             _frame.addToContent(_bandMoneyTxt);
          }
-         var _loc4_:Image = ComponentFactory.Instance.creatComponentByStylename("ddtshop.TotalMoneyPanel2");
-         PositionUtils.setPos(_loc4_,"ddtshop.CheckOutViewBgPos");
-         _frame.addToContent(_loc4_);
-         var _loc5_:ShopItemInfo = null;
+         var innerBg:Image = ComponentFactory.Instance.creatComponentByStylename("ddtshop.TotalMoneyPanel2");
+         PositionUtils.setPos(innerBg,"ddtshop.CheckOutViewBgPos");
+         _frame.addToContent(innerBg);
+         var shopItemInfo:ShopItemInfo = null;
          if(!_isDiscountType)
          {
-            _loc5_ = ShopManager.Instance.getShopItemByGoodsID(_goodsID);
-            if(_loc5_ == null)
+            shopItemInfo = ShopManager.Instance.getShopItemByGoodsID(_goodsID);
+            if(shopItemInfo == null)
             {
-               _loc5_ = ShopManager.Instance.getGoodsByTemplateID(_goodsID);
+               shopItemInfo = ShopManager.Instance.getGoodsByTemplateID(_goodsID);
             }
          }
          else
          {
-            _loc5_ = ShopManager.Instance.getDisCountShopItemByGoodsID(_goodsID);
+            shopItemInfo = ShopManager.Instance.getDisCountShopItemByGoodsID(_goodsID);
          }
-         var _loc3_:ShopCarItemInfo = new ShopCarItemInfo(_loc5_.GoodsID,_loc5_.TemplateID);
-         ObjectUtils.copyProperties(_loc3_,_loc5_);
+         var shopItem:ShopCarItemInfo = new ShopCarItemInfo(shopItemInfo.GoodsID,shopItemInfo.TemplateID);
+         ObjectUtils.copyProperties(shopItem,shopItemInfo);
          _shopCartItem = new ShopCartItem();
          PositionUtils.setPos(_shopCartItem,"ddtshop.shopCartItemPos");
          _shopCartItem.closeBtn.visible = false;
-         _shopCartItem.setShopItemInfo(_loc3_);
-         _shopCartItem.setColor(_loc3_.Color);
+         _shopCartItem.setShopItemInfo(shopItem);
+         _shopCartItem.setColor(shopItem.Color);
          _frame.addToContent(_shopCartItem);
-         var _loc1_:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtshop.PurchaseAmount");
-         PositionUtils.setPos(_loc1_,"ddtshop.PurchaseAmountTextImgPos");
-         _frame.addToContent(_loc1_);
+         var textImg:Bitmap = ComponentFactory.Instance.creatBitmap("asset.ddtshop.PurchaseAmount");
+         PositionUtils.setPos(textImg,"ddtshop.PurchaseAmountTextImgPos");
+         _frame.addToContent(textImg);
          _numberSelecter = ComponentFactory.Instance.creatComponentByStylename("core.ddtshop.NumberSelecter");
          _frame.addToContent(_numberSelecter);
          _needToPayTip = ComponentFactory.Instance.creatComponentByStylename("ddtshop.NeedToPayTip");
@@ -219,7 +219,7 @@ package shop.manager
          SocketManager.Instance.addEventListener(PkgEvent.format(57),onPresent);
       }
       
-      protected function selectedBandHander(param1:MouseEvent) : void
+      protected function selectedBandHander(event:MouseEvent) : void
       {
          if(_selectedBandBtn.selected)
          {
@@ -235,7 +235,7 @@ package shop.manager
          updateCommodityPrices();
       }
       
-      protected function seletedHander(param1:MouseEvent) : void
+      protected function seletedHander(event:MouseEvent) : void
       {
          if(_selectedBtn.selected)
          {
@@ -274,10 +274,10 @@ package shop.manager
          }
       }
       
-      protected function __giftsBtnClick(param1:MouseEvent) : void
+      protected function __giftsBtnClick(event:MouseEvent) : void
       {
-         var _loc2_:int = _shopCartItem.shopItemInfo.getCurrentPrice().bothMoneyValue * _numberSelecter.currentValue;
-         if(_loc2_ > PlayerManager.Instance.Self.Money)
+         var money:int = _shopCartItem.shopItemInfo.getCurrentPrice().bothMoneyValue * _numberSelecter.currentValue;
+         if(money > PlayerManager.Instance.Self.Money)
          {
             LeavePageManager.showFillFrame();
             return;
@@ -289,18 +289,18 @@ package shop.manager
          _shopPresentClearingFrame.addEventListener("response",__responseHandler);
       }
       
-      private function __responseHandler(param1:FrameEvent) : void
+      private function __responseHandler(event:FrameEvent) : void
       {
-         if(param1.responseCode == 0 || param1.responseCode == 1)
+         if(event.responseCode == 0 || event.responseCode == 1)
          {
             StageReferance.stage.focus = _frame;
          }
       }
       
-      protected function __presentBtnClick(param1:MouseEvent) : void
+      protected function __presentBtnClick(event:MouseEvent) : void
       {
-         var _loc11_:int = 0;
-         var _loc2_:* = null;
+         var i:int = 0;
+         var t:* = null;
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -317,36 +317,35 @@ package shop.manager
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("shop.ShopIIPresentView.space"));
             return;
          }
-         var _loc8_:int = _shopCartItem.shopItemInfo.getCurrentPrice().bothMoneyValue;
-         if(PlayerManager.Instance.Self.Money < _loc8_ && _loc8_ != 0)
+         var moneyValue:int = _shopCartItem.shopItemInfo.getCurrentPrice().bothMoneyValue;
+         if(PlayerManager.Instance.Self.Money < moneyValue && moneyValue != 0)
          {
             LeavePageManager.showFillFrame();
             return;
          }
          _shopPresentClearingFrame.presentBtn.enable = false;
-         var _loc3_:Array = [];
-         var _loc9_:Array = [];
-         var _loc4_:Array = [];
-         var _loc5_:Array = [];
-         var _loc7_:Array = [];
-         var _loc6_:Array = [];
-         _loc11_ = 0;
-         while(_loc11_ < _numberSelecter.currentValue)
+         var items:Array = [];
+         var types:Array = [];
+         var colors:Array = [];
+         var dresses:Array = [];
+         var places:Array = [];
+         var goodTypes:Array = [];
+         for(i = 0; i < _numberSelecter.currentValue; )
          {
-            _loc2_ = _shopCartItem.shopItemInfo;
-            _loc3_.push(_loc2_.GoodsID);
-            _loc9_.push(_loc2_.currentBuyType);
-            _loc4_.push(_loc2_.Color);
-            _loc5_.push("");
-            _loc7_.push("");
-            _loc6_.push(_loc2_.isDiscount);
-            _loc11_++;
+            t = _shopCartItem.shopItemInfo;
+            items.push(t.GoodsID);
+            types.push(t.currentBuyType);
+            colors.push(t.Color);
+            dresses.push("");
+            places.push("");
+            goodTypes.push(t.isDiscount);
+            i++;
          }
-         var _loc10_:String = FilterWordManager.filterWrod(_shopPresentClearingFrame.textArea.text);
-         SocketManager.Instance.out.sendPresentGoods(_loc3_,_loc9_,_loc4_,_loc6_,_loc10_,_shopPresentClearingFrame.nameInput.text,null,[false]);
+         var msg:String = FilterWordManager.filterWrod(_shopPresentClearingFrame.textArea.text);
+         SocketManager.Instance.out.sendPresentGoods(items,types,colors,goodTypes,msg,_shopPresentClearingFrame.nameInput.text,null,[false]);
       }
       
-      protected function onPresent(param1:PkgEvent) : void
+      protected function onPresent(event:PkgEvent) : void
       {
          if(_shopPresentClearingFrame)
          {
@@ -355,25 +354,25 @@ package shop.manager
             _shopPresentClearingFrame.dispose();
             _shopPresentClearingFrame = null;
          }
-         var _loc2_:Boolean = param1.pkg.readBoolean();
+         var boo:Boolean = event.pkg.readBoolean();
          dispose();
       }
       
-      protected function __numberSelecterChange(param1:Event) : void
+      protected function __numberSelecterChange(event:Event) : void
       {
          SoundManager.instance.play("008");
          updateCommodityPrices();
       }
       
-      protected function __shopCartItemChange(param1:Event) : void
+      protected function __shopCartItemChange(event:Event) : void
       {
          updateCommodityPrices();
       }
       
-      protected function __framePesponse(param1:FrameEvent) : void
+      protected function __framePesponse(event:FrameEvent) : void
       {
          SoundManager.instance.play("008");
-         switch(int(param1.responseCode))
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:

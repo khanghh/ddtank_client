@@ -12,56 +12,55 @@ package road7th.math
       
       protected var fixValue:Number = 1;
       
-      public function XLine(... rest)
+      public function XLine(... arg)
       {
          super();
-         line = rest;
+         line = arg;
       }
       
-      public static function ToString(param1:Array) : String
+      public static function ToString(value:Array) : String
       {
-         var _loc2_:String = "";
+         var rlt:String = "";
          try
          {
             var _loc6_:int = 0;
-            var _loc5_:* = param1;
-            for each(var _loc3_ in param1)
+            var _loc5_:* = value;
+            for each(var p in value)
             {
-               _loc2_ = _loc2_ + (_loc3_.x + ":" + _loc3_.y + ",");
+               rlt = rlt + (p.x + ":" + p.y + ",");
             }
          }
          catch(e:Error)
          {
          }
-         return _loc2_;
+         return rlt;
       }
       
-      public static function parse(param1:String) : Array
+      public static function parse(str:String) : Array
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:Array = [];
+         var temp:* = null;
+         var nums:* = null;
+         var i:int = 0;
+         var list:Array = [];
          try
          {
-            _loc3_ = param1.match(/([-]?\d+[\.]?\d*)/g);
-            _loc2_ = [];
-            _loc5_ = 0;
-            while(_loc5_ < _loc3_.length)
+            temp = str.match(/([-]?\d+[\.]?\d*)/g);
+            nums = [];
+            for(i = 0; i < temp.length; )
             {
-               _loc4_.push(new Point(Number(_loc3_[_loc5_]),Number(_loc3_[_loc5_ + 1])));
-               _loc5_ = _loc5_ + 2;
+               list.push(new Point(Number(temp[i]),Number(temp[i + 1])));
+               i = i + 2;
             }
          }
          catch(e:Error)
          {
          }
-         return _loc4_;
+         return list;
       }
       
-      public function set line(param1:Array) : void
+      public function set line(value:Array) : void
       {
-         list = param1;
+         list = value;
          if(list == null || list.length == 0)
          {
             fix = true;
@@ -88,26 +87,25 @@ package road7th.math
          return list;
       }
       
-      public function interpolate(param1:Number) : Number
+      public function interpolate(x:Number) : Number
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:int = 0;
+         var p1:* = null;
+         var p2:* = null;
+         var i:int = 0;
          if(!fix)
          {
-            _loc4_ = 1;
-            while(_loc4_ < list.length)
+            for(i = 1; i < list.length; )
             {
-               _loc2_ = list[_loc4_];
-               _loc3_ = list[_loc4_ - 1];
-               if(_loc2_.x <= param1)
+               p2 = list[i];
+               p1 = list[i - 1];
+               if(p2.x <= x)
                {
-                  _loc4_++;
+                  i++;
                   continue;
                }
                break;
             }
-            return interpolatePointByX(_loc3_,_loc2_,param1);
+            return interpolatePointByX(p1,p2,x);
          }
          return fixValue;
       }

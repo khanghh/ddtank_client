@@ -48,82 +48,82 @@ package com.pickgliss.ui
          return _instance;
       }
       
-      public function addTip(param1:ITipedDisplay) : void
+      public function addTip(tipedDisplay:ITipedDisplay) : void
       {
-         if(param1 == null)
+         if(tipedDisplay == null)
          {
             return;
          }
-         removeTipedObject(param1);
-         _tipedObjects.push(param1);
-         param1.addEventListener("rollOver",__onOver);
-         param1.addEventListener("rollOut",__onOut);
-         if(_currentTipObject == param1)
+         removeTipedObject(tipedDisplay);
+         _tipedObjects.push(tipedDisplay);
+         tipedDisplay.addEventListener("rollOver",__onOver);
+         tipedDisplay.addEventListener("rollOut",__onOut);
+         if(_currentTipObject == tipedDisplay)
          {
             showTip(_currentTipObject);
          }
       }
       
-      public function getTipPosByDirction(param1:ITip, param2:ITipedDisplay, param3:int) : Point
+      public function getTipPosByDirction(tip:ITip, target:ITipedDisplay, direction:int) : Point
       {
-         var _loc4_:Point = new Point();
-         if(param3 == 0)
+         var resultPos:Point = new Point();
+         if(direction == 0)
          {
-            _loc4_.y = -param1.height - param2.tipGapV;
-            _loc4_.x = (param2.width - param1.width) / 2;
+            resultPos.y = -tip.height - target.tipGapV;
+            resultPos.x = (target.width - tip.width) / 2;
          }
-         else if(param3 == 1)
+         else if(direction == 1)
          {
-            _loc4_.x = -param1.width - param2.tipGapH;
-            _loc4_.y = (param2.height - param1.height) / 2;
+            resultPos.x = -tip.width - target.tipGapH;
+            resultPos.y = (target.height - tip.height) / 2;
          }
-         else if(param3 == 2)
+         else if(direction == 2)
          {
-            _loc4_.x = param2.width + param2.tipGapH;
-            _loc4_.y = (param2.height - param1.height) / 2;
+            resultPos.x = target.width + target.tipGapH;
+            resultPos.y = (target.height - tip.height) / 2;
          }
-         else if(param3 == 3)
+         else if(direction == 3)
          {
-            _loc4_.y = param2.height + param2.tipGapV;
-            _loc4_.x = (param2.width - param1.width) / 2;
+            resultPos.y = target.height + target.tipGapV;
+            resultPos.x = (target.width - tip.width) / 2;
          }
-         else if(param3 == 4)
+         else if(direction == 4)
          {
-            _loc4_.y = -param1.height - param2.tipGapV;
-            _loc4_.x = -param1.width - param2.tipGapH;
+            resultPos.y = -tip.height - target.tipGapV;
+            resultPos.x = -tip.width - target.tipGapH;
          }
-         else if(param3 == 5)
+         else if(direction == 5)
          {
-            _loc4_.y = -param1.height - param2.tipGapV;
-            _loc4_.x = param2.width + param2.tipGapH;
+            resultPos.y = -tip.height - target.tipGapV;
+            resultPos.x = target.width + target.tipGapH;
          }
-         else if(param3 == 6)
+         else if(direction == 6)
          {
-            _loc4_.y = param2.height + param2.tipGapV;
-            _loc4_.x = -param1.width - param2.tipGapH;
+            resultPos.y = target.height + target.tipGapV;
+            resultPos.x = -tip.width - target.tipGapH;
          }
-         else if(param3 == 7)
+         else if(direction == 7)
          {
-            _loc4_.y = param2.height + param2.tipGapV;
-            _loc4_.x = param2.width + param2.tipGapH;
+            resultPos.y = target.height + target.tipGapV;
+            resultPos.x = target.width + target.tipGapH;
          }
-         return _loc4_;
+         return resultPos;
       }
       
-      public function hideTip(param1:ITipedDisplay) : void
+      public function hideTip(target:ITipedDisplay) : void
       {
-         if(param1 == null)
+         if(target == null)
          {
             return;
          }
-         var _loc2_:ITip = _tips[param1.tipStyle];
-         if(_loc2_ == null)
+         var tip:ITip = _tips[target.tipStyle];
+         if(tip == null)
          {
             return;
          }
-         if(_tipContainer.contains(_loc2_.asDisplayObject()))
+         if(_tipContainer.contains(tip.asDisplayObject()))
          {
-            _tipContainer.removeChild(_loc2_.asDisplayObject());
+            _tipContainer.removeChild(tip.asDisplayObject());
          }
          _currentTipObject = null;
       }
@@ -137,42 +137,42 @@ package com.pickgliss.ui
       {
          var _loc3_:int = 0;
          var _loc2_:* = _tips;
-         for each(var _loc1_ in _tips)
+         for each(var tip in _tips)
          {
-            if(_loc1_.asDisplayObject().parent)
+            if(tip.asDisplayObject().parent)
             {
-               _loc1_.asDisplayObject().parent.removeChild(_loc1_.asDisplayObject());
+               tip.asDisplayObject().parent.removeChild(tip.asDisplayObject());
             }
          }
       }
       
-      public function removeTip(param1:ITipedDisplay) : void
+      public function removeTip(tipedDisplay:ITipedDisplay) : void
       {
-         removeTipedObject(param1);
-         if(_currentTipObject == param1)
+         removeTipedObject(tipedDisplay);
+         if(_currentTipObject == tipedDisplay)
          {
             hideTip(_currentTipObject);
          }
       }
       
-      public function setSimpleTip(param1:ITipedDisplay, param2:String = "") : void
+      public function setSimpleTip(target:ITipedDisplay, tipMsg:String = "") : void
       {
          if(_simpleTipset == null)
          {
             return;
          }
-         if(param1 is Component)
+         if(target is Component)
          {
-            Component(param1).beginChanges();
+            Component(target).beginChanges();
          }
-         param1.tipStyle = _simpleTipset.tipStyle;
-         param1.tipData = param2;
-         param1.tipDirctions = _simpleTipset.tipDirctions;
-         param1.tipGapV = _simpleTipset.tipGapV;
-         param1.tipGapH = _simpleTipset.tipGapH;
-         if(param1 is Component)
+         target.tipStyle = _simpleTipset.tipStyle;
+         target.tipData = tipMsg;
+         target.tipDirctions = _simpleTipset.tipDirctions;
+         target.tipGapV = _simpleTipset.tipGapV;
+         target.tipGapH = _simpleTipset.tipGapH;
+         if(target is Component)
          {
-            Component(param1).commitChanges();
+            Component(target).commitChanges();
          }
       }
       
@@ -186,30 +186,30 @@ package com.pickgliss.ui
          _tipContainer = LayerManager.Instance.getLayerByType(0);
       }
       
-      public function showTip(param1:*) : void
+      public function showTip(target:*) : void
       {
-         var _loc2_:* = _tips[param1.tipStyle];
-         if(param1 is ITipedDisplay)
+         var tip:* = _tips[target.tipStyle];
+         if(target is ITipedDisplay)
          {
-            setCommonTip(param1,_loc2_);
-            _loc2_ = _tips[param1.tipStyle];
+            setCommonTip(target,tip);
+            tip = _tips[target.tipStyle];
          }
-         if(_loc2_)
+         if(tip)
          {
-            if(param1 is ITransformableTipedDisplay)
+            if(target is ITransformableTipedDisplay)
             {
-               _loc2_.tipWidth = param1.tipWidth;
-               _loc2_.tipHeight = param1.tipHeight;
+               tip.tipWidth = target.tipWidth;
+               tip.tipHeight = target.tipHeight;
             }
-            configPosition(param1,_loc2_);
-            _currentTipObject = param1;
-            _tipContainer.addChild(_loc2_.asDisplayObject());
+            configPosition(target,tip);
+            _currentTipObject = target;
+            _tipContainer.addChild(tip.asDisplayObject());
          }
       }
       
-      public function getTipInstanceByStylename(param1:String) : ITip
+      public function getTipInstanceByStylename(stylename:String) : ITip
       {
-         return _tips[param1];
+         return _tips[stylename];
       }
       
       public function updatePos() : void
@@ -221,258 +221,256 @@ package com.pickgliss.ui
          showTip(_updateTempTarget);
       }
       
-      private function setCommonTip(param1:*, param2:*) : void
+      private function setCommonTip(target:*, tip:*) : void
       {
-         if(param2 == null)
+         if(tip == null)
          {
-            if(param1.tipStyle == null)
+            if(target.tipStyle == null)
             {
                return;
             }
-            param2 = createTipByStyleName(param1.tipStyle);
-            if(param2 == null)
+            tip = createTipByStyleName(target.tipStyle);
+            if(tip == null)
             {
                return;
             }
          }
-         param2.tipData = param1.tipData;
+         tip.tipData = target.tipData;
       }
       
-      public function createTipByStyleName(param1:String) : *
+      public function createTipByStyleName(stylename:String) : *
       {
-         var _loc2_:Object = null;
+         var tipView:Object = null;
          try
          {
-            _loc2_ = ComponentFactory.Instance.creat(param1);
-            _tips[param1] = _loc2_;
+            tipView = ComponentFactory.Instance.creat(stylename);
+            _tips[stylename] = tipView;
          }
          catch(e:Error)
          {
-            trace("tipView创建失败！找不到:" + param1 + " 请检查快速解决!");
+            trace("tipView创建失败！找不到:" + stylename + " 请检查快速解决!");
          }
-         return _loc2_;
+         return tipView;
       }
       
-      private function configPosition(param1:*, param2:*) : void
+      private function configPosition(target:*, tip:*) : void
       {
-         var _loc4_:Point = _tipContainer.globalToLocal(param1.localToGlobal(StartPoint));
-         var _loc3_:Point = new Point();
-         var _loc5_:DirectionPos = getTipPriorityDirction(param2,param1,param1.tipDirctions);
-         _loc3_ = getTipPosByDirction(param2,param1,_loc5_.direction);
-         if(_loc5_.offsetX < 2147483647 / 2)
+         var startPos:Point = _tipContainer.globalToLocal(target.localToGlobal(StartPoint));
+         var resultPos:Point = new Point();
+         var resultDirection:DirectionPos = getTipPriorityDirction(tip,target,target.tipDirctions);
+         resultPos = getTipPosByDirction(tip,target,resultDirection.direction);
+         if(resultDirection.offsetX < 2147483647 / 2)
          {
-            param2.x = _loc3_.x + _loc4_.x + _loc5_.offsetX;
+            tip.x = resultPos.x + startPos.x + resultDirection.offsetX;
          }
          else
          {
-            param2.x = _loc3_.x + _loc4_.x;
+            tip.x = resultPos.x + startPos.x;
          }
-         if(_loc5_.offsetY < 2147483647 / 2)
+         if(resultDirection.offsetY < 2147483647 / 2)
          {
-            param2.y = _loc3_.y + _loc4_.y + _loc5_.offsetY;
+            tip.y = resultPos.y + startPos.y + resultDirection.offsetY;
          }
          else
          {
-            param2.y = _loc3_.y + _loc4_.y;
+            tip.y = resultPos.y + startPos.y;
          }
       }
       
-      private function __onOut(param1:MouseEvent) : void
+      private function __onOut(event:MouseEvent) : void
       {
-         var _loc2_:ITipedDisplay = param1.currentTarget as ITipedDisplay;
-         hideTip(_loc2_);
+         var target:ITipedDisplay = event.currentTarget as ITipedDisplay;
+         hideTip(target);
          _updateTempTarget = null;
       }
       
-      private function __onOver(param1:MouseEvent) : void
+      private function __onOver(event:MouseEvent) : void
       {
-         var _loc2_:ITipedDisplay = param1.currentTarget as ITipedDisplay;
-         if(_loc2_.tipStyle == null)
+         var target:ITipedDisplay = event.currentTarget as ITipedDisplay;
+         if(target.tipStyle == null)
          {
             return;
          }
-         showTip(_loc2_);
-         _updateTempTarget = _loc2_;
+         showTip(target);
+         _updateTempTarget = target;
       }
       
-      private function getTipPriorityDirction(param1:ITip, param2:ITipedDisplay, param3:String) : DirectionPos
+      private function getTipPriorityDirction(tip:ITip, target:ITipedDisplay, directions:String) : DirectionPos
       {
-         var _loc8_:* = null;
-         var _loc12_:int = 0;
-         var _loc4_:* = null;
-         var _loc6_:* = null;
-         var _loc10_:* = null;
-         var _loc9_:* = null;
-         var _loc11_:Array = param3.split(",");
-         var _loc5_:Vector.<DirectionPos> = new Vector.<DirectionPos>();
-         var _loc7_:Point = _tipContainer.globalToLocal(param2.localToGlobal(StartPoint));
-         _loc12_ = 0;
-         while(_loc12_ < _loc11_.length)
+         var resultDirectionPos:* = null;
+         var i:int = 0;
+         var ordinaryPos:* = null;
+         var resultStartPos:* = null;
+         var resultEndPos:* = null;
+         var directionPos:* = null;
+         var dirs:Array = directions.split(",");
+         var tempDirectionPos:Vector.<DirectionPos> = new Vector.<DirectionPos>();
+         var startPos:Point = _tipContainer.globalToLocal(target.localToGlobal(StartPoint));
+         for(i = 0; i < dirs.length; )
          {
-            _loc4_ = getTipPosByDirction(param1,param2,_loc11_[_loc12_]);
-            _loc6_ = new Point(_loc4_.x + _loc7_.x,_loc4_.y + _loc7_.y);
-            _loc10_ = new Point(_loc4_.x + _loc7_.x + param1.width,_loc4_.y + _loc7_.y + param1.height);
-            _loc9_ = creatDirectionPos(_loc6_,_loc10_,int(_loc11_[_loc12_]));
-            if(_loc9_.offsetX == 0 && _loc9_.offsetY == 0)
+            ordinaryPos = getTipPosByDirction(tip,target,dirs[i]);
+            resultStartPos = new Point(ordinaryPos.x + startPos.x,ordinaryPos.y + startPos.y);
+            resultEndPos = new Point(ordinaryPos.x + startPos.x + tip.width,ordinaryPos.y + startPos.y + tip.height);
+            directionPos = creatDirectionPos(resultStartPos,resultEndPos,int(dirs[i]));
+            if(directionPos.offsetX == 0 && directionPos.offsetY == 0)
             {
-               _loc8_ = _loc9_;
+               resultDirectionPos = directionPos;
                break;
             }
-            _loc5_.push(_loc9_);
-            _loc12_++;
+            tempDirectionPos.push(directionPos);
+            i++;
          }
-         if(_loc8_ == null)
+         if(resultDirectionPos == null)
          {
-            _loc8_ = searchFixedDirectionPos(_loc5_);
+            resultDirectionPos = searchFixedDirectionPos(tempDirectionPos);
          }
-         return _loc8_;
+         return resultDirectionPos;
       }
       
-      private function searchFixedDirectionPos(param1:Vector.<DirectionPos>) : DirectionPos
+      private function searchFixedDirectionPos(tempDirections:Vector.<DirectionPos>) : DirectionPos
       {
-         var _loc2_:* = null;
-         var _loc6_:int = 0;
-         var _loc4_:int = 0;
-         var _loc3_:int = 0;
-         var _loc5_:Vector.<DirectionPos> = param1.reverse();
-         _loc6_ = 0;
-         while(_loc6_ < _loc5_.length)
+         var result:* = null;
+         var i:int = 0;
+         var current:int = 0;
+         var last:int = 0;
+         var reverDirections:Vector.<DirectionPos> = tempDirections.reverse();
+         for(i = 0; i < reverDirections.length; )
          {
-            if(_loc2_ == null)
+            if(result == null)
             {
-               _loc2_ = _loc5_[_loc6_];
+               result = reverDirections[i];
             }
             else
             {
-               _loc4_ = Math.abs(_loc5_[_loc6_].offsetX) + Math.abs(_loc5_[_loc6_].offsetY);
-               _loc3_ = Math.abs(_loc2_.offsetX) + Math.abs(_loc2_.offsetY);
-               if(_loc4_ <= _loc3_)
+               current = Math.abs(reverDirections[i].offsetX) + Math.abs(reverDirections[i].offsetY);
+               last = Math.abs(result.offsetX) + Math.abs(result.offsetY);
+               if(current <= last)
                {
-                  _loc2_ = _loc5_[_loc6_];
+                  result = reverDirections[i];
                }
             }
-            _loc6_++;
+            i++;
          }
-         return _loc2_;
+         return result;
       }
       
-      private function creatDirectionPos(param1:Point, param2:Point, param3:int) : DirectionPos
+      private function creatDirectionPos(startPos:Point, endPos:Point, direction:int) : DirectionPos
       {
-         var _loc4_:DirectionPos = new DirectionPos();
-         _loc4_.direction = param3;
-         if(param3 == 0)
+         var directionPos:DirectionPos = new DirectionPos();
+         directionPos.direction = direction;
+         if(direction == 0)
          {
-            if(param1.y < 0)
+            if(startPos.y < 0)
             {
-               _loc4_.offsetY = 2147483647 / 2;
+               directionPos.offsetY = 2147483647 / 2;
             }
             else
             {
-               _loc4_.offsetY = 0;
+               directionPos.offsetY = 0;
             }
-            if(param1.x < 0)
+            if(startPos.x < 0)
             {
-               _loc4_.offsetX = -param1.x;
+               directionPos.offsetX = -startPos.x;
             }
-            else if(param2.x > StageReferance.stageWidth)
+            else if(endPos.x > StageReferance.stageWidth)
             {
-               _loc4_.offsetX = StageReferance.stageWidth - param2.x;
+               directionPos.offsetX = StageReferance.stageWidth - endPos.x;
             }
             else
             {
-               _loc4_.offsetX = 0;
+               directionPos.offsetX = 0;
             }
          }
-         else if(param3 == 1)
+         else if(direction == 1)
          {
-            if(param1.x < 0)
+            if(startPos.x < 0)
             {
-               _loc4_.offsetX = 2147483647 / 2;
+               directionPos.offsetX = 2147483647 / 2;
             }
             else
             {
-               _loc4_.offsetX = 0;
+               directionPos.offsetX = 0;
             }
-            if(param1.y < 0)
+            if(startPos.y < 0)
             {
-               _loc4_.offsetY = -param1.y;
+               directionPos.offsetY = -startPos.y;
             }
-            else if(param2.y > StageReferance.stageHeight)
+            else if(endPos.y > StageReferance.stageHeight)
             {
-               _loc4_.offsetY = StageReferance.stageHeight - param2.y;
+               directionPos.offsetY = StageReferance.stageHeight - endPos.y;
             }
             else
             {
-               _loc4_.offsetY = 0;
+               directionPos.offsetY = 0;
             }
          }
-         else if(param3 == 2)
+         else if(direction == 2)
          {
-            if(param2.x > StageReferance.stageWidth)
+            if(endPos.x > StageReferance.stageWidth)
             {
-               _loc4_.offsetX = 2147483647 / 2;
+               directionPos.offsetX = 2147483647 / 2;
             }
             else
             {
-               _loc4_.offsetX = 0;
+               directionPos.offsetX = 0;
             }
-            if(param1.y < 0)
+            if(startPos.y < 0)
             {
-               _loc4_.offsetY = -param1.y;
+               directionPos.offsetY = -startPos.y;
             }
-            else if(param2.y > StageReferance.stageHeight)
+            else if(endPos.y > StageReferance.stageHeight)
             {
-               _loc4_.offsetY = StageReferance.stageHeight - param2.y;
+               directionPos.offsetY = StageReferance.stageHeight - endPos.y;
             }
             else
             {
-               _loc4_.offsetY = 0;
+               directionPos.offsetY = 0;
             }
          }
-         else if(param3 == 3)
+         else if(direction == 3)
          {
-            if(param2.y > StageReferance.stageHeight)
+            if(endPos.y > StageReferance.stageHeight)
             {
-               _loc4_.offsetY = 2147483647 / 2;
+               directionPos.offsetY = 2147483647 / 2;
             }
             else
             {
-               _loc4_.offsetY = 0;
+               directionPos.offsetY = 0;
             }
-            if(param1.x < 0)
+            if(startPos.x < 0)
             {
-               _loc4_.offsetX = -param1.x;
+               directionPos.offsetX = -startPos.x;
             }
-            else if(param2.x > StageReferance.stageWidth)
+            else if(endPos.x > StageReferance.stageWidth)
             {
-               _loc4_.offsetX = StageReferance.stageWidth - param2.x;
+               directionPos.offsetX = StageReferance.stageWidth - endPos.x;
             }
             else
             {
-               _loc4_.offsetX = 0;
+               directionPos.offsetX = 0;
             }
          }
-         else if(DisplayUtils.isInTheStage(param1) && DisplayUtils.isInTheStage(param2))
+         else if(DisplayUtils.isInTheStage(startPos) && DisplayUtils.isInTheStage(endPos))
          {
-            _loc4_.offsetX = 0;
-            _loc4_.offsetY = 0;
+            directionPos.offsetX = 0;
+            directionPos.offsetY = 0;
          }
          else
          {
-            _loc4_.offsetY = 2147483647 / 2;
-            _loc4_.offsetX = 2147483647 / 2;
+            directionPos.offsetY = 2147483647 / 2;
+            directionPos.offsetX = 2147483647 / 2;
          }
-         return _loc4_;
+         return directionPos;
       }
       
-      private function removeTipedObject(param1:ITipedDisplay) : void
+      private function removeTipedObject(tipedDisplay:ITipedDisplay) : void
       {
-         var _loc2_:int = _tipedObjects.indexOf(param1);
-         param1.removeEventListener("rollOver",__onOver);
-         param1.removeEventListener("rollOut",__onOut);
-         if(_loc2_ != -1)
+         var index:int = _tipedObjects.indexOf(tipedDisplay);
+         tipedDisplay.removeEventListener("rollOver",__onOver);
+         tipedDisplay.removeEventListener("rollOut",__onOut);
+         if(index != -1)
          {
-            _tipedObjects.splice(_loc2_,1);
+            _tipedObjects.splice(index,1);
          }
       }
    }

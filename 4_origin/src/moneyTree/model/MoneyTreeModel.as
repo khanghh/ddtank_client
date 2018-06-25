@@ -30,15 +30,14 @@ package moneyTree.model
       
       public function MoneyTreeModel()
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _numPersonsWillSendRedPkg = new Dictionary();
          super();
          _infoList = new Vector.<MT_FruitData>();
-         _loc1_ = 0;
-         while(_loc1_ < 4)
+         for(i = 0; i < 4; )
          {
-            _infoList[_loc1_] = new MT_FruitData();
-            _loc1_++;
+            _infoList[i] = new MT_FruitData();
+            i++;
          }
          _timer = TimerManager.getInstance().addTimerJuggler(1000,0,false);
          _timer.addEventListener("timer",onTimer);
@@ -46,7 +45,7 @@ package moneyTree.model
          onTimer(null);
       }
       
-      protected function onTimer(param1:Event) : void
+      protected function onTimer(e:Event) : void
       {
          _curTime = TimeManager.Instance.Now();
          hasMatureFruit();
@@ -55,66 +54,65 @@ package moneyTree.model
       
       private function hasMatureFruit() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:int = _infoList.length;
-         _loc2_ = 0;
-         while(_loc2_ < _loc1_)
+         var i:int = 0;
+         var len:int = _infoList.length;
+         for(i = 0; i < len; )
          {
-            if(_infoList[_loc2_].timeGrown && _infoList[_loc2_].timeGrown.time - _curTime.time <= 0)
+            if(_infoList[i].timeGrown && _infoList[i].timeGrown.time - _curTime.time <= 0)
             {
                MoneyTreeManager.getInstance().becomeMature();
                break;
             }
-            _loc2_++;
+            i++;
          }
       }
       
-      public function getCountDownString(param1:int) : String
+      public function getCountDownString(index:int) : String
       {
-         if(_infoList[param1].timeGrown == null)
+         if(_infoList[index].timeGrown == null)
          {
             return "00:00:00";
          }
-         var _loc2_:Number = _infoList[param1].timeGrown.time - _curTime.time;
-         if(_loc2_ <= 0)
+         var remain:Number = _infoList[index].timeGrown.time - _curTime.time;
+         if(remain <= 0)
          {
             return LanguageMgr.GetTranslation("moneyTree.MoneyTreeModel.TreeOK");
          }
-         return Helpers.getTimeString(_loc2_);
+         return Helpers.getTimeString(remain);
       }
       
-      public function getCurSlctTimesSpeedUpToMature(param1:int) : int
+      public function getCurSlctTimesSpeedUpToMature(index:int) : int
       {
-         if(_infoList[param1].timeGrown == null)
+         if(_infoList[index].timeGrown == null)
          {
             return 0;
          }
-         var _loc2_:Number = _infoList[param1].timeGrown.time - _curTime.time;
-         if(_loc2_ <= 0)
+         var remain:Number = _infoList[index].timeGrown.time - _curTime.time;
+         if(remain <= 0)
          {
             return 0;
          }
-         return Math.ceil(_loc2_ / 3600000);
+         return Math.ceil(remain / 3600000);
       }
       
       public function isNoMoreRedPkg() : Boolean
       {
-         var _loc2_:int = 0;
+         var num:int = 0;
          var _loc4_:int = 0;
          var _loc3_:* = _numPersonsWillSendRedPkg;
-         for each(var _loc1_ in _numPersonsWillSendRedPkg)
+         for each(var v in _numPersonsWillSendRedPkg)
          {
-            _loc2_++;
+            num++;
          }
-         return _loc2_ >= _numRedPkgRemain;
+         return num >= _numRedPkgRemain;
       }
       
-      public function addFriendsToSend(param1:int) : void
+      public function addFriendsToSend(id:int) : void
       {
-         _numPersonsWillSendRedPkg[param1] = param1;
+         _numPersonsWillSendRedPkg[id] = id;
       }
       
-      public function reduceFriendsToSend(param1:int) : void
+      public function reduceFriendsToSend(id:int) : void
       {
       }
       
@@ -122,44 +120,44 @@ package moneyTree.model
       {
          var _loc3_:int = 0;
          var _loc2_:* = _numPersonsWillSendRedPkg;
-         for(var _loc1_ in _numPersonsWillSendRedPkg)
+         for(var k in _numPersonsWillSendRedPkg)
          {
-            delete _numPersonsWillSendRedPkg[_loc1_];
+            delete _numPersonsWillSendRedPkg[k];
          }
       }
       
       public function getFriendsToSendList() : Array
       {
-         var _loc1_:Array = [];
+         var arr:Array = [];
          var _loc4_:int = 0;
          var _loc3_:* = _numPersonsWillSendRedPkg;
-         for(var _loc2_ in _numPersonsWillSendRedPkg)
+         for(var k in _numPersonsWillSendRedPkg)
          {
-            _loc1_.push(_numPersonsWillSendRedPkg[_loc2_]);
+            arr.push(_numPersonsWillSendRedPkg[k]);
          }
-         return _loc1_;
+         return arr;
       }
       
-      public function getTimesToGrown(param1:int) : int
+      public function getTimesToGrown(position:int) : int
       {
-         var _loc3_:* = NaN;
-         var _loc2_:Number = _infoList[param1].timeGrown.time - new Date().time;
-         if(_loc2_ < 0)
+         var hour:* = NaN;
+         var time:Number = _infoList[position].timeGrown.time - new Date().time;
+         if(time < 0)
          {
             return 0;
          }
-         _loc3_ = 3600000;
-         return Math.ceil(_loc2_ / _loc3_);
+         hour = 3600000;
+         return Math.ceil(time / hour);
       }
       
-      public function getPriceSpeedUp(param1:int) : int
+      public function getPriceSpeedUp(position:int) : int
       {
-         return _infoList[param1].priceSpeedUp;
+         return _infoList[position].priceSpeedUp;
       }
       
-      public function setNumRedPkgRemain(param1:int) : void
+      public function setNumRedPkgRemain(value:int) : void
       {
-         _numRedPkgRemain = param1;
+         _numRedPkgRemain = value;
       }
       
       public function getNumRedPkgRemain() : int
@@ -167,17 +165,17 @@ package moneyTree.model
          return _numRedPkgRemain;
       }
       
-      public function setInfoAt(param1:int, param2:Date, param3:int) : void
+      public function setInfoAt(index:int, timeGrown:Date, priceSpeedUp:int) : void
       {
-         _infoList[param1].timeGrown = param2;
-         _infoList[param1].priceSpeedUp = param3;
+         _infoList[index].timeGrown = timeGrown;
+         _infoList[index].priceSpeedUp = priceSpeedUp;
       }
       
-      public function getInfoAt(param1:int) : MT_FruitData
+      public function getInfoAt(index:int) : MT_FruitData
       {
          if(_infoList)
          {
-            return _infoList[param1];
+            return _infoList[index];
          }
          return null;
       }
@@ -186,9 +184,9 @@ package moneyTree.model
       {
          var _loc3_:int = 0;
          var _loc2_:* = _infoList;
-         for each(var _loc1_ in _infoList)
+         for each(var f in _infoList)
          {
-            if(_loc1_.isGrown)
+            if(f.isGrown)
             {
                return true;
             }

@@ -36,9 +36,9 @@ package campbattle
       
       private var _model:CampModel;
       
-      public function CampBattleControl(param1:IEventDispatcher = null)
+      public function CampBattleControl(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
          _model = new CampModel();
       }
       
@@ -68,56 +68,56 @@ package campbattle
          SocketManager.Instance.addEventListener(PkgEvent.format(146,22),__onUpdateScoreHander);
       }
       
-      protected function __onPlayerStateChange(param1:PkgEvent) : void
+      protected function __onPlayerStateChange(event:PkgEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc2_:int = 0;
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         var _loc3_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
+         var zoneID:int = 0;
+         var userID:int = 0;
+         var type:int = 0;
+         var timeCount:int = 0;
+         var role:* = null;
+         var pkg:PackageIn = event.pkg;
          if(!_model.isFighting)
          {
-            _loc7_ = _loc4_.readInt();
-            _loc2_ = _loc4_.readInt();
-            _loc6_ = _loc4_.readInt();
-            _loc5_ = _loc4_.readInt();
-            _loc3_ = getRoleData(_loc7_,_loc2_);
-            if(_loc3_)
+            zoneID = pkg.readInt();
+            userID = pkg.readInt();
+            type = pkg.readInt();
+            timeCount = pkg.readInt();
+            role = getRoleData(zoneID,userID);
+            if(role)
             {
-               if(_loc5_ > 0)
+               if(timeCount > 0)
                {
-                  _loc6_ = 4;
-                  _loc3_.stateType = 4;
-                  _loc3_.isDead = true;
+                  type = 4;
+                  role.stateType = 4;
+                  role.isDead = true;
                }
                else
                {
-                  _loc3_.stateType = _loc6_;
+                  role.stateType = type;
                }
             }
-            dispatchEvent(new MapEvent("player_state_change",[_loc7_,_loc2_,_loc6_]));
+            dispatchEvent(new MapEvent("player_state_change",[zoneID,userID,type]));
          }
       }
       
-      protected function __onInitScene(param1:CEvent) : void
+      protected function __onInitScene(event:CEvent) : void
       {
-         var _loc9_:int = 0;
-         var _loc11_:* = null;
-         var _loc7_:int = 0;
-         var _loc10_:int = 0;
-         var _loc8_:* = null;
-         var _loc13_:* = null;
-         var _loc3_:* = null;
-         var _loc2_:int = 0;
-         var _loc6_:PackageIn = param1.data as PackageIn;
-         var _loc14_:int = _loc6_.readInt();
-         _model.monsterCount = _loc6_.readInt();
-         _model.isCapture = _loc6_.readBoolean();
+         var i:int = 0;
+         var roleData:* = null;
+         var j:int = 0;
+         var id:int = 0;
+         var living:* = null;
+         var str:* = null;
+         var outPos:* = null;
+         var npcid:int = 0;
+         var pkg:PackageIn = event.data as PackageIn;
+         var mapIndex:int = pkg.readInt();
+         _model.monsterCount = pkg.readInt();
+         _model.isCapture = pkg.readBoolean();
          if(_model.isCapture)
          {
-            _model.captureZoneID = _loc6_.readInt();
-            _model.captureUserID = _loc6_.readInt();
+            _model.captureZoneID = pkg.readInt();
+            _model.captureUserID = pkg.readInt();
          }
          else
          {
@@ -125,249 +125,244 @@ package campbattle
             _model.captureZoneID = 0;
             _model.captureUserID = 0;
          }
-         var _loc5_:int = _loc6_.readInt();
+         var count:int = pkg.readInt();
          _model.playerModel.clear();
-         _loc9_ = 0;
-         while(_loc9_ < _loc5_)
+         for(i = 0; i < count; )
          {
-            _loc11_ = new RoleData();
-            _loc11_.ID = _loc6_.readInt();
-            _loc11_.zoneID = _loc6_.readInt();
-            _loc11_.Sex = _loc6_.readBoolean();
-            _loc11_.name = _loc6_.readUTF();
-            _loc11_.team = _loc6_.readInt();
-            _loc11_.posX = _loc6_.readInt();
-            _loc11_.posY = _loc6_.readInt();
-            _loc11_.stateType = _loc6_.readInt();
-            _loc11_.timerCount = _loc6_.readInt();
-            _loc11_.baseURl = PathManager.SITE_MAIN + "image/camp/";
-            _loc11_.isVip = _loc6_.readBoolean();
-            _loc11_.vipLev = _loc6_.readInt();
-            _loc11_.MountsType = _loc6_.readInt();
-            if(_model.captureZoneID == _loc11_.zoneID && _model.captureUserID == _loc11_.ID)
+            roleData = new RoleData();
+            roleData.ID = pkg.readInt();
+            roleData.zoneID = pkg.readInt();
+            roleData.Sex = pkg.readBoolean();
+            roleData.name = pkg.readUTF();
+            roleData.team = pkg.readInt();
+            roleData.posX = pkg.readInt();
+            roleData.posY = pkg.readInt();
+            roleData.stateType = pkg.readInt();
+            roleData.timerCount = pkg.readInt();
+            roleData.baseURl = PathManager.SITE_MAIN + "image/camp/";
+            roleData.isVip = pkg.readBoolean();
+            roleData.vipLev = pkg.readInt();
+            roleData.MountsType = pkg.readInt();
+            if(_model.captureZoneID == roleData.zoneID && _model.captureUserID == roleData.ID)
             {
-               _loc11_.isCapture = true;
-               _model.captureName = _loc11_.name;
-               _model.captureTeam = _loc11_.team;
+               roleData.isCapture = true;
+               _model.captureName = roleData.name;
+               _model.captureTeam = roleData.team;
                if(_model.captureName.length > 50)
                {
                   _model.captureName = _model.captureName.replace(10,"......");
                }
             }
-            if(_loc11_.timerCount > 0)
+            if(roleData.timerCount > 0)
             {
-               _loc11_.stateType = 4;
-               _model.liveTime = _loc11_.timerCount / 1000;
-               _loc11_.isDead = true;
+               roleData.stateType = 4;
+               _model.liveTime = roleData.timerCount / 1000;
+               roleData.isDead = true;
             }
-            if(PlayerManager.Instance.Self.ZoneID == _loc11_.zoneID && PlayerManager.Instance.Self.ID == _loc11_.ID)
+            if(PlayerManager.Instance.Self.ZoneID == roleData.zoneID && PlayerManager.Instance.Self.ID == roleData.ID)
             {
-               _model.myTeam = _loc11_.team;
-               _model.myOutPos = new Point(_loc11_.posX,_loc11_.posY);
-               if(_loc11_.timerCount > 0)
+               _model.myTeam = roleData.team;
+               _model.myOutPos = new Point(roleData.posX,roleData.posY);
+               if(roleData.timerCount > 0)
                {
                   _model.isShowResurrectView = true;
                }
-               _loc11_.type = 1;
+               roleData.type = 1;
             }
             else
             {
-               _loc11_.type = 2;
+               roleData.type = 2;
             }
-            _model.playerModel.add(_loc11_.zoneID + "_" + _loc11_.ID,_loc11_);
-            _loc9_++;
+            _model.playerModel.add(roleData.zoneID + "_" + roleData.ID,roleData);
+            i++;
          }
-         var _loc12_:int = _loc6_.readInt();
-         var _loc4_:int = 0;
+         var mCount:int = pkg.readInt();
+         var index:int = 0;
          _model.monsterList.clear();
-         _loc7_ = 0;
-         while(_loc7_ < _loc12_)
+         for(j = 0; j < mCount; )
          {
-            _loc10_ = _loc6_.readInt();
-            _loc8_ = new SmallEnemy(_loc10_,2,1000);
-            _loc8_.typeLiving = 2;
-            _loc8_.actionMovieName = _loc6_.readUTF();
-            _loc13_ = _loc6_.readUTF();
-            _loc8_.direction = 1;
-            _loc3_ = new Point(_loc6_.readInt(),_loc6_.readInt());
-            _loc8_.name = LanguageMgr.GetTranslation("ddt.campleBattle.insectText");
-            _loc8_.stateType = _loc6_.readInt();
-            _loc2_ = _loc6_.readInt();
-            if(_loc8_.stateType != 4)
+            id = pkg.readInt();
+            living = new SmallEnemy(id,2,1000);
+            living.typeLiving = 2;
+            living.actionMovieName = pkg.readUTF();
+            str = pkg.readUTF();
+            living.direction = 1;
+            outPos = new Point(pkg.readInt(),pkg.readInt());
+            living.name = LanguageMgr.GetTranslation("ddt.campleBattle.insectText");
+            living.stateType = pkg.readInt();
+            npcid = pkg.readInt();
+            if(living.stateType != 4)
             {
-               _model.monsterList.add(_loc8_.LivingID,_loc8_);
+               _model.monsterList.add(living.LivingID,living);
                if(_model.monsterCount == 10)
                {
-                  _loc8_.pos = new Point(_model.monsterPosList[_loc4_][0],_model.monsterPosList[_loc4_][1]);
+                  living.pos = new Point(_model.monsterPosList[index][0],_model.monsterPosList[index][1]);
                }
-               else if(_loc2_ > 0)
+               else if(npcid > 0)
                {
-                  _loc8_.pos = _loc3_;
+                  living.pos = outPos;
                }
                else
                {
-                  _loc8_.pos = new Point(_model.monsterPosList[_loc4_][0],_model.monsterPosList[_loc4_][1]);
+                  living.pos = new Point(_model.monsterPosList[index][0],_model.monsterPosList[index][1]);
                }
-               _loc4_++;
+               index++;
             }
-            _loc7_++;
+            j++;
          }
-         _model.myScore = _loc6_.readInt();
-         _model.doorIsOpen = _loc6_.readBoolean();
-         StateManager.setState("campBattleScene",_loc14_,_loc14_);
+         _model.myScore = pkg.readInt();
+         _model.doorIsOpen = pkg.readBoolean();
+         StateManager.setState("campBattleScene",mapIndex,mapIndex);
          initEvent();
       }
       
-      private function __onAddRoleList(param1:PkgEvent) : void
+      private function __onAddRoleList(event:PkgEvent) : void
       {
-         var _loc3_:int = 0;
-         var _loc5_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
+         var count:int = 0;
+         var i:int = 0;
+         var roleData:* = null;
+         var pkg:PackageIn = event.pkg;
          if(!_model.isFighting)
          {
-            _loc3_ = _loc4_.readInt();
-            _loc5_ = 0;
-            while(_loc5_ < _loc3_)
+            count = pkg.readInt();
+            for(i = 0; i < count; )
             {
-               _loc2_ = new RoleData();
-               _loc2_.ID = _loc4_.readInt();
-               _loc2_.zoneID = _loc4_.readInt();
-               _loc2_.Sex = _loc4_.readBoolean();
-               _loc2_.name = _loc4_.readUTF();
-               _loc2_.team = _loc4_.readInt();
-               _loc2_.posX = _loc4_.readInt();
-               _loc2_.posY = _loc4_.readInt();
-               _loc2_.stateType = _loc4_.readInt();
-               _loc2_.timerCount = _loc4_.readInt();
-               _loc2_.isVip = _loc4_.readBoolean();
-               _loc2_.vipLev = _loc4_.readInt();
-               _loc2_.MountsType = _loc4_.readInt();
-               if(_loc2_.timerCount > 0)
+               roleData = new RoleData();
+               roleData.ID = pkg.readInt();
+               roleData.zoneID = pkg.readInt();
+               roleData.Sex = pkg.readBoolean();
+               roleData.name = pkg.readUTF();
+               roleData.team = pkg.readInt();
+               roleData.posX = pkg.readInt();
+               roleData.posY = pkg.readInt();
+               roleData.stateType = pkg.readInt();
+               roleData.timerCount = pkg.readInt();
+               roleData.isVip = pkg.readBoolean();
+               roleData.vipLev = pkg.readInt();
+               roleData.MountsType = pkg.readInt();
+               if(roleData.timerCount > 0)
                {
-                  _loc2_.stateType = 4;
+                  roleData.stateType = 4;
                }
-               if(_loc2_.ID == PlayerManager.Instance.Self.ID && PlayerManager.Instance.Self.ZoneID == _loc2_.zoneID)
+               if(roleData.ID == PlayerManager.Instance.Self.ID && PlayerManager.Instance.Self.ZoneID == roleData.zoneID)
                {
-                  _loc2_.type = 1;
+                  roleData.type = 1;
                }
                else
                {
-                  _loc2_.type = 2;
+                  roleData.type = 2;
                }
-               _loc2_.baseURl = clothPath;
+               roleData.baseURl = clothPath;
                if(_model.playerModel)
                {
-                  _model.playerModel.add(_loc2_.zoneID + "_" + _loc2_.ID,_loc2_);
-                  dispatchEvent(new MapEvent("add_role",[_loc2_.zoneID + "_" + _loc2_.ID,_loc2_]));
+                  _model.playerModel.add(roleData.zoneID + "_" + roleData.ID,roleData);
+                  dispatchEvent(new MapEvent("add_role",[roleData.zoneID + "_" + roleData.ID,roleData]));
                }
-               _loc5_++;
+               i++;
             }
          }
       }
       
-      private function __onOutBattleHander(param1:PkgEvent) : void
+      private function __onOutBattleHander(event:PkgEvent) : void
       {
          CampBattleManager.instance.campViewFlag = false;
          StateManager.setState("main");
          removeEvent();
       }
       
-      private function __onPerScoreRankHander(param1:PkgEvent) : void
+      private function __onPerScoreRankHander(event:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:PackageIn = param1.pkg;
+         var i:int = 0;
+         var obj:* = null;
+         var pkg:PackageIn = event.pkg;
          _model.perScoreRankList = [];
-         var _loc2_:int = _loc3_.readInt();
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc4_ = new RankData();
-            _loc4_.ZoneID = _loc3_.readInt();
-            _loc4_.UserID = _loc3_.readInt();
-            _loc4_.ZoneName = _loc3_.readUTF();
-            _loc4_.Name = _loc3_.readUTF();
-            _loc4_.Score = _loc3_.readInt();
-            _loc4_.Rank = _loc5_ + 1;
-            _model.perScoreRankList.push(_loc4_);
-            _loc5_++;
+            obj = new RankData();
+            obj.ZoneID = pkg.readInt();
+            obj.UserID = pkg.readInt();
+            obj.ZoneName = pkg.readUTF();
+            obj.Name = pkg.readUTF();
+            obj.Score = pkg.readInt();
+            obj.Rank = i + 1;
+            _model.perScoreRankList.push(obj);
+            i++;
          }
          rankFrame();
          dispatchEvent(new MapEvent("per_score_rank",_model.perScoreRankList));
       }
       
-      private function __onRemoveRoleChange(param1:PkgEvent) : void
+      private function __onRemoveRoleChange(evt:PkgEvent) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
-         var _loc5_:* = null;
-         var _loc3_:PackageIn = param1.pkg;
+         var zoneID:int = 0;
+         var userID:int = 0;
+         var key:* = null;
+         var pkg:PackageIn = evt.pkg;
          if(!_model.isFighting)
          {
-            _loc4_ = _loc3_.readInt();
-            _loc2_ = _loc3_.readInt();
-            _loc5_ = _loc4_ + "_" + _loc2_;
+            zoneID = pkg.readInt();
+            userID = pkg.readInt();
+            key = zoneID + "_" + userID;
             if(_model.playerModel)
             {
-               _model.playerModel.remove(_loc5_);
-               dispatchEvent(new MapEvent("remove_role",_loc5_));
+               _model.playerModel.remove(key);
+               dispatchEvent(new MapEvent("remove_role",key));
             }
          }
       }
       
-      private function __onWinCountHander(param1:PkgEvent) : void
+      private function __onWinCountHander(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         var _loc3_:int = _loc2_.readInt();
-         _model.winCount = _loc3_;
+         var pkg:PackageIn = event.pkg;
+         var winCount:int = pkg.readInt();
+         _model.winCount = winCount;
          dispatchEvent(new MapEvent("win_count_pvp"));
       }
       
       public function rankFrame() : void
       {
-         var _loc1_:CampRankView = ComponentFactory.Instance.creatComponentByStylename("campBattle.views.CampRankView");
-         _loc1_.setList(_model.perScoreRankList);
-         LayerManager.Instance.addToLayer(_loc1_,3,true,1);
+         var frame:CampRankView = ComponentFactory.Instance.creatComponentByStylename("campBattle.views.CampRankView");
+         frame.setList(_model.perScoreRankList);
+         LayerManager.Instance.addToLayer(frame,3,true,1);
       }
       
-      private function __onCampScoreRankHander(param1:PkgEvent) : void
+      private function __onCampScoreRankHander(event:PkgEvent) : void
       {
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:PackageIn = param1.pkg;
+         var i:int = 0;
+         var obj:* = null;
+         var pkg:PackageIn = event.pkg;
          _model.scoreList = [];
-         var _loc2_:int = _loc3_.readInt();
-         _loc5_ = 0;
-         while(_loc5_ < _loc2_)
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc4_ = {};
-            _loc4_.team = _loc3_.readInt();
-            _loc4_.score = _loc3_.readInt();
-            _loc4_.roles = _loc3_.readInt();
-            _model.scoreList.push(_loc4_);
-            _loc5_++;
+            obj = {};
+            obj.team = pkg.readInt();
+            obj.score = pkg.readInt();
+            obj.roles = pkg.readInt();
+            _model.scoreList.push(obj);
+            i++;
          }
          dispatchEvent(new MapEvent("camp_score_rank",_model.scoreList));
       }
       
-      private function __onUpdateScoreHander(param1:PkgEvent) : void
+      private function __onUpdateScoreHander(event:PkgEvent) : void
       {
-         var _loc3_:PackageIn = param1.pkg;
-         var _loc2_:int = _loc3_.readInt();
-         _model.myScore = _loc2_;
+         var pkg:PackageIn = event.pkg;
+         var score:int = pkg.readInt();
+         _model.myScore = score;
          dispatchEvent(new MapEvent("update_score"));
       }
       
-      private function getRoleData(param1:int, param2:int) : RoleData
+      private function getRoleData(zoneID:int, userID:int) : RoleData
       {
-         var _loc4_:String = param1 + "_" + param2;
-         var _loc3_:RoleData = null;
+         var key:String = zoneID + "_" + userID;
+         var data:RoleData = null;
          if(_model.playerModel)
          {
-            _loc3_ = _model.playerModel[_loc4_];
+            data = _model.playerModel[key];
          }
-         return _loc3_;
+         return data;
       }
       
       private function removeEvent() : void

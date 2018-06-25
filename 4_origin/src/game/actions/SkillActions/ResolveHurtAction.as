@@ -15,33 +15,32 @@ package game.actions.SkillActions
       
       private var _scr:Living;
       
-      public function ResolveHurtAction(param1:IAnimate, param2:Living, param3:PackageIn)
+      public function ResolveHurtAction(animate:IAnimate, src:Living, pkg:PackageIn)
       {
-         _pkg = param3;
-         _scr = param2;
-         super(param1);
+         _pkg = pkg;
+         _scr = src;
+         super(animate);
       }
       
       override protected function finish() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc5_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:int = _pkg.readInt();
-         _loc5_ = 0;
-         while(_loc5_ < _loc3_)
+         var player:* = null;
+         var effect:* = null;
+         var i:int = 0;
+         var living:* = null;
+         var count:int = _pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc4_ = GameControl.Instance.Current.findLiving(_pkg.readInt());
-            if(_loc4_.isPlayer() && _loc4_.isLiving)
+            living = GameControl.Instance.Current.findLiving(_pkg.readInt());
+            if(living.isPlayer() && living.isLiving)
             {
-               _loc2_ = Player(_loc4_);
-               _loc2_.handleMirariEffect(MirariEffectIconManager.getInstance().createEffectIcon(10));
+               player = Player(living);
+               player.handleMirariEffect(MirariEffectIconManager.getInstance().createEffectIcon(10));
             }
-            _loc5_++;
+            i++;
          }
-         _loc2_ = Player(_scr);
-         _loc2_.handleMirariEffect(MirariEffectIconManager.getInstance().createEffectIcon(10));
+         player = Player(_scr);
+         player.handleMirariEffect(MirariEffectIconManager.getInstance().createEffectIcon(10));
          super.finish();
       }
    }

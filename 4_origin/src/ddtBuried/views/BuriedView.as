@@ -88,37 +88,37 @@ package ddtBuried.views
          BuriedManager.Instance.removeEventListener("take_card",cardTakeHander);
       }
       
-      private function upDateStoneHander(param1:BuriedEvent) : void
+      private function upDateStoneHander(e:BuriedEvent) : void
       {
          _btnList[0].upDateTxt(BuriedManager.Instance.getBuriedStoneNum());
       }
       
-      private function openShopHander(param1:MouseEvent) : void
+      private function openShopHander(e:MouseEvent) : void
       {
          BuriedControl.Instance.openshopHander();
          SoundManager.instance.playButtonSound();
       }
       
-      private function onUpdate(param1:PlayerPropertyEvent) : void
+      private function onUpdate(e:PlayerPropertyEvent) : void
       {
          _btnList[1].upDateTxt(PlayerManager.Instance.Self.Money.toString());
          _btnList[2].upDateTxt(PlayerManager.Instance.Self.BandMoney.toString());
       }
       
-      private function returnToDice(param1:MouseEvent) : void
+      private function returnToDice(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          dispose();
       }
       
-      private function cardTakeHander(param1:BuriedEvent) : void
+      private function cardTakeHander(e:BuriedEvent) : void
       {
-         var _loc2_:Object = param1.data;
+         var obj:Object = e.data;
          _cardList[BuriedManager.Instance.currCardIndex].play();
-         _cardList[BuriedManager.Instance.currCardIndex].setGoodsInfo(param1.data.tempID,param1.data.count);
+         _cardList[BuriedManager.Instance.currCardIndex].setGoodsInfo(e.data.tempID,e.data.count);
       }
       
-      private function cardWashStartHander(param1:BuriedEvent) : void
+      private function cardWashStartHander(e:BuriedEvent) : void
       {
          if(!_washCard)
          {
@@ -129,7 +129,7 @@ package ddtBuried.views
          _washCard.play();
       }
       
-      private function cardWashHander(param1:BuriedEvent) : void
+      private function cardWashHander(e:BuriedEvent) : void
       {
          _cardContent.visible = true;
          if(_washCard)
@@ -139,12 +139,12 @@ package ddtBuried.views
          }
       }
       
-      private function cardShowOverHander(param1:BuriedEvent) : void
+      private function cardShowOverHander(e:BuriedEvent) : void
       {
          _startBtn.mouseEnabled = true;
       }
       
-      private function startHandler(param1:MouseEvent) : void
+      private function startHandler(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          _startBtn.mouseEnabled = false;
@@ -163,10 +163,10 @@ package ddtBuried.views
       
       private function initView() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
+         var j:int = 0;
+         var cardItem:* = null;
          _back = ComponentFactory.Instance.creat("buried.open.back");
          addChild(_back);
          _shopBtn = ComponentFactory.Instance.creatComponentByStylename("buried.shopBtn");
@@ -178,30 +178,28 @@ package ddtBuried.views
          _wordBack.x = 150;
          _wordBack.y = 360;
          addChild(_wordBack);
-         _loc4_ = 0;
-         while(_loc4_ < 3)
+         for(i = 0; i < 3; )
          {
-            _loc2_ = new BuriedItem(_moneyList[_loc4_],_iconList[_loc4_]);
-            _loc2_.x = (_loc2_.width + 4) * _loc4_ + 139;
-            _loc2_.y = 554;
-            addChild(_loc2_);
-            _btnList.push(_loc2_);
-            _loc4_++;
+            item = new BuriedItem(_moneyList[i],_iconList[i]);
+            item.x = (item.width + 4) * i + 139;
+            item.y = 554;
+            addChild(item);
+            _btnList.push(item);
+            i++;
          }
          _cardContent = new Sprite();
          _cardContent.x = 101;
          _cardContent.y = 118;
          _cardContent.visible = false;
          addChild(_cardContent);
-         _loc3_ = 0;
-         while(_loc3_ < 5)
+         for(j = 0; j < 5; )
          {
-            _loc1_ = new BuriedCardItem();
-            _loc1_.id = _loc3_;
-            _loc1_.x = (_loc1_.width + 19) * _loc3_;
-            _cardContent.addChild(_loc1_);
-            _cardList.push(_loc1_);
-            _loc3_++;
+            cardItem = new BuriedCardItem();
+            cardItem.id = j;
+            cardItem.x = (cardItem.width + 19) * j;
+            _cardContent.addChild(cardItem);
+            _cardList.push(cardItem);
+            j++;
          }
          _showCard = new ShowCard();
          _showCard.x = 493;
@@ -225,27 +223,25 @@ package ddtBuried.views
       
       private function clearCardItem() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _cardList.length)
+         var i:int = 0;
+         for(i = 0; i < _cardList.length; )
          {
-            _cardList[_loc1_].dispose();
-            ObjectUtils.disposeObject(_cardList[_loc1_]);
-            _cardList[_loc1_] = null;
-            _loc1_++;
+            _cardList[i].dispose();
+            ObjectUtils.disposeObject(_cardList[i]);
+            _cardList[i] = null;
+            i++;
          }
       }
       
       private function clearBtnList() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < _btnList.length)
+         var i:int = 0;
+         for(i = 0; i < _btnList.length; )
          {
-            _btnList[_loc1_].dispose();
-            ObjectUtils.disposeObject(_btnList[_loc1_]);
-            _btnList[_loc1_] = null;
-            _loc1_++;
+            _btnList[i].dispose();
+            ObjectUtils.disposeObject(_btnList[i]);
+            _btnList[i] = null;
+            i++;
          }
       }
       

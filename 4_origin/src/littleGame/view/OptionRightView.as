@@ -89,21 +89,21 @@ package littleGame.view
          PlayerManager.Instance.Self.addEventListener("propertychange",onChange);
       }
       
-      private function onChange(param1:PlayerPropertyEvent) : void
+      private function onChange(event:PlayerPropertyEvent) : void
       {
-         if(param1.changedProperties["Score"])
+         if(event.changedProperties["Score"])
          {
             _pointTxt.text = PlayerManager.Instance.Self.Score.toString();
          }
       }
       
-      private function __btnGobackClick(param1:MouseEvent) : void
+      private function __btnGobackClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          StateManager.setState("main");
       }
       
-      private function __btnEnterClick(param1:MouseEvent) : void
+      private function __btnEnterClick(evt:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          if(PlayerManager.Instance.Self.Grade >= PathManager.LittleGameMinLv)

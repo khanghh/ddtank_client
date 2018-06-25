@@ -39,10 +39,10 @@ package church.view.churchScene
       
       private var timer:TimerJuggler;
       
-      public function MoonSceneMap(param1:ChurchRoomModel, param2:SceneScene, param3:DictionaryData, param4:Sprite, param5:Sprite, param6:Sprite = null, param7:Sprite = null)
+      public function MoonSceneMap(model:ChurchRoomModel, scene:SceneScene, data:DictionaryData, bg:Sprite, mesh:Sprite, acticle:Sprite = null, sky:Sprite = null)
       {
-         _model = param1;
-         super(_model,param2,param3,param4,param5,param6,param7);
+         _model = model;
+         super(_model,scene,data,bg,mesh,acticle,sky);
          SoundManager.instance.playMusic("3003");
          initSaulte();
       }
@@ -52,13 +52,13 @@ package church.view.churchScene
          return _isSaluteFiring;
       }
       
-      private function set isSaluteFiring(param1:Boolean) : void
+      private function set isSaluteFiring(value:Boolean) : void
       {
-         if(_isSaluteFiring == param1)
+         if(_isSaluteFiring == value)
          {
             return;
          }
-         _isSaluteFiring = param1;
+         _isSaluteFiring = value;
          if(_isSaluteFiring)
          {
             playSaluteSound();
@@ -69,45 +69,45 @@ package church.view.churchScene
          }
       }
       
-      override public function setCenter(param1:SceneCharacterEvent = null) : void
+      override public function setCenter(event:SceneCharacterEvent = null) : void
       {
-         var _loc3_:* = NaN;
-         var _loc2_:* = NaN;
+         var xf:* = NaN;
+         var yf:* = NaN;
          if(reference)
          {
-            _loc3_ = Number(-(reference.x - 1000 / 2));
-            _loc2_ = Number(-(reference.y - 600 / 2) + 230);
+            xf = Number(-(reference.x - 1000 / 2));
+            yf = Number(-(reference.y - 600 / 2) + 230);
          }
          else
          {
-            _loc3_ = Number(-(sceneMapVO.defaultPos.x - 1000 / 2));
-            _loc2_ = Number(-(sceneMapVO.defaultPos.y - 600 / 2) + 230);
+            xf = Number(-(sceneMapVO.defaultPos.x - 1000 / 2));
+            yf = Number(-(sceneMapVO.defaultPos.y - 600 / 2) + 230);
          }
-         if(_loc3_ > 0)
+         if(xf > 0)
          {
-            _loc3_ = 0;
+            xf = 0;
          }
-         if(_loc3_ < 1000 - sceneMapVO.mapW)
+         if(xf < 1000 - sceneMapVO.mapW)
          {
-            _loc3_ = Number(1000 - sceneMapVO.mapW);
+            xf = Number(1000 - sceneMapVO.mapW);
          }
-         if(_loc2_ > 0)
+         if(yf > 0)
          {
-            _loc2_ = 0;
+            yf = 0;
          }
-         if(_loc2_ < 600 - sceneMapVO.mapH)
+         if(yf < 600 - sceneMapVO.mapH)
          {
-            _loc2_ = Number(600 - sceneMapVO.mapH);
+            yf = Number(600 - sceneMapVO.mapH);
          }
-         x = _loc3_;
-         y = _loc2_;
+         x = xf;
+         y = yf;
       }
       
       private function initSaulte() : void
       {
-         var _loc1_:int = this.getChildIndex(articleLayer);
+         var index:int = this.getChildIndex(articleLayer);
          saluteContainer = new Sprite();
-         addChildAt(saluteContainer,_loc1_);
+         addChildAt(saluteContainer,index);
          saluteMask = new (ClassUtils.uiSourceDomain.getDefinition("asset.church.room.FireMaskOfMoonSceneAsset") as Class)() as MovieClip;
          addChild(saluteMask);
          saluteContainer.mask = saluteMask;
@@ -117,55 +117,55 @@ package church.view.churchScene
          fireVisible();
       }
       
-      override public function setSalute(param1:int) : void
+      override public function setSalute(id:int) : void
       {
-         if(isSaluteFiring && param1 == PlayerManager.Instance.Self.ID)
+         if(isSaluteFiring && id == PlayerManager.Instance.Self.ID)
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("church.churchScene.scene.MoonSceneMap.lipao"));
             return;
          }
-         if(param1 == PlayerManager.Instance.Self.ID)
+         if(id == PlayerManager.Instance.Self.ID)
          {
             if(PlayerManager.Instance.Self.bagLocked)
             {
                BaglockedManager.Instance.show();
                return;
             }
-            SocketManager.Instance.out.sendGunSalute(param1,22001);
+            SocketManager.Instance.out.sendGunSalute(id,22001);
          }
-         var _loc4_:Class = ClassUtils.uiSourceDomain.getDefinition("tank.church.fireAcect.Salute") as Class;
-         var _loc3_:MovieClip = new _loc4_();
-         var _loc2_:Point = ComponentFactory.Instance.creatCustomObject("church.MoonSceneMap.saluteFirePos");
-         _loc3_.x = _loc2_.x;
-         _loc3_.y = _loc2_.y;
+         var SaluteClass:Class = ClassUtils.uiSourceDomain.getDefinition("tank.church.fireAcect.Salute") as Class;
+         var saluteFire:MovieClip = new SaluteClass();
+         var saluteFirePos:Point = ComponentFactory.Instance.creatCustomObject("church.MoonSceneMap.saluteFirePos");
+         saluteFire.x = saluteFirePos.x;
+         saluteFire.y = saluteFirePos.y;
          if(isSaluteFiring)
          {
-            saluteQueue.push(_loc3_);
+            saluteQueue.push(saluteFire);
          }
          else
          {
             isSaluteFiring = true;
-            _loc3_.addEventListener("enterFrame",saluteFireFrameHandler);
-            _loc3_.gotoAndPlay(1);
-            saluteContainer.addChild(_loc3_);
+            saluteFire.addEventListener("enterFrame",saluteFireFrameHandler);
+            saluteFire.gotoAndPlay(1);
+            saluteContainer.addChild(saluteFire);
          }
       }
       
-      private function saluteFireFrameHandler(param1:Event) : void
+      private function saluteFireFrameHandler(e:Event) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:MovieClip = param1.currentTarget as MovieClip;
-         if(_loc3_.currentFrame == _loc3_.totalFrames)
+         var nextMovie:* = null;
+         var movie:MovieClip = e.currentTarget as MovieClip;
+         if(movie.currentFrame == movie.totalFrames)
          {
             isSaluteFiring = false;
             clearnSaluteFire();
-            _loc2_ = saluteQueue.shift();
-            if(_loc2_)
+            nextMovie = saluteQueue.shift();
+            if(nextMovie)
             {
                isSaluteFiring = true;
-               _loc2_.addEventListener("enterFrame",saluteFireFrameHandler);
-               _loc2_.gotoAndPlay(1);
-               saluteContainer.addChild(_loc2_);
+               nextMovie.addEventListener("enterFrame",saluteFireFrameHandler);
+               nextMovie.gotoAndPlay(1);
+               saluteContainer.addChild(nextMovie);
             }
          }
       }
@@ -186,15 +186,15 @@ package church.view.churchScene
          timer.start();
       }
       
-      private function __timer(param1:Event) : void
+      private function __timer(event:Event) : void
       {
-         var _loc2_:* = 0;
-         var _loc3_:Boolean = false;
-         _loc2_ = uint(Math.round(Math.random() * 15));
-         if(_loc2_ < 6)
+         var random:* = 0;
+         var playSound:Boolean = false;
+         random = uint(Math.round(Math.random() * 15));
+         if(random < 6)
          {
-            _loc3_ = !(Math.round(Math.random() * 9) % 3)?true:false;
-            if(_loc3_)
+            playSound = !(Math.round(Math.random() * 9) % 3)?true:false;
+            if(playSound)
             {
                SoundManager.instance.play("118");
             }

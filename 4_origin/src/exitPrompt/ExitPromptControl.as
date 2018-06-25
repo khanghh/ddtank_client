@@ -38,12 +38,12 @@ package exitPrompt
          ExitPromptManager.Instance.addEventListener("exitOpenView1",__onOpenView1);
       }
       
-      private function __onOpenView1(param1:Event) : void
+      private function __onOpenView1(event:Event) : void
       {
          showView("1");
       }
       
-      private function __onOpenView0(param1:Event) : void
+      private function __onOpenView0(event:Event) : void
       {
          if(!_exitPromptView)
          {
@@ -51,16 +51,16 @@ package exitPrompt
          }
       }
       
-      private function showView(param1:String = "0") : void
+      private function showView(str:String = "0") : void
       {
-         _isExitToLogin = param1;
+         _isExitToLogin = str;
          _exitPromptView = ComponentFactory.Instance.creatComponentByStylename("ExitPromptFrame");
          _exitPromptView.show();
          _exitPromptView.addEventListener("submit",_submitExit);
          _exitPromptView.addEventListener("close",_closeExit);
       }
       
-      private function _submitExit(param1:Event) : void
+      private function _submitExit(e:Event) : void
       {
          if(_exitPromptView)
          {
@@ -77,7 +77,7 @@ package exitPrompt
          }
       }
       
-      private function _closeExit(param1:Event) : void
+      private function _closeExit(e:Event) : void
       {
          if(_exitPromptView)
          {

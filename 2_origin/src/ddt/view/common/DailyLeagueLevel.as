@@ -47,22 +47,22 @@ package ddt.view.common
          super();
       }
       
-      public function set leagueFirst(param1:Boolean) : void
+      public function set leagueFirst(value:Boolean) : void
       {
-         if(_leagueFirst == param1)
+         if(_leagueFirst == value)
          {
             return;
          }
-         _leagueFirst = param1;
+         _leagueFirst = value;
       }
       
-      public function set score(param1:int) : void
+      public function set score(value:int) : void
       {
-         if(param1 == _score)
+         if(value == _score)
          {
             return;
          }
-         _score = param1;
+         _score = value;
          _level = DailyLeagueManager.Instance.getLeagueLevelByScore(_score,_leagueFirst).Level;
          updateView();
          updateSize();
@@ -85,9 +85,9 @@ package ddt.view.common
          LoadResourceManager.Instance.startLoad(_loader);
       }
       
-      public function set size(param1:int) : void
+      public function set size(size:int) : void
       {
-         _size = param1;
+         _size = size;
          updateSize();
       }
       
@@ -105,7 +105,7 @@ package ddt.view.common
          }
       }
       
-      private function __onLoadComplete(param1:LoaderEvent) : void
+      private function __onLoadComplete(evt:LoaderEvent) : void
       {
          _loader.removeEventListener("complete",__onLoadComplete);
          _loader.removeEventListener("loadError",__onLoadError);
@@ -116,7 +116,7 @@ package ddt.view.common
          }
       }
       
-      private function __onLoadError(param1:LoaderEvent) : void
+      private function __onLoadError(evt:LoaderEvent) : void
       {
          _loader.removeEventListener("complete",__onLoadComplete);
          _loader.removeEventListener("loadError",__onLoadError);
@@ -127,9 +127,9 @@ package ddt.view.common
          return _tipData;
       }
       
-      public function set tipData(param1:Object) : void
+      public function set tipData(value:Object) : void
       {
-         _tipData = param1;
+         _tipData = value;
       }
       
       public function get tipDirctions() : String
@@ -137,9 +137,9 @@ package ddt.view.common
          return _tipDirctions;
       }
       
-      public function set tipDirctions(param1:String) : void
+      public function set tipDirctions(value:String) : void
       {
-         _tipDirctions = param1;
+         _tipDirctions = value;
       }
       
       public function get tipGapH() : int
@@ -147,9 +147,9 @@ package ddt.view.common
          return _tipGapH;
       }
       
-      public function set tipGapH(param1:int) : void
+      public function set tipGapH(value:int) : void
       {
-         _tipGapH = param1;
+         _tipGapH = value;
       }
       
       public function get tipGapV() : int
@@ -157,9 +157,9 @@ package ddt.view.common
          return _tipGapV;
       }
       
-      public function set tipGapV(param1:int) : void
+      public function set tipGapV(value:int) : void
       {
-         _tipGapV = param1;
+         _tipGapV = value;
       }
       
       public function get tipStyle() : String
@@ -167,9 +167,9 @@ package ddt.view.common
          return _tipStyle;
       }
       
-      public function set tipStyle(param1:String) : void
+      public function set tipStyle(value:String) : void
       {
-         _tipStyle = param1;
+         _tipStyle = value;
       }
       
       public function asDisplayObject() : DisplayObject

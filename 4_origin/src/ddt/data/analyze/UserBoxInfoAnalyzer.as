@@ -23,14 +23,14 @@ package ddt.data.analyze
       
       public var CSMBoxList:DictionaryData;
       
-      public function UserBoxInfoAnalyzer(param1:Function)
+      public function UserBoxInfoAnalyzer(onCompleteCall:Function)
       {
-         super(param1);
+         super(onCompleteCall);
       }
       
-      override public function analyze(param1:*) : void
+      override public function analyze(data:*) : void
       {
-         _xml = new XML(param1);
+         _xml = new XML(data);
          if(_xml.@value == "true")
          {
             timeBoxList = new DictionaryData();
@@ -50,97 +50,96 @@ package ddt.data.analyze
       
       private function parseShop() : void
       {
-         var _loc7_:int = 0;
-         var _loc5_:int = 0;
-         var _loc1_:* = null;
-         var _loc4_:* = null;
-         var _loc3_:* = null;
-         var _loc6_:* = null;
-         var _loc2_:* = null;
-         _loc7_ = 0;
-         while(_loc7_ < _goodsList.length())
+         var i:int = 0;
+         var type:int = 0;
+         var timeInfo:* = null;
+         var gradeInfo:* = null;
+         var timeInfoI:* = null;
+         var timeInfoII:* = null;
+         var csmGoodListIds:* = null;
+         for(i = 0; i < _goodsList.length(); )
          {
-            _loc5_ = _goodsList[_loc7_].@Type;
-            switch(int(_loc5_))
+            type = _goodsList[i].@Type;
+            switch(int(type))
             {
                case 0:
-                  _loc1_ = new TimeBoxInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc1_,_goodsList[_loc7_]);
-                  boxTemplateID[_loc1_.TemplateID] = _loc1_.TemplateID;
-                  timeBoxList.add(_loc1_.ID,_loc1_);
+                  timeInfo = new TimeBoxInfo();
+                  ObjectUtils.copyPorpertiesByXML(timeInfo,_goodsList[i]);
+                  boxTemplateID[timeInfo.TemplateID] = timeInfo.TemplateID;
+                  timeBoxList.add(timeInfo.ID,timeInfo);
                   break;
                case 1:
-                  _loc4_ = new GradeBoxInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc4_,_goodsList[_loc7_]);
-                  boxTemplateID[_loc4_.TemplateID] = _loc4_.TemplateID;
-                  gradeBoxList.add(_loc4_.ID,_loc4_);
+                  gradeInfo = new GradeBoxInfo();
+                  ObjectUtils.copyPorpertiesByXML(gradeInfo,_goodsList[i]);
+                  boxTemplateID[gradeInfo.TemplateID] = gradeInfo.TemplateID;
+                  gradeBoxList.add(gradeInfo.ID,gradeInfo);
                   break;
                case 2:
-                  _loc3_ = new TimeBoxInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc3_,_goodsList[_loc7_]);
-                  boxTemplateID[_loc3_.TemplateID] = _loc3_.TemplateID;
+                  timeInfoI = new TimeBoxInfo();
+                  ObjectUtils.copyPorpertiesByXML(timeInfoI,_goodsList[i]);
+                  boxTemplateID[timeInfoI.TemplateID] = timeInfoI.TemplateID;
                   break;
                default:
-                  _loc3_ = new TimeBoxInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc3_,_goodsList[_loc7_]);
-                  boxTemplateID[_loc3_.TemplateID] = _loc3_.TemplateID;
+                  timeInfoI = new TimeBoxInfo();
+                  ObjectUtils.copyPorpertiesByXML(timeInfoI,_goodsList[i]);
+                  boxTemplateID[timeInfoI.TemplateID] = timeInfoI.TemplateID;
                   break;
                default:
-                  _loc3_ = new TimeBoxInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc3_,_goodsList[_loc7_]);
-                  boxTemplateID[_loc3_.TemplateID] = _loc3_.TemplateID;
+                  timeInfoI = new TimeBoxInfo();
+                  ObjectUtils.copyPorpertiesByXML(timeInfoI,_goodsList[i]);
+                  boxTemplateID[timeInfoI.TemplateID] = timeInfoI.TemplateID;
                   break;
                default:
-                  _loc3_ = new TimeBoxInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc3_,_goodsList[_loc7_]);
-                  boxTemplateID[_loc3_.TemplateID] = _loc3_.TemplateID;
+                  timeInfoI = new TimeBoxInfo();
+                  ObjectUtils.copyPorpertiesByXML(timeInfoI,_goodsList[i]);
+                  boxTemplateID[timeInfoI.TemplateID] = timeInfoI.TemplateID;
                   break;
                default:
-                  _loc3_ = new TimeBoxInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc3_,_goodsList[_loc7_]);
-                  boxTemplateID[_loc3_.TemplateID] = _loc3_.TemplateID;
+                  timeInfoI = new TimeBoxInfo();
+                  ObjectUtils.copyPorpertiesByXML(timeInfoI,_goodsList[i]);
+                  boxTemplateID[timeInfoI.TemplateID] = timeInfoI.TemplateID;
                   break;
                default:
-                  _loc3_ = new TimeBoxInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc3_,_goodsList[_loc7_]);
-                  boxTemplateID[_loc3_.TemplateID] = _loc3_.TemplateID;
+                  timeInfoI = new TimeBoxInfo();
+                  ObjectUtils.copyPorpertiesByXML(timeInfoI,_goodsList[i]);
+                  boxTemplateID[timeInfoI.TemplateID] = timeInfoI.TemplateID;
                   break;
                default:
-                  _loc3_ = new TimeBoxInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc3_,_goodsList[_loc7_]);
-                  boxTemplateID[_loc3_.TemplateID] = _loc3_.TemplateID;
+                  timeInfoI = new TimeBoxInfo();
+                  ObjectUtils.copyPorpertiesByXML(timeInfoI,_goodsList[i]);
+                  boxTemplateID[timeInfoI.TemplateID] = timeInfoI.TemplateID;
                   break;
                default:
-                  _loc3_ = new TimeBoxInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc3_,_goodsList[_loc7_]);
-                  boxTemplateID[_loc3_.TemplateID] = _loc3_.TemplateID;
+                  timeInfoI = new TimeBoxInfo();
+                  ObjectUtils.copyPorpertiesByXML(timeInfoI,_goodsList[i]);
+                  boxTemplateID[timeInfoI.TemplateID] = timeInfoI.TemplateID;
                   break;
                case 10:
-                  _loc6_ = new TimeBoxInfo();
-                  ObjectUtils.copyPorpertiesByXML(_loc6_,_goodsList[_loc7_]);
-                  if(CSMBoxList[_loc6_.Level])
+                  timeInfoII = new TimeBoxInfo();
+                  ObjectUtils.copyPorpertiesByXML(timeInfoII,_goodsList[i]);
+                  if(CSMBoxList[timeInfoII.Level])
                   {
-                     _loc2_ = CSMBoxList[_loc6_.Level].goodListIds;
+                     csmGoodListIds = CSMBoxList[timeInfoII.Level].goodListIds;
                   }
                   else
                   {
-                     _loc2_ = [];
+                     csmGoodListIds = [];
                   }
-                  _loc2_.push(_loc6_.TemplateID);
-                  CSMBoxList[_loc6_.Level] = {
-                     "goodListIds":_loc2_,
-                     "info":_loc6_
+                  csmGoodListIds.push(timeInfoII.TemplateID);
+                  CSMBoxList[timeInfoII.Level] = {
+                     "goodListIds":csmGoodListIds,
+                     "info":timeInfoII
                   };
-                  boxTemplateID[_loc6_.TemplateID] = _loc6_.TemplateID;
+                  boxTemplateID[timeInfoII.TemplateID] = timeInfoII.TemplateID;
             }
-            _loc7_++;
+            i++;
          }
          onAnalyzeComplete();
       }
       
       private function getXML() : XML
       {
-         var _loc1_:XML = <Result value="true" message="Success!">
+         var xml:XML = <Result value="true" message="Success!">
   <Item ID="1" Type="0" Level="20" Condition="15" TemplateID="1120090"/>
   <Item ID="2" Type="0" Level="20" Condition="40" TemplateID="1120091"/>
   <Item ID="3" Type="0" Level="20" Condition="60" TemplateID="1120092"/>
@@ -172,7 +171,7 @@ package ddt.data.analyze
  <Item ID="21" Type="2" Level="20" Condition="0" TemplateID="112120"/>
 </Result>
 				;
-         return _loc1_;
+         return xml;
       }
    }
 }

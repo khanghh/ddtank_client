@@ -9,131 +9,125 @@ package com.pickgliss.utils
          super();
       }
       
-      public static function each(param1:Array, param2:Function) : void
+      public static function each(arr:Array, operation:Function) : void
       {
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var i:int = 0;
+         for(i = 0; i < arr.length; )
          {
-            param2(param1[_loc3_]);
-            _loc3_++;
+            operation(arr[i]);
+            i++;
          }
       }
       
-      public static function setSize(param1:Array, param2:int) : void
+      public static function setSize(arr:Array, size:int) : void
       {
-         if(param2 < 0)
+         if(size < 0)
          {
-            param2 = 0;
+            size = 0;
          }
-         if(param2 == param1.length)
+         if(size == arr.length)
          {
             return;
          }
-         if(param2 > param1.length)
+         if(size > arr.length)
          {
-            param1[param2 - 1] = undefined;
+            arr[size - 1] = undefined;
          }
          else
          {
-            param1.splice(param2);
+            arr.splice(size);
          }
       }
       
-      public static function removeFromArray(param1:Array, param2:Object) : int
+      public static function removeFromArray(arr:Array, obj:Object) : int
       {
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var i:int = 0;
+         for(i = 0; i < arr.length; )
          {
-            if(param1[_loc3_] == param2)
+            if(arr[i] == obj)
             {
-               param1.splice(_loc3_,1);
-               return _loc3_;
+               arr.splice(i,1);
+               return i;
             }
-            _loc3_++;
+            i++;
          }
          return -1;
       }
       
-      public static function removeAllFromArray(param1:Array, param2:Object) : void
+      public static function removeAllFromArray(arr:Array, obj:Object) : void
       {
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var i:int = 0;
+         for(i = 0; i < arr.length; )
          {
-            if(param1[_loc3_] == param2)
+            if(arr[i] == obj)
             {
-               param1.splice(_loc3_,1);
-               _loc3_--;
+               arr.splice(i,1);
+               i--;
             }
-            _loc3_++;
+            i++;
          }
       }
       
-      public static function removeAllBehindSomeIndex(param1:Array, param2:int) : void
+      public static function removeAllBehindSomeIndex(array:Array, index:int) : void
       {
-         var _loc4_:int = 0;
-         if(param2 <= 0)
+         var i:int = 0;
+         if(index <= 0)
          {
-            param1.splice(0,param1.length);
+            array.splice(0,array.length);
             return;
          }
-         var _loc3_:int = param1.length;
-         _loc4_ = param2 + 1;
-         while(_loc4_ < _loc3_)
+         var arrLen:int = array.length;
+         for(i = index + 1; i < arrLen; )
          {
-            param1.pop();
-            _loc4_++;
+            array.pop();
+            i++;
          }
       }
       
-      public static function indexInArray(param1:Array, param2:Object) : int
+      public static function indexInArray(arr:Array, obj:Object) : int
       {
-         var _loc3_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < param1.length)
+         var i:int = 0;
+         for(i = 0; i < arr.length; )
          {
-            if(param1[_loc3_] == param2)
+            if(arr[i] == obj)
             {
-               return _loc3_;
+               return i;
             }
-            _loc3_++;
+            i++;
          }
          return -1;
       }
       
-      public static function cloneArray(param1:Array) : Array
+      public static function cloneArray(arr:Array) : Array
       {
-         return param1.concat();
+         return arr.concat();
       }
       
-      public static function swapItems(param1:Array, param2:Object, param3:Object) : void
+      public static function swapItems(array:Array, item1:Object, item2:Object) : void
       {
-         var _loc6_:* = null;
-         var _loc5_:int = param1.indexOf(param2);
-         var _loc4_:int = param1.indexOf(param3);
-         if(_loc5_ != -1 && _loc4_ != -1)
+         var tempItem:* = null;
+         var item1pos:int = array.indexOf(item1);
+         var item2pos:int = array.indexOf(item2);
+         if(item1pos != -1 && item2pos != -1)
          {
-            _loc6_ = param1[_loc4_];
-            param1[_loc4_] = param1[_loc5_];
-            param1[_loc5_] = _loc6_;
+            tempItem = array[item2pos];
+            array[item2pos] = array[item1pos];
+            array[item1pos] = tempItem;
          }
       }
       
-      public static function disorder(param1:Array) : void
+      public static function disorder(arr:Array) : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:int = 0;
-         var _loc3_:* = undefined;
-         _loc4_ = 0;
-         while(_loc4_ < param1.length)
+         var i:int = 0;
+         var random:int = 0;
+         var temp:* = undefined;
+         for(i = 0; i < arr.length; )
          {
-            _loc2_ = Math.random() * 10000 % param1.length;
-            _loc3_ = param1[_loc4_];
-            param1[_loc4_] = param1[_loc2_];
-            param1[_loc2_] = _loc3_;
-            _loc4_++;
+            random = Math.random() * 10000 % arr.length;
+            temp = arr[i];
+            arr[i] = arr[random];
+            arr[random] = temp;
+            i++;
          }
       }
    }

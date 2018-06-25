@@ -72,14 +72,14 @@ package consortion.view.selfConsortia
          removeEventListener("mouseOut",__mouseOutHandler);
       }
       
-      public function set dutyInfo(param1:ConsortiaDutyInfo) : void
+      public function set dutyInfo(info:ConsortiaDutyInfo) : void
       {
-         _dutyInfo = param1;
+         _dutyInfo = info;
          _name.text = _dutyInfo.DutyName;
          selected = false;
       }
       
-      private function __btnClickHandler(param1:MouseEvent) : void
+      private function __btnClickHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          editable = !editable;
@@ -90,12 +90,12 @@ package consortion.view.selfConsortia
          }
       }
       
-      public function set editable(param1:Boolean) : void
+      public function set editable(value:Boolean) : void
       {
-         _editable = param1;
-         var _loc2_:int = !!_editable?2:1;
-         _btn.setFrame(_loc2_);
-         if(_loc2_ == 1)
+         _editable = value;
+         var frameIndex:int = !!_editable?2:1;
+         _btn.setFrame(frameIndex);
+         if(frameIndex == 1)
          {
             _btn.text = LanguageMgr.GetTranslation("change");
          }
@@ -126,7 +126,7 @@ package consortion.view.selfConsortia
       
       public function get upText() : Boolean
       {
-         var _loc3_:int = 0;
+         var i:int = 0;
          if(_name.text == "")
          {
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaJobItem.null"));
@@ -137,18 +137,17 @@ package consortion.view.selfConsortia
          {
             return false;
          }
-         var _loc1_:Vector.<ConsortiaDutyInfo> = ConsortionModelManager.Instance.model.dutyList;
-         var _loc2_:int = _loc1_.length;
-         _loc3_ = 0;
-         while(_loc3_ < _loc2_)
+         var list:Vector.<ConsortiaDutyInfo> = ConsortionModelManager.Instance.model.dutyList;
+         var len:int = list.length;
+         for(i = 0; i < len; )
          {
-            if(_loc1_[_loc3_].DutyName == _name.text)
+            if(list[i].DutyName == _name.text)
             {
                MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("tank.consortia.myconsortia.frame.MyConsortiaJobItem.diffrent"));
                setDefultName();
                return false;
             }
-            _loc3_++;
+            i++;
          }
          if(FilterWordManager.isGotForbiddenWords(_name.text,"name"))
          {
@@ -161,28 +160,27 @@ package consortion.view.selfConsortia
       
       private function setDefultName() : void
       {
-         var _loc4_:int = 0;
-         var _loc2_:Vector.<ConsortiaDutyInfo> = ConsortionModelManager.Instance.model.dutyList;
-         var _loc3_:int = _loc2_.length;
-         var _loc1_:int = this.name;
-         _loc4_ = 0;
-         while(_loc4_ < _loc3_)
+         var i:int = 0;
+         var list:Vector.<ConsortiaDutyInfo> = ConsortionModelManager.Instance.model.dutyList;
+         var len:int = list.length;
+         var _index:int = this.name;
+         for(i = 0; i < len; )
          {
-            if(_loc1_ == _loc4_)
+            if(_index == i)
             {
-               _name.text = _loc2_[_loc4_].DutyName;
+               _name.text = list[i].DutyName;
             }
-            _loc4_++;
+            i++;
          }
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         if(_selected == param1)
+         if(_selected == value)
          {
             return;
          }
-         _selected = param1;
+         _selected = value;
          _light.visible = _selected;
       }
       
@@ -191,12 +189,12 @@ package consortion.view.selfConsortia
          return _selected;
       }
       
-      private function __mouseOverHandler(param1:MouseEvent) : void
+      private function __mouseOverHandler(event:MouseEvent) : void
       {
          _light.visible = true;
       }
       
-      private function __mouseOutHandler(param1:MouseEvent) : void
+      private function __mouseOutHandler(event:MouseEvent) : void
       {
          if(!selected)
          {

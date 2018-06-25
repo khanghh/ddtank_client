@@ -41,13 +41,13 @@ package ddtBuried.map
       
       private var role:BuriedPlayer;
       
-      public function Maps(param1:Array, param2:int, param3:int)
+      public function Maps($arr:Array, $w:int, $h:int)
       {
          super();
-         w = param2;
-         h = param3;
+         w = $w;
+         h = $h;
          wh = 55;
-         mapDataArray = param1;
+         mapDataArray = $arr;
          init();
       }
       
@@ -59,29 +59,29 @@ package ddtBuried.map
          roadTimer = new Timer(300,0);
       }
       
-      public function startMove(param1:int, param2:int) : void
+      public function startMove(xpos:int, ypos:int) : void
       {
-         var _loc7_:* = null;
-         var _loc5_:* = param1;
-         var _loc6_:* = param2;
-         var _loc4_:* = mapArr[_loc6_][_loc5_];
-         if(_loc4_.go == 0)
+         var _ARoad:* = null;
+         var endX:* = xpos;
+         var endY:* = ypos;
+         var endPoint:* = mapArr[endY][endX];
+         if(endPoint.go == 0)
          {
             if(roadList)
             {
                var _loc9_:int = 0;
                var _loc8_:* = roadList;
-               for each(var _loc3_ in roadList)
+               for each(var mc in roadList)
                {
-                  _loc3_.alpha = 1;
+                  mc.alpha = 1;
                }
                roadList = [];
             }
             roadTimer.stop();
             roadMen.px = Math.floor(roadMen.x / wh);
             roadMen.py = Math.floor(roadMen.y / wh);
-            _loc7_ = new ARoad();
-            roadList = _loc7_.searchRoad(roadMen,_loc4_,mapArr);
+            _ARoad = new ARoad();
+            roadList = _ARoad.searchRoad(roadMen,endPoint,mapArr);
             if(roadList.length > 0)
             {
                MC_play(roadList);
@@ -89,27 +89,27 @@ package ddtBuried.map
          }
       }
       
-      private function MC_play(param1:Array) : void
+      private function MC_play(roadList:Array) : void
       {
-         param1.reverse();
+         roadList.reverse();
          roadTimer.stop();
          timer_i = 0;
          roadTimer.addEventListener("timer",goMap);
          roadTimer.start();
          var _loc4_:int = 0;
-         var _loc3_:* = param1;
-         for each(var _loc2_ in param1)
+         var _loc3_:* = roadList;
+         for each(var mc in roadList)
          {
-            _loc2_.alpha = 0.3;
+            mc.alpha = 0.3;
          }
       }
       
-      private function goMap(param1:TimerEvent) : void
+      private function goMap(evt:TimerEvent) : void
       {
-         var _loc2_:MovieClip = roadList[timer_i];
-         roadMen.x = _loc2_.x;
-         roadMen.y = _loc2_.y;
-         _loc2_.alpha = 1;
+         var tmpMC:MovieClip = roadList[timer_i];
+         roadMen.x = tmpMC.x;
+         roadMen.y = tmpMC.y;
+         tmpMC.alpha = 1;
          timer_i = Number(timer_i) + 1;
          if(timer_i >= roadList.length)
          {
@@ -128,34 +128,32 @@ package ddtBuried.map
       
       private function createMaps() : void
       {
-         var _loc3_:* = 0;
-         var _loc4_:* = 0;
-         var _loc2_:* = 0;
-         var _loc1_:* = null;
+         var y:* = 0;
+         var x:* = 0;
+         var mapPoint:* = 0;
+         var point:* = null;
          mapArr = [];
          map = new Sprite();
          map.x = wh;
          map.y = wh;
          addChild(map);
-         _loc3_ = uint(0);
-         while(_loc3_ < h)
+         for(y = uint(0); y < h; )
          {
             mapArr.push([]);
-            _loc4_ = uint(0);
-            while(_loc4_ < w)
+            for(x = uint(0); x < w; )
             {
-               _loc2_ = uint(mapDataArray[_loc3_][_loc4_]);
-               _loc1_ = drawRect(_loc2_);
-               mapArr[_loc3_].push(_loc1_);
-               mapArr[_loc3_][_loc4_].px = _loc4_;
-               mapArr[_loc3_][_loc4_].py = _loc3_;
-               mapArr[_loc3_][_loc4_].go = _loc2_;
-               mapArr[_loc3_][_loc4_].x = _loc4_ * wh;
-               mapArr[_loc3_][_loc4_].y = _loc3_ * wh;
-               map.addChild(mapArr[_loc3_][_loc4_]);
-               _loc4_++;
+               mapPoint = uint(mapDataArray[y][x]);
+               point = drawRect(mapPoint);
+               mapArr[y].push(point);
+               mapArr[y][x].px = x;
+               mapArr[y][x].py = y;
+               mapArr[y][x].go = mapPoint;
+               mapArr[y][x].x = x * wh;
+               mapArr[y][x].y = y * wh;
+               map.addChild(mapArr[y][x]);
+               x++;
             }
-            _loc3_++;
+            y++;
          }
          map.rotationX = -30;
          map.scaleX = 1.4;
@@ -164,24 +162,22 @@ package ddtBuried.map
       
       private function clearMaps() : void
       {
-         var _loc2_:* = 0;
-         var _loc3_:* = 0;
-         var _loc1_:* = null;
-         _loc2_ = uint(0);
-         while(_loc2_ < h)
+         var y:* = 0;
+         var x:* = 0;
+         var mc:* = null;
+         for(y = uint(0); y < h; )
          {
-            _loc3_ = uint(0);
-            while(_loc3_ < w)
+            for(x = uint(0); x < w; )
             {
-               _loc1_ = mapArr[_loc2_][_loc3_];
-               while(_loc1_.numChildren)
+               mc = mapArr[y][x];
+               while(mc.numChildren)
                {
-                  ObjectUtils.disposeObject(_loc1_.removeChildAt(0));
+                  ObjectUtils.disposeObject(mc.removeChildAt(0));
                }
-               ObjectUtils.disposeObject(mapArr[_loc2_][_loc3_]);
-               _loc3_++;
+               ObjectUtils.disposeObject(mapArr[y][x]);
+               x++;
             }
-            _loc2_++;
+            y++;
          }
       }
       
@@ -190,10 +186,10 @@ package ddtBuried.map
          return mapArr;
       }
       
-      private function keyDowns(param1:KeyboardEvent) : void
+      private function keyDowns(evt:KeyboardEvent) : void
       {
-         var _loc2_:int = param1.keyCode;
-         if(_loc2_ == 32)
+         var _key:int = evt.keyCode;
+         if(_key == 32)
          {
             removeChild(map);
             mapArr = [];
@@ -203,50 +199,50 @@ package ddtBuried.map
          }
       }
       
-      private function drawRect(param1:uint) : MovieClip
+      private function drawRect(mapPoint:uint) : MovieClip
       {
-         var _loc2_:int = 0;
-         var _loc4_:* = null;
-         var _loc3_:MovieClip = new MovieClip();
-         switch(int(param1))
+         var color:int = 0;
+         var bitMap:* = null;
+         var _tmp:MovieClip = new MovieClip();
+         switch(int(mapPoint))
          {
             case 0:
-               _loc4_ = ComponentFactory.Instance.creat("buried.shaizi.mapItemBack");
-               _loc4_.smoothing = true;
-               _loc4_.width = 56;
-               _loc4_.height = 56;
-               _loc3_.addChild(_loc4_);
-               return _loc3_;
+               bitMap = ComponentFactory.Instance.creat("buried.shaizi.mapItemBack");
+               bitMap.smoothing = true;
+               bitMap.width = 56;
+               bitMap.height = 56;
+               _tmp.addChild(bitMap);
+               return _tmp;
             case 1:
-               return _loc3_;
+               return _tmp;
          }
       }
       
-      private function roleCallback(param1:BuriedPlayer, param2:Boolean) : void
+      private function roleCallback(role:BuriedPlayer, isLoadSucceed:Boolean) : void
       {
-         if(!param1)
+         if(!role)
          {
             return;
          }
-         param1.sceneCharacterStateType = "natural";
-         param1.update();
+         role.sceneCharacterStateType = "natural";
+         role.update();
       }
       
       private function roadMens() : void
       {
          roadMen = drawRect(2);
-         var _loc1_:uint = Math.round(Math.random() * (w - 1));
-         var _loc2_:uint = Math.round(Math.random() * (h - 1));
+         var _tmpx:uint = Math.round(Math.random() * (w - 1));
+         var _tmpy:uint = Math.round(Math.random() * (h - 1));
          map.addChild(roadMen);
       }
       
-      public function setRoadMan(param1:int, param2:int) : void
+      public function setRoadMan(px:int, py:int) : void
       {
-         roadMen.px = param1;
-         roadMen.py = param2;
-         roadMen.x = param1 * wh;
-         roadMen.y = param2 * wh;
-         mapArr[param2][param1].go = 0;
+         roadMen.px = px;
+         roadMen.py = py;
+         roadMen.x = px * wh;
+         roadMen.y = py * wh;
+         mapArr[py][px].go = 0;
       }
       
       public function dispose() : void

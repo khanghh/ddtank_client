@@ -19,10 +19,10 @@ package gameCommon.view.smallMap
       
       private var _player:MovieClip;
       
-      public function SmallMapPlayer(param1:Living)
+      public function SmallMapPlayer(info:Living)
       {
          super();
-         _info = param1;
+         _info = info;
          initView();
          initEvent();
       }
@@ -92,25 +92,25 @@ package gameCommon.view.smallMap
          }
       }
       
-      private function createPlayer(param1:MovieClip) : void
+      private function createPlayer(player:MovieClip) : void
       {
-         _player = param1;
+         _player = player;
          var _loc2_:* = 1.2;
          _player.scaleY = _loc2_;
          _player.scaleX = _loc2_;
-         param1["attrack_mc"].visible = false;
+         player["attrack_mc"].visible = false;
          addChild(_player);
          if(_info.isSelf)
          {
-            param1["player_mc"].gotoAndPlay(1);
+            player["player_mc"].gotoAndPlay(1);
          }
          else
          {
-            param1["player_mc"].gotoAndStop(8);
+            player["player_mc"].gotoAndStop(8);
          }
       }
       
-      private function __change(param1:LivingEvent) : void
+      private function __change(event:LivingEvent) : void
       {
          if((_info as TurnedLiving).isAttacking)
          {
@@ -122,7 +122,7 @@ package gameCommon.view.smallMap
          }
       }
       
-      private function __hide(param1:LivingEvent) : void
+      private function __hide(event:LivingEvent) : void
       {
          if(_info.isHidden)
          {
@@ -143,7 +143,7 @@ package gameCommon.view.smallMap
          }
       }
       
-      private function __die(param1:LivingEvent) : void
+      private function __die(evt:LivingEvent) : void
       {
          _player["attrack_mc"].visible = false;
       }

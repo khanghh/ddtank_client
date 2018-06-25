@@ -46,9 +46,9 @@ package email.view
          _cell = new EmaillBagCell();
          _cell.width = CELL_WIDTH;
          _cell.height = CELL_HEIGHT;
-         var _loc1_:Point = ComponentFactory.Instance.creatCustomObject("email.cellPos");
-         _cell.x = _loc1_.x;
-         _cell.y = _loc1_.y;
+         var cellPos:Point = ComponentFactory.Instance.creatCustomObject("email.cellPos");
+         _cell.x = cellPos.x;
+         _cell.y = cellPos.y;
          _cell.allowDrag = false;
          addChild(_cell);
          mouseChildren = false;
@@ -71,13 +71,13 @@ package email.view
          return _index;
       }
       
-      public function set index(param1:int) : void
+      public function set index(value:int) : void
       {
-         if(_index == param1)
+         if(_index == value)
          {
             return;
          }
-         _index = param1;
+         _index = value;
       }
       
       public function get info() : EmailInfo
@@ -85,9 +85,9 @@ package email.view
          return _info;
       }
       
-      public function set info(param1:EmailInfo) : void
+      public function set info(value:EmailInfo) : void
       {
-         _info = param1;
+         _info = value;
          if(_info)
          {
             update();
@@ -111,9 +111,9 @@ package email.view
          countTxt.visible = false;
       }
       
-      public function dragDrop(param1:DragEffect) : void
+      public function dragDrop(effect:DragEffect) : void
       {
-         _cell.dragDrop(param1);
+         _cell.dragDrop(effect);
       }
       
       protected function addEvent() : void

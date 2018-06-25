@@ -18,45 +18,44 @@ package littleGame.view
       
       private var _style:int;
       
-      public function ScoreShape(param1:int = 0)
+      public function ScoreShape(style:int = 0)
       {
-         _style = param1;
+         _style = style;
          super(null,"auto",true);
       }
       
-      public function setScore(param1:int) : void
+      public function setScore(score:int) : void
       {
-         var _loc5_:* = null;
-         var _loc8_:int = 0;
-         var _loc2_:int = 0;
-         var _loc9_:int = 0;
-         var _loc6_:String = param1.toString();
+         var src:* = null;
+         var h:int = 0;
+         var w:int = 0;
+         var i:int = 0;
+         var scoreStr:String = score.toString();
          if(_style == 1)
          {
-            _loc5_ = LittleGameManager.Instance.Current.bigNum;
+            src = LittleGameManager.Instance.Current.bigNum;
          }
          else
          {
-            _loc5_ = LittleGameManager.Instance.Current.normalNum;
+            src = LittleGameManager.Instance.Current.normalNum;
          }
-         _loc2_ = _loc5_.width / 11;
-         _loc8_ = _loc5_.height;
-         var _loc3_:BitmapData = new BitmapData((_loc6_.length + 1) * _loc2_,_loc8_,true,0);
-         var _loc7_:Rectangle = new Rectangle(_loc5_.width - _loc2_,0,_loc2_,_loc8_);
-         _loc3_.copyPixels(_loc5_,_loc7_,new Point(0,0));
-         var _loc4_:int = _loc6_.length;
-         _loc9_ = 0;
-         while(_loc9_ < _loc4_)
+         w = src.width / 11;
+         h = src.height;
+         var bitmap:BitmapData = new BitmapData((scoreStr.length + 1) * w,h,true,0);
+         var rect:Rectangle = new Rectangle(src.width - w,0,w,h);
+         bitmap.copyPixels(src,rect,new Point(0,0));
+         var len:int = scoreStr.length;
+         for(i = 0; i < len; )
          {
-            _loc7_.x = int(_loc6_.substr(_loc9_,1)) * _loc2_;
-            _loc3_.copyPixels(_loc5_,_loc7_,new Point(_loc2_ * (_loc9_ + 1),0));
-            _loc9_++;
+            rect.x = int(scoreStr.substr(i,1)) * w;
+            bitmap.copyPixels(src,rect,new Point(w * (i + 1),0));
+            i++;
          }
          if(bitmapData)
          {
             bitmapData.dispose();
          }
-         bitmapData = _loc3_;
+         bitmapData = bitmap;
       }
       
       public function dispose() : void

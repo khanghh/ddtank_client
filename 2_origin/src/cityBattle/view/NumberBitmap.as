@@ -17,8 +17,8 @@ package cityBattle.view
          super();
          _box = new Sprite();
          addChild(_box);
-         var _loc1_:MovieClip = ClassUtils.CreatInstance("asset.cityBattle.Number");
-         addChild(_loc1_);
+         var mc:MovieClip = ClassUtils.CreatInstance("asset.cityBattle.Number");
+         addChild(mc);
       }
       
       public function dispose() : void

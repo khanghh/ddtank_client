@@ -44,15 +44,14 @@ package entertainmentMode.model
          return _roomList;
       }
       
-      public function updateRoom(param1:Array) : void
+      public function updateRoom(arr:Array) : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _roomList = {};
-         _loc2_ = 0;
-         while(_loc2_ < param1.length)
+         for(i = 0; i < arr.length; )
          {
-            _roomList[param1[_loc2_].ID] = param1[_loc2_];
-            _loc2_++;
+            _roomList[arr[i].ID] = arr[i];
+            i++;
          }
          dispatchEvent(new Event("roomlistchange"));
       }
@@ -62,15 +61,15 @@ package entertainmentMode.model
          return _score;
       }
       
-      public function set score(param1:int) : void
+      public function set score(value:int) : void
       {
-         _score = param1;
+         _score = value;
          dispatchEvent(new Event("scoreChange"));
       }
       
-      public function set roomTotal(param1:int) : void
+      public function set roomTotal(value:int) : void
       {
-         _roomTotal = param1;
+         _roomTotal = value;
       }
       
       public function get roomTotal() : int
@@ -78,9 +77,9 @@ package entertainmentMode.model
          return _roomTotal;
       }
       
-      public function getRoomById(param1:int) : RoomInfo
+      public function getRoomById(id:int) : RoomInfo
       {
-         return _roomList[param1];
+         return _roomList[id];
       }
       
       public function get scoreArr() : Array
@@ -88,9 +87,9 @@ package entertainmentMode.model
          return _scoreArr;
       }
       
-      public function set scoreArr(param1:Array) : void
+      public function set scoreArr(value:Array) : void
       {
-         _scoreArr = param1;
+         _scoreArr = value;
       }
       
       public function get selfScore() : int
@@ -98,9 +97,9 @@ package entertainmentMode.model
          return _selfScore;
       }
       
-      public function set selfScore(param1:int) : void
+      public function set selfScore(value:int) : void
       {
-         _selfScore = param1;
+         _selfScore = value;
       }
    }
 }

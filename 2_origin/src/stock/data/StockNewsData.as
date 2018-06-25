@@ -19,28 +19,28 @@ package stock.data
       
       private var _type:int = 0;
       
-      public function StockNewsData(param1:int)
+      public function StockNewsData(type:int)
       {
          super();
-         _type = param1;
+         _type = type;
       }
       
       public function get content() : String
       {
-         var _loc3_:* = null;
-         var _loc2_:String = "";
-         var _loc1_:String = StockMgr.inst.model.stocks[stockID].StockName;
-         var _loc4_:Date = new Date(time);
+         var tmp:* = null;
+         var stockNotice:String = "";
+         var stockName:String = StockMgr.inst.model.stocks[stockID].StockName;
+         var date:Date = new Date(time);
          if(_type == 1)
          {
-            _loc3_ = StockMgr.inst.model.cfgStockNews[NewsId];
-            _loc2_ = _loc3_.NewsContent.replace("{0}",LanguageMgr.GetTranslation("stockName",_loc1_));
+            tmp = StockMgr.inst.model.cfgStockNews[NewsId];
+            stockNotice = tmp.NewsContent.replace("{0}",LanguageMgr.GetTranslation("stockName",stockName));
          }
          else if(_type == 2)
          {
-            _loc2_ = LanguageMgr.GetTranslation("stock.Message" + dealType,_loc1_,dealCnt,singleCost);
+            stockNotice = LanguageMgr.GetTranslation("stock.Message" + dealType,stockName,dealCnt,singleCost);
          }
-         return LanguageMgr.GetTranslation("stock.Notice",_loc4_.month + 1,_loc4_.date,_loc4_.hours < 10?"0" + _loc4_.hours.toString():_loc4_.hours.toString(),_loc4_.minutes < 10?"0" + _loc4_.minutes.toString():_loc4_.minutes.toString(),_loc2_);
+         return LanguageMgr.GetTranslation("stock.Notice",date.month + 1,date.date,date.hours < 10?"0" + date.hours.toString():date.hours.toString(),date.minutes < 10?"0" + date.minutes.toString():date.minutes.toString(),stockNotice);
       }
    }
 }

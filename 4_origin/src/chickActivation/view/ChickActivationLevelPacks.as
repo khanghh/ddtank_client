@@ -44,12 +44,12 @@ package chickActivation.view
       
       private function initView() : void
       {
-         var _loc7_:int = 0;
-         var _loc1_:* = null;
-         var _loc2_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:* = null;
-         var _loc6_:* = null;
+         var i:int = 0;
+         var sp:* = null;
+         var goodTipInfo:* = null;
+         var itemInfo:* = null;
+         var packsLevelBitmap:* = null;
+         var packsMovie:* = null;
          _progressLine1 = ComponentFactory.Instance.creatBitmap("assets.chickActivation.levelPacksProgressBg");
          PositionUtils.setPos(_progressLine1,"chickActivation.progressLinePos1");
          addChild(_progressLine1);
@@ -58,34 +58,33 @@ package chickActivation.view
          addChild(_progressLine2);
          _drawProgress1Data = ComponentFactory.Instance.creatBitmapData("assets.chickActivation.levelPacksProgress1");
          _drawProgress2Data = ComponentFactory.Instance.creatBitmap("assets.chickActivation.levelPacksProgress2");
-         var _loc3_:Array = ChickActivationManager.instance.model.itemInfoList[12];
-         _loc7_ = 0;
-         while(_loc7_ < packsLevelArr.length)
+         var levelDataArr:Array = ChickActivationManager.instance.model.itemInfoList[12];
+         for(i = 0; i < packsLevelArr.length; )
          {
-            _loc1_ = new LevelPacksComponent();
-            _loc2_ = new GoodTipInfo();
-            if(_loc3_)
+            sp = new LevelPacksComponent();
+            goodTipInfo = new GoodTipInfo();
+            if(levelDataArr)
             {
-               _loc5_ = ChickActivationManager.instance.model.getInventoryItemInfo(_loc3_[_loc7_]);
-               _loc2_.itemInfo = _loc5_;
+               itemInfo = ChickActivationManager.instance.model.getInventoryItemInfo(levelDataArr[i]);
+               goodTipInfo.itemInfo = itemInfo;
             }
-            _loc1_.tipData = _loc2_;
-            _loc4_ = ComponentFactory.Instance.creatBitmap("assets.chickActivation.packsLevel_" + packsLevelArr[_loc7_].level);
-            PositionUtils.setPos(_loc4_,"chickActivation.packsLevelBitmapPos");
-            _loc6_ = ClassUtils.CreatInstance("assets.chickActivation.packsMovie");
-            _loc6_.gotoAndStop(1);
-            PositionUtils.setPos(_loc6_,"chickActivation.packsMoviePos");
-            _loc6_.mouseChildren = false;
-            _loc6_.mouseEnabled = false;
-            _loc1_.levelIndex = _loc7_ + 1;
-            _loc1_.addChild(_loc4_);
-            _loc1_.addChild(_loc6_);
-            _loc1_.x = _loc7_ % 6 * 95;
-            _loc1_.y = int(_loc7_ / 6) * 80;
-            addChild(_loc1_);
-            packsLevelArr[_loc7_].movie = _loc6_;
-            packsLevelArr[_loc7_].sp = _loc1_;
-            _loc7_++;
+            sp.tipData = goodTipInfo;
+            packsLevelBitmap = ComponentFactory.Instance.creatBitmap("assets.chickActivation.packsLevel_" + packsLevelArr[i].level);
+            PositionUtils.setPos(packsLevelBitmap,"chickActivation.packsLevelBitmapPos");
+            packsMovie = ClassUtils.CreatInstance("assets.chickActivation.packsMovie");
+            packsMovie.gotoAndStop(1);
+            PositionUtils.setPos(packsMovie,"chickActivation.packsMoviePos");
+            packsMovie.mouseChildren = false;
+            packsMovie.mouseEnabled = false;
+            sp.levelIndex = i + 1;
+            sp.addChild(packsLevelBitmap);
+            sp.addChild(packsMovie);
+            sp.x = i % 6 * 95;
+            sp.y = int(i / 6) * 80;
+            addChild(sp);
+            packsLevelArr[i].movie = packsMovie;
+            packsLevelArr[i].sp = sp;
+            i++;
          }
       }
       
@@ -94,94 +93,91 @@ package chickActivation.view
          this.addEventListener("click",__levelItemsClickHandler);
       }
       
-      private function __levelItemsClickHandler(param1:MouseEvent) : void
+      private function __levelItemsClickHandler(evt:MouseEvent) : void
       {
-         var _loc2_:* = null;
-         var _loc3_:int = 0;
-         if(param1.target is LevelPacksComponent)
+         var component:* = null;
+         var levelIndex:int = 0;
+         if(evt.target is LevelPacksComponent)
          {
-            _loc2_ = LevelPacksComponent(param1.target);
-            if(_loc2_.isGray)
+            component = LevelPacksComponent(evt.target);
+            if(component.isGray)
             {
-               _loc3_ = LevelPacksComponent(param1.target).levelIndex;
-               dispatchEvent(new ChickActivationEvent("clickLevelPacks",_loc3_));
+               levelIndex = LevelPacksComponent(evt.target).levelIndex;
+               dispatchEvent(new ChickActivationEvent("clickLevelPacks",levelIndex));
             }
          }
       }
       
       public function update() : void
       {
-         var _loc7_:* = 0;
-         var _loc3_:int = 0;
-         var _loc8_:int = 0;
-         var _loc6_:int = 0;
-         var _loc2_:* = null;
-         var _loc4_:Boolean = false;
-         var _loc1_:ChickActivationModel = ChickActivationManager.instance.model;
-         var _loc5_:int = _loc1_.getRemainingDay();
-         if(_loc1_.isKeyOpened > 0 && _loc5_ > 0)
+         var levelIndex:* = 0;
+         var grade:int = 0;
+         var i:int = 0;
+         var j:int = 0;
+         var movie:* = null;
+         var bool:Boolean = false;
+         var model:ChickActivationModel = ChickActivationManager.instance.model;
+         var day:int = model.getRemainingDay();
+         if(model.isKeyOpened > 0 && day > 0)
          {
-            _loc7_ = -1;
-            _loc3_ = PlayerManager.Instance.Self.Grade;
-            _loc8_ = 0;
-            while(_loc8_ < packsLevelArr.length)
+            levelIndex = -1;
+            grade = PlayerManager.Instance.Self.Grade;
+            for(i = 0; i < packsLevelArr.length; )
             {
-               if(packsLevelArr[_loc8_].level <= _loc3_)
+               if(packsLevelArr[i].level <= grade)
                {
-                  _loc7_ = _loc8_;
+                  levelIndex = i;
                }
-               _loc8_++;
+               i++;
             }
-            if(_loc7_ == -1)
+            if(levelIndex == -1)
             {
                return;
             }
-            if(_loc7_ > 5)
+            if(levelIndex > 5)
             {
                updateProgressLine(_progressLine1,5);
-               updateProgressLine(_progressLine2,_loc7_ - 6);
+               updateProgressLine(_progressLine2,levelIndex - 6);
             }
             else
             {
-               updateProgressLine(_progressLine1,_loc7_);
+               updateProgressLine(_progressLine1,levelIndex);
             }
-            _loc6_ = 0;
-            while(_loc6_ <= _loc7_)
+            for(j = 0; j <= levelIndex; )
             {
-               _loc2_ = MovieClip(packsLevelArr[_loc6_].movie);
-               _loc4_ = ChickActivationManager.instance.model.getGainLevel(_loc6_ + 1);
-               if(_loc4_)
+               movie = MovieClip(packsLevelArr[j].movie);
+               bool = ChickActivationManager.instance.model.getGainLevel(j + 1);
+               if(bool)
                {
-                  _loc2_.gotoAndStop(1);
-                  LevelPacksComponent(packsLevelArr[_loc6_].sp).buttonGrayFilters(_loc4_);
+                  movie.gotoAndStop(1);
+                  LevelPacksComponent(packsLevelArr[j].sp).buttonGrayFilters(bool);
                }
                else
                {
-                  _loc2_.gotoAndStop(2);
-                  LevelPacksComponent(packsLevelArr[_loc6_].sp).buttonGrayFilters(_loc4_);
+                  movie.gotoAndStop(2);
+                  LevelPacksComponent(packsLevelArr[j].sp).buttonGrayFilters(bool);
                }
-               _loc6_++;
+               j++;
             }
          }
       }
       
-      private function updateProgressLine(param1:Bitmap, param2:int) : void
+      private function updateProgressLine(_progressLine:Bitmap, _phases:int) : void
       {
-         var _loc4_:int = 0;
-         if(param2 < 0)
+         var i:int = 0;
+         if(_phases < 0)
          {
             return;
          }
-         var _loc3_:* = 95;
-         _loc4_ = 0;
-         while(_loc4_ <= param2)
+         var tempW:* = 95;
+         for(i = 0; i <= _phases; )
          {
-            param1.bitmapData.copyPixels(_drawProgress1Data,_drawProgress1Data.rect,new Point(_loc3_ * _loc4_,0),null,null,true);
-            if(_loc4_ != 0)
+            _progressLine.bitmapData.copyPixels(_drawProgress1Data,_drawProgress1Data.rect,new Point(tempW * i,0),null,null,true);
+            if(i != 0)
             {
-               param1.bitmapData.copyPixels(_drawProgress2Data.bitmapData,_drawProgress2Data.bitmapData.rect,new Point(_loc3_ * (_loc4_ - 1) + _drawProgress1Data.width - 7,2),null,null,true);
+               _progressLine.bitmapData.copyPixels(_drawProgress2Data.bitmapData,_drawProgress2Data.bitmapData.rect,new Point(tempW * (i - 1) + _drawProgress1Data.width - 7,2),null,null,true);
             }
-            _loc4_++;
+            i++;
          }
       }
       
@@ -192,20 +188,19 @@ package chickActivation.view
       
       public function dispose() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          removeEvent();
          if(packsLevelArr)
          {
-            _loc1_ = 0;
-            while(_loc1_ < packsLevelArr.length)
+            for(i = 0; i < packsLevelArr.length; )
             {
-               if(packsLevelArr[_loc1_].sp)
+               if(packsLevelArr[i].sp)
                {
-                  ObjectUtils.disposeAllChildren(packsLevelArr[_loc1_].sp);
-                  ObjectUtils.disposeObject(packsLevelArr[_loc1_].sp);
-                  packsLevelArr[_loc1_].sp = null;
+                  ObjectUtils.disposeAllChildren(packsLevelArr[i].sp);
+                  ObjectUtils.disposeObject(packsLevelArr[i].sp);
+                  packsLevelArr[i].sp = null;
                }
-               _loc1_++;
+               i++;
             }
             packsLevelArr = null;
          }

@@ -81,7 +81,7 @@ package angelInvestment.view
       
       override protected function addChildren() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          super.addChildren();
          if(_buyAllBtn)
          {
@@ -109,18 +109,17 @@ package angelInvestment.view
          }
          if(_itemList && _itemList.length)
          {
-            _loc1_ = 0;
-            while(_loc1_ < 7)
+            for(i = 0; i < 7; )
             {
-               addToContent(_itemList[_loc1_]);
-               _loc1_++;
+               addToContent(_itemList[i]);
+               i++;
             }
          }
       }
       
-      private function __onClickBuyAll(param1:MouseEvent) : void
+      private function __onClickBuyAll(e:MouseEvent) : void
       {
-         var _loc2_:* = null;
+         var frame:* = null;
          SoundManager.instance.playButtonSound();
          if(PlayerManager.Instance.Self.bagLocked)
          {
@@ -129,8 +128,8 @@ package angelInvestment.view
          }
          if(!isAllBuy())
          {
-            _loc2_ = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.angelInvestment.buyAllAlter",ServerConfigManager.instance.angelInvestmentAllPrice),"",LanguageMgr.GetTranslation("cancel"),true,true,false,2);
-            _loc2_.addEventListener("response",__onBuyAllResponse);
+            frame = AlertManager.Instance.simpleAlert(LanguageMgr.GetTranslation("tips"),LanguageMgr.GetTranslation("ddt.angelInvestment.buyAllAlter",ServerConfigManager.instance.angelInvestmentAllPrice),"",LanguageMgr.GetTranslation("cancel"),true,true,false,2);
+            frame.addEventListener("response",__onBuyAllResponse);
          }
          else
          {
@@ -138,9 +137,9 @@ package angelInvestment.view
          }
       }
       
-      private function __onBuyAllResponse(param1:FrameEvent) : void
+      private function __onBuyAllResponse(e:FrameEvent) : void
       {
-         e = param1;
+         e = e;
          var frame:BaseAlerFrame = e.currentTarget as BaseAlerFrame;
          frame.removeEventListener("response",__onBuyAllResponse);
          if(e.responseCode == 3 || e.responseCode == 2)
@@ -153,7 +152,7 @@ package angelInvestment.view
          frame.dispose();
       }
       
-      private function __onClickGetAll(param1:MouseEvent) : void
+      private function __onClickGetAll(e:MouseEvent) : void
       {
          SoundManager.instance.playButtonSound();
          if(getTimer() - _clickTime < 3000)
@@ -179,17 +178,16 @@ package angelInvestment.view
       
       private function isAllGet() : Boolean
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_itemList && _itemList.length)
          {
-            _loc1_ = 0;
-            while(_loc1_ < 7)
+            for(i = 0; i < 7; )
             {
-               if(_itemList[_loc1_].canGetGoods)
+               if(_itemList[i].canGetGoods)
                {
                   return false;
                }
-               _loc1_++;
+               i++;
             }
          }
          return true;
@@ -197,17 +195,16 @@ package angelInvestment.view
       
       private function isAllBuy() : Boolean
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_itemList && _itemList.length)
          {
-            _loc1_ = 0;
-            while(_loc1_ < 7)
+            for(i = 0; i < 7; )
             {
-               if(_itemList[_loc1_].canBuyGoods)
+               if(_itemList[i].canBuyGoods)
                {
                   return false;
                }
-               _loc1_++;
+               i++;
             }
          }
          return true;
@@ -215,16 +212,15 @@ package angelInvestment.view
       
       private function initItem() : void
       {
-         var _loc2_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var item:* = null;
          _itemList = new Vector.<AngelInvestmentItem>(7);
-         _loc2_ = 1;
-         while(_loc2_ <= 7)
+         for(i = 1; i <= 7; )
          {
-            _loc1_ = new AngelInvestmentItem(AngelInvestmentManager.instance.model.data[_loc2_]);
-            PositionUtils.setPos(_loc1_,"angelInvestment.itemPos" + _loc2_);
-            _itemList[_loc2_ - 1] = _loc1_;
-            _loc2_++;
+            item = new AngelInvestmentItem(AngelInvestmentManager.instance.model.data[i]);
+            PositionUtils.setPos(item,"angelInvestment.itemPos" + i);
+            _itemList[i - 1] = item;
+            i++;
          }
       }
       
@@ -238,22 +234,21 @@ package angelInvestment.view
          SocketManager.Instance.removeEventListener(PkgEvent.format(357,1),onUpdateItems);
       }
       
-      protected function onUpdateItems(param1:PkgEvent) : void
+      protected function onUpdateItems(e:PkgEvent) : void
       {
-         var _loc7_:int = 0;
-         var _loc2_:int = 0;
-         var _loc6_:int = 0;
-         var _loc5_:Boolean = false;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc3_:int = _loc4_.readInt();
-         _loc7_ = 0;
-         while(_loc7_ < _loc3_)
+         var i:int = 0;
+         var id:int = 0;
+         var day:int = 0;
+         var isGet:Boolean = false;
+         var pkg:PackageIn = e.pkg;
+         var count:int = pkg.readInt();
+         for(i = 0; i < count; )
          {
-            _loc2_ = _loc4_.readInt();
-            _loc6_ = _loc4_.readInt();
-            _loc5_ = _loc4_.readBoolean();
-            _itemList[_loc2_ - 1].updateInfo(_loc6_,_loc5_);
-            _loc7_++;
+            id = pkg.readInt();
+            day = pkg.readInt();
+            isGet = pkg.readBoolean();
+            _itemList[id - 1].updateInfo(day,isGet);
+            i++;
          }
          _buyAllBtn.visible = !isAllBuy();
       }

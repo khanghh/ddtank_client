@@ -19,10 +19,10 @@ package petsBag.petsAdvanced
       
       private var _isActive:Boolean;
       
-      public function PetsFormItemsTipItem(param1:int)
+      public function PetsFormItemsTipItem(type:int)
       {
          super();
-         _type = param1;
+         _type = type;
          initView();
       }
       
@@ -36,25 +36,25 @@ package petsBag.petsAdvanced
          _nameTxt.y = _valueTxt.y;
       }
       
-      public function set isActive(param1:Boolean) : void
+      public function set isActive(value:Boolean) : void
       {
-         _isActive = param1;
+         _isActive = value;
       }
       
-      public function set value(param1:String) : void
+      public function set value(txt:String) : void
       {
-         var _loc2_:int = 0;
+         var txtType:int = 0;
          if(_type == 1)
          {
-            _loc2_ = !!_isActive?_type + 1:_type;
+            txtType = !!_isActive?_type + 1:_type;
             ObjectUtils.disposeObject(_valueTxt);
             _valueTxt = null;
-            _valueTxt = ComponentFactory.Instance.creatComponentByStylename("petsBag.form.petsTip.valueTxt" + _loc2_);
+            _valueTxt = ComponentFactory.Instance.creatComponentByStylename("petsBag.form.petsTip.valueTxt" + txtType);
             _valueTxt.x = 73;
             _valueTxt.y = 40;
             addChild(_valueTxt);
          }
-         _valueTxt.text = param1;
+         _valueTxt.text = txt;
       }
       
       public function dispose() : void

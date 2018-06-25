@@ -18,10 +18,10 @@ package entertainmentMode.view
       
       private var _info:RoomInfo;
       
-      public function EntertainmentListItem(param1:RoomInfo = null)
+      public function EntertainmentListItem(info:RoomInfo = null)
       {
          super();
-         _info = param1;
+         _info = info;
          init();
       }
       
@@ -34,9 +34,9 @@ package entertainmentMode.view
          update();
       }
       
-      public function set info(param1:RoomInfo) : void
+      public function set info(value:RoomInfo) : void
       {
-         _info = param1;
+         _info = value;
          update();
       }
       

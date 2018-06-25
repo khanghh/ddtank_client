@@ -33,67 +33,66 @@ package prayIndiana.view
       {
       }
       
-      public function setInfo(param1:Array) : void
+      public function setInfo($goods:Array) : void
       {
-         var _loc8_:int = 0;
-         var _loc3_:* = null;
-         var _loc7_:* = null;
-         var _loc5_:* = null;
-         var _loc4_:* = NaN;
-         var _loc6_:* = NaN;
-         if(param1 == null || param1.length <= 0)
+         var i:int = 0;
+         var frame:* = null;
+         var itemInfo:* = null;
+         var tInfo:* = null;
+         var dx:* = NaN;
+         var dy:* = NaN;
+         if($goods == null || $goods.length <= 0)
          {
             return;
          }
-         var _loc2_:int = 0;
+         var index:int = 0;
          _cellArr = [];
          _goodItemContainerAll = [];
          _goodsItemSprite = new Sprite();
-         _loc8_ = 0;
-         while(_loc8_ < param1.length)
+         for(i = 0; i < $goods.length; )
          {
-            _loc2_ = param1[_loc8_].Quality < 5?1:2;
-            _loc3_ = ComponentFactory.Instance.creat("prayIndiana.GoodsF");
-            _loc3_.gotoAndStop(_loc2_);
-            _loc7_ = ItemManager.Instance.getTemplateById(param1[_loc8_].TemplateID) as ItemTemplateInfo;
-            _loc5_ = new InventoryItemInfo();
-            ObjectUtils.copyProperties(_loc5_,_loc7_);
-            _loc5_.ValidDate = param1[_loc8_].ValidDate;
-            _loc5_.StrengthenLevel = param1[_loc8_].StrengthLevel;
-            _loc5_.AttackCompose = param1[_loc8_].AttackCompose;
-            _loc5_.DefendCompose = param1[_loc8_].DefendCompose;
-            _loc5_.LuckCompose = param1[_loc8_].LuckCompose;
-            _loc5_.AgilityCompose = param1[_loc8_].AgilityCompose;
-            _loc5_.IsBinds = param1[_loc8_].IsBind;
-            _loc5_.Count = param1[_loc8_].Count;
-            _loc5_.Place = param1[_loc8_].Position;
-            _loc5_.exaltLevel = param1[_loc8_].Quality;
-            _cell = new BagCell(0,_loc5_,false,null);
+            index = $goods[i].Quality < 5?1:2;
+            frame = ComponentFactory.Instance.creat("prayIndiana.GoodsF");
+            frame.gotoAndStop(index);
+            itemInfo = ItemManager.Instance.getTemplateById($goods[i].TemplateID) as ItemTemplateInfo;
+            tInfo = new InventoryItemInfo();
+            ObjectUtils.copyProperties(tInfo,itemInfo);
+            tInfo.ValidDate = $goods[i].ValidDate;
+            tInfo.StrengthenLevel = $goods[i].StrengthLevel;
+            tInfo.AttackCompose = $goods[i].AttackCompose;
+            tInfo.DefendCompose = $goods[i].DefendCompose;
+            tInfo.LuckCompose = $goods[i].LuckCompose;
+            tInfo.AgilityCompose = $goods[i].AgilityCompose;
+            tInfo.IsBinds = $goods[i].IsBind;
+            tInfo.Count = $goods[i].Count;
+            tInfo.Place = $goods[i].Position;
+            tInfo.exaltLevel = $goods[i].Quality;
+            _cell = new BagCell(0,tInfo,false,null);
             _cell.width = 56;
             _cell.height = 55;
             _cell.x = 10;
             _cell.y = 11;
             _cell.setBgVisible(false);
-            if(param1[_loc8_].IsSelect)
+            if($goods[i].IsSelect)
             {
                _cell.filters = ComponentFactory.Instance.creatFilters("grayFilter");
                _cell.alpha = 0.4;
-               PrayIndianaManager.Instance.model.getGoods.push(_loc8_);
+               PrayIndianaManager.Instance.model.getGoods.push(i);
             }
-            _loc4_ = 68;
-            _loc6_ = 68;
-            _loc4_ = Number(_loc4_ * (int(_loc8_ % 7)));
-            _loc6_ = Number(_loc6_ * (int(_loc8_ / 7)));
-            _loc3_.x = _loc4_;
-            _loc3_.y = _loc6_;
-            _cell.x = _loc4_ + 10;
-            _cell.y = _loc6_ + 11;
+            dx = 68;
+            dy = 68;
+            dx = Number(dx * (int(i % 7)));
+            dy = Number(dy * (int(i / 7)));
+            frame.x = dx;
+            frame.y = dy;
+            _cell.x = dx + 10;
+            _cell.y = dy + 11;
             _goodsItemSprite.addChild(_cell);
             _cellArr.push(_cell);
-            addChild(_loc3_);
+            addChild(frame);
             addChild(_goodsItemSprite);
-            _goodItemContainerAll.push(_loc3_);
-            _loc8_++;
+            _goodItemContainerAll.push(frame);
+            i++;
          }
       }
       
@@ -110,9 +109,9 @@ package prayIndiana.view
          return _goodItemContainerAll;
       }
       
-      public function set goodItemContainerAll(param1:Array) : void
+      public function set goodItemContainerAll(value:Array) : void
       {
-         _goodItemContainerAll = param1;
+         _goodItemContainerAll = value;
       }
       
       public function get cellArr() : Array
@@ -120,9 +119,9 @@ package prayIndiana.view
          return _cellArr;
       }
       
-      public function set cellArr(param1:Array) : void
+      public function set cellArr(value:Array) : void
       {
-         _cellArr = param1;
+         _cellArr = value;
       }
       
       public function get goodsItemSprite() : Sprite
@@ -130,9 +129,9 @@ package prayIndiana.view
          return _goodsItemSprite;
       }
       
-      public function set goodsItemSprite(param1:Sprite) : void
+      public function set goodsItemSprite(value:Sprite) : void
       {
-         _goodsItemSprite = param1;
+         _goodsItemSprite = value;
       }
    }
 }

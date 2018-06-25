@@ -8,10 +8,10 @@ package fightLib.command
       
       protected var _finishFun:Function;
       
-      public function WaittingCommand(param1:Function)
+      public function WaittingCommand(finishFun:Function)
       {
          super();
-         _finishFun = param1;
+         _finishFun = finishFun;
       }
       
       override public function finish() : void

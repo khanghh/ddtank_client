@@ -54,9 +54,9 @@ package gemstone.items
          addChild(_nextPropertyTxt);
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         _tempData = param1;
+         _tempData = data;
          if(!_tempData)
          {
             return;
@@ -71,133 +71,133 @@ package gemstone.items
       
       private function updateView() : void
       {
-         var _loc2_:* = null;
-         var _loc1_:* = null;
-         var _loc5_:GemstoneTipVO = _tempData as GemstoneTipVO;
-         var _loc4_:String = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.GoldenAddAttack");
-         var _loc3_:String = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.GoldenReduceDamage");
-         switch(int(_loc5_.gemstoneType) - 1)
+         var tempTextFormat:* = null;
+         var tempTextFormat2:* = null;
+         var tempData:GemstoneTipVO = _tempData as GemstoneTipVO;
+         var addAttackStr:String = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.GoldenAddAttack");
+         var rdcDamageStr:String = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.GoldenReduceDamage");
+         switch(int(tempData.gemstoneType) - 1)
          {
             case 0:
-               _loc2_ = ComponentFactory.Instance.model.getSet("gemstone.Tip.TF5");
-               _loc1_ = ComponentFactory.Instance.model.getSet("gemstone.Tip.TF5");
-               if(_loc5_.level == 6)
+               tempTextFormat = ComponentFactory.Instance.model.getSet("gemstone.Tip.TF5");
+               tempTextFormat2 = ComponentFactory.Instance.model.getSet("gemstone.Tip.TF5");
+               if(tempData.level == 6)
                {
                   _titleTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.goldenGemstone");
-                  _curPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.AtcAdd",_loc5_.increase + _loc4_);
+                  _curPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.AtcAdd",tempData.increase + addAttackStr);
                }
                else
                {
-                  _titleTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.redGemstoneAtc2",_loc5_.level);
-                  _curPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.AtcAdd",_loc5_.increase);
+                  _titleTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.redGemstoneAtc2",tempData.level);
+                  _curPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.AtcAdd",tempData.increase);
                }
-               if(_loc5_.level + 1 == 6)
+               if(tempData.level + 1 == 6)
                {
-                  _nextPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.AtcAdd",_loc5_.nextIncrease + _loc4_);
+                  _nextPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.AtcAdd",tempData.nextIncrease + addAttackStr);
                }
                else
                {
-                  _nextPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.AtcAdd",_loc5_.nextIncrease);
+                  _nextPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.AtcAdd",tempData.nextIncrease);
                }
                break;
             case 1:
-               _loc2_ = ComponentFactory.Instance.model.getSet("gemstone.Tip.TF6");
-               _loc1_ = ComponentFactory.Instance.model.getSet("gemstone.Tip.TF6");
-               if(_loc5_.level == 6)
+               tempTextFormat = ComponentFactory.Instance.model.getSet("gemstone.Tip.TF6");
+               tempTextFormat2 = ComponentFactory.Instance.model.getSet("gemstone.Tip.TF6");
+               if(tempData.level == 6)
                {
                   _titleTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.goldenGemstone");
-                  _curPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.DefAdd",_loc5_.increase + _loc3_);
+                  _curPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.DefAdd",tempData.increase + rdcDamageStr);
                }
                else
                {
-                  _titleTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.bluGemstoneDef2",_loc5_.level);
-                  _curPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.DefAdd",_loc5_.increase);
+                  _titleTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.bluGemstoneDef2",tempData.level);
+                  _curPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.DefAdd",tempData.increase);
                }
-               if(_loc5_.level + 1 == 6)
+               if(tempData.level + 1 == 6)
                {
-                  _nextPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.DefAdd",_loc5_.nextIncrease + _loc3_);
+                  _nextPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.DefAdd",tempData.nextIncrease + rdcDamageStr);
                }
                else
                {
-                  _nextPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.DefAdd",_loc5_.nextIncrease);
+                  _nextPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.DefAdd",tempData.nextIncrease);
                }
                break;
             case 2:
-               _loc2_ = ComponentFactory.Instance.model.getSet("gemstone.Tip.TF7");
-               _loc1_ = ComponentFactory.Instance.model.getSet("gemstone.Tip.TF7");
-               if(_loc5_.level == 6)
+               tempTextFormat = ComponentFactory.Instance.model.getSet("gemstone.Tip.TF7");
+               tempTextFormat2 = ComponentFactory.Instance.model.getSet("gemstone.Tip.TF7");
+               if(tempData.level == 6)
                {
                   _titleTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.goldenGemstone");
-                  _curPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.AgiAdd",_loc5_.increase + _loc4_);
+                  _curPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.AgiAdd",tempData.increase + addAttackStr);
                }
                else
                {
-                  _titleTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.greGemstoneAgi2",_loc5_.level);
-                  _curPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.AgiAdd",_loc5_.increase);
+                  _titleTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.greGemstoneAgi2",tempData.level);
+                  _curPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.AgiAdd",tempData.increase);
                }
-               if(_loc5_.level + 1 == 6)
+               if(tempData.level + 1 == 6)
                {
-                  _nextPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.AgiAdd",_loc5_.nextIncrease + _loc4_);
+                  _nextPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.AgiAdd",tempData.nextIncrease + addAttackStr);
                }
                else
                {
-                  _nextPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.AgiAdd",_loc5_.nextIncrease);
+                  _nextPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.AgiAdd",tempData.nextIncrease);
                }
                break;
             case 3:
-               _loc2_ = ComponentFactory.Instance.model.getSet("gemstone.Tip.TF8");
-               _loc1_ = ComponentFactory.Instance.model.getSet("gemstone.Tip.TF8");
-               if(_loc5_.level == 6)
+               tempTextFormat = ComponentFactory.Instance.model.getSet("gemstone.Tip.TF8");
+               tempTextFormat2 = ComponentFactory.Instance.model.getSet("gemstone.Tip.TF8");
+               if(tempData.level == 6)
                {
                   _titleTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.goldenGemstone");
-                  _curPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.LukAdd",_loc5_.increase + _loc3_);
+                  _curPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.LukAdd",tempData.increase + rdcDamageStr);
                }
                else
                {
-                  _titleTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.yelGemstoneLuk2",_loc5_.level);
-                  _curPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.LukAdd",_loc5_.increase);
+                  _titleTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.yelGemstoneLuk2",tempData.level);
+                  _curPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.LukAdd",tempData.increase);
                }
-               if(_loc5_.level + 1 == 6)
+               if(tempData.level + 1 == 6)
                {
-                  _nextPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.LukAdd",_loc5_.nextIncrease + _loc3_);
+                  _nextPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.LukAdd",tempData.nextIncrease + rdcDamageStr);
                }
                else
                {
-                  _nextPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.LukAdd",_loc5_.nextIncrease);
+                  _nextPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.LukAdd",tempData.nextIncrease);
                }
                break;
             case 4:
-               _loc2_ = ComponentFactory.Instance.model.getSet("gemstone.Tip.TF8_1");
-               _loc1_ = ComponentFactory.Instance.model.getSet("gemstone.Tip.TF8_1");
-               if(_loc5_.level == 6)
+               tempTextFormat = ComponentFactory.Instance.model.getSet("gemstone.Tip.TF8_1");
+               tempTextFormat2 = ComponentFactory.Instance.model.getSet("gemstone.Tip.TF8_1");
+               if(tempData.level == 6)
                {
                   _titleTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.goldenGemstone");
-                  _curPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.BloodAdd",_loc5_.increase + _loc3_);
+                  _curPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.BloodAdd",tempData.increase + rdcDamageStr);
                }
                else
                {
-                  _titleTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.purpleGemstoneLuk2",_loc5_.level);
-                  _curPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.BloodAdd",_loc5_.increase);
+                  _titleTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.purpleGemstoneLuk2",tempData.level);
+                  _curPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.BloodAdd",tempData.increase);
                }
-               if(_loc5_.level + 1 == 6)
+               if(tempData.level + 1 == 6)
                {
-                  _nextPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.BloodAdd",_loc5_.nextIncrease + _loc3_);
+                  _nextPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.BloodAdd",tempData.nextIncrease + rdcDamageStr);
                   break;
                }
-               _nextPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.BloAdd",_loc5_.nextIncrease);
+               _nextPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.BloAdd",tempData.nextIncrease);
                break;
          }
-         if(_loc5_.level == 0)
+         if(tempData.level == 0)
          {
             _curPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.inactive");
          }
-         if(_loc5_.level >= 6)
+         if(tempData.level >= 6)
          {
             _nextPropertyTxt.text = LanguageMgr.GetTranslation("ddt.gemstone.curInfo.fullLevel");
          }
-         _titleTxt.setTextFormat(_loc2_);
-         _curPropertyTxt.setTextFormat(_loc2_);
-         _nextPropertyTxt.setTextFormat(_loc1_);
+         _titleTxt.setTextFormat(tempTextFormat);
+         _curPropertyTxt.setTextFormat(tempTextFormat);
+         _nextPropertyTxt.setTextFormat(tempTextFormat2);
       }
       
       override public function dispose() : void

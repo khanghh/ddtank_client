@@ -20,9 +20,9 @@ package halloween
       
       private var _hallView:HallStateView;
       
-      public function HalloweenManager(param1:IEventDispatcher = null)
+      public function HalloweenManager(target:IEventDispatcher = null)
       {
-         super(param1);
+         super(target);
       }
       
       public static function get instance() : HalloweenManager
@@ -39,16 +39,16 @@ package halloween
          SocketManager.Instance.addEventListener(PkgEvent.format(283,1),__onHalloweenOpen);
       }
       
-      protected function __onHalloweenOpen(param1:PkgEvent) : void
+      protected function __onHalloweenOpen(event:PkgEvent) : void
       {
-         var _loc2_:PackageIn = param1.pkg;
-         _open = _loc2_.readBoolean();
+         var pkg:PackageIn = event.pkg;
+         _open = pkg.readBoolean();
          showHalloweenNpc();
       }
       
-      public function creatHalloweenNpc(param1:HallStateView) : void
+      public function creatHalloweenNpc(hall:HallStateView) : void
       {
-         _hallView = param1;
+         _hallView = hall;
          showHalloweenNpc();
       }
       

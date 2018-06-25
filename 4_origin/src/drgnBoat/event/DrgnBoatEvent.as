@@ -10,9 +10,9 @@ package drgnBoat.event
       
       public var data:Object;
       
-      public function DrgnBoatEvent(param1:String, param2:Boolean = false, param3:Boolean = false)
+      public function DrgnBoatEvent(type:String, bubbles:Boolean = false, cancelable:Boolean = false)
       {
-         super(param1,param2,param3);
+         super(type,bubbles,cancelable);
       }
    }
 }

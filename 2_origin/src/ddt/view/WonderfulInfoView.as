@@ -47,11 +47,11 @@ package ddt.view
          addChild(_okBtn);
       }
       
-      public function show(param1:int, param2:String, param3:String) : void
+      public function show(npcIndex:int, titleTxt:String, contentTxt:String) : void
       {
-         _bg.npc.gotoAndStop(param1);
-         _title.text = param2;
-         _infoText.text = param3;
+         _bg.npc.gotoAndStop(npcIndex);
+         _title.text = titleTxt;
+         _infoText.text = contentTxt;
       }
       
       private function initEvent() : void
@@ -60,7 +60,7 @@ package ddt.view
          _okBtn.addEventListener("click",__onCloseClickHandler);
       }
       
-      protected function __onCloseClickHandler(param1:MouseEvent) : void
+      protected function __onCloseClickHandler(event:MouseEvent) : void
       {
          dispose();
       }

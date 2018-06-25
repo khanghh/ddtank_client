@@ -24,9 +24,9 @@ package com.pickgliss.events
       
       public var progress:Number;
       
-      public function LoaderResourceEvent(param1:String)
+      public function LoaderResourceEvent(type:String)
       {
-         super(param1);
+         super(type);
       }
    }
 }

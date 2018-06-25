@@ -26,10 +26,10 @@ package totem.view
          addChild(_iconDiscount);
       }
       
-      public function refresh(param1:int, param2:Boolean = false) : void
+      public function refresh(value:int, isChangeColor:Boolean = false) : void
       {
-         _txt.text = param1.toString();
-         if(param2)
+         _txt.text = value.toString();
+         if(isChangeColor)
          {
             _txt.setTextFormat(new TextFormat(null,null,16711680));
          }

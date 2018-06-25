@@ -42,12 +42,12 @@ package ddt.view
       
       private var _info:PlayerInfo;
       
-      public function PlayerPortraitView(param1:String = "left", param2:Boolean = false, param3:Boolean = true)
+      public function PlayerPortraitView(direction:String = "left", needLoadGirlHead:Boolean = false, needShowBG:Boolean = true)
       {
          super();
-         _directrion = param1;
-         _needLoadGirlHead = param2;
-         if(param3)
+         _directrion = direction;
+         _needLoadGirlHead = needLoadGirlHead;
+         if(needShowBG)
          {
             _iconBg = ComponentFactory.Instance.creatComponentByStylename("asset.ddtgift.playerIcon");
             _iconBg.setFrame(1);
@@ -57,19 +57,19 @@ package ddt.view
          mouseChildren = false;
       }
       
-      public function onHeadSelectChange(param1:Boolean) : void
+      public function onHeadSelectChange(isUse:Boolean) : void
       {
-         _needLoadGirlHead = param1;
+         _needLoadGirlHead = isUse;
          if(_info && this.parent)
          {
             showFigure(_info);
          }
       }
       
-      public function set info(param1:PlayerInfo) : void
+      public function set info(value:PlayerInfo) : void
       {
-         _info = param1;
-         showFigure(param1);
+         _info = value;
+         showFigure(value);
       }
       
       public function get info() : PlayerInfo
@@ -77,17 +77,17 @@ package ddt.view
          return _info;
       }
       
-      public function set iconFrame(param1:int) : void
+      public function set iconFrame(value:int) : void
       {
          if(_iconBg)
          {
-            _iconBg.setFrame(param1);
+            _iconBg.setFrame(value);
          }
       }
       
-      public function set isShowFrame(param1:Boolean) : void
+      public function set isShowFrame(value:Boolean) : void
       {
-         if(param1)
+         if(value)
          {
             addChildAt(_iconBg,0);
          }
@@ -97,7 +97,7 @@ package ddt.view
          }
       }
       
-      private function showFigure(param1:PlayerInfo) : void
+      private function showFigure(info:PlayerInfo) : void
       {
          if(_character)
          {
@@ -122,7 +122,7 @@ package ddt.view
          }
          else
          {
-            _character = CharactoryFactory.createCharacter(param1) as ShowCharacter;
+            _character = CharactoryFactory.createCharacter(info) as ShowCharacter;
             _character.addEventListener("complete",__characterComplete);
             _character.showGun = false;
             _character.setShowLight(false,null);
@@ -136,9 +136,9 @@ package ddt.view
          }
       }
       
-      private function onGirlLoaderComplete(param1:DisplayObject) : void
+      private function onGirlLoaderComplete(content:DisplayObject) : void
       {
-         if(param1 == null)
+         if(content == null)
          {
             return;
          }
@@ -157,7 +157,7 @@ package ddt.view
             _mask.x = 3;
             _mask.y = 7;
          }
-         _figure = new Bitmap((param1 as Bitmap).bitmapData,"auto",true);
+         _figure = new Bitmap((content as Bitmap).bitmapData,"auto",true);
          _figure.smoothing = true;
          Helpers.scaleDisplayObject(_figure,null,null,70);
          _figure.x = 3;
@@ -167,7 +167,7 @@ package ddt.view
          addChild(_mask);
       }
       
-      private function __characterComplete(param1:Event) : void
+      private function __characterComplete(evt:Event) : void
       {
          if(_figure && _figure.parent && _figure.bitmapData)
          {

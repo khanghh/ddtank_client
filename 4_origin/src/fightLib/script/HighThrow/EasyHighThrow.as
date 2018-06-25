@@ -14,34 +14,34 @@ package fightLib.script.HighThrow
       
       private var _arr:Array;
       
-      public function EasyHighThrow(param1:Object)
+      public function EasyHighThrow(fightView:Object)
       {
          _arr = new Array(7010,7014,7009);
-         super(param1);
+         super(fightView);
       }
       
       override protected function initializeScript() : void
       {
-         var _loc1_:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.HighThrow.EasyHighThrow.command1"),"",null,"",null,true,false,_arr);
-         var _loc2_:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.HighThrow.EasyHighThrow.command2"));
-         var _loc5_:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.HighThrow.EasyHighThrow.command3"),null);
-         var _loc6_:CreateMonsterCommand = new CreateMonsterCommand();
-         _loc6_.excuteFunArr.push(_host.waitAttack as Function);
-         var _loc3_:TimeCommand = new TimeCommand(2000);
-         var _loc4_:PopupFrameCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.HighThrow.EasyHighThrow.command5"),null);
-         _loc4_.completeFunArr.push(_host.openShowTurn as Function);
-         _loc4_.completeFunArr.push(_host.skip as Function);
-         var _loc7_:WaittingCommand = new WaittingCommand(null);
-         var _loc8_:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.HighThrow.EasyHighThrow.command6"),LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.startTrain"),startTrain,LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.watchAgain"),restart,true,true);
-         _loc8_.excuteFunArr.push(_host.closeShowTurn as Function);
-         _commonds.push(_loc1_);
-         _commonds.push(_loc2_);
-         _commonds.push(_loc5_);
-         _commonds.push(_loc6_);
-         _commonds.push(_loc3_);
-         _commonds.push(_loc4_);
-         _commonds.push(_loc7_);
-         _commonds.push(_loc8_);
+         var command1:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.HighThrow.EasyHighThrow.command1"),"",null,"",null,true,false,_arr);
+         var command2:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.HighThrow.EasyHighThrow.command2"));
+         var command3:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.HighThrow.EasyHighThrow.command3"),null);
+         var command4:CreateMonsterCommand = new CreateMonsterCommand();
+         command4.excuteFunArr.push(_host.waitAttack as Function);
+         var command5:TimeCommand = new TimeCommand(2000);
+         var command6:PopupFrameCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.HighThrow.EasyHighThrow.command5"),null);
+         command6.completeFunArr.push(_host.openShowTurn as Function);
+         command6.completeFunArr.push(_host.skip as Function);
+         var command7:WaittingCommand = new WaittingCommand(null);
+         var command8:BaseFightLibCommand = new PopupFrameCommand(LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.HighThrow.EasyHighThrow.command6"),LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.startTrain"),startTrain,LanguageMgr.GetTranslation("tank.command.fightLibCommands.script.MeasureScree.watchAgain"),restart,true,true);
+         command8.excuteFunArr.push(_host.closeShowTurn as Function);
+         _commonds.push(command1);
+         _commonds.push(command2);
+         _commonds.push(command3);
+         _commonds.push(command4);
+         _commonds.push(command5);
+         _commonds.push(command6);
+         _commonds.push(command7);
+         _commonds.push(command8);
          super.initializeScript();
       }
       

@@ -85,18 +85,18 @@ package petsBag.view.item
          PlayerManager.Instance.Self.StoreBag.addEventListener("update",__updateStoreBag);
       }
       
-      private function __updateStoreBag(param1:BagEvent) : void
+      private function __updateStoreBag(evt:BagEvent) : void
       {
-         var _loc2_:BagInfo = PlayerManager.Instance.Self.StoreBag;
-         if(_loc2_.items[0] == null || _loc2_.items[0].CategoryID != 34)
+         var temInfo:BagInfo = PlayerManager.Instance.Self.StoreBag;
+         if(temInfo.items[0] == null || temInfo.items[0].CategoryID != 34)
          {
             this.info = null;
             return;
          }
-         this.info = _loc2_.items[0];
+         this.info = temInfo.items[0];
       }
       
-      override protected function onMouseClick(param1:MouseEvent) : void
+      override protected function onMouseClick(evt:MouseEvent) : void
       {
          if(_info && allowDrag)
          {
@@ -116,13 +116,13 @@ package petsBag.view.item
          return _info as InventoryItemInfo;
       }
       
-      override public function set info(param1:ItemTemplateInfo) : void
+      override public function set info(value:ItemTemplateInfo) : void
       {
-         .super.info = param1;
+         .super.info = value;
          updateCount();
       }
       
-      override public function dragDrop(param1:DragEffect) : void
+      override public function dragDrop(effect:DragEffect) : void
       {
          if(!this.mouseEnabled)
          {
@@ -133,66 +133,66 @@ package petsBag.view.item
             BaglockedManager.Instance.show();
             return;
          }
-         var _loc2_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         if(_loc2_ && _loc2_.CategoryID == 34)
+         var sourceInfo:InventoryItemInfo = effect.data as InventoryItemInfo;
+         if(sourceInfo && sourceInfo.CategoryID == 34)
          {
-            new CmdShowPetFoodNumberSelectFrame().excute(_loc2_);
-            param1.action = "none";
+            new CmdShowPetFoodNumberSelectFrame().excute(sourceInfo);
+            effect.action = "none";
             DragManager.acceptDrag(this);
          }
          else
          {
-            param1.action = "none";
+            effect.action = "none";
             DragManager.acceptDrag(this);
             MessageTipManager.getInstance().show(LanguageMgr.GetTranslation("store.view.fusion.TransferItemCell.current"));
          }
       }
       
-      private function needMaxFood(param1:int, param2:int) : int
+      private function needMaxFood(hunger:int, addHunger:int) : int
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = PetconfigAnalyzer.PetCofnig.MaxHunger - param1;
-         _loc3_ = Math.ceil(_loc4_ / param2);
-         return _loc3_;
+         var maxFood:int = 0;
+         var limitHunger:int = PetconfigAnalyzer.PetCofnig.MaxHunger - hunger;
+         maxFood = Math.ceil(limitHunger / addHunger);
+         return maxFood;
       }
       
-      protected function __onFoodAmountResponse(param1:FrameEvent) : void
+      protected function __onFoodAmountResponse(event:FrameEvent) : void
       {
-         var _loc3_:* = null;
+         var foodInfo:* = null;
          SoundManager.instance.play("008");
-         var _loc2_:PetFoodNumberSelectFrame = PetFoodNumberSelectFrame(param1.currentTarget);
-         switch(int(param1.responseCode))
+         var frame:PetFoodNumberSelectFrame = PetFoodNumberSelectFrame(event.currentTarget);
+         switch(int(event.responseCode))
          {
             case 0:
             case 1:
-               _loc2_.dispose();
+               frame.dispose();
                break;
             case 2:
             case 3:
             case 4:
-               _loc3_ = _loc2_.foodInfo;
+               foodInfo = frame.foodInfo;
                if(info)
                {
                   SocketManager.Instance.out.sendClearStoreBag();
                }
-               SocketManager.Instance.out.sendMoveGoods(_loc3_.BagType,_loc3_.Place,12,0,_loc2_.amount,true);
-               _loc2_.dispose();
+               SocketManager.Instance.out.sendMoveGoods(foodInfo.BagType,foodInfo.Place,12,0,frame.amount,true);
+               frame.dispose();
          }
       }
       
-      override public function dragStop(param1:DragEffect) : void
+      override public function dragStop(effect:DragEffect) : void
       {
          SoundManager.instance.play("008");
          dispatchEvent(new CellEvent("dragStop",null,true));
-         var _loc2_:InventoryItemInfo = param1.data as InventoryItemInfo;
-         if(param1.action == "move" && param1.target == null)
+         var $info:InventoryItemInfo = effect.data as InventoryItemInfo;
+         if(effect.action == "move" && effect.target == null)
          {
-            if(_loc2_ && _loc2_.BagType == 11)
+            if($info && $info.BagType == 11)
             {
-               param1.action = "none";
-               super.dragStop(param1);
+               effect.action = "none";
+               super.dragStop(effect);
             }
-            else if(_loc2_ && _loc2_.BagType == 12)
+            else if($info && $info.BagType == 12)
             {
                locked = false;
             }
@@ -201,17 +201,17 @@ package petsBag.view.item
                locked = false;
             }
          }
-         else if(param1.action == "split" && param1.target == null)
+         else if(effect.action == "split" && effect.target == null)
          {
             locked = false;
          }
-         else if(param1.target is FarmFieldBlock)
+         else if(effect.target is FarmFieldBlock)
          {
             locked = false;
          }
          else
          {
-            super.dragStop(param1);
+            super.dragStop(effect);
          }
       }
       

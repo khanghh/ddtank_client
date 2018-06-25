@@ -98,10 +98,10 @@ package consortion.view.selfConsortia
          _refuse.removeEventListener("click",__refuseHandler);
       }
       
-      public function set selected(param1:Boolean) : void
+      public function set selected(value:Boolean) : void
       {
-         _selected = param1;
-         _nameSelect.selected = param1;
+         _selected = value;
+         _nameSelect.selected = value;
       }
       
       public function get selected() : Boolean
@@ -109,9 +109,9 @@ package consortion.view.selfConsortia
          return _nameSelect.selected;
       }
       
-      public function set info(param1:ConsortiaApplyInfo) : void
+      public function set info(value:ConsortiaApplyInfo) : void
       {
-         _info = param1;
+         _info = value;
          if(_info.IsVIP)
          {
             ObjectUtils.disposeObject(_nameForVip);
@@ -124,10 +124,10 @@ package consortion.view.selfConsortia
          }
          _name.text = _info.UserName;
          _nameSelect.addChild(_name);
-         var _loc2_:BasePlayer = new BasePlayer();
-         _loc2_.isOld = _info.IsOld;
-         _loc2_.IsVIP = _info.IsVIP;
-         PositionUtils.adaptNameStyle(_loc2_,_name,_nameForVip);
+         var p:BasePlayer = new BasePlayer();
+         p.isOld = _info.IsOld;
+         p.IsVIP = _info.IsVIP;
+         PositionUtils.adaptNameStyle(p,_name,_nameForVip);
          _level.setInfo(_info.UserLevel,_info.ddtKingGrade,_info.Repute,_info.Win,_info.Total,_info.FightPower,_info.Offer);
          Level = _info.UserLevel;
          _power.text = String(_info.FightPower);
@@ -139,25 +139,25 @@ package consortion.view.selfConsortia
          return _info;
       }
       
-      private function __selectHandler(param1:MouseEvent) : void
+      private function __selectHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          selected = _selected == true?false:true;
       }
       
-      private function __checkHandler(param1:MouseEvent) : void
+      private function __checkHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          PlayerInfoViewControl.viewByID(_info.UserID,PlayerManager.Instance.Self.ZoneID);
       }
       
-      private function __agreeHandler(param1:MouseEvent) : void
+      private function __agreeHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.sendConsortiaTryinPass(_info.ID);
       }
       
-      private function __refuseHandler(param1:MouseEvent) : void
+      private function __refuseHandler(event:MouseEvent) : void
       {
          SoundManager.instance.play("008");
          SocketManager.Instance.out.sendConsortiaTryinDelete(_info.ID);

@@ -26,14 +26,14 @@ package consortion.view.selfConsortia
          ConsortionModelManager.Instance.requestConsortionActiveTagertReward(_tagertLv);
       }
       
-      public function set data(param1:int) : void
+      public function set data(value:int) : void
       {
-         var _loc5_:* = undefined;
-         var _loc4_:* = null;
-         var _loc2_:* = null;
-         var _loc3_:* = null;
-         var _loc6_:int = 0;
-         _tagertLv = param1;
+         var targets:* = undefined;
+         var completeLablArr:* = null;
+         var unCompleteLablArr:* = null;
+         var target:* = null;
+         var i:int = 0;
+         _tagertLv = value;
          lablLevel.text = LanguageMgr.GetTranslation("consortionActiveTarget.level" + _tagertLv);
          labOpenStatus.text = LanguageMgr.GetTranslation("consortionActiveTarget.close");
          var _loc7_:* = false;
@@ -74,33 +74,32 @@ package consortion.view.selfConsortia
                boxContent.visible = _loc7_;
                lablProcess.text = LanguageMgr.GetTranslation("consortionActiveTarget.status1");
                labOpenStatus.text = LanguageMgr.GetTranslation("consortionActiveTarget.open");
-               _loc5_ = ConsortionModelManager.Instance.model.activeTargetDic[_tagertLv];
-               _loc4_ = [null,lablComplete1,lablComplete2,lablComplete3,lablComplete4];
-               _loc2_ = [null,lablUncomplete1,lablUncomplete2,lablUncomplete3,lablUncomplete4];
-               _loc3_ = null;
-               _loc6_ = 1;
-               while(_loc6_ <= _loc5_.length)
+               targets = ConsortionModelManager.Instance.model.activeTargetDic[_tagertLv];
+               completeLablArr = [null,lablComplete1,lablComplete2,lablComplete3,lablComplete4];
+               unCompleteLablArr = [null,lablUncomplete1,lablUncomplete2,lablUncomplete3,lablUncomplete4];
+               target = null;
+               for(i = 1; i <= targets.length; )
                {
-                  _loc3_ = _loc5_[_loc6_ - 1];
-                  if(_loc3_ && _loc3_.processValue >= _loc3_.conditionValue)
+                  target = targets[i - 1];
+                  if(target && target.processValue >= target.conditionValue)
                   {
-                     _loc4_[_loc6_].visible = true;
-                     _loc4_[_loc6_].text = LanguageMgr.GetTranslation("consortionActiveTarget.target" + _loc6_,_loc3_.conditionValue,_loc3_.processValue,_loc3_.conditionValue);
-                     _loc2_[_loc6_].visible = false;
+                     completeLablArr[i].visible = true;
+                     completeLablArr[i].text = LanguageMgr.GetTranslation("consortionActiveTarget.target" + i,target.conditionValue,target.processValue,target.conditionValue);
+                     unCompleteLablArr[i].visible = false;
                   }
                   else
                   {
-                     _loc4_[_loc6_].visible = false;
-                     _loc2_[_loc6_].visible = true;
-                     _loc2_[_loc6_].text = LanguageMgr.GetTranslation("consortionActiveTarget.target" + _loc6_,_loc3_.conditionValue,_loc3_.processValue,_loc3_.conditionValue);
+                     completeLablArr[i].visible = false;
+                     unCompleteLablArr[i].visible = true;
+                     unCompleteLablArr[i].text = LanguageMgr.GetTranslation("consortionActiveTarget.target" + i,target.conditionValue,target.processValue,target.conditionValue);
                   }
-                  if(_loc3_.conditionValue == 0)
+                  if(target.conditionValue == 0)
                   {
                      _loc7_ = false;
-                     _loc2_[_loc6_].visible = _loc7_;
-                     _loc4_[_loc6_].visible = _loc7_;
+                     unCompleteLablArr[i].visible = _loc7_;
+                     completeLablArr[i].visible = _loc7_;
                   }
-                  _loc6_++;
+                  i++;
                }
             }
          }
@@ -113,12 +112,12 @@ package consortion.view.selfConsortia
       
       override public function get height() : Number
       {
-         var _loc1_:Number = lablLevel.height;
+         var height:Number = lablLevel.height;
          if(boxContent.visible)
          {
-            _loc1_ = boxContent.y + boxContent.height;
+            height = boxContent.y + boxContent.height;
          }
-         return _loc1_;
+         return height;
       }
    }
 }

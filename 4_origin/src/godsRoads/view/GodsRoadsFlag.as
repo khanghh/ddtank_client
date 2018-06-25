@@ -35,10 +35,10 @@ package godsRoads.view
       
       private var _progressNum:int;
       
-      public function GodsRoadsFlag(param1:int)
+      public function GodsRoadsFlag(lv:int)
       {
          _numBitmapArray = [];
-         _lv = param1;
+         _lv = lv;
          super();
          initView();
       }
@@ -62,10 +62,10 @@ package godsRoads.view
          _btn.addEventListener("click",__changeSteps);
       }
       
-      public function set enable(param1:Boolean) : void
+      public function set enable(val:Boolean) : void
       {
-         isOpen = param1;
-         if(param1 == true)
+         isOpen = val;
+         if(val == true)
          {
             _btn.filterString = "null,lightFilter,null,grayFilter";
             if(_alertTxt)
@@ -93,12 +93,12 @@ package godsRoads.view
          return isOpen;
       }
       
-      private function getFA(param1:String) : Array
+      private function getFA(str:String) : Array
       {
-         return ComponentFactory.Instance.creatFrameFilters(param1);
+         return ComponentFactory.Instance.creatFrameFilters(str);
       }
       
-      private function __changeSteps(param1:MouseEvent) : void
+      private function __changeSteps(e:MouseEvent) : void
       {
          GodsRoadsManager.instance.changeSteps(_lv);
       }
@@ -108,9 +108,9 @@ package godsRoads.view
          return isOpen;
       }
       
-      public function set progressNum(param1:int) : void
+      public function set progressNum(val:int) : void
       {
-         _progressNum = param1;
+         _progressNum = val;
          setCountDownNumber(_progressNum);
          showProgress = true;
       }
@@ -120,48 +120,46 @@ package godsRoads.view
          return _progressNum;
       }
       
-      public function set showProgress(param1:Boolean) : void
+      public function set showProgress(val:Boolean) : void
       {
-         progressTxt.visible = param1;
+         progressTxt.visible = val;
       }
       
-      private function setCountDownNumber(param1:int) : void
+      private function setCountDownNumber(points:int) : void
       {
-         var _loc5_:* = null;
-         var _loc6_:int = 0;
-         var _loc4_:String = String(param1);
-         var _loc3_:String = "";
-         var _loc2_:int = 0;
+         var bitmap:* = null;
+         var i:int = 0;
+         var pointsStr:String = String(points);
+         var num:String = "";
+         var _x:int = 0;
          deleteBitmapArray();
          _numBitmapArray = [];
-         _loc6_ = 0;
-         while(_loc6_ < _loc4_.length)
+         for(i = 0; i < pointsStr.length; )
          {
-            _loc3_ = _loc4_.charAt(_loc6_);
-            _loc5_ = ComponentFactory.Instance.creatBitmap("asset.godsRoads.num" + _loc3_);
-            _loc5_.x = _loc5_.bitmapData.width * _loc6_ - _loc6_ * _offX;
-            _loc2_ = _loc5_.x + _loc5_.bitmapData.width;
-            _pointsNum.addChild(_loc5_);
-            _numBitmapArray.push(_loc5_);
-            _loc6_++;
+            num = pointsStr.charAt(i);
+            bitmap = ComponentFactory.Instance.creatBitmap("asset.godsRoads.num" + num);
+            bitmap.x = bitmap.bitmapData.width * i - i * _offX;
+            _x = bitmap.x + bitmap.bitmapData.width;
+            _pointsNum.addChild(bitmap);
+            _numBitmapArray.push(bitmap);
+            i++;
          }
          _perBmp = ComponentFactory.Instance.creatBitmap("asset.godsRoads.num%");
-         _perBmp.x = _loc2_ - _offX;
+         _perBmp.x = _x - _offX;
          _pointsNum.addChild(_perBmp);
          _numBitmapArray.push(_perBmp);
       }
       
       private function deleteBitmapArray() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          if(_numBitmapArray)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _numBitmapArray.length)
+            for(i = 0; i < _numBitmapArray.length; )
             {
-               _numBitmapArray[_loc1_].bitmapData.dispose();
-               _numBitmapArray[_loc1_] = null;
-               _loc1_++;
+               _numBitmapArray[i].bitmapData.dispose();
+               _numBitmapArray[i] = null;
+               i++;
             }
             _numBitmapArray.length = 0;
             _numBitmapArray = null;

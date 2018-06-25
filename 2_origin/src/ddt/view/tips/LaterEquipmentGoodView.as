@@ -71,36 +71,34 @@ package ddt.view.tips
       
       private function initData() : void
       {
-         var _loc1_:* = null;
-         var _loc2_:int = 0;
+         var arr:* = null;
+         var i:int = 0;
          if(ItemManager.Instance.EquipSuit)
          {
-            _loc1_ = ItemManager.Instance.EquipSuit[_info.SuitId] as Array;
-            if(_loc1_)
+            arr = ItemManager.Instance.EquipSuit[_info.SuitId] as Array;
+            if(arr)
             {
-               SUITNUM = _loc1_.length;
+               SUITNUM = arr.length;
             }
          }
          _setsPropVec = new Vector.<FilterFrameText>(SUITNUM);
          _validity = new Vector.<FilterFrameText>(SUITNUM);
-         _loc2_ = 0;
-         while(_loc2_ < SUITNUM)
+         for(i = 0; i < SUITNUM; )
          {
-            _setsPropVec[_loc2_] = ComponentFactory.Instance.creatComponentByStylename("CardsTipPanel.setsPropText");
-            _validity[_loc2_] = ComponentFactory.Instance.creatComponentByStylename("CardsTipPanel.setsPropText");
-            _loc2_++;
+            _setsPropVec[i] = ComponentFactory.Instance.creatComponentByStylename("CardsTipPanel.setsPropText");
+            _validity[i] = ComponentFactory.Instance.creatComponentByStylename("CardsTipPanel.setsPropText");
+            i++;
          }
       }
       
       private function showText() : void
       {
-         var _loc1_:int = 0;
-         _loc1_ = 0;
-         while(_loc1_ < SUITNUM)
+         var j:int = 0;
+         for(j = 0; j < SUITNUM; )
          {
-            addChild(_setsPropVec[_loc1_]);
-            addChild(_validity[_loc1_]);
-            _loc1_++;
+            addChild(_setsPropVec[j]);
+            addChild(_validity[j]);
+            j++;
          }
       }
       
@@ -109,11 +107,11 @@ package ddt.view.tips
          return _tipData;
       }
       
-      override public function set tipData(param1:Object) : void
+      override public function set tipData(data:Object) : void
       {
-         if(param1)
+         if(data)
          {
-            _itemInfo = param1 as ItemTemplateInfo;
+            _itemInfo = data as ItemTemplateInfo;
             this.visible = true;
             _tipData = _itemInfo;
             _suitId = _itemInfo.SuitId;
@@ -186,176 +184,166 @@ package ddt.view.tips
       
       private function showMiddlePart() : void
       {
-         var _loc9_:int = 0;
-         var _loc7_:* = null;
-         var _loc10_:int = 0;
-         var _loc11_:int = 0;
-         var _loc3_:* = null;
-         var _loc1_:* = null;
-         var _loc8_:int = 0;
-         var _loc4_:int = 0;
+         var j:int = 0;
+         var equipInfo:* = null;
+         var k:int = 0;
+         var i:int = 0;
+         var equipinfo:* = null;
+         var equip:* = null;
+         var n:int = 0;
+         var index:int = 0;
          _playerInfo = !!ItemManager.Instance.playerInfo?ItemManager.Instance.playerInfo:PlayerManager.Instance.Self;
          _ContainEquip = ItemManager.Instance.EquipSuit[_info.SuitId] as Array;
          if(_ContainEquip == null)
          {
             return;
          }
-         var _loc2_:Array = [];
-         var _loc6_:Array = [];
-         var _loc5_:Array = [];
-         var _loc12_:Array = [];
-         _loc9_ = 0;
-         while(_loc9_ < _ContainEquip.length)
+         var propArr:Array = [];
+         var containequip:Array = [];
+         var equipArr:Array = [];
+         var signArr:Array = [];
+         for(j = 0; j < _ContainEquip.length; )
          {
-            if(_ContainEquip[_loc9_])
+            if(_ContainEquip[j])
             {
-               _loc7_ = ItemManager.Instance.getTemplateById(int(_ContainEquip[_loc9_]));
-               _loc2_.push(_ContainEquip[_loc9_].PartName);
+               equipInfo = ItemManager.Instance.getTemplateById(int(_ContainEquip[j]));
+               propArr.push(_ContainEquip[j].PartName);
             }
-            _loc9_++;
+            j++;
          }
-         _loc10_ = 0;
-         while(_loc10_ < 19)
+         for(k = 0; k < 19; )
          {
-            _EquipInfo = _playerInfo.Bag.getItemAt(_loc10_);
+            _EquipInfo = _playerInfo.Bag.getItemAt(k);
             if(_EquipInfo != null)
             {
-               _loc5_.push([_EquipInfo.TemplateID,_EquipInfo.Place]);
+               equipArr.push([_EquipInfo.TemplateID,_EquipInfo.Place]);
             }
-            _loc10_++;
+            k++;
          }
-         _loc11_ = 0;
-         while(_loc11_ < _setsPropVec.length)
+         for(i = 0; i < _setsPropVec.length; )
          {
-            if(_loc11_ < _loc2_.length)
+            if(i < propArr.length)
             {
-               _setsPropVec[_loc11_].visible = true;
-               _setsPropVec[_loc11_].text = _loc2_[_loc11_];
-               _loc3_ = ItemManager.Instance.getEquipSuitbyContainEquip(_setsPropVec[_loc11_].text);
-               _loc1_ = _loc3_.ContainEquip.split(",");
-               _loc8_ = 0;
+               _setsPropVec[i].visible = true;
+               _setsPropVec[i].text = propArr[i];
+               equipinfo = ItemManager.Instance.getEquipSuitbyContainEquip(_setsPropVec[i].text);
+               equip = equipinfo.ContainEquip.split(",");
                loop3:
-               while(_loc8_ < _loc5_.length)
+               for(n = 0; n < equipArr.length; )
                {
-                  _loc4_ = 0;
-                  while(_loc4_ < _loc1_.length)
+                  for(index = 0; index < equip.length; )
                   {
-                     if(_loc1_[_loc4_] == _loc5_[_loc8_][0] && _loc12_.indexOf(_loc5_[_loc8_]) == -1)
+                     if(equip[index] == equipArr[n][0] && signArr.indexOf(equipArr[n]) == -1)
                      {
-                        _setsPropVec[_loc11_].textColor = 10092339;
-                        _loc12_.push(_loc5_[_loc8_]);
+                        _setsPropVec[i].textColor = 10092339;
+                        signArr.push(equipArr[n]);
                         break loop3;
                      }
-                     _setsPropVec[_loc11_].textColor = 10066329;
-                     _loc4_++;
+                     _setsPropVec[i].textColor = 10066329;
+                     index++;
                   }
-                  _loc8_++;
+                  n++;
                }
                if(!LaterEquipmentGoodView.isShow)
                {
-                  _setsPropVec[_loc11_].textColor = 10066329;
+                  _setsPropVec[i].textColor = 10066329;
                }
                if(!LaterEquipmentGoodView.isShow)
                {
-                  _setsPropVec[_loc11_].textColor = 10066329;
+                  _setsPropVec[i].textColor = 10066329;
                }
-               _setsPropVec[_loc11_].y = _rule1.y + _rule1.height + 8 + 24 * _loc11_;
-               if(_loc11_ == _loc2_.length - 1)
+               _setsPropVec[i].y = _rule1.y + _rule1.height + 8 + 24 * i;
+               if(i == propArr.length - 1)
                {
-                  _rule2.x = _setsPropVec[_loc11_].x;
-                  _rule2.y = _setsPropVec[_loc11_].y + _setsPropVec[_loc11_].textHeight + 12;
+                  _rule2.x = _setsPropVec[i].x;
+                  _rule2.y = _setsPropVec[i].y + _setsPropVec[i].textHeight + 12;
                }
             }
             else
             {
-               _setsPropVec[_loc11_].visible = false;
+               _setsPropVec[i].visible = false;
             }
-            _loc11_++;
+            i++;
          }
          _thisHeight = _rule2.y + _rule2.height;
       }
       
       private function showButtomPart() : void
       {
-         var _loc8_:int = 0;
-         var _loc9_:int = 0;
-         var _loc3_:* = null;
-         var _loc6_:int = 0;
-         var _loc4_:int = 0;
-         var _loc7_:int = 0;
-         var _loc1_:int = 0;
-         var _loc5_:Array = [];
-         var _loc2_:Array = [];
-         _loc8_ = 0;
-         while(_loc8_ < 19)
+         var k:int = 0;
+         var i:int = 0;
+         var containequip:* = null;
+         var m:int = 0;
+         var n:int = 0;
+         var j:int = 0;
+         var con:int = 0;
+         var equipNum:Array = [];
+         var equipArr:Array = [];
+         for(k = 0; k < 19; )
          {
-            _EquipInfo = _playerInfo.Bag.getItemAt(_loc8_);
+            _EquipInfo = _playerInfo.Bag.getItemAt(k);
             if(_EquipInfo != null)
             {
-               _loc2_.push([_EquipInfo.TemplateID,_EquipInfo.Place]);
+               equipArr.push([_EquipInfo.TemplateID,_EquipInfo.Place]);
             }
-            _loc8_++;
+            k++;
          }
-         _loc9_ = 0;
-         while(_loc9_ < _ContainEquip.length)
+         for(i = 0; i < _ContainEquip.length; )
          {
-            _loc3_ = _ContainEquip[_loc9_].ContainEquip.split(",");
-            _loc6_ = 0;
+            containequip = _ContainEquip[i].ContainEquip.split(",");
             loop2:
-            while(_loc6_ < _loc3_.length)
+            for(m = 0; m < containequip.length; )
             {
-               _loc4_ = 0;
-               while(_loc4_ < _loc2_.length)
+               for(n = 0; n < equipArr.length; )
                {
-                  if(_loc2_[_loc4_][0] == _loc3_[_loc6_] && _loc5_.indexOf(_loc2_[_loc4_]) == -1)
+                  if(equipArr[n][0] == containequip[m] && equipNum.indexOf(equipArr[n]) == -1)
                   {
-                     _loc5_.push(_loc2_[_loc4_]);
+                     equipNum.push(equipArr[n]);
                      break loop2;
                   }
-                  _loc4_++;
+                  n++;
                }
-               _loc6_++;
+               m++;
             }
-            _loc9_++;
+            i++;
          }
-         _loc7_ = 0;
-         while(_loc7_ < SUITNUM)
+         for(j = 0; j < SUITNUM; )
          {
-            if(_info["SkillDescribe" + (_loc7_ + 1)] != "")
+            if(_info["SkillDescribe" + (j + 1)] != "")
             {
-               _validity[_loc7_].visible = true;
-               _loc1_ = _info["EqipCount" + (_loc7_ + 1)];
-               if(_loc5_.length >= _loc1_)
+               _validity[j].visible = true;
+               con = _info["EqipCount" + (j + 1)];
+               if(equipNum.length >= con)
                {
-                  _validity[_loc7_].text = LanguageMgr.GetTranslation("ddt.goodTip.laterEquipmentGoodView.equip",_loc1_) + "\n    " + _info["SkillDescribe" + (_loc7_ + 1)];
-                  _validity[_loc7_].textColor = QualityType.QUALITY_COLOR[2];
+                  _validity[j].text = LanguageMgr.GetTranslation("ddt.goodTip.laterEquipmentGoodView.equip",con) + "\n    " + _info["SkillDescribe" + (j + 1)];
+                  _validity[j].textColor = QualityType.QUALITY_COLOR[2];
                   if(!LaterEquipmentGoodView.isShow)
                   {
-                     _validity[_loc7_].text = LanguageMgr.GetTranslation("ddt.goodTip.laterEquipmentGoodView.equip",_loc1_) + "\n    " + _info["SkillDescribe" + (_loc7_ + 1)];
-                     _validity[_loc7_].textColor = 10066329;
+                     _validity[j].text = LanguageMgr.GetTranslation("ddt.goodTip.laterEquipmentGoodView.equip",con) + "\n    " + _info["SkillDescribe" + (j + 1)];
+                     _validity[j].textColor = 10066329;
                   }
                }
                else
                {
-                  _validity[_loc7_].text = LanguageMgr.GetTranslation("ddt.goodTip.laterEquipmentGoodView.equip",_loc1_) + "\n    " + _info["SkillDescribe" + (_loc7_ + 1)];
-                  _validity[_loc7_].textColor = 10066329;
+                  _validity[j].text = LanguageMgr.GetTranslation("ddt.goodTip.laterEquipmentGoodView.equip",con) + "\n    " + _info["SkillDescribe" + (j + 1)];
+                  _validity[j].textColor = 10066329;
                   if(!LaterEquipmentGoodView.isShow)
                   {
-                     _validity[_loc7_].text = LanguageMgr.GetTranslation("ddt.goodTip.laterEquipmentGoodView.equip",_loc1_) + "\n    " + _info["SkillDescribe" + (_loc7_ + 1)];
-                     _validity[_loc7_].textColor = 10066329;
+                     _validity[j].text = LanguageMgr.GetTranslation("ddt.goodTip.laterEquipmentGoodView.equip",con) + "\n    " + _info["SkillDescribe" + (j + 1)];
+                     _validity[j].textColor = 10066329;
                   }
                }
             }
             else
             {
-               _validity[_loc7_].visible = false;
+               _validity[j].visible = false;
             }
-            _validity[_loc7_].y = _thisHeight + 4;
-            _thisHeight = _validity[_loc7_].y + _validity[_loc7_].textHeight;
-            _thisWidht = _thisWidht > _validity[_loc7_].x + _validity[_loc7_].textWidth?_thisWidht:_validity[_loc7_].x + _validity[_loc7_].textWidth;
-            _loc7_++;
+            _validity[j].y = _thisHeight + 4;
+            _thisHeight = _validity[j].y + _validity[j].textHeight;
+            _thisWidht = _thisWidht > _validity[j].x + _validity[j].textWidth?_thisWidht:_validity[j].x + _validity[j].textWidth;
+            j++;
          }
-         _setNum.text = "(" + _loc5_.length + "/" + _ContainEquip.length + ")";
+         _setNum.text = "(" + equipNum.length + "/" + _ContainEquip.length + ")";
          _setNum.x = _topName.textWidth + 12;
          _setNum.y = _topName.y;
          if(!LaterEquipmentGoodView.isShow)
@@ -381,28 +369,26 @@ package ddt.view.tips
       
       private function clear() : void
       {
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
+         var j:int = 0;
+         var i:int = 0;
          SUITNUM = 0;
          if(_setsPropVec && _setsPropVec.length > 0)
          {
-            _loc1_ = 0;
-            while(_loc1_ < _setsPropVec.length)
+            for(j = 0; j < _setsPropVec.length; )
             {
-               _setsPropVec[_loc1_].dispose();
-               _setsPropVec[_loc1_] = null;
-               _loc1_++;
+               _setsPropVec[j].dispose();
+               _setsPropVec[j] = null;
+               j++;
             }
             _setsPropVec = null;
          }
          if(_validity && _validity.length > 0)
          {
-            _loc2_ = 0;
-            while(_loc2_ < _validity.length)
+            for(i = 0; i < _validity.length; )
             {
-               _validity[_loc2_].dispose();
-               _validity[_loc2_] = null;
-               _loc2_++;
+               _validity[i].dispose();
+               _validity[i] = null;
+               i++;
             }
             _validity = null;
          }

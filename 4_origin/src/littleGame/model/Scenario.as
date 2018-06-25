@@ -106,7 +106,7 @@ package littleGame.model
          super();
       }
       
-      private function __clock(param1:TimerEvent) : void
+      private function __clock(event:TimerEvent) : void
       {
       }
       
@@ -117,11 +117,11 @@ package littleGame.model
          priceNum = ClassUtils.CreatInstance("asset.littleGame.numprice");
          markBack = ClassUtils.CreatInstance("asset.littleGame.Mark");
          bigNum = ClassUtils.CreatInstance("asset.littleGame.num");
-         var _loc1_:Number = 22 / bigNum.height;
-         var _loc2_:Matrix = new Matrix();
-         _loc2_.scale(_loc1_,_loc1_);
-         normalNum = new BitmapData(bigNum.width * _loc1_,bigNum.height * _loc1_,true,0);
-         normalNum.draw(bigNum,_loc2_,null,null,null,true);
+         var s:Number = 22 / bigNum.height;
+         var mat:Matrix = new Matrix();
+         mat.scale(s,s);
+         normalNum = new BitmapData(bigNum.width * s,bigNum.height * s,true,0);
+         normalNum.draw(bigNum,mat,null,null,null,true);
       }
       
       public function get stones() : Vector.<Rectangle>
@@ -129,57 +129,57 @@ package littleGame.model
          return _stones;
       }
       
-      public function addObject(param1:ILittleObject) : ILittleObject
+      public function addObject(object:ILittleObject) : ILittleObject
       {
-         _objects[param1.id] = param1;
-         return param1;
+         _objects[object.id] = object;
+         return object;
       }
       
-      public function removeObject(param1:ILittleObject) : ILittleObject
+      public function removeObject(object:ILittleObject) : ILittleObject
       {
-         if(param1 == null)
+         if(object == null)
          {
             return null;
          }
-         delete _objects[param1.id];
-         ObjectUtils.disposeObject(param1);
-         return param1;
+         delete _objects[object.id];
+         ObjectUtils.disposeObject(object);
+         return object;
       }
       
-      public function addLiving(param1:LittleLiving) : LittleLiving
+      public function addLiving(living:LittleLiving) : LittleLiving
       {
-         var _loc2_:* = null;
-         if(_livings[param1.id] == null)
+         var node:* = null;
+         if(_livings[living.id] == null)
          {
-            _livings[param1.id] = param1;
-            param1.inGame = true;
-            if(param1.isSelf)
+            _livings[living.id] = living;
+            living.inGame = true;
+            if(living.isSelf)
             {
-               setSelfPlayer(param1 as LittleSelf);
+               setSelfPlayer(living as LittleSelf);
             }
-            param1.speed = grid.cellSize;
-            _loc2_ = grid.getNode(param1.pos.x,param1.pos.y);
+            living.speed = grid.cellSize;
+            node = grid.getNode(living.pos.x,living.pos.y);
             _livingCount = Number(_livingCount) + 1;
             if(running)
             {
-               dispatchEvent(new LittleGameEvent("addLiving",param1));
+               dispatchEvent(new LittleGameEvent("addLiving",living));
             }
          }
-         return param1;
+         return living;
       }
       
-      public function removeLiving(param1:LittleLiving) : LittleLiving
+      public function removeLiving(living:LittleLiving) : LittleLiving
       {
-         var _loc2_:* = null;
-         if(param1 && !param1.dieing && _livings[param1.id] != null)
+         var node:* = null;
+         if(living && !living.dieing && _livings[living.id] != null)
          {
-            delete _livings[param1.id];
-            param1.inGame = false;
-            _loc2_ = grid.getNode(param1.pos.x,param1.pos.y);
+            delete _livings[living.id];
+            living.inGame = false;
+            node = grid.getNode(living.pos.x,living.pos.y);
             _livingCount = Number(_livingCount) - 1;
-            dispatchEvent(new LittleGameEvent("removeLiving",param1));
+            dispatchEvent(new LittleGameEvent("removeLiving",living));
          }
-         return param1;
+         return living;
       }
       
       public function get livings() : Dictionary
@@ -187,9 +187,9 @@ package littleGame.model
          return _livings;
       }
       
-      public function findObject(param1:int) : ILittleObject
+      public function findObject(id:int) : ILittleObject
       {
-         return _objects[param1] as ILittleObject;
+         return _objects[id] as ILittleObject;
       }
       
       public function get littleObjects() : Dictionary
@@ -197,9 +197,9 @@ package littleGame.model
          return _objects;
       }
       
-      public function findLiving(param1:int) : LittleLiving
+      public function findLiving(id:int) : LittleLiving
       {
-         return _livings[param1] as LittleLiving;
+         return _livings[id] as LittleLiving;
       }
       
       public function get running() : Boolean
@@ -212,12 +212,12 @@ package littleGame.model
          _stones.push(new Rectangle(654,20,80,200));
       }
       
-      public function setSelfPlayer(param1:LittleSelf) : void
+      public function setSelfPlayer(self:LittleSelf) : void
       {
-         _selfPlayer = param1;
+         _selfPlayer = self;
       }
       
-      private function __selfCollided(param1:LittleLivingEvent) : void
+      private function __selfCollided(event:LittleLivingEvent) : void
       {
       }
       
@@ -246,7 +246,7 @@ package littleGame.model
          _pause = false;
       }
       
-      private function onTimer(param1:TimerEvent) : void
+      private function onTimer(event:TimerEvent) : void
       {
          LittleGameManager.Instance.synchronousLivingPos(_selfPlayer.pos.x,_selfPlayer.pos.y);
       }
@@ -265,8 +265,8 @@ package littleGame.model
       
       public function dispose() : void
       {
-         var _loc3_:* = null;
-         var _loc2_:* = null;
+         var living:* = null;
+         var object:* = null;
          ObjectUtils.disposeObject(inhaleNeed);
          inhaleNeed = null;
          ObjectUtils.disposeObject(priceNum);
@@ -289,19 +289,19 @@ package littleGame.model
          gameLoader.dispose();
          var _loc6_:int = 0;
          var _loc5_:* = _livings;
-         for(var _loc4_ in _livings)
+         for(var key in _livings)
          {
-            _loc3_ = _livings[_loc4_];
-            ObjectUtils.disposeObject(_loc3_);
-            delete _livings[_loc4_];
+            living = _livings[key];
+            ObjectUtils.disposeObject(living);
+            delete _livings[key];
          }
          var _loc8_:int = 0;
          var _loc7_:* = _objects;
-         for(var _loc1_ in _objects)
+         for(var key2 in _objects)
          {
-            _loc2_ = _objects[_loc1_];
-            ObjectUtils.disposeObject(_loc2_);
-            delete _objects[_loc1_];
+            object = _objects[key2];
+            ObjectUtils.disposeObject(object);
+            delete _objects[key2];
          }
          _livings = null;
          _objects = null;
@@ -314,12 +314,12 @@ package littleGame.model
          return _onProcess;
       }
       
-      public function set onProcess(param1:Boolean) : void
+      public function set onProcess(val:Boolean) : void
       {
-         _onProcess = param1;
+         _onProcess = val;
       }
       
-      public function process(param1:Number) : void
+      public function process(rate:Number) : void
       {
          if(_pause)
          {
@@ -328,9 +328,9 @@ package littleGame.model
          dispatchEvent(new LittleGameEvent("update"));
          var _loc4_:int = 0;
          var _loc3_:* = _livings;
-         for each(var _loc2_ in _livings)
+         for each(var living in _livings)
          {
-            _loc2_.update();
+            living.update();
          }
       }
       
@@ -339,13 +339,13 @@ package littleGame.model
          return _soundEnabled;
       }
       
-      public function set soundEnabled(param1:Boolean) : void
+      public function set soundEnabled(value:Boolean) : void
       {
-         if(_soundEnabled == param1)
+         if(_soundEnabled == value)
          {
             return;
          }
-         _soundEnabled = param1;
+         _soundEnabled = value;
          dispatchEvent(new LittleGameEvent("soundEnabledChanged"));
       }
       
@@ -354,13 +354,13 @@ package littleGame.model
          return _selfInhaled;
       }
       
-      public function set selfInhaled(param1:Boolean) : void
+      public function set selfInhaled(value:Boolean) : void
       {
-         if(_selfInhaled == param1)
+         if(_selfInhaled == value)
          {
             return;
          }
-         _selfInhaled = param1;
+         _selfInhaled = value;
          dispatchEvent(new LittleGameEvent("selfInhaledChanged"));
       }
    }

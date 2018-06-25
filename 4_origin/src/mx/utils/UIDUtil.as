@@ -26,137 +26,120 @@ package mx.utils
       
       public static function createUID() : String
       {
-         var _loc3_:int = 0;
-         var _loc4_:int = 0;
-         var _loc1_:Array = new Array(36);
-         var _loc2_:int = 0;
-         _loc3_ = 0;
-         while(_loc3_ < 8)
+         var i:int = 0;
+         var j:int = 0;
+         var uid:Array = new Array(36);
+         var index:int = 0;
+         for(i = 0; i < 8; i++)
          {
-            _loc1_[_loc2_++] = ALPHA_CHAR_CODES[Math.floor(Math.random() * 16)];
-            _loc3_++;
+            uid[index++] = ALPHA_CHAR_CODES[Math.floor(Math.random() * 16)];
          }
-         _loc3_ = 0;
-         while(_loc3_ < 3)
+         for(i = 0; i < 3; i++)
          {
-            _loc1_[_loc2_++] = 45;
-            _loc4_ = 0;
-            while(_loc4_ < 4)
+            uid[index++] = 45;
+            for(j = 0; j < 4; j++)
             {
-               _loc1_[_loc2_++] = ALPHA_CHAR_CODES[Math.floor(Math.random() * 16)];
-               _loc4_++;
+               uid[index++] = ALPHA_CHAR_CODES[Math.floor(Math.random() * 16)];
             }
-            _loc3_++;
          }
-         _loc1_[_loc2_++] = 45;
-         var _loc5_:Number = new Date().getTime();
-         var _loc6_:String = ("0000000" + _loc5_.toString(16).toUpperCase()).substr(-8);
-         _loc3_ = 0;
-         while(_loc3_ < 8)
+         uid[index++] = 45;
+         var time:Number = new Date().getTime();
+         var timeString:String = ("0000000" + time.toString(16).toUpperCase()).substr(-8);
+         for(i = 0; i < 8; i++)
          {
-            _loc1_[_loc2_++] = _loc6_.charCodeAt(_loc3_);
-            _loc3_++;
+            uid[index++] = timeString.charCodeAt(i);
          }
-         _loc3_ = 0;
-         while(_loc3_ < 4)
+         for(i = 0; i < 4; i++)
          {
-            _loc1_[_loc2_++] = ALPHA_CHAR_CODES[Math.floor(Math.random() * 16)];
-            _loc3_++;
+            uid[index++] = ALPHA_CHAR_CODES[Math.floor(Math.random() * 16)];
          }
-         return String.fromCharCode.apply(null,_loc1_);
+         return String.fromCharCode.apply(null,uid);
       }
       
-      public static function fromByteArray(param1:ByteArray) : String
+      public static function fromByteArray(ba:ByteArray) : String
       {
-         var _loc2_:Array = null;
-         var _loc3_:uint = 0;
-         var _loc4_:uint = 0;
-         var _loc5_:int = 0;
-         if(param1 != null && param1.length >= 16 && param1.bytesAvailable >= 16)
+         var chars:Array = null;
+         var index:uint = 0;
+         var i:uint = 0;
+         var b:int = 0;
+         if(ba != null && ba.length >= 16 && ba.bytesAvailable >= 16)
          {
-            _loc2_ = new Array(36);
-            _loc3_ = 0;
-            _loc4_ = 0;
-            while(_loc4_ < 16)
+            chars = new Array(36);
+            index = 0;
+            for(i = 0; i < 16; i++)
             {
-               if(_loc4_ == 4 || _loc4_ == 6 || _loc4_ == 8 || _loc4_ == 10)
+               if(i == 4 || i == 6 || i == 8 || i == 10)
                {
-                  _loc2_[_loc3_++] = 45;
+                  chars[index++] = 45;
                }
-               _loc5_ = param1.readByte();
-               _loc2_[_loc3_++] = ALPHA_CHAR_CODES[(_loc5_ & 240) >>> 4];
-               _loc2_[_loc3_++] = ALPHA_CHAR_CODES[_loc5_ & 15];
-               _loc4_++;
+               b = ba.readByte();
+               chars[index++] = ALPHA_CHAR_CODES[(b & 240) >>> 4];
+               chars[index++] = ALPHA_CHAR_CODES[b & 15];
             }
-            return String.fromCharCode.apply(null,_loc2_);
+            return String.fromCharCode.apply(null,chars);
          }
          return null;
       }
       
-      public static function isUID(param1:String) : Boolean
+      public static function isUID(uid:String) : Boolean
       {
-         var _loc2_:uint = 0;
-         var _loc3_:Number = NaN;
-         if(param1 != null && param1.length == 36)
+         var i:uint = 0;
+         var c:Number = NaN;
+         if(uid != null && uid.length == 36)
          {
-            _loc2_ = 0;
-            while(_loc2_ < 36)
+            for(i = 0; i < 36; i++)
             {
-               _loc3_ = param1.charCodeAt(_loc2_);
-               if(_loc2_ == 8 || _loc2_ == 13 || _loc2_ == 18 || _loc2_ == 23)
+               c = uid.charCodeAt(i);
+               if(i == 8 || i == 13 || i == 18 || i == 23)
                {
-                  if(_loc3_ != 45)
+                  if(c != 45)
                   {
                      return false;
                   }
                }
-               else if(_loc3_ < 48 || _loc3_ > 70 || _loc3_ > 57 && _loc3_ < 65)
+               else if(c < 48 || c > 70 || c > 57 && c < 65)
                {
                   return false;
                }
-               _loc2_++;
             }
             return true;
          }
          return false;
       }
       
-      public static function toByteArray(param1:String) : ByteArray
+      public static function toByteArray(uid:String) : ByteArray
       {
-         var _loc2_:ByteArray = null;
-         var _loc3_:uint = 0;
-         var _loc4_:String = null;
-         var _loc5_:uint = 0;
-         var _loc6_:uint = 0;
-         if(isUID(param1))
+         var result:ByteArray = null;
+         var i:uint = 0;
+         var c:String = null;
+         var h1:uint = 0;
+         var h2:uint = 0;
+         if(isUID(uid))
          {
-            _loc2_ = new ByteArray();
-            _loc3_ = 0;
-            while(_loc3_ < param1.length)
+            result = new ByteArray();
+            for(i = 0; i < uid.length; i++)
             {
-               _loc4_ = param1.charAt(_loc3_);
-               if(_loc4_ != "-")
+               c = uid.charAt(i);
+               if(c != "-")
                {
-                  _loc5_ = getDigit(_loc4_);
-                  _loc3_++;
-                  _loc6_ = getDigit(param1.charAt(_loc3_));
-                  _loc2_.writeByte((_loc5_ << 4 | _loc6_) & 255);
+                  h1 = getDigit(c);
+                  i++;
+                  h2 = getDigit(uid.charAt(i));
+                  result.writeByte((h1 << 4 | h2) & 255);
                }
-               _loc3_++;
             }
-            _loc2_.position = 0;
-            return _loc2_;
+            result.position = 0;
+            return result;
          }
          return null;
       }
       
-      public static function getUID(param1:Object) : String
+      public static function getUID(item:Object) : String
       {
          var result:String = null;
          var xitem:XML = null;
          var nodeKind:String = null;
          var notificationFunction:Function = null;
-         var item:Object = param1;
          result = null;
          if(item == null)
          {
@@ -190,7 +173,7 @@ package mx.utils
             {
                if(item is XMLList && item.length == 1)
                {
-                  item = item[0];
+                  var item:Object = item[0];
                }
                if(item is XML)
                {
@@ -245,9 +228,9 @@ package mx.utils
          return result;
       }
       
-      private static function getDigit(param1:String) : uint
+      private static function getDigit(hex:String) : uint
       {
-         switch(param1)
+         switch(hex)
          {
             case "A":
             case "a":
@@ -268,7 +251,7 @@ package mx.utils
             case "f":
                return 15;
             default:
-               return new uint(param1);
+               return new uint(hex);
          }
       }
    }

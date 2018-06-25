@@ -113,77 +113,75 @@ package im
          SocketManager.Instance.addEventListener(PkgEvent.format(149,4),__onRegressCallApply);
       }
       
-      protected function onMarkClick(param1:CEvent) : void
+      protected function onMarkClick(e:CEvent) : void
       {
       }
       
-      protected function __deleteGroup(param1:Event) : void
+      protected function __deleteGroup(event:Event) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _titleList.length)
+         var temp1:int = 0;
+         for(temp1 = 0; temp1 < _titleList.length; )
          {
-            if(_titleList[_loc2_].titleType == IMControl.Instance.deleteCustomID)
+            if(_titleList[temp1].titleType == IMControl.Instance.deleteCustomID)
             {
-               _titleList.splice(_loc2_,1);
+               _titleList.splice(temp1,1);
                break;
             }
-            _loc2_++;
+            temp1++;
          }
          _currentTitleInfo.titleIsSelected = false;
          updateTitle();
          updateList();
       }
       
-      protected function __updaetGroup(param1:Event) : void
+      protected function __updaetGroup(event:Event) : void
       {
-         var _loc2_:int = 0;
-         _loc2_ = 0;
-         while(_loc2_ < _titleList.length)
+         var temp3:int = 0;
+         for(temp3 = 0; temp3 < _titleList.length; )
          {
-            if(_titleList[_loc2_].titleType == IMControl.Instance.customInfo.ID)
+            if(_titleList[temp3].titleType == IMControl.Instance.customInfo.ID)
             {
-               _titleList[_loc2_].titleText = IMControl.Instance.customInfo.Name;
+               _titleList[temp3].titleText = IMControl.Instance.customInfo.Name;
                break;
             }
-            _loc2_++;
+            temp3++;
          }
          _currentTitleInfo.titleIsSelected = false;
          updateTitle();
          updateList();
       }
       
-      protected function __addNewGroup(param1:Event) : void
+      protected function __addNewGroup(event:Event) : void
       {
-         var _loc3_:int = 0;
-         var _loc2_:FriendListPlayer = new FriendListPlayer();
-         _loc2_.type = 0;
-         _loc2_.titleType = IMControl.Instance.customInfo.ID;
-         _loc2_.titleIsSelected = false;
-         _loc2_.titleText = IMControl.Instance.customInfo.Name;
+         var i:int = 0;
+         var title:FriendListPlayer = new FriendListPlayer();
+         title.type = 0;
+         title.titleType = IMControl.Instance.customInfo.ID;
+         title.titleIsSelected = false;
+         title.titleText = IMControl.Instance.customInfo.Name;
          if(_titleList.length == 4)
          {
-            _titleList.splice(2,0,_loc2_);
+            _titleList.splice(2,0,title);
             PlayerManager.Instance.customList.splice(1,0,IMControl.Instance.customInfo);
          }
          else
          {
-            _loc3_ = 2;
-            while(_loc3_ < _titleList.length - 2)
+            i = 2;
+            while(i < _titleList.length - 2)
             {
-               if(IMControl.Instance.customInfo.ID < _titleList[_loc3_].titleType)
+               if(IMControl.Instance.customInfo.ID < _titleList[i].titleType)
                {
-                  _titleList.splice(_loc3_,0,_loc2_);
-                  PlayerManager.Instance.customList.splice(_loc3_ - 1,0,IMControl.Instance.customInfo);
+                  _titleList.splice(i,0,title);
+                  PlayerManager.Instance.customList.splice(i - 1,0,IMControl.Instance.customInfo);
                   break;
                }
-               if(_loc3_ == _titleList.length - 3)
+               if(i == _titleList.length - 3)
                {
-                  _titleList.splice(_loc3_ + 1,0,_loc2_);
-                  PlayerManager.Instance.customList.splice(_loc3_,0,IMControl.Instance.customInfo);
+                  _titleList.splice(i + 1,0,title);
+                  PlayerManager.Instance.customList.splice(i,0,IMControl.Instance.customInfo);
                   break;
                }
-               _loc3_++;
+               i++;
             }
          }
          updateTitle();
@@ -214,66 +212,66 @@ package im
          SocketManager.Instance.removeEventListener(PkgEvent.format(149,4),__onRegressCallApply);
       }
       
-      protected function __addToStage(param1:Event) : void
+      protected function __addToStage(event:Event) : void
       {
-         var _loc2_:Point = _listPanel.localToGlobal(new Point(0,0));
-         _responseR.x = _loc2_.x;
-         _responseR.y = _loc2_.y;
+         var listpos:Point = _listPanel.localToGlobal(new Point(0,0));
+         _responseR.x = listpos.x;
+         _responseR.y = listpos.y;
       }
       
-      protected function __listItemOutHandler(param1:ListItemEvent) : void
+      protected function __listItemOutHandler(event:ListItemEvent) : void
       {
          _timer.stop();
       }
       
-      protected function __listItemUpHandler(param1:ListItemEvent) : void
+      protected function __listItemUpHandler(event:ListItemEvent) : void
       {
          _timer.stop();
       }
       
-      protected function __listItemDownHandler(param1:ListItemEvent) : void
+      protected function __listItemDownHandler(event:ListItemEvent) : void
       {
-         _currentItem = param1.cell as IMListItemView;
-         var _loc2_:FriendListPlayer = _currentItem.getCellValue() as FriendListPlayer;
-         if(_loc2_.type == 1 && StateManager.currentStateType != "fighting" && StateManager.currentStateType != "fightLabGameView")
+         _currentItem = event.cell as IMListItemView;
+         var info:FriendListPlayer = _currentItem.getCellValue() as FriendListPlayer;
+         if(info.type == 1 && StateManager.currentStateType != "fighting" && StateManager.currentStateType != "fightLabGameView")
          {
             _timer.reset();
             _timer.start();
          }
       }
       
-      protected function __onRegressCallApply(param1:PkgEvent) : void
+      protected function __onRegressCallApply(event:PkgEvent) : void
       {
-         var _loc3_:* = null;
-         var _loc5_:* = null;
-         var _loc2_:* = null;
-         var _loc4_:PackageIn = param1.pkg;
-         var _loc6_:int = _loc4_.readInt();
-         if(_loc6_ != 1)
+         var ur:* = null;
+         var variable:* = null;
+         var urlLoader:* = null;
+         var pkg:PackageIn = event.pkg;
+         var callID:int = pkg.readInt();
+         if(callID != 1)
          {
             _currentItem.callBackBtn.enable = false;
             _currentItem.callBackBtn.mouseEnabled = true;
             _currentItem.info.callBtnEnable = false;
             trace("召唤老玩家处理");
-            _loc3_ = new URLRequest(PathManager.callBackInterfacePath());
-            _loc5_ = new URLVariables();
-            _loc5_["gname"] = PlayerManager.Instance.Self.NickName;
-            _loc5_["user2"] = _currentItem.info.LoginName;
-            _loc5_["gname2"] = _currentItem.info.NickName;
-            _loc5_["area"] = _currentItem.info.ZoneID;
-            _loc5_["token"] = MD5.hash(PlayerManager.Instance.Self.LoginName + "d!d@t#z$h" + _currentItem.info.LoginName);
-            _loc3_.method = "POST";
-            _loc3_.data = _loc5_;
-            _loc2_ = new URLLoader();
-            _loc2_.addEventListener("complete",__onComplete);
-            _loc2_.load(_loc3_);
+            ur = new URLRequest(PathManager.callBackInterfacePath());
+            variable = new URLVariables();
+            variable["gname"] = PlayerManager.Instance.Self.NickName;
+            variable["user2"] = _currentItem.info.LoginName;
+            variable["gname2"] = _currentItem.info.NickName;
+            variable["area"] = _currentItem.info.ZoneID;
+            variable["token"] = MD5.hash(PlayerManager.Instance.Self.LoginName + "d!d@t#z$h" + _currentItem.info.LoginName);
+            ur.method = "POST";
+            ur.data = variable;
+            urlLoader = new URLLoader();
+            urlLoader.addEventListener("complete",__onComplete);
+            urlLoader.load(ur);
          }
       }
       
-      protected function __onComplete(param1:Event) : void
+      protected function __onComplete(event:Event) : void
       {
-         var _loc2_:int = param1.target.data;
-         switch(int(_loc2_))
+         var value:int = event.target.data;
+         switch(int(value))
          {
             case 0:
                trace("验证未通过");
@@ -294,79 +292,78 @@ package im
          }
       }
       
-      protected function __topRangeHandler(param1:Event) : void
+      protected function __topRangeHandler(event:Event) : void
       {
          _listPanel.setViewPosition(-1);
       }
       
-      protected function __buttomRangeHandler(param1:Event) : void
+      protected function __buttomRangeHandler(event:Event) : void
       {
          _listPanel.setViewPosition(1);
       }
       
-      protected function __timerHandler(param1:TimerEvent) : void
+      protected function __timerHandler(event:TimerEvent) : void
       {
          _timer.stop();
-         var _loc2_:Point = _listPanel.localToGlobal(new Point(0,0));
-         _responseR.x = _loc2_.x;
-         _responseR.y = _loc2_.y;
+         var listpos:Point = _listPanel.localToGlobal(new Point(0,0));
+         _responseR.x = listpos.x;
+         _responseR.y = listpos.y;
          DragManager.startDrag(_currentItem,_currentItem.getCellValue(),createImg(),stage.mouseX,stage.mouseY,"move",true,false,false,true,true,_responseR,_currentItem.height + 10);
          showTitle();
       }
       
       private function createImg() : DisplayObject
       {
-         var _loc2_:Bitmap = new Bitmap(new BitmapData(_currentItem.width - 6,_currentItem.height - 6,false,0),"auto",true);
-         var _loc1_:Matrix = new Matrix(1,0,0,1,-2,-2);
-         _loc2_.bitmapData.draw(_currentItem,_loc1_);
-         return _loc2_;
+         var img:Bitmap = new Bitmap(new BitmapData(_currentItem.width - 6,_currentItem.height - 6,false,0),"auto",true);
+         var martix:Matrix = new Matrix(1,0,0,1,-2,-2);
+         img.bitmapData.draw(_currentItem,martix);
+         return img;
       }
       
       private function initTitle() : void
       {
-         var _loc4_:int = 0;
-         var _loc1_:* = null;
+         var i:int = 0;
+         var title:* = null;
          _titleList = new Vector.<FriendListPlayer>();
-         var _loc5_:Vector.<CustomInfo> = PlayerManager.Instance.customList;
-         _loc4_ = 0;
-         while(_loc4_ < _loc5_.length)
+         var customList:Vector.<CustomInfo> = PlayerManager.Instance.customList;
+         for(i = 0; i < customList.length; )
          {
-            _loc1_ = new FriendListPlayer();
-            _loc1_.type = 0;
-            _loc1_.titleType = _loc5_[_loc4_].ID;
-            _loc1_.titleIsSelected = false;
-            if(_loc4_ == _loc5_.length - 1)
+            title = new FriendListPlayer();
+            title.type = 0;
+            title.titleType = customList[i].ID;
+            title.titleIsSelected = false;
+            if(i == customList.length - 1)
             {
-               _loc1_.titleNumText = "[0/" + String(PlayerManager.Instance.blackList.length) + "]";
+               title.titleNumText = "[0/" + String(PlayerManager.Instance.blackList.length) + "]";
             }
             else
             {
-               _loc1_.titleNumText = "[" + String(PlayerManager.Instance.getOnlineFriendForCustom(_loc5_[_loc4_].ID).length) + "/" + String(PlayerManager.Instance.getFriendForCustom(_loc5_[_loc4_].ID).length) + "]";
+               title.titleNumText = "[" + String(PlayerManager.Instance.getOnlineFriendForCustom(customList[i].ID).length) + "/" + String(PlayerManager.Instance.getFriendForCustom(customList[i].ID).length) + "]";
             }
-            _loc1_.titleText = _loc5_[_loc4_].Name;
-            _titleList.push(_loc1_);
-            _loc4_++;
+            title.titleText = customList[i].Name;
+            _titleList.push(title);
+            i++;
          }
-         var _loc2_:FriendListPlayer = new FriendListPlayer();
-         _loc2_.type = 0;
-         _loc2_.titleType = 2;
-         _loc2_.titleIsSelected = false;
-         _loc2_.titleNumText = "[" + String(PlayerManager.Instance.onlineRecentContactList.length) + "/" + String(PlayerManager.Instance.recentContacts.length) + "]";
-         _loc2_.titleText = LanguageMgr.GetTranslation("tank.game.ToolStripView.recentContact");
-         _titleList.unshift(_loc2_);
-         var _loc3_:FriendListPlayer = new FriendListPlayer();
-         _loc3_.type = 0;
-         _loc3_.titleType = 3;
-         _loc3_.titleText = LanguageMgr.GetTranslation("tank.game.IM.custom");
-         _titleList.push(_loc3_);
+         var recentContactTitle:FriendListPlayer = new FriendListPlayer();
+         recentContactTitle.type = 0;
+         recentContactTitle.titleType = 2;
+         recentContactTitle.titleIsSelected = false;
+         recentContactTitle.titleNumText = "[" + String(PlayerManager.Instance.onlineRecentContactList.length) + "/" + String(PlayerManager.Instance.recentContacts.length) + "]";
+         recentContactTitle.titleText = LanguageMgr.GetTranslation("tank.game.ToolStripView.recentContact");
+         _titleList.unshift(recentContactTitle);
+         var customTitle:FriendListPlayer = new FriendListPlayer();
+         customTitle.type = 0;
+         customTitle.titleType = 3;
+         customTitle.titleText = LanguageMgr.GetTranslation("tank.game.IM.custom");
+         _titleList.push(customTitle);
          _titleList[1].titleIsSelected = true;
       }
       
-      private function __addBlackItem(param1:DictionaryEvent) : void
+      private function __addBlackItem(event:DictionaryEvent) : void
       {
          if(_currentTitleInfo.titleType == 1 && _currentTitleInfo.titleIsSelected == true && _listPanel && _listPanel.vectorListModel)
          {
-            _listPanel.vectorListModel.append(param1.data,getInsertIndex(param1.data as FriendListPlayer));
+            _listPanel.vectorListModel.append(event.data,getInsertIndex(event.data as FriendListPlayer));
             updateTitle();
             _listPanel.list.updateListView();
          }
@@ -377,17 +374,17 @@ package im
          }
       }
       
-      private function __updateItem(param1:DictionaryEvent) : void
+      private function __updateItem(event:DictionaryEvent) : void
       {
          updateTitle();
          updateList();
       }
       
-      private function __addItem(param1:DictionaryEvent) : void
+      private function __addItem(event:DictionaryEvent) : void
       {
          if((_currentTitleInfo.titleType == 0 || _currentTitleInfo.titleType >= 10) && _currentTitleInfo.titleIsSelected == true && _listPanel && _listPanel.vectorListModel)
          {
-            _listPanel.vectorListModel.append(param1.data,getInsertIndex(param1.data as FriendListPlayer));
+            _listPanel.vectorListModel.append(event.data,getInsertIndex(event.data as FriendListPlayer));
             updateTitle();
             updateList();
             _listPanel.list.updateListView();
@@ -400,107 +397,103 @@ package im
          }
       }
       
-      private function __removeItem(param1:DictionaryEvent) : void
+      private function __removeItem(event:DictionaryEvent) : void
       {
          if(_listPanel && _listPanel.vectorListModel)
          {
-            _listPanel.vectorListModel.remove(param1.data);
+            _listPanel.vectorListModel.remove(event.data);
             updateTitle();
             _listPanel.list.updateListView();
          }
       }
       
-      private function getInsertIndex(param1:FriendListPlayer) : int
+      private function getInsertIndex(info:FriendListPlayer) : int
       {
-         var _loc2_:int = 0;
-         var _loc4_:* = null;
-         var _loc6_:int = 0;
-         var _loc5_:int = 0;
-         var _loc9_:* = 0;
-         var _loc7_:* = 0;
-         var _loc8_:* = 0;
-         var _loc3_:Array = _listPanel.vectorListModel.elements;
-         _loc5_ = 0;
-         while(_loc5_ < _titleList.length)
+         var tempIndex:int = 0;
+         var tempInfo:* = null;
+         var length:int = 0;
+         var n:int = 0;
+         var i:* = 0;
+         var j:* = 0;
+         var k:* = 0;
+         var tempArray:Array = _listPanel.vectorListModel.elements;
+         for(n = 0; n < _titleList.length; )
          {
-            if(_titleList[_loc5_].titleIsSelected)
+            if(_titleList[n].titleIsSelected)
             {
-               _loc2_ = _loc5_ + 1;
+               tempIndex = n + 1;
             }
-            _loc5_++;
+            n++;
          }
-         if(_loc3_.length == _titleList.length)
+         if(tempArray.length == _titleList.length)
          {
-            return _loc2_;
+            return tempIndex;
          }
          if(_currentTitleInfo.titleType != 1 && _currentTitleInfo.titleIsSelected)
          {
-            _loc6_ = 0;
-            if(param1.playerState.StateID != 0)
+            length = 0;
+            if(info.playerState.StateID != 0)
             {
-               _loc6_ = PlayerManager.Instance.getOnlineFriendForCustom(_currentTitleInfo.titleType).length + _loc2_ - 1;
-               if(_loc6_ != 0)
+               length = PlayerManager.Instance.getOnlineFriendForCustom(_currentTitleInfo.titleType).length + tempIndex - 1;
+               if(length != 0)
                {
-                  _loc9_ = _loc2_;
-                  while(_loc9_ < _loc6_)
+                  for(i = tempIndex; i < length; )
                   {
-                     _loc4_ = _loc3_[_loc9_] as FriendListPlayer;
-                     if(param1.IsVIP && _loc4_.IsVIP && param1.Grade < _loc4_.Grade)
+                     tempInfo = tempArray[i] as FriendListPlayer;
+                     if(info.IsVIP && tempInfo.IsVIP && info.Grade < tempInfo.Grade)
                      {
-                        _loc2_++;
+                        tempIndex++;
                      }
-                     if(!param1.IsVIP && _loc4_.IsVIP)
+                     if(!info.IsVIP && tempInfo.IsVIP)
                      {
-                        _loc2_++;
+                        tempIndex++;
                      }
-                     if(!param1.IsVIP && !_loc4_.IsVIP && param1.Grade < _loc4_.Grade)
+                     if(!info.IsVIP && !tempInfo.IsVIP && info.Grade < tempInfo.Grade)
                      {
-                        _loc2_++;
+                        tempIndex++;
                      }
-                     _loc9_++;
+                     i++;
                   }
                }
-               return _loc2_;
+               return tempIndex;
             }
-            _loc2_ = PlayerManager.Instance.getOnlineFriendForCustom(_currentTitleInfo.titleType).length + _loc2_;
-            _loc6_ = PlayerManager.Instance.getOfflineFriendForCustom(_currentTitleInfo.titleType).length + _loc2_ - 1;
-            if(_loc6_ != 0)
+            tempIndex = PlayerManager.Instance.getOnlineFriendForCustom(_currentTitleInfo.titleType).length + tempIndex;
+            length = PlayerManager.Instance.getOfflineFriendForCustom(_currentTitleInfo.titleType).length + tempIndex - 1;
+            if(length != 0)
             {
-               _loc7_ = _loc2_;
-               while(_loc7_ < _loc6_)
+               for(j = tempIndex; j < length; )
                {
-                  _loc4_ = _loc3_[_loc7_] as FriendListPlayer;
-                  if(param1.Grade <= _loc4_.Grade)
+                  tempInfo = tempArray[j] as FriendListPlayer;
+                  if(info.Grade <= tempInfo.Grade)
                   {
-                     _loc2_++;
-                     _loc7_++;
+                     tempIndex++;
+                     j++;
                      continue;
                   }
                   break;
                }
             }
-            return _loc2_;
+            return tempIndex;
          }
-         _loc6_ = PlayerManager.Instance.blackList.length + _loc2_ - 1;
-         if(_loc6_ != 0)
+         length = PlayerManager.Instance.blackList.length + tempIndex - 1;
+         if(length != 0)
          {
-            _loc8_ = _loc2_;
-            while(_loc8_ < _loc6_)
+            for(k = tempIndex; k < length; )
             {
-               _loc4_ = _loc3_[_loc8_] as FriendListPlayer;
-               if(param1.Grade <= _loc4_.Grade)
+               tempInfo = tempArray[k] as FriendListPlayer;
+               if(info.Grade <= tempInfo.Grade)
                {
-                  _loc2_++;
-                  _loc8_++;
+                  tempIndex++;
+                  k++;
                   continue;
                }
                break;
             }
          }
-         return _loc2_;
+         return tempIndex;
       }
       
-      private function __removeRecentContact(param1:DictionaryEvent) : void
+      private function __removeRecentContact(event:DictionaryEvent) : void
       {
          updateTitle();
          updateList();
@@ -508,18 +501,17 @@ package im
       
       private function updateTitle() : void
       {
-         var _loc3_:int = 0;
-         var _loc1_:int = 0;
-         var _loc2_:int = 0;
+         var i:int = 0;
+         var elememt:int = 0;
+         var deno:int = 0;
          if(PlayerManager.Instance.friendList)
          {
-            _loc3_ = 1;
-            while(_loc3_ < _titleList.length - 2)
+            for(i = 1; i < _titleList.length - 2; )
             {
-               _loc1_ = PlayerManager.Instance.getOnlineFriendForCustom(_titleList[_loc3_].titleType).length;
-               _loc2_ = PlayerManager.Instance.getFriendForCustom(_titleList[_loc3_].titleType).length;
-               _titleList[_loc3_].titleNumText = "[" + String(_loc1_) + "/" + String(_loc2_) + "]";
-               _loc3_++;
+               elememt = PlayerManager.Instance.getOnlineFriendForCustom(_titleList[i].titleType).length;
+               deno = PlayerManager.Instance.getFriendForCustom(_titleList[i].titleType).length;
+               _titleList[i].titleNumText = "[" + String(elememt) + "/" + String(deno) + "]";
+               i++;
             }
          }
          if(PlayerManager.Instance.blackList)
@@ -532,20 +524,20 @@ package im
          }
       }
       
-      private function __itemClick(param1:ListItemEvent) : void
+      private function __itemClick(event:ListItemEvent) : void
       {
-         var _loc2_:int = 0;
-         if((param1.cellValue as FriendListPlayer).type == 1)
+         var i:int = 0;
+         if((event.cellValue as FriendListPlayer).type == 1)
          {
             if(!_currentItemInfo)
             {
-               _currentItemInfo = param1.cellValue as FriendListPlayer;
+               _currentItemInfo = event.cellValue as FriendListPlayer;
                _currentItemInfo.titleIsSelected = true;
             }
-            if(_currentItemInfo != param1.cellValue as FriendListPlayer)
+            if(_currentItemInfo != event.cellValue as FriendListPlayer)
             {
                _currentItemInfo.titleIsSelected = false;
-               _currentItemInfo = param1.cellValue as FriendListPlayer;
+               _currentItemInfo = event.cellValue as FriendListPlayer;
                _currentItemInfo.titleIsSelected = true;
             }
          }
@@ -553,27 +545,26 @@ package im
          {
             if(!_currentTitleInfo)
             {
-               _currentTitleInfo = param1.cellValue as FriendListPlayer;
+               _currentTitleInfo = event.cellValue as FriendListPlayer;
                _currentTitleInfo.titleIsSelected = true;
             }
-            if(_currentTitleInfo != param1.cellValue as FriendListPlayer)
+            if(_currentTitleInfo != event.cellValue as FriendListPlayer)
             {
                _currentTitleInfo.titleIsSelected = false;
-               _currentTitleInfo = param1.cellValue as FriendListPlayer;
+               _currentTitleInfo = event.cellValue as FriendListPlayer;
                _currentTitleInfo.titleIsSelected = true;
             }
             else
             {
                _currentTitleInfo.titleIsSelected = !_currentTitleInfo.titleIsSelected;
             }
-            _loc2_ = 0;
-            while(_loc2_ < _titleList.length)
+            for(i = 0; i < _titleList.length; )
             {
-               if(_titleList[_loc2_] != _currentTitleInfo)
+               if(_titleList[i] != _currentTitleInfo)
                {
-                  _titleList[_loc2_].titleIsSelected = false;
+                  _titleList[i].titleIsSelected = false;
                }
-               _loc2_++;
+               i++;
             }
             updateList();
             SoundManager.instance.play("008");
@@ -603,76 +594,72 @@ package im
          }
          updateTitle();
          _listPanel.list.updateListView();
-         var _loc1_:IntPoint = new IntPoint(0,_pos);
-         _listPanel.list.viewPosition = _loc1_;
+         var intPoint:IntPoint = new IntPoint(0,_pos);
+         _listPanel.list.viewPosition = intPoint;
       }
       
       private function showTitle() : void
       {
-         var _loc1_:int = 0;
+         var i:int = 0;
          _playerArray = [];
-         _loc1_ = 0;
-         while(_loc1_ < _titleList.length)
+         for(i = 0; i < _titleList.length; )
          {
-            _playerArray.push(_titleList[_loc1_]);
-            _titleList[_loc1_].titleIsSelected = false;
-            _loc1_++;
+            _playerArray.push(_titleList[i]);
+            _titleList[i].titleIsSelected = false;
+            i++;
          }
          _listPanel.vectorListModel.clear();
          _listPanel.vectorListModel.appendAll(_playerArray);
          _listPanel.list.updateListView();
       }
       
-      private function updateFriendList(param1:int = 0) : void
+      private function updateFriendList(relation:int = 0) : void
       {
-         var _loc5_:int = 0;
-         var _loc9_:int = 0;
-         var _loc8_:* = null;
-         var _loc7_:int = 0;
+         var n:int = 0;
+         var i:int = 0;
+         var info:* = null;
+         var j:int = 0;
          _playerArray = [];
-         var _loc6_:* = 0;
-         _loc5_ = 0;
-         while(_loc5_ < _titleList.length)
+         var temp:* = 0;
+         for(n = 0; n < _titleList.length; )
          {
-            _playerArray.push(_titleList[_loc5_]);
-            if(param1 == _titleList[_loc5_].titleType)
+            _playerArray.push(_titleList[n]);
+            if(relation == _titleList[n].titleType)
             {
-               _loc6_ = _loc5_;
+               temp = n;
                break;
             }
-            _loc5_++;
+            n++;
          }
-         var _loc4_:Array = PlayerManager.Instance.getOnlineFriendForCustom(param1);
-         var _loc3_:Array = [];
-         var _loc2_:Array = [];
-         _loc9_ = 0;
-         while(_loc9_ < _loc4_.length)
+         var tempArray:Array = PlayerManager.Instance.getOnlineFriendForCustom(relation);
+         var tempArr:Array = [];
+         var tempArr1:Array = [];
+         for(i = 0; i < tempArray.length; )
          {
-            _loc8_ = _loc4_[_loc9_] as FriendListPlayer;
-            if(_loc8_.IsVIP)
+            info = tempArray[i] as FriendListPlayer;
+            if(info.IsVIP)
             {
-               _loc3_.push(_loc8_);
+               tempArr.push(info);
             }
             else
             {
-               _loc2_.push(_loc8_);
+               tempArr1.push(info);
             }
-            _loc9_++;
+            i++;
          }
-         _loc3_ = sort(_loc3_);
-         _loc2_ = sort(_loc2_);
-         _loc4_ = _loc3_.concat(_loc2_);
-         _loc4_ = IMManager.Instance.sortAcademyPlayer(_loc4_);
-         _playerArray = _playerArray.concat(_loc4_);
-         _loc4_ = PlayerManager.Instance.getOfflineFriendForCustom(param1);
-         _loc4_ = sort(_loc4_);
-         _loc4_ = IMManager.Instance.sortAcademyPlayer(_loc4_);
-         _playerArray = _playerArray.concat(_loc4_);
-         _loc7_ = _loc6_ + 1;
-         while(_loc7_ < _titleList.length)
+         tempArr = sort(tempArr);
+         tempArr1 = sort(tempArr1);
+         tempArray = tempArr.concat(tempArr1);
+         tempArray = IMManager.Instance.sortAcademyPlayer(tempArray);
+         _playerArray = _playerArray.concat(tempArray);
+         tempArray = PlayerManager.Instance.getOfflineFriendForCustom(relation);
+         tempArray = sort(tempArray);
+         tempArray = IMManager.Instance.sortAcademyPlayer(tempArray);
+         _playerArray = _playerArray.concat(tempArray);
+         for(j = temp + 1; j < _titleList.length; )
          {
-            _playerArray.push(_titleList[_loc7_]);
-            _loc7_++;
+            _playerArray.push(_titleList[j]);
+            j++;
          }
          _listPanel.vectorListModel.clear();
          _listPanel.vectorListModel.appendAll(_playerArray);
@@ -681,16 +668,15 @@ package im
       
       private function updateBlackList() : void
       {
-         var _loc2_:int = 0;
+         var i:int = 0;
          _playerArray = [];
-         _loc2_ = 0;
-         while(_loc2_ < _titleList.length - 1)
+         for(i = 0; i < _titleList.length - 1; )
          {
-            _playerArray.push(_titleList[_loc2_]);
-            _loc2_++;
+            _playerArray.push(_titleList[i]);
+            i++;
          }
-         var _loc1_:Array = PlayerManager.Instance.blackList.list;
-         _playerArray = _playerArray.concat(_loc1_);
+         var tempArray:Array = PlayerManager.Instance.blackList.list;
+         _playerArray = _playerArray.concat(tempArray);
          _playerArray.push(_titleList[_titleList.length - 1]);
          _listPanel.vectorListModel.clear();
          _listPanel.vectorListModel.appendAll(_playerArray);
@@ -699,51 +685,49 @@ package im
       
       private function updateRecentContactList() : void
       {
-         var _loc3_:* = null;
-         var _loc7_:int = 0;
-         var _loc4_:* = null;
-         var _loc6_:int = 0;
+         var tempInfo:* = null;
+         var i:int = 0;
+         var state:* = null;
+         var j:int = 0;
          _playerArray = [];
          _playerArray.unshift(_titleList[0]);
-         var _loc2_:Array = [];
-         var _loc1_:DictionaryData = PlayerManager.Instance.recentContacts;
-         var _loc5_:Array = IMManager.Instance.recentContactsList;
-         if(_loc5_)
+         var tempArray:Array = [];
+         var tempDictionaryData:DictionaryData = PlayerManager.Instance.recentContacts;
+         var recentContactsList:Array = IMManager.Instance.recentContactsList;
+         if(recentContactsList)
          {
-            _loc7_ = 0;
-            while(_loc7_ < _loc5_.length)
+            for(i = 0; i < recentContactsList.length; )
             {
-               if(_loc5_[_loc7_] != 0)
+               if(recentContactsList[i] != 0)
                {
-                  _loc3_ = _loc1_[_loc5_[_loc7_]];
-                  if(_loc3_ && _loc2_.indexOf(_loc3_) == -1)
+                  tempInfo = tempDictionaryData[recentContactsList[i]];
+                  if(tempInfo && tempArray.indexOf(tempInfo) == -1)
                   {
-                     if(PlayerManager.Instance.findPlayer(_loc3_.ID,PlayerManager.Instance.Self.ZoneID))
+                     if(PlayerManager.Instance.findPlayer(tempInfo.ID,PlayerManager.Instance.Self.ZoneID))
                      {
-                        _loc4_ = new PlayerState(PlayerManager.Instance.findPlayer(_loc3_.ID,PlayerManager.Instance.Self.ZoneID).playerState.StateID);
-                        _loc3_.playerState = _loc4_;
+                        state = new PlayerState(PlayerManager.Instance.findPlayer(tempInfo.ID,PlayerManager.Instance.Self.ZoneID).playerState.StateID);
+                        tempInfo.playerState = state;
                      }
-                     _loc2_.push(_loc3_);
+                     tempArray.push(tempInfo);
                   }
                }
-               _loc7_++;
+               i++;
             }
          }
-         _playerArray = _playerArray.concat(_loc2_);
-         _loc6_ = 1;
-         while(_loc6_ < _titleList.length)
+         _playerArray = _playerArray.concat(tempArray);
+         for(j = 1; j < _titleList.length; )
          {
-            _playerArray.push(_titleList[_loc6_]);
-            _loc6_++;
+            _playerArray.push(_titleList[j]);
+            j++;
          }
          _listPanel.vectorListModel.clear();
          _listPanel.vectorListModel.appendAll(_playerArray);
          _listPanel.list.updateListView();
       }
       
-      private function sort(param1:Array) : Array
+      private function sort(arr:Array) : Array
       {
-         return param1.sortOn("Grade",16 | 2);
+         return arr.sortOn("Grade",16 | 2);
       }
       
       public function dispose() : void
@@ -772,9 +756,9 @@ package im
          return _currentItem;
       }
       
-      public function set currentItem(param1:IMListItemView) : void
+      public function set currentItem(value:IMListItemView) : void
       {
-         _currentItem = param1;
+         _currentItem = value;
       }
    }
 }
